@@ -68,15 +68,14 @@ public class RuoloService {
 	}
 
 	//Metodo per eliminare un ruolo da database
-	// @ TODO FIXME ruoloType è enum, roleParam è stringa, confronto mele con pere
-	public void deleteRole(String roleParam) {
+	public RuoliDto deleteRole(String roleParam) {
 		try {
-			List<Ruoli> entity= roleRepo.findAll();
-			for(Ruoli r: entity) {
-				if(r.getRuoloType().equals(roleParam)) { 
-					roleRepo.delete(r);
-				} 
+			Ruoli entity= roleRepo.findByRuoloType(roleParam);
+			if(entity != null) {
+				roleRepo.delete(entity);
 			}
+			RuoliDto dto=DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(entity);
+			return dto;
 		}catch(Exception ex) {
 			throw new EntityNotFoundException("Ruolo non trovato");	
 		}

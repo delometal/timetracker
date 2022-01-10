@@ -29,7 +29,7 @@ public class DipendenteService {
 	@Autowired 
 	private UtenteRepository utenteRepo;
 
-
+	//metodo per creare un dipendente
 	public AnagraficaDipendenteDto createDipendente(AnagraficaDipendenteDto dipendenteParam, UtenteDto utenteDto, String codiceResponsabile){
 		try {
 			Utente utente = DtoEntityMapper.INSTANCE.fromDtoToEntityUtente(utenteDto);
@@ -74,15 +74,15 @@ public class DipendenteService {
 		}
 	}
 
-	//Metodo per eliminare un utente da database
-	public void deleteDipendente(String id) {
+	//Metodo per eliminare un dipendente da database
+	public AnagraficaDipendenteDto deleteDipendente(String id) {
 		try {
-			List<AnagraficaDipendente> entity= dipendenteRepo.findAll();
-			for(AnagraficaDipendente u: entity) {
-				if(u.getCodicePersona().equalsIgnoreCase(id)) {
-					dipendenteRepo.delete(u);
-				} 
+			AnagraficaDipendente entity= dipendenteRepo.findByCodicePersona(id);
+			if(entity != null) {
+				dipendenteRepo.delete(entity);
 			}
+			AnagraficaDipendenteDto dto=DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendente(entity);
+			return dto;
 		}catch(Exception ex) {
 			throw new EntityNotFoundException("Dipendente non trovato");	
 		}

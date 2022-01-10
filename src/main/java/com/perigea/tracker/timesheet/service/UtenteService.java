@@ -37,19 +37,15 @@ public class UtenteService {
 	@Autowired
 	private RelazioneDipendenteCommessaRepository relazioneDipComRepo;
 
-	//@ TODO controllare spring security.
-	//@ TODO parametri di autenticazione con le chiamate rest
-	private static final Logger LOGGER = LoggerFactory.getLogger(UtenteController.class);
-
 
 	//Metodo per creare un nuovo utente per poi inserirlo a database
 	public UtenteDto createUser(UtenteDto userParam) {
 		try {
 			Utente user = DtoEntityMapper.INSTANCE.fromDtoToEntityUtente(userParam);
 			user.setCodicePersona(TSUtils.UUDI());
-			LOGGER.info("Utente creato");
+			logger.info("Utente creato");
 			userRepo.save(user);
-			LOGGER.info("Utente salvato a database");
+			logger.info("Utente salvato a database");
 			UtenteDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoUtente(user);
 			return dto;
 		}catch(Exception ex) {
@@ -84,14 +80,14 @@ public class UtenteService {
 	}
 
 	//Metodo per eliminare un utente da database
-	public void deleteUser(String id) {
+	public UtenteDto deleteUser(String id) {
 		try {
-			List<Utente> entity= userRepo.findAll();
-			for(Utente u: entity) {
-				if(u.getCodicePersona().equalsIgnoreCase(id)) {
-					userRepo.delete(u);
-				} 
+			Utente entity= userRepo.findByCodicePersona(id);
+			if(entity != null) {
+				userRepo.delete(entity);
 			}
+			UtenteDto dto=DtoEntityMapper.INSTANCE.fromEntityToDtoUtente(entity);
+			return dto;
 		}catch(Exception ex) {
 			throw new EntityNotFoundException("Utente non trovato");	
 		}
@@ -166,7 +162,7 @@ public class UtenteService {
 			entity.setCreateUser("");
 			entity.setLastUpdateUser("");
 			relazioneDipComRepo.save(entity);
-			LOGGER.info("Relazione Dipendente-commessa creata e salvata a database");
+			logger.info("Relazione Dipendente-commessa creata e salvata a database");
 		} catch(Exception ex) {
 			throw new UtenteException("Relazione dipendente-commessa non creata");	
 		}

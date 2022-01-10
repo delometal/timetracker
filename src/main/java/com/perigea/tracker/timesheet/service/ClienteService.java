@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.perigea.tracker.timesheet.controller.UtenteController;
 import com.perigea.tracker.timesheet.dto.AnagraficaClienteDto;
+import com.perigea.tracker.timesheet.dto.CommessaNonFatturabileDto;
 import com.perigea.tracker.timesheet.entity.AnagraficaCliente;
 import com.perigea.tracker.timesheet.exception.ClienteException;
 import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
@@ -25,9 +26,6 @@ public class ClienteService {
 	
 	@Autowired
 	private AnagraficaClienteRepository anagraficaClienteRepo;
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(UtenteController.class);
-	
 	
 	public AnagraficaClienteDto createCustomerPersonalData(AnagraficaClienteDto dto) {
 		try {
@@ -48,8 +46,8 @@ public class ClienteService {
 			entity.setTipologiaPagamentoType(dto.getTipologiaPagamentoType());
 			entity.setCreateUser("");
 			anagraficaClienteRepo.save(entity);
-			LOGGER.info("Entity dati anagrafici cliente creato e aggiunto a database");
-			AnagraficaClienteDto dtoParam=fromEntityToDto(entity);
+			logger.info("Entity dati anagrafici cliente creato e aggiunto a database");
+			AnagraficaClienteDto dtoParam=DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
 			return dtoParam;
 		} catch (Exception ex) {
 			throw new ClienteException("Anagrafica cliente non creata");
@@ -89,32 +87,14 @@ public class ClienteService {
 		}
 	}
 	
-	public void deleteCustomerPersonalData(AnagraficaClienteDto dtoParam) {
+	public AnagraficaClienteDto deleteCustomerPersonalData(AnagraficaClienteDto dtoParam) {
 		try {
 			AnagraficaCliente entity=anagraficaClienteRepo.findByRagioneSocialeCliente(dtoParam.getRagioneSocialeCliente());
 			if(entity != null) {
 				anagraficaClienteRepo.delete(entity);
 			}
-		} catch (Exception ex) {
-			throw new EntityNotFoundException("Anagrafica cliente non trovata");
-		}
-	}
-	
-	public AnagraficaClienteDto fromEntityToDto(AnagraficaCliente entity) {
-		try {
-			AnagraficaClienteDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
-			//		dto.setCreateUser("");
+			AnagraficaClienteDto dto=DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
 			return dto;
-		} catch (Exception ex) {
-			throw new EntityNotFoundException("Anagrafica cliente non trovata");
-		}
-	}
-
-	public AnagraficaCliente fromDtoToEntity(AnagraficaClienteDto dto) {
-		try {
-			AnagraficaCliente entity = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(dto);
-			//		entity.setCreateUser("");
-			return entity;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException("Anagrafica cliente non trovata");
 		}

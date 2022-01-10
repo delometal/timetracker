@@ -1,5 +1,6 @@
 package com.perigea.tracker.timesheet.service;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.EntityNotFoundException;
@@ -48,6 +49,7 @@ public class CommessaService {
 	@Autowired
 	private ClienteService trackerClient;
 	
+	//metodo per creare una commessa fatturabile
 	public CommessaFatturabileDto createCommessaFatturabile(CommessaFatturabileWrapper bodyConverter) {
 		try {
 			CommessaFatturabile entity=new CommessaFatturabile();
@@ -96,6 +98,7 @@ public class CommessaService {
 		}
 	}
 	
+	//metodo per creare una commessa no nfatturabile
 	public CommessaNonFatturabileDto createCommessaNonFatturabile(CommessaNonFatturabileDto dtoParam,CommessaDto dtoCommessa) {
 		try {
 			CommessaNonFatturabile entity=new CommessaNonFatturabile();
@@ -106,13 +109,14 @@ public class CommessaService {
 			entity.setDescrizione(dtoParam.getDescrizione());
 			commessa.setCommessaNonFatturabile(entity);
 			commessaNonFatturabileRepo.save(entity);
-			CommessaNonFatturabileDto dto=fromEntityToDtoCommessaNonFatturabile(entity);
+			CommessaNonFatturabileDto dto=DtoEntityMapper.INSTANCE.fromEntityToDtoCommessaNonFatturabile(entity);
 			return dto;
 		}catch(Exception ex) {
 			throw new CommessaException("Commessa non creata");
 		}
 	}
 	
+	//metodo per creare una commessa
 	public CommessaDto createCommessa(CommessaDto dto) {
 		try {
 			Commessa entity= new Commessa();
@@ -126,6 +130,7 @@ public class CommessaService {
 		}
 	}
 	
+	//metodo per eliminare una commessa
 	public void deleteCommessa(String codiceCommessa) {
 		try {
 			Commessa entity=commessaRepo.findByCodiceCommessa(codiceCommessa);
@@ -137,6 +142,7 @@ public class CommessaService {
 		}
 	}
 
+	//metodo per leggere i dati di una commessa non fatturabile
 	public CommessaNonFatturabile readCommessaNonFatturabile(String codiceCommessa) {
 		try {
 			CommessaNonFatturabile commessa=commessaNonFatturabileRepo.findByCodiceCommessa(codiceCommessa);
@@ -146,6 +152,7 @@ public class CommessaService {
 		}
 	}
 
+	//metodo per aggiornari i dati di una commessa non fatturabile
 	public CommessaNonFatturabileDto updateCommessaNonFatturabile(CommessaNonFatturabileDto dtoParam) {
 		try {
 			CommessaNonFatturabile entity=commessaNonFatturabileRepo.findByCodiceCommessa(dtoParam.getCodiceCommessa());
@@ -155,35 +162,28 @@ public class CommessaService {
 				entity.setLastUpdateUser("");
 				commessaNonFatturabileRepo.save(entity);
 			}
-			CommessaNonFatturabileDto dto=fromEntityToDtoCommessaNonFatturabile(entity);
+			CommessaNonFatturabileDto dto=DtoEntityMapper.INSTANCE.fromEntityToDtoCommessaNonFatturabile(entity);
 			return dto;
 		}catch(Exception ex) {
 			throw new EntityNotFoundException("Commessa non trovata");
 		}
 	}
 
-	public void deleteCommessaNonFatturabile(String codiceCommessa) {
+	//metodo per eliminare una commessa non fatturabile
+	public CommessaNonFatturabileDto deleteCommessaNonFatturabile(String codiceCommessa) {
 		try {
 			CommessaNonFatturabile entity=commessaNonFatturabileRepo.findByCodiceCommessa(codiceCommessa);
 			if(entity != null) {
 				commessaNonFatturabileRepo.delete(entity);
 			}
-		}catch(Exception ex) {
-			throw new EntityNotFoundException("Commessa non trovata");
-		}
-	}
-	
-	public CommessaNonFatturabileDto fromEntityToDtoCommessaNonFatturabile(CommessaNonFatturabile entity) {
-		try {
-			CommessaNonFatturabileDto dto=new CommessaNonFatturabileDto();
-			dto.setCodiceCommessa(entity.getCodiceCommessa());
-			dto.setDescrizione(entity.getDescrizione());
+			CommessaNonFatturabileDto dto=DtoEntityMapper.INSTANCE.fromEntityToDtoCommessaNonFatturabile(entity);
 			return dto;
 		}catch(Exception ex) {
 			throw new EntityNotFoundException("Commessa non trovata");
 		}
 	}
 
+	//metodo per creare un ordine commessa
 	public OrdineCommessa createOrdineCommessa (CommessaFatturabileWrapper bodyConverter) {
 		try {
 			OrdineCommessa entityOrdineCommessa = new OrdineCommessa();

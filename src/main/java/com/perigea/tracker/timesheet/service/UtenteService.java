@@ -146,8 +146,6 @@ public class UtenteService {
 			RelazioneDipendenteCommessa entity = DtoEntityMapper.INSTANCE
 					.fromDtoToEntityRelazioneDipendenteCommessa(dtoParam);
 			Date date=new Date();
-			//			entity.setCommessa(dtoParam.getCodiceCommessa());
-			//			entity.setUtente(dtoParam.getCodicePersona());
 			entity.setDataInizioAllocazione(dtoParam.getDataInizioAllocazione());
 			entity.setDataFineAllocazione(dtoParam.getDataFineAllocazione());
 			entity.setGiorniPrevisti(dtoParam.getGiorniPrevisti());

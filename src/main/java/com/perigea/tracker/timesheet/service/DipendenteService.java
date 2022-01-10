@@ -33,7 +33,6 @@ public class DipendenteService {
 	public AnagraficaDipendenteDto createDipendente(AnagraficaDipendenteDto dipendenteParam, UtenteDto utenteDto, String codiceResponsabile){
 		try {
 			Utente utente = DtoEntityMapper.INSTANCE.fromDtoToEntityUtente(utenteDto);
-
 			AnagraficaDipendente dipendente = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaDipendente(dipendenteParam);
 			dipendente.setUtenteDipendente(utente);
 			utente.setDipendente(dipendente);

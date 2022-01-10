@@ -45,14 +45,8 @@ public class TimeSheetService{
 			if(timeSheetEntity != null) {
 				timeSheetRepo.delete(timeSheetEntity);
 				timeSheetEntity=DtoEntityMapper.INSTANCE.fromDtoToEntityTimeSheet(timeSheetParam);
-				//timeSheetEntity.setAnnoDiRiferimento(timeSheetParam.getAnnoDiRiferimento());
-				//timeSheetEntity.setMeseDiRiferimento(timeSheetParam.getMeseDiRiferimento());
-				//timeSheetEntity.setGiornoDiRiferimento(timeSheetParam.getGiornoDiRiferimento());
-				//timeSheetEntity.setStatoType(timeSheetParam.getStatoType().toString());
 				timeSheetEntity.setUtenteTime(utente);
 				timeSheetEntity.setCommessaTimeSheed(commessa);
-				//timeSheetEntity.setOre(timeSheetParam.getOre());
-				//timeSheetEntity.setLastUpdateUser("");
 				timeSheetRepo.save(timeSheetEntity);
 				logger.info("TimeSheet modificato");
 			}

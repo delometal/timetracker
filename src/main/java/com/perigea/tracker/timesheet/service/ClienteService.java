@@ -29,22 +29,7 @@ public class ClienteService {
 	
 	public AnagraficaClienteDto createCustomerPersonalData(AnagraficaClienteDto dto) {
 		try {
-			AnagraficaCliente entity=new AnagraficaCliente();
-			entity.setAcronimoCliente(dto.getAcronimoCliente());
-			entity.setCodiceDestinatario(dto.getCodiceDestinatario());
-			entity.setCodiceFiscale(dto.getCodiceFiscale());
-			entity.setNotePerLaFatturazione(dto.getNotePerLaFatturazione());
-			entity.setPartitaIva(dto.getPartitaIva());
-			entity.setRagioneSocialeCliente(dto.getRagioneSocialeCliente());
-			entity.setSedeLegaleCap(dto.getSedeLegaleCap());
-			entity.setSedeLegaleComune(dto.getSedeLegaleComune());
-			entity.setSedeLegaleIndirizzo(dto.getSedeLegaleIndirizzo());
-			entity.setSedeOperativaCap(dto.getSedeOperativaCap());
-			entity.setSedeOperativaComune(dto.getSedeOperativaComune());
-			entity.setSedeOperativaIndirizzo(dto.getSedeOperativaIndirizzo());
-			entity.setProgressivoPerCommesse(dto.getProgressivoPerCommesse());
-			entity.setTipologiaPagamentoType(dto.getTipologiaPagamentoType());
-			entity.setCreateUser("");
+			AnagraficaCliente entity=DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(dto);
 			anagraficaClienteRepo.save(entity);
 			logger.info("Entity dati anagrafici cliente creato e aggiunto a database");
 			AnagraficaClienteDto dtoParam=DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
@@ -66,7 +51,6 @@ public class ClienteService {
 		try {
 			AnagraficaCliente entity=anagraficaClienteRepo.findByRagioneSocialeCliente(dtoParam.getRagioneSocialeCliente());
 			if(entity != null) {
-				anagraficaClienteRepo.delete(entity);
 				Date date=new Date();
 				entity.setRagioneSocialeCliente(dtoParam.getRagioneSocialeCliente());
 				entity.setAcronimoCliente(dtoParam.getAcronimoCliente());

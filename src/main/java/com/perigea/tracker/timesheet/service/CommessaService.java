@@ -63,7 +63,7 @@ public class CommessaService {
 			Commessa commessa=DtoEntityMapper.INSTANCE.fromDtoToEntityCommessa(commessaDto);
 			entity.setCommessaFatturabile(commessa);
 			commessa.setCommessaFatturabile(entity);
-
+			
 			entity.setCreateUser("");
 			Date date=new Date();
 			entity.setDataInizioCommessa(date);

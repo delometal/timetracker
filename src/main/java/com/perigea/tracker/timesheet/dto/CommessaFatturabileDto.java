@@ -35,7 +35,5 @@ public class CommessaFatturabileDto extends CommessaDto {
 	private Double percentualeSconto;
 	private String responsabileCommerciale;
 	
-	public CommessaFatturabileDto() {
-		super();
-	}
+
 }

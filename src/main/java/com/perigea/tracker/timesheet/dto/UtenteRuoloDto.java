@@ -1,16 +1,12 @@
 package com.perigea.tracker.timesheet.dto;
 
 import com.perigea.tracker.timesheet.enumerator.RuoloType;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+import lombok.Data;
+
+@Data
 public class UtenteRuoloDto {
 	private String codicePersona;
-	private RuoloType ruoloType; 
-	
-	public UtenteRuoloDto() {
-		super();
-	}
+	private RuoloType ruoloType;
+
 }

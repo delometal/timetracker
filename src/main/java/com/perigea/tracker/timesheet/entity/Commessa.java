@@ -8,103 +8,59 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import com.perigea.tracker.timesheet.enumerator.TipoCommessaType;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name="commessa")
+@Table(name = "commessa")
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Commessa extends BaseEntity {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7155033574935911917L;
+
 	@Id
-	@Column(name="codice_commessa", nullable=false)
+	@Column(name = "codice_commessa", nullable = false)
 	private String codiceCommessa;
 
-	@Column(name="tipo_commessa")
+	@Column(name = "tipo_commessa")
 	@Enumerated(EnumType.STRING)
 	private TipoCommessaType commessaType;
-	
 
-	@OneToOne(mappedBy="commessaSpesa")
+	@OneToOne(mappedBy = "commessaSpesa")
 	private NotaSpese notaSpese;
-	
+
 	@OneToMany(mappedBy = "commessaTimeSheet")
 	private List<TimeSheet> timeSheet = new ArrayList<>();
-	
-	@OneToOne(
-	        mappedBy = "commessaNonFatturabile",
-	        cascade = CascadeType.ALL,
-	        orphanRemoval = true,
-	        fetch = FetchType.LAZY
-			)
+
+	@OneToOne(mappedBy = "commessaNonFatturabile", cascade = CascadeType.ALL)
+	@PrimaryKeyJoinColumn
 	private CommessaNonFatturabile commessaNonFatturabile;
-	
-	@OneToMany(mappedBy= "commessa")
+
+	@OneToMany(mappedBy = "commessa")
 	private List<RelazioneDipendenteCommessa> relazione = new ArrayList<>();
-	
+
 	@OneToOne(mappedBy = "commessaFatturabile")
 	private CommessaFatturabile commessaFatturabile;
-
-
-	public String getCodiceCommessa() {
-		return codiceCommessa;
-	}
-
-	public void setCodiceCommessa(String codiceCommessa) {
-		this.codiceCommessa = codiceCommessa;
-	}
-
-	public TipoCommessaType getCommessaType() {
-		return commessaType;
-	}
-
-	public void setCommessaType(TipoCommessaType commessaType) {
-		this.commessaType = commessaType;
-	}
-
-	public NotaSpese getNotaSpese() {
-		return notaSpese;
-	}
-
-	public void setNotaSpese(NotaSpese notaSpese) {
-		this.notaSpese = notaSpese;
-	}
-
-	public List<TimeSheet> getTimeSheet() {
-		return timeSheet;
-	}
-
-	public void setTimeSheet(List<TimeSheet> timeSheet) {
-		this.timeSheet = timeSheet;
-	}
-
-	public CommessaNonFatturabile getCommessaNonFatturabile() {
-		return commessaNonFatturabile;
-	}
-
-	public void setCommessaNonFatturabile(CommessaNonFatturabile commessaNonFatturabile) {
-		this.commessaNonFatturabile = commessaNonFatturabile;
-	}
-
-	public List<RelazioneDipendenteCommessa> getRelazione() {
-		return relazione;
-	}
-
-	public void setRelazione(List<RelazioneDipendenteCommessa> relazione) {
-		this.relazione = relazione;
-	}
-
-	public CommessaFatturabile getCommessaFatturabile() {
-		return commessaFatturabile;
-	}
-
-	public void setCommessaFatturabile(CommessaFatturabile commessaFatturabile) {
-		this.commessaFatturabile = commessaFatturabile;
-	}
 	
+	public void addCommessa(TimeSheet commessa) {
+		this.timeSheet.add(commessa);
+		commessa.setCommessaTimeSheet(this);
+	}
+
+	public void removeCommessa(TimeSheet commessa) {
+		this.timeSheet.remove(commessa);
+		commessa.setCommessaTimeSheet(null);
+	}
 }

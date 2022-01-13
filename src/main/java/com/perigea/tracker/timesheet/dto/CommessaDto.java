@@ -1,14 +1,10 @@
 package com.perigea.tracker.timesheet.dto;
 
-import java.util.Date;
-
 import com.perigea.tracker.timesheet.enumerator.TipoCommessaType;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class CommessaDto  {
 	
 	private String codiceCommessa;
@@ -16,9 +12,6 @@ public class CommessaDto  {
 	private String createUser;
 	private String lastUpdateUser;
 	
-	public CommessaDto() {
-		super();
-	}
-	
+
 
 }

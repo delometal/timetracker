@@ -2,13 +2,11 @@ package com.perigea.tracker.timesheet.dto;
 
 import java.util.Date;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class AnagraficaDipendenteDto {
-	
+
 	private String codicePersona;
 	private String luogoDiNascita;
 	private Date dataDiNascita;
@@ -29,10 +27,7 @@ public class AnagraficaDipendenteDto {
 	private String codiceFiscale;
 	private String createUser;
 	private String lastUpdateUser;
-	//private String codiceResponsabile;
+
 	
-	public AnagraficaDipendenteDto() {
-		super();
-	}
 
 }

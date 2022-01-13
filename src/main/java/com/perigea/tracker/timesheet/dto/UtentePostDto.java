@@ -1,16 +1,12 @@
 package com.perigea.tracker.timesheet.dto;
 
-
-import java.util.Date;
-
 import com.perigea.tracker.timesheet.enumerator.StatoUtenteType;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-public class UtenteDto {
-	
+import lombok.Data;
+
+@Data
+public class UtentePostDto {
+
 	private String codicePersona;
 	private String nome;
 	private String cognome;
@@ -18,8 +14,5 @@ public class UtenteDto {
 	private StatoUtenteType statoUtenteType;
 	private String createUser;
 	private String lastUpdateUser;
-	
-	public UtenteDto() {
-		
-	}
+
 }

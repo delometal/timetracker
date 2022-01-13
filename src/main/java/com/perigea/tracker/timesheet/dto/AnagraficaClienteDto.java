@@ -2,13 +2,11 @@ package com.perigea.tracker.timesheet.dto;
 
 import com.perigea.tracker.timesheet.enumerator.TipologiaPagamentoType;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class AnagraficaClienteDto {
-	
+
 	private String ragioneSocialeCliente;
 	private String partitaIva;
 	private String codiceFiscale;
@@ -25,9 +23,7 @@ public class AnagraficaClienteDto {
 	private String notePerLaFatturazione;
 	private String createUser;
 	private String lastUpdateUser;
-	
-	public AnagraficaClienteDto() {
-		super();
-	}
+
+
 
 }

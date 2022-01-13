@@ -2,6 +2,7 @@ package com.perigea.tracker.timesheet.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,15 +14,22 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 import com.perigea.tracker.timesheet.enumerator.StatoUtenteType;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "utente")
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Utente extends BaseEntity {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2342088709313716005L;
 
 	@Id
 	@Column(name = "codice_persona", nullable = false)
@@ -43,7 +51,7 @@ public class Utente extends BaseEntity {
 	@OneToMany(mappedBy = "utenteSpesa")
 	private List<NotaSpese> noteSpese = new ArrayList<>();
 
-	@OneToOne(mappedBy = "utenteDipendente",cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "utenteDipendente", cascade = CascadeType.ALL)
 	private AnagraficaDipendente dipendente;
 
 	@OneToMany(mappedBy = "utenteTimeSheet")
@@ -54,22 +62,31 @@ public class Utente extends BaseEntity {
 
 	@OneToMany(mappedBy = "utente")
 	private List<RelazioneUtenteRuolo> utenteRuolo = new ArrayList<>();
-	
+
 	@ManyToOne
-    @JoinColumn(name = "codice_responsabile")
+	@JoinColumn(name = "codice_responsabile")
 	private Utente responsabile;
-			
+
 	@OneToMany(mappedBy = "responsabile")
-    private List<Utente> dipendenti = new ArrayList<>();
- 
-    public void addDipendente(Utente dipendente) {
-        this.dipendenti.add(dipendente);
-        dipendente.setResponsabile(this);
-    }
- 
-    public void removeDipendente(Utente dipendente) {
-        this.dipendenti.remove(dipendente);
-        dipendente.setResponsabile(null);
-    }
-	
+	private List<Utente> dipendenti = new ArrayList<>();
+
+	public void addDipendente(Utente dipendente) {
+		this.dipendenti.add(dipendente);
+		dipendente.setResponsabile(this);
+	}
+
+	public void removeDipendente(Utente dipendente) {
+		this.dipendenti.remove(dipendente);
+		dipendente.setResponsabile(null);
+	}
+
+	public void addTimeSheet(TimeSheet timesheet) {
+		this.timeSheet.add(timesheet);
+		timesheet.setUtenteTimeSheet(this);
+	}
+
+	public void removeTimeSheet(TimeSheet timesheet) {
+		this.timeSheet.remove(timesheet);
+		timesheet.setUtenteTimeSheet(null);
+	}
 }

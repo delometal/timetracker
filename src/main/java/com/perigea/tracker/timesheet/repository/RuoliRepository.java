@@ -9,7 +9,7 @@ import com.perigea.tracker.timesheet.enumerator.RuoloType;
 @Repository
 public interface RuoliRepository extends JpaRepository<Ruoli,Long> {
 	
-	public Ruoli findByRuoloType(String string);
+	public Ruoli findByRuoloType(RuoloType string);
 	
 
 } 

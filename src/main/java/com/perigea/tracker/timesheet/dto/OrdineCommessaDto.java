@@ -1,11 +1,10 @@
 package com.perigea.tracker.timesheet.dto;
 
 import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+import lombok.Data;
+
+@Data
 public class OrdineCommessaDto {
 	
 	private String codiceCommessa;
@@ -19,7 +18,5 @@ public class OrdineCommessaDto {
 	private String createUser;
 	private String lastUpdateUser;
 	
-	public OrdineCommessaDto() {
-		super();
-	}
+
 }

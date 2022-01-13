@@ -2,12 +2,9 @@ package com.perigea.tracker.timesheet.dto;
 
 import com.perigea.tracker.timesheet.enumerator.TipoCostoNotaSpeseType;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class NotaSpeseDto {
 
 	private Integer annoDiRiferimento;
@@ -20,8 +17,6 @@ public class NotaSpeseDto {
 	private String createUser;
 	private String lastUpdateUser;
 	
-	public NotaSpeseDto() {
-		super();
-	}
+
 	
 }

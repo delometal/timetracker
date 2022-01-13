@@ -1,5 +1,6 @@
 package com.perigea.tracker.timesheet.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,36 +14,27 @@ import javax.persistence.Table;
 
 import com.perigea.tracker.timesheet.enumerator.RuoloType;
 
+import lombok.Data;
+
 @Entity
-@Table(name="ruoli")
-public class Ruoli {
+@Table(name = "ruoli")
+@Data
+public class Ruoli implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -870008112526011657L;
 
 	@Id
-	@Column(name="ruolo")
+	@Column(name = "ruolo")
 	@Enumerated(EnumType.STRING)
 	private RuoloType ruoloType;
-	
-	@Column(name="descrizione_ruolo")
+
+	@Column(name = "descrizione_ruolo")
 	private String descrizioneRuolo;
-	
+
 	@OneToMany(mappedBy = "ruolo")
 	private List<RelazioneUtenteRuolo> utenteRuolo = new ArrayList<>();
 
-	public RuoloType getRuoloType() {
-		return ruoloType;
-	}
-
-	public void setRuoloType(RuoloType ruoloType) {
-		this.ruoloType = ruoloType;
-	}
-
-	public String getDescrizioneRuolo() {
-		return descrizioneRuolo;
-	}
-
-	public void setDescrizioneRuolo(String descrizioneRuolo) {
-		this.descrizioneRuolo = descrizioneRuolo;
-	}
-	
-	
 }

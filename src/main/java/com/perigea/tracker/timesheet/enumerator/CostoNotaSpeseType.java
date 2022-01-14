@@ -1,6 +1,6 @@
 package com.perigea.tracker.timesheet.enumerator;
 
-public enum TipoCostoNotaSpeseType {
+public enum CostoNotaSpeseType {
 	
 	AEREO,
 	ALLOGGIO,

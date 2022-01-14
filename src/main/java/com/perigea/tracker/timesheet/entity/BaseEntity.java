@@ -10,9 +10,6 @@ import lombok.Data;
 @Data
 public class BaseEntity implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2110635013142689748L;
 
 	@Column(name = "create_timestamp")

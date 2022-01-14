@@ -1,11 +1,16 @@
 package com.perigea.tracker.timesheet.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Getter
-@Setter
-public class CommessaNonFatturabileDto extends CommessaDto {
+@Data
+@EqualsAndHashCode(callSuper=false)
+public class CommessaNonFatturabileDto extends BaseDto {
+
+	private static final long serialVersionUID = -9149910105719253932L;
 	
+	private String codiceCommessa;
 	private String descrizione;
+	private CommessaDto commessa;
+	
 }

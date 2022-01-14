@@ -2,6 +2,7 @@ package com.perigea.tracker.timesheet.entity;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,38 +10,34 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-import com.perigea.tracker.timesheet.enumerator.TipoCommessaFatturabileType;
+import com.perigea.tracker.timesheet.enumerator.CommessaFatturabileType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+@Data
 @Entity
 @Table(name = "commessa_fatturabile")
-@Data
 @EqualsAndHashCode(callSuper = true)
 public class CommessaFatturabile extends BaseEntity {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1347579222327736820L;
 
 	@Id
 	@Column(name = "codice_commessa", nullable = false)
 	private String codiceCommessa;
 
-	@MapsId
-	@OneToOne
-	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false)
-	private Commessa commessaFatturabile;
+	@PrimaryKeyJoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa")
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	private Commessa commessa;
 
 	@ManyToOne
 	@JoinColumn(name = "ragione_sociale_cliente", referencedColumnName = "ragione_sociale_cliente", nullable = false)
-	private AnagraficaCliente ragioneSociale;
+	private AnagraficaCliente cliente;
 
 	@Column(name = "descrizione_commessa_perigea")
 	private String descrizioneCommessaPerigea;
@@ -53,7 +50,7 @@ public class CommessaFatturabile extends BaseEntity {
 
 	@Column(name = "tipo_commessa")
 	@Enumerated(EnumType.STRING)
-	private TipoCommessaFatturabileType tipoCommessaFatturabileType;
+	private CommessaFatturabileType tipoCommessaFatturabileType;
 
 	@Column(name = "data_fine_commessa")
 	private Date dataFineCommessa;

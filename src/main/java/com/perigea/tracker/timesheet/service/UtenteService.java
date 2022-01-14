@@ -8,20 +8,18 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.perigea.tracker.timesheet.dto.RelazioneDipendenteCommessaDto;
-import com.perigea.tracker.timesheet.dto.RuoliDto;
+import com.perigea.tracker.timesheet.dto.DipendenteCommessaDto;
+import com.perigea.tracker.timesheet.dto.RuoloDto;
 import com.perigea.tracker.timesheet.dto.TimeSheetDto;
 import com.perigea.tracker.timesheet.dto.UtentePostDto;
 import com.perigea.tracker.timesheet.dto.UtenteViewDto;
-import com.perigea.tracker.timesheet.entity.RelazioneDipendenteCommessa;
+import com.perigea.tracker.timesheet.entity.DipendenteCommessa;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.exception.UtenteException;
 import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
-import com.perigea.tracker.timesheet.repository.RelazioneDipendenteCommessaRepository;
+import com.perigea.tracker.timesheet.repository.DipendenteCommessaRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
 import com.perigea.tracker.timesheet.utility.TSUtils;
-
-
 
 @Service
 public class UtenteService {
@@ -30,21 +28,21 @@ public class UtenteService {
 	private Logger logger;
 
 	@Autowired
-	private UtenteRepository utenteRepo;
+	private UtenteRepository utenteRepository;
 
 	@Autowired
-	private RelazioneDipendenteCommessaRepository relazioneDipComRepo;
+	private DipendenteCommessaRepository dipendenteCommessaRepository;
 
 	// Metodo per creare un nuovo utente per poi inserirlo a database
 	public UtenteViewDto createUtente(UtentePostDto utenteDto, String codiceResponsabile) {
 		try {
 			Utente utente = DtoEntityMapper.INSTANCE.fromDtoToEntityUtente(utenteDto);
-			utente.setCodicePersona(TSUtils.UUDI());
-			Utente responsabile = utenteRepo.findByCodicePersona(codiceResponsabile);
+			utente.setCodicePersona(TSUtils.uuid());
+			Utente responsabile = utenteRepository.findByCodicePersona(codiceResponsabile);
 			utente.setResponsabile(responsabile);
 			responsabile.addDipendente(utente);
 			logger.info("Utente creato");
-			utenteRepo.save(utente);
+			utenteRepository.save(utente);
 			logger.info("Utente salvato a database");
 			UtenteViewDto responsabileDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
 			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(utente);
@@ -58,7 +56,7 @@ public class UtenteService {
 	// Metodo per leggere i dati di un determinato utente
 	public UtenteViewDto readUtente(String codicePersona) {
 		try {
-			Utente entity = utenteRepo.findByCodicePersona(codicePersona);
+			Utente entity = utenteRepository.findByCodicePersona(codicePersona);
 			Utente responsabile = entity.getResponsabile();
 			UtenteViewDto respDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
 			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(entity);
@@ -72,13 +70,13 @@ public class UtenteService {
 	// Metodo per aggiornare i dati di un utente
 	public UtenteViewDto updateUtente(UtentePostDto utenteDto, String codiceResponsabile) {
 		try {
-			Utente entity = utenteRepo.findByCodicePersona(utenteDto.getCodicePersona());
-			Utente responsabile = utenteRepo.findByCodicePersona(codiceResponsabile);
+			Utente entity = utenteRepository.findByCodicePersona(utenteDto.getCodicePersona());
+			Utente responsabile = utenteRepository.findByCodicePersona(codiceResponsabile);
 			if (entity != null) {
 				entity = DtoEntityMapper.INSTANCE.fromDtoToEntityUtente(utenteDto);
 				entity.setResponsabile(responsabile);
 				responsabile.addDipendente(entity);
-				utenteRepo.save(entity);
+				utenteRepository.save(entity);
 			}
 			UtenteViewDto responsabileDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
 			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(entity);
@@ -92,13 +90,13 @@ public class UtenteService {
 	// Metodo per eliminare un utente da database
 	public UtenteViewDto deleteUtente(String codicePersona) {
 		try {
-			Utente entity = utenteRepo.findByCodicePersona(codicePersona);
+			Utente entity = utenteRepository.findByCodicePersona(codicePersona);
 			Utente responsabile = entity.getResponsabile();
 			UtenteViewDto respDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
 			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(entity);
 			dto.setResponsabileDto(respDto);
 			if (entity != null) {
-				utenteRepo.delete(entity);
+				utenteRepository.delete(entity);
 			}
 			return dto;
 		} catch (Exception ex) {
@@ -109,11 +107,11 @@ public class UtenteService {
 	// Metodo per aggiornare lo stato (attivo/cessato) di un utente
 	public UtenteViewDto editStatusUser(UtentePostDto utenteDto) {
 		try {
-			Utente entity = utenteRepo.findByCodicePersona(utenteDto.getCodicePersona());
+			Utente entity = utenteRepository.findByCodicePersona(utenteDto.getCodicePersona());
 			if (entity != null) {
 				entity.setStatoUtenteType(utenteDto.getStatoUtenteType());
 				entity.setLastUpdateUser("");
-				utenteRepo.save(entity);
+				utenteRepository.save(entity);
 			}
 			Utente responsabile = entity.getResponsabile();
 			UtenteViewDto respDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
@@ -125,7 +123,7 @@ public class UtenteService {
 		}
 	}
 
-	public void editRoleUser(RuoliDto roleParam, UtentePostDto userParam) {
+	public void editRoleUser(RuoloDto roleParam, UtentePostDto userParam) {
 		// if(mapEditUser.containsKey(key)) {
 		// List<UtenteEntity>
 		// entity=userRepo.findByRuoloType(roleParam.getRuoloType().toString());
@@ -155,9 +153,9 @@ public class UtenteService {
 		// }
 	}
 
-	public void createRelazioneDipendenteCommessa(RelazioneDipendenteCommessaDto dtoParam) {
+	public void createRelazioneDipendenteCommessa(DipendenteCommessaDto dtoParam) {
 		try {
-			RelazioneDipendenteCommessa entity = DtoEntityMapper.INSTANCE
+			DipendenteCommessa entity = DtoEntityMapper.INSTANCE
 					.fromDtoToEntityRelazioneDipendenteCommessa(dtoParam);
 			Date date = new Date();
 			entity.setDataInizioAllocazione(dtoParam.getDataInizioAllocazione());
@@ -173,7 +171,7 @@ public class UtenteService {
 			entity.setLastUpdateTimestamp(date);
 			entity.setCreateUser("");
 			entity.setLastUpdateUser("");
-			relazioneDipComRepo.save(entity);
+			dipendenteCommessaRepository.save(entity);
 			logger.info("Relazione Dipendente-commessa creata e salvata a database");
 		} catch (Exception ex) {
 			throw new UtenteException(ex.getMessage());

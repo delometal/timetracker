@@ -9,11 +9,8 @@ import lombok.Data;
 
 @Data
 @Embeddable
-public class RelazioneIdOrdineCommessaKey implements Serializable {
+public class OrdineCommessaKey implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4070032003779891639L;
 
 	@Column(name = "codice_commessa")

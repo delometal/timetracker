@@ -1,6 +1,6 @@
 package com.perigea.tracker.timesheet.enumerator;
 
-public enum TipoCommessaFatturabileType {
+public enum CommessaFatturabileType {
 	TM,
 	TK,
 	AM

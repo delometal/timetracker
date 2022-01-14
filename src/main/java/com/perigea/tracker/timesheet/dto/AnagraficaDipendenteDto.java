@@ -3,11 +3,14 @@ package com.perigea.tracker.timesheet.dto;
 import java.util.Date;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class AnagraficaDipendenteDto {
+@EqualsAndHashCode(callSuper=false)
+public class AnagraficaDipendenteDto extends BaseDto {
 
-	private String codicePersona;
+	private static final long serialVersionUID = -1157857116466220981L;
+	
 	private String luogoDiNascita;
 	private Date dataDiNascita;
 	private String mailAziendale;
@@ -27,7 +30,5 @@ public class AnagraficaDipendenteDto {
 	private String codiceFiscale;
 	private String createUser;
 	private String lastUpdateUser;
-
-	
 
 }

@@ -3,7 +3,6 @@ package com.perigea.tracker.timesheet.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,20 +11,17 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.perigea.tracker.timesheet.enumerator.TipologiaPagamentoType;
+import com.perigea.tracker.timesheet.enumerator.PagamentoType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+@Data
 @Entity
 @Table(name = "anagrafica_cliente")
-@Data
 @EqualsAndHashCode(callSuper = true)
 public class AnagraficaCliente extends BaseEntity {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2863146642413765101L;
 
 	@Id
@@ -67,24 +63,15 @@ public class AnagraficaCliente extends BaseEntity {
 
 	@Column(name = "tipologia_di_pagamento")
 	@Enumerated(EnumType.STRING)
-	private TipologiaPagamentoType tipologiaPagamentoType;
+	private PagamentoType tipologiaPagamentoType;
 
 	@Column(name = "note_per_la_fatturazione")
 	private String notePerLaFatturazione;
 
-	@OneToMany(mappedBy = "ragioneSociale",cascade = CascadeType.ALL)
-	private List<CommessaFatturabile> commessaFat = new ArrayList<>();
+	@OneToMany(mappedBy = "cliente")
+	private List<CommessaFatturabile> commesse = new ArrayList<>();
 
-	@OneToMany(mappedBy = "ragioneSocialeCliente")
-	private List<OrdineCommessa> ordineComm = new ArrayList<>();
-	
-	public void addCommessaFat(CommessaFatturabile commFatt) {
-		this.commessaFat.add(commFatt);
-		commFatt.setRagioneSociale(this);
-	}
+	@OneToMany(mappedBy = "cliente")
+	private List<OrdineCommessa> ordiniCommesse = new ArrayList<>();
 
-	public void removeCommessaFat(CommessaFatturabile commFatt) {
-		this.commessaFat.remove(commFatt);
-		commFatt.setRagioneSociale(null);
-	}
 }

@@ -8,7 +8,7 @@ public class TSUtils {
 
 	}
 
-	public static final String UUDI() {
+	public static final String uuid() {
 		return UUID.randomUUID().toString();
 	}
 

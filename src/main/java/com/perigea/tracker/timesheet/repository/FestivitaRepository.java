@@ -1,7 +1,5 @@
 package com.perigea.tracker.timesheet.repository;
 
-import java.time.LocalDate;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

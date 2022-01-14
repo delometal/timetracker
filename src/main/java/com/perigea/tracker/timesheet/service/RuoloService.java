@@ -6,14 +6,12 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.perigea.tracker.timesheet.dto.RuoliDto;
-import com.perigea.tracker.timesheet.entity.Ruoli;
+import com.perigea.tracker.timesheet.dto.RuoloDto;
+import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.enumerator.RuoloType;
 import com.perigea.tracker.timesheet.exception.RuoloException;
 import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
 import com.perigea.tracker.timesheet.repository.RuoliRepository;
-
-
 
 @Service
 public class RuoloService {
@@ -22,16 +20,16 @@ public class RuoloService {
 	private Logger logger;
 
 	@Autowired
-	private RuoliRepository roleRepo;
+	private RuoliRepository ruoliRepository;
 
 	// Metodo per creare un nuovo ruolo
-	public RuoliDto createRole(RuoliDto ruoloDto) {
+	public RuoloDto createRole(RuoloDto ruoloDto) {
 		try {
-			Ruoli role = DtoEntityMapper.INSTANCE.fromDtoToEntityRuoli(ruoloDto);
+			Ruolo role = DtoEntityMapper.INSTANCE.fromDtoToEntityRuoli(ruoloDto);
 			logger.info("Role creato");
-			roleRepo.save(role);
+			ruoliRepository.save(role);
 			logger.info("Role aggiunto a database");
-			RuoliDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(role);
+			RuoloDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(role);
 			return dto;
 		} catch (Exception ex) {
 			throw new RuoloException(ex.getMessage());
@@ -39,10 +37,10 @@ public class RuoloService {
 	}
 
 	// Metodo per leggere le informazioni specifiche di un ruolo
-	public RuoliDto readRole(RuoloType ruolo) {
+	public RuoloDto readRole(RuoloType ruolo) {
 		try {
-			Ruoli entity = roleRepo.findByRuoloType(ruolo);
-			RuoliDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(entity);
+			Ruolo entity = ruoliRepository.findByTipo(ruolo);
+			RuoloDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(entity);
 			return dto;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
@@ -50,14 +48,14 @@ public class RuoloService {
 	}
 
 	// Metodo per aggiornare i dati di un ruolo già esistente
-	public RuoliDto updateRole(RuoliDto ruoloDto) {
+	public RuoloDto updateRole(RuoloDto ruoloDto) {
 		try {
-			Ruoli entity = roleRepo.findByRuoloType(ruoloDto.getRuoloType());
+			Ruolo entity = ruoliRepository.findByTipo(ruoloDto.getRuoloType());
 			if (entity != null) {
 				entity = DtoEntityMapper.INSTANCE.fromDtoToEntityRuoli(ruoloDto);
-				roleRepo.save(entity);
+				ruoliRepository.save(entity);
 			}
-			RuoliDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(entity);
+			RuoloDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(entity);
 			return dto;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
@@ -65,13 +63,13 @@ public class RuoloService {
 	}
 
 	// Metodo per eliminare un ruolo da database
-	public RuoliDto deleteRole(RuoloType ruolo) {
+	public RuoloDto deleteRole(RuoloType ruolo) {
 		try {
-			Ruoli entity = roleRepo.findByRuoloType(ruolo);
+			Ruolo entity = ruoliRepository.findByTipo(ruolo);
 			if (entity != null) {
-				roleRepo.delete(entity);
+				ruoliRepository.delete(entity);
 			}
-			RuoliDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(entity);
+			RuoloDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(entity);
 			return dto;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());

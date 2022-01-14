@@ -1,12 +1,16 @@
 package com.perigea.tracker.timesheet.dto;
 
-import com.perigea.tracker.timesheet.enumerator.TipologiaPagamentoType;
+import com.perigea.tracker.timesheet.enumerator.PagamentoType;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class AnagraficaClienteDto {
+@EqualsAndHashCode(callSuper=false)
+public class AnagraficaClienteDto extends BaseDto {
 
+	private static final long serialVersionUID = 3875267041004676543L;
+	
 	private String ragioneSocialeCliente;
 	private String partitaIva;
 	private String codiceFiscale;
@@ -19,11 +23,9 @@ public class AnagraficaClienteDto {
 	private String sedeOperativaIndirizzo;
 	private String acronimoCliente;
 	private Integer progressivoPerCommesse;
-	private TipologiaPagamentoType tipologiaPagamentoType;
+	private PagamentoType tipologiaPagamentoType;
 	private String notePerLaFatturazione;
 	private String createUser;
 	private String lastUpdateUser;
-
-
 
 }

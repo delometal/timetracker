@@ -3,9 +3,13 @@ package com.perigea.tracker.timesheet.dto;
 import java.util.Date;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class RelazioneDipendenteCommessaDto {
+@EqualsAndHashCode(callSuper = false)
+public class DipendenteCommessaDto extends BaseDto {
+
+	private static final long serialVersionUID = 7390177479583346093L;
 
 	private String codiceCommessa;
 	private String codicePersona;
@@ -20,6 +24,5 @@ public class RelazioneDipendenteCommessaDto {
 	private Double importoResiduo;
 	private String createUser;
 	private String lastUpdateUser;
-
 
 }

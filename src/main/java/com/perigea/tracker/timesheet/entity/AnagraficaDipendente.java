@@ -13,15 +13,12 @@ import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+@Data
 @Entity
 @Table(name = "anagrafica_dipendente")
-@Data
 @EqualsAndHashCode(callSuper = true)
 public class AnagraficaDipendente extends BaseEntity {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1364490410610646111L;
 
 	@Id
@@ -30,7 +27,7 @@ public class AnagraficaDipendente extends BaseEntity {
 
 	@MapsId
 	@OneToOne
-	@JoinColumn(name = "codice_persona", referencedColumnName = "codice_persona")
+	@JoinColumn(name = "codice_persona")
 	private Utente utenteDipendente;
 
 	@Column(name = "luogo_di_nascita")

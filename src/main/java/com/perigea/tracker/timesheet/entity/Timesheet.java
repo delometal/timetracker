@@ -8,32 +8,29 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.perigea.tracker.timesheet.entity.keys.RelazioneIdTimeSheetKey;
+import com.perigea.tracker.timesheet.entity.keys.TimesheetKey;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper=true)
 @Entity
 @Table(name = "time_sheet")
-public class TimeSheet extends BaseEntity{
+@EqualsAndHashCode(callSuper=true)
+public class Timesheet extends BaseEntity {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3241359472237290256L;
 
 	@EmbeddedId
-	private RelazioneIdTimeSheetKey id;
+	private TimesheetKey id;
 
 	@ManyToOne
 	@JoinColumn(name = "codice_persona", referencedColumnName = "codice_persona", nullable = false, insertable=false, updatable=false)
-	private Utente utenteTimeSheet;
+	private Utente utenteTimesheet;
 
 	@ManyToOne
 	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false, insertable=false, updatable=false)
-	private Commessa commessaTimeSheet;
+	private Commessa commessaTimesheet;
 
 	@Column(name = "ore")
 	private Integer ore;
@@ -41,7 +38,7 @@ public class TimeSheet extends BaseEntity{
 	@Column(name = "trasferta")
 	private Boolean trasferta;
 
-	@Column(name = "stato_time_Sheet")
+	@Column(name = "stato_time_sheet")
 	private String statoType;
 	
 }

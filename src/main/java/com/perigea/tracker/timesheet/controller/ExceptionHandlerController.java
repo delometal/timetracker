@@ -17,8 +17,6 @@ import com.perigea.tracker.timesheet.exception.RuoloException;
 import com.perigea.tracker.timesheet.exception.TimeSheetException;
 import com.perigea.tracker.timesheet.exception.UtenteException;
 
-
-
 @ControllerAdvice
 public class ExceptionHandlerController {
 

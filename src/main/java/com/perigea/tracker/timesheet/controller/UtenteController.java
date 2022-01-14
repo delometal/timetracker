@@ -18,6 +18,7 @@ import com.perigea.tracker.timesheet.service.UtenteService;
 
 
 //@ TODO mapstruct controllare cosa fa per gestire il get e le entity ( come metterlo nel pom)
+//@ FIXME CAPIRE SE SERVE SOLO UN CONTROLLER UTENTI/DIPENDENTI
 
 @RestController
 public class UtenteController {
@@ -27,8 +28,7 @@ public class UtenteController {
 
 	// Metodo per creare un utente
 	@PostMapping(value = "/create-user")
-	public ResponseEntity<GenericWrapperResponse<UtenteViewDto>> createUser(@RequestBody UtentePostDto dtoParam,
-			@RequestParam String codiceResponsabile) {
+	public ResponseEntity<GenericWrapperResponse<UtenteViewDto>> createUser(@RequestBody UtentePostDto dtoParam, @RequestParam String codiceResponsabile) {
 		UtenteViewDto dto = userService.createUtente(dtoParam, codiceResponsabile);
 		GenericWrapperResponse<UtenteViewDto> genericResponse = GenericWrapperResponse.<UtenteViewDto>builder()
 				.dataRichiesta(new Date())
@@ -61,8 +61,7 @@ public class UtenteController {
 
 	// Metodo per aggiornare un utente
 	@PostMapping(value = "/update-user")
-	public ResponseEntity<GenericWrapperResponse<UtenteViewDto>> updateUser(@RequestBody UtentePostDto utenteDto,
-			@RequestParam String codiceResponsabile) {
+	public ResponseEntity<GenericWrapperResponse<UtenteViewDto>> updateUser(@RequestBody UtentePostDto utenteDto, @RequestParam String codiceResponsabile) {
 		UtenteViewDto dto = userService.updateUtente(utenteDto, codiceResponsabile);
 		GenericWrapperResponse<UtenteViewDto> genericResponse = GenericWrapperResponse.<UtenteViewDto>builder()
 				.dataRichiesta(new Date())

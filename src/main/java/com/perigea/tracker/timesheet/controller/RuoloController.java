@@ -7,16 +7,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
-import com.perigea.tracker.timesheet.dto.RuoliDto;
+import com.perigea.tracker.timesheet.dto.RuoloDto;
 import com.perigea.tracker.timesheet.enumerator.RuoloType;
 import com.perigea.tracker.timesheet.service.RuoloService;
 
-
 @RestController
+@RequestMapping("/backoffice/ruoli")
 public class RuoloController {
 
 	@Autowired
@@ -24,9 +25,9 @@ public class RuoloController {
 
 	// Metodo per creare un ruolo
 	@PostMapping(value = "/create-role")
-	public ResponseEntity<GenericWrapperResponse<RuoliDto>> createRole(@RequestBody RuoliDto ruoloDto) {
-		RuoliDto dto = roleService.createRole(ruoloDto);
-		GenericWrapperResponse<RuoliDto> genericDto = GenericWrapperResponse.<RuoliDto>builder()
+	public ResponseEntity<GenericWrapperResponse<RuoloDto>> createRole(@RequestBody RuoloDto ruoloDto) {
+		RuoloDto dto = roleService.createRole(ruoloDto);
+		GenericWrapperResponse<RuoloDto> genericDto = GenericWrapperResponse.<RuoloDto>builder()
 				.dataRichiesta(new Date())
 				.risultato(dto)
 				.build();
@@ -35,9 +36,9 @@ public class RuoloController {
 
 	// Metodo per leggere un ruolo
 	@GetMapping(value = "/read-role")
-	public ResponseEntity<GenericWrapperResponse<RuoliDto>> readRole(@RequestParam RuoloType roleName) {
-		RuoliDto dto = roleService.readRole(roleName);
-		GenericWrapperResponse<RuoliDto> genericDto = GenericWrapperResponse.<RuoliDto>builder()
+	public ResponseEntity<GenericWrapperResponse<RuoloDto>> readRole(@RequestParam RuoloType roleName) {
+		RuoloDto dto = roleService.readRole(roleName);
+		GenericWrapperResponse<RuoloDto> genericDto = GenericWrapperResponse.<RuoloDto>builder()
 				.dataRichiesta(new Date())
 				.risultato(dto)
 				.build();
@@ -46,9 +47,9 @@ public class RuoloController {
 
 	// Metodo per cancellare un ruolo
 	@GetMapping(value = "/delete-role")
-	public ResponseEntity<GenericWrapperResponse<RuoliDto>> deleteRole(@RequestParam RuoloType roleName) {
-		RuoliDto dto = roleService.deleteRole(roleName);
-		GenericWrapperResponse<RuoliDto> genericDto = GenericWrapperResponse.<RuoliDto>builder()
+	public ResponseEntity<GenericWrapperResponse<RuoloDto>> deleteRole(@RequestParam RuoloType roleName) {
+		RuoloDto dto = roleService.deleteRole(roleName);
+		GenericWrapperResponse<RuoloDto> genericDto = GenericWrapperResponse.<RuoloDto>builder()
 				.dataRichiesta(new Date())
 				.risultato(dto)
 				.build();
@@ -57,9 +58,9 @@ public class RuoloController {
 
 	// Metodo per aggiornare un ruolo
 	@PostMapping(value = "/update-role")
-	public ResponseEntity<GenericWrapperResponse<RuoliDto>> updateRole(@RequestBody RuoliDto ruoloDto) {
-		RuoliDto dto = roleService.updateRole(ruoloDto);
-		GenericWrapperResponse<RuoliDto> genericDto = GenericWrapperResponse.<RuoliDto>builder()
+	public ResponseEntity<GenericWrapperResponse<RuoloDto>> updateRole(@RequestBody RuoloDto ruoloDto) {
+		RuoloDto dto = roleService.updateRole(ruoloDto);
+		GenericWrapperResponse<RuoloDto> genericDto = GenericWrapperResponse.<RuoloDto>builder()
 				.dataRichiesta(new Date())
 				.risultato(dto)
 				.build();

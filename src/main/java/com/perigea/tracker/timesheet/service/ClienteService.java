@@ -14,8 +14,6 @@ import com.perigea.tracker.timesheet.exception.ClienteException;
 import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
 import com.perigea.tracker.timesheet.repository.AnagraficaClienteRepository;
 
-
-
 @Service
 public class ClienteService {
 
@@ -23,12 +21,12 @@ public class ClienteService {
 	private Logger logger;
 
 	@Autowired
-	private AnagraficaClienteRepository anagraficaClienteRepo;
+	private AnagraficaClienteRepository anagraficaClienteRepository;
 
 	public AnagraficaClienteDto createCustomerPersonalData(AnagraficaClienteDto anaClienteDto) {
 		try {
 			AnagraficaCliente entity = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(anaClienteDto);
-			anagraficaClienteRepo.save(entity);
+			anagraficaClienteRepository.save(entity);
 			logger.info("Entity dati anagrafici cliente creato e aggiunto a database");
 			AnagraficaClienteDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
 			return dto;
@@ -39,7 +37,7 @@ public class ClienteService {
 
 	public AnagraficaClienteDto readCustomerPersonalData(String ragioneSociale) {
 		try {
-			AnagraficaCliente entity = anagraficaClienteRepo
+			AnagraficaCliente entity = anagraficaClienteRepository
 					.findByRagioneSocialeCliente(ragioneSociale);
 			AnagraficaClienteDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
 			return dto;
@@ -50,13 +48,13 @@ public class ClienteService {
 
 	public AnagraficaClienteDto updateCustomerPersonalData(AnagraficaClienteDto anaClienteDto) {
 		try {
-			AnagraficaCliente entity = anagraficaClienteRepo
+			AnagraficaCliente entity = anagraficaClienteRepository
 					.findByRagioneSocialeCliente(anaClienteDto.getRagioneSocialeCliente());
 			if (entity != null) {
 				entity = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(anaClienteDto);
 				entity.setLastUpdateTimestamp(new Date());
 				logger.info("Anagrafica Cliente Aggiornata");
-				anagraficaClienteRepo.save(entity);
+				anagraficaClienteRepository.save(entity);
 			}
 			AnagraficaClienteDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
 			return dto;
@@ -67,10 +65,10 @@ public class ClienteService {
 
 	public AnagraficaClienteDto deleteCustomerPersonalData(String ragioneSociale) {
 		try {
-			AnagraficaCliente entity = anagraficaClienteRepo
+			AnagraficaCliente entity = anagraficaClienteRepository
 					.findByRagioneSocialeCliente(ragioneSociale);
 			if (entity != null) {
-				anagraficaClienteRepo.delete(entity);
+				anagraficaClienteRepository.delete(entity);
 			}
 			AnagraficaClienteDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
 			return dto;

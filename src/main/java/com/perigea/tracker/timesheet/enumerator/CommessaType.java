@@ -1,11 +1,11 @@
 package com.perigea.tracker.timesheet.enumerator;
 
-public enum StatoType {
-	I("INSERITO"),
-	C("CONFERMATO"),
-	V("VERIFICATO");
+public enum CommessaType {
+	
+	F("FATTURABILE"),
+	NF("NON FATTURABILE");
 
-	StatoType(String descrizione) {
+	CommessaType(String descrizione) {
 		this.descrizione = descrizione;
 	}
 	
@@ -14,4 +14,5 @@ public enum StatoType {
 	public String getDescrizione() {
 		return descrizione;
 	}
+	
 }

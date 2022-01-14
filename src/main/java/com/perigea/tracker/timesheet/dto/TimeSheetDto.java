@@ -1,15 +1,16 @@
 package com.perigea.tracker.timesheet.dto;
 
-import java.util.Date;
-
 import com.perigea.tracker.timesheet.enumerator.StatoType;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-public class TimeSheetDto {
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class TimeSheetDto extends BaseDto {
 	
+	private static final long serialVersionUID = 8273187903186747431L;
+
 	private Integer annoDiRiferimento;
 	private Integer meseDiRiferimento;
 	private String codicePersona;
@@ -21,7 +22,4 @@ public class TimeSheetDto {
 	private String createUser;
 	private String lastUpdateUser;
 	
-	public TimeSheetDto() {
-		super();
-	}
 }

@@ -9,11 +9,8 @@ import lombok.Data;
 
 @Data
 @Embeddable
-public class RelazioneIdRelazioneDipendenteCommessaKey implements Serializable {
+public class DipendenteCommessaKey implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2275333400404753544L;
 
 	@Column(name="codice_persona")

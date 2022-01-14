@@ -9,25 +9,21 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.perigea.tracker.timesheet.entity.keys.RelazioneIdRelazioneDipendenteCommessaKey;
+import com.perigea.tracker.timesheet.entity.keys.DipendenteCommessaKey;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+@Data
 @Entity
 @Table(name = "relazione_dipendente_commessa")
-@Data
 @EqualsAndHashCode(callSuper = true)
+public class DipendenteCommessa extends BaseEntity {
 
-public class RelazioneDipendenteCommessa extends BaseEntity {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2109547859283092218L;
 
 	@EmbeddedId
-	private RelazioneIdRelazioneDipendenteCommessaKey id;
+	private DipendenteCommessaKey id;
 
 	@ManyToOne
 	@JoinColumn(name = "codice_persona", referencedColumnName = "codice_persona", nullable = false, insertable = false, updatable = false)

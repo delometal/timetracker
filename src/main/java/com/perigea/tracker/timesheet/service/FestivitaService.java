@@ -10,13 +10,11 @@ import com.perigea.tracker.timesheet.exception.FestivitaException;
 import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
 import com.perigea.tracker.timesheet.repository.FestivitaRepository;
 
-
-
 @Service
 public class FestivitaService {
 
 	@Autowired
-	private FestivitaRepository festiviRepo;
+	private FestivitaRepository festivitaRepository;
 
 	@Autowired
 	private Logger logger;
@@ -24,7 +22,7 @@ public class FestivitaService {
 	public FestivitaDto createFestivita(FestivitaDto festivitaDto) {
 		try {
 			Festivita entity = DtoEntityMapper.INSTANCE.FromDtoToEntityFestivita(festivitaDto);
-			festiviRepo.save(entity);
+			festivitaRepository.save(entity);
 			logger.info("festività inserita con successo a db");
 			FestivitaDto dto = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(entity);
 			return dto;
@@ -35,10 +33,10 @@ public class FestivitaService {
 
 	public FestivitaDto updateFestivita(FestivitaDto festivitaDto) {
 		try {
-			Festivita entity = festiviRepo.findByNomeFestivo(festivitaDto.getNomeFestivo());
+			Festivita entity = festivitaRepository.findByNomeFestivo(festivitaDto.getNomeFestivo());
 			if (entity != null) {
 				entity = DtoEntityMapper.INSTANCE.FromDtoToEntityFestivita(festivitaDto);
-				festiviRepo.save(entity);
+				festivitaRepository.save(entity);
 			}
 			FestivitaDto dto = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(entity);
 			return dto;

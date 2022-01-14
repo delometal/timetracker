@@ -10,32 +10,29 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.perigea.tracker.timesheet.entity.keys.RelazioneIdOrdineCommessaKey;
+import com.perigea.tracker.timesheet.entity.keys.OrdineCommessaKey;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+@Data
 @Entity
 @Table(name = "ordine_commessa")
-@Data
 @EqualsAndHashCode(callSuper = true)
 public class OrdineCommessa extends BaseEntity {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -133148349143213116L;
 
 	@EmbeddedId
-	private RelazioneIdOrdineCommessaKey id;
+	private OrdineCommessaKey id;
 
 	@OneToOne
-	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false, insertable = false, updatable = false)
+	@JoinColumn(name = "codice_commessa", nullable = false, insertable = false, updatable = false)
 	private CommessaFatturabile commessaFatturabile;
 	
 	@ManyToOne
-	@JoinColumn(name = "ragione_sociale_cliente", referencedColumnName = "ragione_sociale_cliente")
-	private AnagraficaCliente ragioneSocialeCliente;
+	@JoinColumn(name = "ragione_sociale_cliente")
+	private AnagraficaCliente cliente;
 
 	@Column(name = "data_ordine")
 	private Date dataOrdine;

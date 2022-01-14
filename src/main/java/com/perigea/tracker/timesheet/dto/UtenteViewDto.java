@@ -1,14 +1,14 @@
 package com.perigea.tracker.timesheet.dto;
 
-import com.perigea.tracker.timesheet.enumerator.StatoUtenteType;
-
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class UtenteViewDto {
-	private String codicePersona;
-	private String nome;
-	private String cognome;
-	private StatoUtenteType statoUtenteType;
+@EqualsAndHashCode(callSuper = true)
+public class UtenteViewDto extends UtenteBaseDto {
+
+	private static final long serialVersionUID = 8700786798826343452L;
+
 	private UtenteViewDto responsabileDto;
+	
 }

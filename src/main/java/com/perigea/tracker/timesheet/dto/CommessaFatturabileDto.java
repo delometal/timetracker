@@ -2,20 +2,23 @@ package com.perigea.tracker.timesheet.dto;
 
 import java.util.Date;
 
-import com.perigea.tracker.timesheet.enumerator.TipoCommessaFatturabileType;
+import com.perigea.tracker.timesheet.enumerator.CommessaFatturabileType;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Getter
-@Setter
-public class CommessaFatturabileDto extends CommessaDto {
+@Data
+@EqualsAndHashCode(callSuper=false)
+public class CommessaFatturabileDto extends BaseDto {
 	
+	private static final long serialVersionUID = 7646888920117640691L;
+	
+	private String codiceCommessa;
 	private String descrizioneCommessaPerigea;
 	private String descrizioneCommessaCliente;
 	private Date dataInizioCommessa;
 	private Date dataFineCommessa;
-	private TipoCommessaFatturabileType tipoCommessa;
+	private CommessaFatturabileType tipoCommessa;
 	private Double importoCommessaInizialePresunto;
 	private Double totaleEstensioni;
 	private Double ordineInternoCorrente;
@@ -34,6 +37,6 @@ public class CommessaFatturabileDto extends CommessaDto {
 	private Double percentualeAvanzamentoFatturazione;
 	private Double percentualeSconto;
 	private String responsabileCommerciale;
-	
+	private CommessaDto commessa;
 
 }

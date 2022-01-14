@@ -8,22 +8,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.perigea.tracker.timesheet.entity.keys.RelazioneIdUtenteRuoloKey;
+import com.perigea.tracker.timesheet.entity.keys.UtenteRuoloKey;
 
 import lombok.Data;
 
 @Entity
-@Table(name = "utente_ruolo")
 @Data
-public class RelazioneUtenteRuolo implements Serializable {
+@Table(name = "utente_ruolo")
+public class UtenteRuoli implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1739383358933071697L;
 
 	@EmbeddedId
-	private RelazioneIdUtenteRuoloKey id;
+	private UtenteRuoloKey id;
 
 	@ManyToOne
 	@JoinColumn(name = "codice_persona", referencedColumnName = "codice_persona", nullable = false, insertable = false, updatable = false)
@@ -31,6 +28,6 @@ public class RelazioneUtenteRuolo implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "ruolo", referencedColumnName = "ruolo", nullable = false, insertable = false, updatable = false)
-	private Ruoli ruolo;
+	private Ruolo ruolo;
 
 }

@@ -13,9 +13,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "Festivita")
+@EqualsAndHashCode(callSuper = true)
 public class Festivita extends BaseEntity {
 
 	private static final long serialVersionUID = 1163648805713862098L;
@@ -28,7 +28,7 @@ public class Festivita extends BaseEntity {
 	@Column(name = "data")
 	private LocalDate data;
 
-	@Column(name = "nome_festivo")
+	@Column(name = "nome_festivo", unique = true)
 	private String nomeFestivo;
 
 }

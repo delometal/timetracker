@@ -16,25 +16,22 @@ import com.perigea.tracker.timesheet.enumerator.RuoloType;
 
 import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "ruoli")
-@Data
-public class Ruoli implements Serializable {
+public class Ruolo implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -870008112526011657L;
 
 	@Id
 	@Column(name = "ruolo")
 	@Enumerated(EnumType.STRING)
-	private RuoloType ruoloType;
+	private RuoloType tipo;
 
 	@Column(name = "descrizione_ruolo")
-	private String descrizioneRuolo;
+	private String descrizione;
 
 	@OneToMany(mappedBy = "ruolo")
-	private List<RelazioneUtenteRuolo> utenteRuolo = new ArrayList<>();
+	private List<UtenteRuoli> ruoli = new ArrayList<>();
 
 }

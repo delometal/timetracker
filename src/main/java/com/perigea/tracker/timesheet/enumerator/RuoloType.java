@@ -9,9 +9,14 @@ public enum RuoloType {
 	R("REFERENTE/CAPO PROGETTO"),
 	X("ADMIN"),
 	S("SALES");
-
-	RuoloType(String string) {
-		// TODO Auto-generated constructor stub
+	
+	RuoloType(String descrizione) {
+		this.descrizione = descrizione;
 	}
+	
+	private String descrizione;
 
+	public String getDescrizione() {
+		return descrizione;
+	}
 }

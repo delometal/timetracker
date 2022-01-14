@@ -20,15 +20,12 @@ import com.perigea.tracker.timesheet.enumerator.StatoUtenteType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+@Data
 @Entity
 @Table(name = "utente")
-@Data
 @EqualsAndHashCode(callSuper = true)
 public class Utente extends BaseEntity {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2342088709313716005L;
 
 	@Id
@@ -54,14 +51,14 @@ public class Utente extends BaseEntity {
 	@OneToOne(mappedBy = "utenteDipendente", cascade = CascadeType.ALL)
 	private AnagraficaDipendente dipendente;
 
-	@OneToMany(mappedBy = "utenteTimeSheet")
-	private List<TimeSheet> timeSheet = new ArrayList<>();
+	@OneToMany(mappedBy = "utenteTimesheet")
+	private List<Timesheet> timesheet = new ArrayList<>();
 
 	@OneToMany(mappedBy = "utente")
-	private List<RelazioneDipendenteCommessa> relazioneCommessa = new ArrayList<>();
+	private List<DipendenteCommessa> relazioneCommessa = new ArrayList<>();
 
 	@OneToMany(mappedBy = "utente")
-	private List<RelazioneUtenteRuolo> utenteRuolo = new ArrayList<>();
+	private List<UtenteRuoli> utenteRuoli = new ArrayList<>();
 
 	@ManyToOne
 	@JoinColumn(name = "codice_responsabile")
@@ -80,13 +77,13 @@ public class Utente extends BaseEntity {
 		dipendente.setResponsabile(null);
 	}
 
-	public void addTimeSheet(TimeSheet timesheet) {
-		this.timeSheet.add(timesheet);
-		timesheet.setUtenteTimeSheet(this);
+	public void addTimeSheet(Timesheet timesheet) {
+		this.timesheet.add(timesheet);
+		timesheet.setUtenteTimesheet(this);
 	}
 
-	public void removeTimeSheet(TimeSheet timesheet) {
-		this.timeSheet.remove(timesheet);
-		timesheet.setUtenteTimeSheet(null);
+	public void removeTimeSheet(Timesheet timesheet) {
+		this.timesheet.remove(timesheet);
+		timesheet.setUtenteTimesheet(null);
 	}
 }

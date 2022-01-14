@@ -4,13 +4,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import com.perigea.tracker.timesheet.dto.AnagraficaClienteDto;
-import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteDto;
+import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteInputDto;
+import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteResponseDto;
 import com.perigea.tracker.timesheet.dto.CommessaDto;
 import com.perigea.tracker.timesheet.dto.CommessaFatturabileDto;
 import com.perigea.tracker.timesheet.dto.CommessaNonFatturabileDto;
+import com.perigea.tracker.timesheet.dto.DipendenteCommessaDto;
 import com.perigea.tracker.timesheet.dto.FestivitaDto;
-import com.perigea.tracker.timesheet.dto.RelazioneDipendenteCommessaDto;
-import com.perigea.tracker.timesheet.dto.RuoliDto;
+import com.perigea.tracker.timesheet.dto.RuoloDto;
 import com.perigea.tracker.timesheet.dto.TimeSheetDto;
 import com.perigea.tracker.timesheet.dto.UtentePostDto;
 import com.perigea.tracker.timesheet.dto.UtenteViewDto;
@@ -19,10 +20,10 @@ import com.perigea.tracker.timesheet.entity.AnagraficaDipendente;
 import com.perigea.tracker.timesheet.entity.Commessa;
 import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
 import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
+import com.perigea.tracker.timesheet.entity.DipendenteCommessa;
 import com.perigea.tracker.timesheet.entity.Festivita;
-import com.perigea.tracker.timesheet.entity.RelazioneDipendenteCommessa;
-import com.perigea.tracker.timesheet.entity.Ruoli;
-import com.perigea.tracker.timesheet.entity.TimeSheet;
+import com.perigea.tracker.timesheet.entity.Ruolo;
+import com.perigea.tracker.timesheet.entity.Timesheet;
 import com.perigea.tracker.timesheet.entity.Utente;
 
 
@@ -42,13 +43,15 @@ public interface DtoEntityMapper {
 
 	AnagraficaClienteDto fromEntityToDtoAnagraficaCliente(AnagraficaCliente entity);
 	
-	AnagraficaDipendente fromDtoToEntityAnagraficaDipendente(AnagraficaDipendenteDto dto);
+	AnagraficaDipendente fromDtoToEntityAnagraficaDipendente(AnagraficaDipendenteInputDto dto);
 	
-	AnagraficaDipendenteDto fromEntityToDtoAnagraficaDipendente(AnagraficaDipendente entity);
+	AnagraficaDipendenteInputDto fromEntityToDtoAnagraficaDipendente(AnagraficaDipendente entity);
 	
-	Ruoli fromDtoToEntityRuoli(RuoliDto dto);
+	AnagraficaDipendenteResponseDto fromEntityToDtoAnagraficaDipendenteView(AnagraficaDipendente entity);
 	
-	RuoliDto fromEntityToDtoRuoli(Ruoli entity);
+	Ruolo fromDtoToEntityRuoli(RuoloDto dto);
+	
+	RuoloDto fromEntityToDtoRuoli(Ruolo entity);
 	
 	Commessa fromDtoToEntityCommessa(CommessaDto dto);
 	
@@ -64,11 +67,11 @@ public interface DtoEntityMapper {
 	
 //	OrdineCommessa fromDtoToEntityOrdineCommessa(OrdineCommessaDto dto);
 	
-	TimeSheet fromDtoToEntityTimeSheet(TimeSheetDto dto);
+	Timesheet fromDtoToEntityTimeSheet(TimeSheetDto dto);
 	
-	TimeSheetDto fromEntityToDtoTimeSheet(TimeSheet entity);
+	TimeSheetDto fromEntityToDtoTimeSheet(Timesheet entity);
 	
-	RelazioneDipendenteCommessa fromDtoToEntityRelazioneDipendenteCommessa(RelazioneDipendenteCommessaDto dto);
+	DipendenteCommessa fromDtoToEntityRelazioneDipendenteCommessa(DipendenteCommessaDto dto);
 	
 	Festivita FromDtoToEntityFestivita(FestivitaDto dto);
 	

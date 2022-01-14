@@ -9,19 +9,24 @@ import org.springframework.stereotype.Service;
 import com.perigea.tracker.timesheet.dto.AnagraficaClienteDto;
 import com.perigea.tracker.timesheet.dto.CommessaFatturabileDto;
 import com.perigea.tracker.timesheet.dto.CommessaNonFatturabileDto;
+import com.perigea.tracker.timesheet.dto.OrdineCommessaDto;
 import com.perigea.tracker.timesheet.dto.wrapper.CommessaFatturabileDtoWrapper;
 import com.perigea.tracker.timesheet.entity.AnagraficaCliente;
 import com.perigea.tracker.timesheet.entity.Commessa;
 import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
 import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
 import com.perigea.tracker.timesheet.entity.OrdineCommessa;
+import com.perigea.tracker.timesheet.entity.keys.OrdineCommessaKey;
 import com.perigea.tracker.timesheet.enumerator.CommessaType;
 import com.perigea.tracker.timesheet.exception.CommessaException;
 import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
+import com.perigea.tracker.timesheet.repository.AnagraficaClienteRepository;
 import com.perigea.tracker.timesheet.repository.CommessaFatturabileRepository;
 import com.perigea.tracker.timesheet.repository.CommessaNonFatturabileRepository;
 import com.perigea.tracker.timesheet.repository.OrdineCommessaRepository;
 import com.perigea.tracker.timesheet.utility.TSUtils;
+
+
 
 @Service
 public class CommessaService {
@@ -40,12 +45,19 @@ public class CommessaService {
 	
 	@Autowired
 	private OrdineCommessaRepository ordineCommessaRepo;
+	
+	@Autowired
+	private AnagraficaClienteRepository anagraficaClienteRepo;
 
 	public CommessaFatturabileDto createCommessaFatturabile(CommessaFatturabileDtoWrapper commessaFatturabileDtoWrapper) {
 		try {
+			//@ TODO controllare che il cliente non sia già presente
 			//AnagraficaCliente relazionata
-			AnagraficaClienteDto anagraficaDto = clienteService.createCustomerPersonalData(commessaFatturabileDtoWrapper.getAnagraficaCliente());
-			AnagraficaCliente anagraficaEntity = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(anagraficaDto);
+			AnagraficaCliente anaEntity=anagraficaClienteRepo.findByRagioneSocialeCliente(commessaFatturabileDtoWrapper.getAnagraficaCliente().getRagioneSocialeCliente());
+			if(anaEntity==null) {
+				AnagraficaClienteDto anagraficaDto = clienteService.createCustomerPersonalData(commessaFatturabileDtoWrapper.getAnagraficaCliente());
+				anaEntity = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(anagraficaDto);
+			}
 			
 			String codiceCommessa = TSUtils.uuid();
 			
@@ -57,7 +69,7 @@ public class CommessaService {
 			//Commessa fatturabile
 			CommessaFatturabile commessaFatturabile = DtoEntityMapper.INSTANCE.fromDtoToEntityCommessaFatturabile(commessaFatturabileDtoWrapper.getCommessaFatturabileDto());
 			commessaFatturabile.setCodiceCommessa(codiceCommessa);
-			commessaFatturabile.setCliente(anagraficaEntity);
+			commessaFatturabile.setCliente(anaEntity);
 			commessaFatturabile.setCommessa(commessa);
 			
 			commessaFatturabileRepository.save(commessaFatturabile);
@@ -131,28 +143,21 @@ public class CommessaService {
 	}
 
 	 //metodo per creare un ordine commessa
-	public OrdineCommessa createOrdineCommessa(CommessaFatturabileDtoWrapper bodyConverter) {
+	public OrdineCommessaDto createOrdineCommessa(CommessaFatturabileDtoWrapper bodyConverter, String numeroOrdineCliente, String ragioneSocialeCliente) {
 		try {
-			AnagraficaClienteDto anagraficaDto = clienteService.createCustomerPersonalData(bodyConverter.getAnagraficaCliente());
-			AnagraficaCliente anagraficaEntity = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(anagraficaDto);		
 			OrdineCommessa entityOrdineCommessa = new OrdineCommessa();
 			CommessaFatturabileDto commessaFatturabileDto = createCommessaFatturabile(bodyConverter);
 			CommessaFatturabile entityCommessaFatturabile = DtoEntityMapper.INSTANCE
 					.fromDtoToEntityCommessaFatturabile(commessaFatturabileDto);
-			entityOrdineCommessa.setCreateUser("");
-			entityOrdineCommessa.setDataInizio(bodyConverter.getOrdineCommessa().getDataInizio());
-			entityOrdineCommessa.setDataFine(bodyConverter.getOrdineCommessa().getDataFine());
-			entityOrdineCommessa.setDataOrdine(bodyConverter.getOrdineCommessa().getDataOrdine());
-			entityOrdineCommessa.setImportoOrdine(bodyConverter.getOrdineCommessa().getImportoOrdine());
-			entityOrdineCommessa.setImportoResiduo(bodyConverter.getOrdineCommessa().getImportoResiduo());
-			// entityOrdineCommessa.setNumeroOrdineCliente(bodyConverter.getOrdineCommessa().getNumeroOrdineCliente());
-			//anagraficaEntity.setOrdiniCommesse(null);
-			entityOrdineCommessa.setCliente(anagraficaEntity);
-			entityOrdineCommessa.setCommessaFatturabile(entityCommessaFatturabile);
-			//entityCommessaFatturabile.setOrdineCommessa(entityOrdineCommessa);
+			entityOrdineCommessa=DtoEntityMapper.INSTANCE.fromDtoToEntityOrdineCommessa(bodyConverter.getOrdineCommessa());
+//			entityOrdineCommessa.setCliente(anagraficaEntity);
+//			entityOrdineCommessa.setCommessaFatturabile(entityCommessaFatturabile);
+			OrdineCommessaKey id=new OrdineCommessaKey(entityCommessaFatturabile.getCodiceCommessa(),numeroOrdineCliente,ragioneSocialeCliente);
+			entityOrdineCommessa.setId(id);			
 			ordineCommessaRepo.save(entityOrdineCommessa);
 			logger.info("Ordine commessa creato e salvato a database");
-			return entityOrdineCommessa;
+			OrdineCommessaDto dto=DtoEntityMapper.INSTANCE.fromEntityToDtoOrdineCommessa(entityOrdineCommessa);
+			return dto;
 		} catch (Exception ex) {
 			throw new CommessaException("Ordine commessa non creata");
 		}

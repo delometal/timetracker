@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteInputDto;
 import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteResponseDto;
+import com.perigea.tracker.timesheet.dto.RuoloDto;
+import com.perigea.tracker.timesheet.dto.UtentePostDto;
 import com.perigea.tracker.timesheet.dto.UtenteViewDto;
 import com.perigea.tracker.timesheet.entity.AnagraficaDipendente;
 import com.perigea.tracker.timesheet.entity.Utente;
@@ -14,6 +16,7 @@ import com.perigea.tracker.timesheet.exception.UtenteException;
 import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
 import com.perigea.tracker.timesheet.repository.AnagraficaDipendenteRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
+
 
 @Service
 public class DipendenteService {
@@ -86,6 +89,7 @@ public class DipendenteService {
 		try {
 			AnagraficaDipendente anagDipendente = dipendenteRepository.findByCodicePersona(id);
 			if (anagDipendente != null) {
+				utenteRepository.delete(anagDipendente.getUtenteDipendente());
 				dipendenteRepository.delete(anagDipendente);
 			}
 			AnagraficaDipendenteResponseDto anagraficaResponseDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagDipendente);
@@ -96,5 +100,38 @@ public class DipendenteService {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
 	}
+	
+	// Metodo per aggiornare lo stato (attivo/cessato) di un utente
+		public UtenteViewDto editStatusUser(UtentePostDto utenteDto) {
+			try {
+				Utente entity = utenteRepository.findByCodicePersona(utenteDto.getCodicePersona());
+				if (entity != null) {
+					entity.setStatoUtenteType(utenteDto.getStatoUtenteType());
+					entity.setLastUpdateUser("");
+					utenteRepository.save(entity);
+				}
+				Utente responsabile = entity.getResponsabile();
+				UtenteViewDto respDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
+				UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(entity);
+				dto.setResponsabileDto(respDto);
+				return dto;
+			} catch (Exception ex) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+		}
+		
+		public void editRoleUser(RuoloDto roleParam, UtentePostDto userParam) {
+			// if(mapEditUser.containsKey(key)) {
+			// List<UtenteEntity>
+			// entity=userRepo.findByRuoloType(roleParam.getRuoloType().toString());
+			// for(UtenteEntity u: entity) {
+			// if(u.getCodicePersona().equalsIgnoreCase(userParam.getCodicePersona())) {
+			// u.setStatoUtenteType(userParam.getStatoUtenteType().toString());
+			// }
+			// }
+			// } else {
+			// LOGGER.info("CreateUser non trovato");
+			// }
+		}
 
 }

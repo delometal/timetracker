@@ -23,6 +23,8 @@ import com.perigea.tracker.timesheet.repository.FestivitaRepository;
 import com.perigea.tracker.timesheet.repository.TimeSheetRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
 
+
+
 @Service
 public class TimesheetService {
 	
@@ -78,6 +80,21 @@ public class TimesheetService {
 		}catch(Exception ex) {
 			throw new EntityNotFoundException("Timesheet non trovato "+ ex.getMessage());	
 		}
+	}
+	
+	public void editStatusTimeSheet(TimeSheetDto timeSheetParam) {
+		// if(mapEditUser.containsKey(key)) {
+		// TimeSheet
+		// timeSheetEntity=timeSheetRepo.findByCodicePersona(timeSheetParam.getCodiceCommessa());
+		// if(timeSheetEntity != null) {
+		// timeSheetEntity.setStatoType(timeSheetParam.getStatoType().toString());
+		// timeSheetRepo.save(timeSheetEntity);
+		// } else {
+		// LOGGER.info("CodicePersona non trovato");
+		// }
+		// } else {
+		// LOGGER.info("CreateUser non trovato");
+		// }
 	}
 	
 	public void giornoDiRiferimento(TimeSheetDto timeSheetParam) {

@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import com.perigea.tracker.timesheet.entity.keys.OrdineCommessaKey;
@@ -31,7 +32,7 @@ public class OrdineCommessa extends BaseEntity {
 	private CommessaFatturabile commessaFatturabile;
 	
 	@ManyToOne
-	@JoinColumn(name = "ragione_sociale_cliente", referencedColumnName = "ragione_sociale_cliente", nullable = false)
+	@JoinColumn(name = "ragione_sociale_cliente", referencedColumnName = "ragione_sociale_cliente", insertable = false, updatable = false)
 	private AnagraficaCliente cliente;
 
 	@Column(name = "data_ordine")

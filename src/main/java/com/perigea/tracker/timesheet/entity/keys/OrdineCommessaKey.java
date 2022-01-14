@@ -5,9 +5,13 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
 public class OrdineCommessaKey implements Serializable {
 
@@ -18,5 +22,8 @@ public class OrdineCommessaKey implements Serializable {
 
 	@Column(name = "numero_ordine_cliente")
 	private String numeroOrdineCliente;
+	
+	@Column(name = "ragione_sociale_cliente", nullable = false)
+	private String ragioneSocialeCliente;
 
 }

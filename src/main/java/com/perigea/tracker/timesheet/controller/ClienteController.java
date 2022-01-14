@@ -53,4 +53,5 @@ public class ClienteController {
 				.<AnagraficaClienteDto>builder().dataRichiesta(new Date()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
+	
 }

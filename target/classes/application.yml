@@ -1,7 +1,0 @@
-server:
-  port: 9091
-
-# ---------------------------- SPRING ----------------------------
-spring:
-  application:
-    name: tracker-service

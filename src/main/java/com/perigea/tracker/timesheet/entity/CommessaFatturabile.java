@@ -2,45 +2,25 @@ package com.perigea.tracker.timesheet.entity;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
 
-import com.perigea.tracker.timesheet.enumerator.CommessaFatturabileType;
+import com.perigea.tracker.timesheet.enums.CommessaFatturabileType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@Table(name = "commessa_fatturabile")
+@DiscriminatorValue("F")
 @EqualsAndHashCode(callSuper = true)
-public class CommessaFatturabile extends BaseEntity {
+public class CommessaFatturabile extends Commessa {
 
 	private static final long serialVersionUID = 1347579222327736820L;
-
-	@Id
-	@Column(name = "codice_commessa", nullable = false)
-	private String codiceCommessa;
-
-	@PrimaryKeyJoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa")
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	private Commessa commessa;
-
-	@ManyToOne
-	@JoinColumn(name = "ragione_sociale_cliente", referencedColumnName = "ragione_sociale_cliente", nullable = false)
-	private AnagraficaCliente cliente;
-
-	@Column(name = "descrizione_commessa_perigea")
-	private String descrizioneCommessaPerigea;
 
 	@Column(name = "descrizione_commessa_cliente")
 	private String descrizioneCommessaCliente;
@@ -48,7 +28,7 @@ public class CommessaFatturabile extends BaseEntity {
 	@Column(name = "data_inizio_commessa")
 	private Date dataInizioCommessa;
 
-	@Column(name = "tipo_commessa")
+	@Column(name = "tipo_commessa_fatturabile")
 	@Enumerated(EnumType.STRING)
 	private CommessaFatturabileType tipoCommessaFatturabileType;
 

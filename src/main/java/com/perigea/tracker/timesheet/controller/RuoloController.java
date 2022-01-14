@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.dto.RuoloDto;
-import com.perigea.tracker.timesheet.enumerator.RuoloType;
+import com.perigea.tracker.timesheet.enums.RuoloType;
 import com.perigea.tracker.timesheet.service.RuoloService;
 
 @RestController

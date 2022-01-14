@@ -8,5 +8,6 @@ import com.perigea.tracker.timesheet.entity.AnagraficaCliente;
 @Repository
 public interface AnagraficaClienteRepository extends JpaRepository<AnagraficaCliente,Long> {
 
-	public AnagraficaCliente findByRagioneSocialeCliente(String ragioneSocialeCliente);
+	public AnagraficaCliente findByPartitaIva(String partitaIva);
+	
 }

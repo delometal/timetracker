@@ -15,7 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.perigea.tracker.timesheet.enumerator.StatoUtenteType;
+import com.perigea.tracker.timesheet.enums.StatoUtenteType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.perigea.tracker.timesheet.enumerator.PagamentoType;
+import com.perigea.tracker.timesheet.enums.PagamentoType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,11 +25,11 @@ public class AnagraficaCliente extends BaseEntity {
 	private static final long serialVersionUID = -2863146642413765101L;
 
 	@Id
-	@Column(name = "ragione_sociale_cliente")
-	private String ragioneSocialeCliente;
-
 	@Column(name = "partita_iva", nullable = false)
 	private String partitaIva;
+	
+	@Column(name = "ragione_sociale_cliente")
+	private String ragioneSocialeCliente;
 
 	@Column(name = "codice_fiscale", nullable = false)
 	private String codiceFiscale;

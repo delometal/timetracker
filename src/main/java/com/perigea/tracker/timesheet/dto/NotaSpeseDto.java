@@ -1,6 +1,6 @@
 package com.perigea.tracker.timesheet.dto;
 
-import com.perigea.tracker.timesheet.enumerator.CostoNotaSpeseType;
+import com.perigea.tracker.timesheet.enums.CostoNotaSpeseType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

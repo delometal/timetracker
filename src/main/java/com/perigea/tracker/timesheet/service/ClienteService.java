@@ -27,20 +27,17 @@ public class ClienteService {
 		try {
 			AnagraficaCliente entity = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(anaClienteDto);
 			anagraficaClienteRepository.save(entity);
-			logger.info("Entity dati anagrafici cliente creato e aggiunto a database");
-			AnagraficaClienteDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
-			return dto;
+			logger.info("Dati anagrafici cliente persistiti");
+			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
 		} catch (Exception ex) {
 			throw new ClienteException(ex.getMessage());
 		}
 	}
 
-	public AnagraficaClienteDto readCustomerPersonalData(String ragioneSociale) {
+	public AnagraficaClienteDto readCustomerPersonalData(String partitaIva) {
 		try {
-			AnagraficaCliente entity = anagraficaClienteRepository
-					.findByRagioneSocialeCliente(ragioneSociale);
-			AnagraficaClienteDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
-			return dto;
+			AnagraficaCliente entity = anagraficaClienteRepository.findByPartitaIva(partitaIva);
+			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
@@ -48,30 +45,26 @@ public class ClienteService {
 
 	public AnagraficaClienteDto updateCustomerPersonalData(AnagraficaClienteDto anaClienteDto) {
 		try {
-			AnagraficaCliente entity = anagraficaClienteRepository
-					.findByRagioneSocialeCliente(anaClienteDto.getRagioneSocialeCliente());
+			AnagraficaCliente entity = anagraficaClienteRepository.findByPartitaIva(anaClienteDto.getPartitaIva());
 			if (entity != null) {
 				entity = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(anaClienteDto);
 				entity.setLastUpdateTimestamp(new Date());
 				logger.info("Anagrafica Cliente Aggiornata");
 				anagraficaClienteRepository.save(entity);
 			}
-			AnagraficaClienteDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
-			return dto;
+			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
 	}
 
-	public AnagraficaClienteDto deleteCustomerPersonalData(String ragioneSociale) {
+	public AnagraficaClienteDto deleteCustomerPersonalData(String partitaIva) {
 		try {
-			AnagraficaCliente entity = anagraficaClienteRepository
-					.findByRagioneSocialeCliente(ragioneSociale);
+			AnagraficaCliente entity = anagraficaClienteRepository.findByPartitaIva(partitaIva);
 			if (entity != null) {
 				anagraficaClienteRepository.delete(entity);
 			}
-			AnagraficaClienteDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
-			return dto;
+			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}

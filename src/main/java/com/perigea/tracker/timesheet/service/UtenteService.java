@@ -21,6 +21,8 @@ import com.perigea.tracker.timesheet.repository.DipendenteCommessaRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
 import com.perigea.tracker.timesheet.utility.TSUtils;
 
+
+
 @Service
 public class UtenteService {
 
@@ -104,24 +106,7 @@ public class UtenteService {
 		}
 	}
 
-	// Metodo per aggiornare lo stato (attivo/cessato) di un utente
-	public UtenteViewDto editStatusUser(UtentePostDto utenteDto) {
-		try {
-			Utente entity = utenteRepository.findByCodicePersona(utenteDto.getCodicePersona());
-			if (entity != null) {
-				entity.setStatoUtenteType(utenteDto.getStatoUtenteType());
-				entity.setLastUpdateUser("");
-				utenteRepository.save(entity);
-			}
-			Utente responsabile = entity.getResponsabile();
-			UtenteViewDto respDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
-			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(entity);
-			dto.setResponsabileDto(respDto);
-			return dto;
-		} catch (Exception ex) {
-			throw new EntityNotFoundException(ex.getMessage());
-		}
-	}
+	
 
 	public void editRoleUser(RuoloDto roleParam, UtentePostDto userParam) {
 		// if(mapEditUser.containsKey(key)) {

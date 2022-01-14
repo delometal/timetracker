@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.perigea.tracker.timesheet.dto.CommessaFatturabileDto;
 import com.perigea.tracker.timesheet.dto.CommessaNonFatturabileDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
+import com.perigea.tracker.timesheet.dto.OrdineCommessaDto;
 import com.perigea.tracker.timesheet.dto.wrapper.CommessaFatturabileDtoWrapper;
 import com.perigea.tracker.timesheet.dto.wrapper.CommessaNonFatturabileDtoWrapper;
 import com.perigea.tracker.timesheet.service.CommessaService;
+
+
 
 @RestController
 @RequestMapping("/commesse")
@@ -42,6 +45,15 @@ public class CommessaController {
 				.dataRichiesta(new Date()).risultato(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
+	
+	// Metodo per creare un ordine commessa
+		@PostMapping(value = "/create-ordine-commessa")
+		public ResponseEntity<GenericWrapperResponse<OrdineCommessaDto>> createOrdineCommessa(@RequestBody CommessaFatturabileDtoWrapper body, @RequestParam String numeroOrdineCliente, @RequestParam String ragioneSocialeCliente) {
+			OrdineCommessaDto dto = commessaService.createOrdineCommessa(body,numeroOrdineCliente, ragioneSocialeCliente);
+			GenericWrapperResponse<OrdineCommessaDto> genericDto = GenericWrapperResponse.<OrdineCommessaDto>builder()
+					.dataRichiesta(new Date()).risultato(dto).build();
+			return ResponseEntity.ok(genericDto);
+		}
 
 	// Metodo per creare un timesheet
 	@GetMapping(value = "/delete-commessa-non-fatturabile")

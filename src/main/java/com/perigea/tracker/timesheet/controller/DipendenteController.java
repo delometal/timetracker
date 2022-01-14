@@ -16,6 +16,8 @@ import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteResponseDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.service.DipendenteService;
 
+
+
 @RestController
 @RequestMapping("/dipendenti")
 public class DipendenteController {
@@ -64,6 +66,17 @@ public class DipendenteController {
 		AnagraficaDipendenteResponseDto dto = dipendenteService.updateDipendente(dtoParam);
 		GenericWrapperResponse<AnagraficaDipendenteResponseDto> genericResponse = GenericWrapperResponse
 				.<AnagraficaDipendenteResponseDto>builder()
+				.dataRichiesta(new Date())
+				.risultato(dto)
+				.build();
+		return ResponseEntity.ok(genericResponse);
+	}
+	
+	// Metodo per aggiornare lo status di un utente
+	@PostMapping(value = "/edit-status-user")
+	public ResponseEntity<GenericWrapperResponse<UtenteViewDto>> editStatusUser(@RequestBody UtentePostDto utenteDto) {
+		UtenteViewDto dto = userService.editStatusUser(utenteDto);
+		GenericWrapperResponse<UtenteViewDto> genericResponse = GenericWrapperResponse.<UtenteViewDto>builder()
 				.dataRichiesta(new Date())
 				.risultato(dto)
 				.build();

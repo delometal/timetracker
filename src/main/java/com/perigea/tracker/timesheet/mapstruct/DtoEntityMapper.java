@@ -12,6 +12,7 @@ import com.perigea.tracker.timesheet.dto.CommessaFatturabileDto;
 import com.perigea.tracker.timesheet.dto.CommessaNonFatturabileDto;
 import com.perigea.tracker.timesheet.dto.DipendenteCommessaDto;
 import com.perigea.tracker.timesheet.dto.FestivitaDto;
+import com.perigea.tracker.timesheet.dto.OrdineCommessaDto;
 import com.perigea.tracker.timesheet.dto.RuoloDto;
 import com.perigea.tracker.timesheet.dto.TimeSheetDto;
 import com.perigea.tracker.timesheet.dto.UtentePostDto;
@@ -23,9 +24,16 @@ import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
 import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
 import com.perigea.tracker.timesheet.entity.DipendenteCommessa;
 import com.perigea.tracker.timesheet.entity.Festivita;
+import com.perigea.tracker.timesheet.entity.OrdineCommessa;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Timesheet;
 import com.perigea.tracker.timesheet.entity.Utente;
+
+
+
+
+
+
 
 
 
@@ -66,7 +74,12 @@ public interface DtoEntityMapper {
 	
 	CommessaNonFatturabileDto fromEntityToDtoCommessaNonFatturabile(CommessaNonFatturabile entity);
 	
-//	OrdineCommessa fromDtoToEntityOrdineCommessa(OrdineCommessaDto dto);
+	OrdineCommessa fromDtoToEntityOrdineCommessa(OrdineCommessaDto dto);
+	
+	@Mapping(target = "codiceCommessa", source="id.codiceCommessa")
+	@Mapping(target = "numeroOrdineCliente", source="id.numeroOrdineCliente")
+	@Mapping(target = "ragioneSocialeCliente", source="id.ragioneSocialeCliente")
+	OrdineCommessaDto fromEntityToDtoOrdineCommessa(OrdineCommessa entity);
 	
 	Timesheet fromDtoToEntityTimeSheet(TimeSheetDto dto);
 	

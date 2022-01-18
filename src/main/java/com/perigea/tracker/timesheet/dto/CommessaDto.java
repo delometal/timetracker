@@ -14,7 +14,5 @@ public class CommessaDto extends BaseDto {
 	private String codiceCommessa;
 	private CommessaType commessaType;
 	private String descrizioneCommessa;
-	private String createUser;
-	private String lastUpdateUser;
 	
 }

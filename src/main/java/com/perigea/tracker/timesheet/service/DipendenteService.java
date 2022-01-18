@@ -5,10 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteInputDto;
-import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteResponseDto;
 import com.perigea.tracker.timesheet.dto.RuoloDto;
 import com.perigea.tracker.timesheet.dto.UtentePostDto;
-import com.perigea.tracker.timesheet.dto.UtenteViewDto;
 import com.perigea.tracker.timesheet.entity.AnagraficaDipendente;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
@@ -31,7 +29,7 @@ public class DipendenteService {
 	private UtenteRepository utenteRepository;
 
 	// metodo per creare un dipendente
-	public AnagraficaDipendenteResponseDto createDipendente(AnagraficaDipendenteInputDto dipendenteDto) {
+	public AnagraficaDipendente createDipendente(AnagraficaDipendenteInputDto dipendenteDto) {
 		try {
 			Utente utente = DtoEntityMapper.INSTANCE.fromDtoToEntityUtente(dipendenteDto.getUtenteDto());
 			AnagraficaDipendente dipendente = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaDipendente(dipendenteDto);
@@ -43,31 +41,25 @@ public class DipendenteService {
 				responsabile.addDipendente(utente);
 			}
 			utenteRepository.save(utente);
-			UtenteViewDto utenteResponseDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(utente);
-			AnagraficaDipendenteResponseDto anagraficaResponseDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(dipendente);
-			anagraficaResponseDto.setUtenteDto(utenteResponseDto);
-			logger.info("done");
-			return anagraficaResponseDto;
+			dipendente.setCodicePersona(utente.getCodicePersona());
+			return dipendente;
 		} catch (Exception ex) {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
 
+
 	// Metodo per leggere i dati di un determinato dipendente
-	public AnagraficaDipendenteResponseDto readDipendente(String dipendenteParam) {
+	public AnagraficaDipendente readDipendente(String dipendenteParam) {
 		try {
-			AnagraficaDipendente anagDipendente = dipendenteRepository.findByCodicePersona(dipendenteParam);
-			UtenteViewDto utenteResponseDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(anagDipendente.getUtenteDipendente());
-			AnagraficaDipendenteResponseDto anagraficaResponseDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagDipendente);
-			anagraficaResponseDto.setUtenteDto(utenteResponseDto);
-			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagDipendente);
+			return dipendenteRepository.findByCodicePersona(dipendenteParam);
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
 	}
 
 	// Metodo per aggiornare i dati di un dipendente
-	public AnagraficaDipendenteResponseDto updateDipendente(AnagraficaDipendenteInputDto dipendenteParam) {
+	public AnagraficaDipendente updateDipendente(AnagraficaDipendenteInputDto dipendenteParam) {
 		try {
 			AnagraficaDipendente anagDipendente = dipendenteRepository.findByCodicePersona(dipendenteParam.getUtenteDto().getCodicePersona());
 			if (anagDipendente != null) {
@@ -75,34 +67,38 @@ public class DipendenteService {
 				dipendenteRepository.save(anagDipendente);
 			}
 			
-			UtenteViewDto utenteResponseDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(anagDipendente.getUtenteDipendente());
-			AnagraficaDipendenteResponseDto anagraficaResponseDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagDipendente);
-			anagraficaResponseDto.setUtenteDto(utenteResponseDto);
-			return anagraficaResponseDto;
+//			UtenteViewDto utenteResponseDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(anagDipendente.getUtenteDipendente());
+//			AnagraficaDipendenteResponseDto anagraficaResponseDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagDipendente);
+//			anagraficaResponseDto.setUtenteDto(utenteResponseDto);
+			anagDipendente.setUtenteDipendente(anagDipendente.getUtenteDipendente());
+//			return anagraficaResponseDto;
+			return anagDipendente;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
 	}
 
 	// Metodo per eliminare un dipendente da database
-	public AnagraficaDipendenteResponseDto deleteDipendente(String id) {
+	public AnagraficaDipendente deleteDipendente(String id) {
 		try {
 			AnagraficaDipendente anagDipendente = dipendenteRepository.findByCodicePersona(id);
 			if (anagDipendente != null) {
 				utenteRepository.delete(anagDipendente.getUtenteDipendente());
 				dipendenteRepository.delete(anagDipendente);
 			}
-			AnagraficaDipendenteResponseDto anagraficaResponseDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagDipendente);
-			UtenteViewDto utenteResponseDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(anagDipendente.getUtenteDipendente());
-			anagraficaResponseDto.setUtenteDto(utenteResponseDto);
-			return anagraficaResponseDto;
+//			AnagraficaDipendenteResponseDto anagraficaResponseDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagDipendente);
+//			UtenteViewDto utenteResponseDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(anagDipendente.getUtenteDipendente());
+//			anagraficaResponseDto.setUtenteDto(utenteResponseDto);
+			anagDipendente.setUtenteDipendente(anagDipendente.getUtenteDipendente());
+//			return anagraficaResponseDto;
+			return anagDipendente;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
 	}
 	
 	// Metodo per aggiornare lo stato (attivo/cessato) di un utente
-		public UtenteViewDto editStatusUser(UtentePostDto utenteDto) {
+		public Utente editStatusUser(UtentePostDto utenteDto) {
 			try {
 				Utente entity = utenteRepository.findByCodicePersona(utenteDto.getCodicePersona());
 				if (entity != null) {
@@ -111,10 +107,12 @@ public class DipendenteService {
 					utenteRepository.save(entity);
 				}
 				Utente responsabile = entity.getResponsabile();
-				UtenteViewDto respDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
-				UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(entity);
-				dto.setResponsabileDto(respDto);
-				return dto;
+//				UtenteViewDto respDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
+//				UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(entity);
+//				dto.setResponsabileDto(respDto);
+				entity.setResponsabile(responsabile);
+//				return dto;
+				return entity;
 			} catch (Exception ex) {
 				throw new EntityNotFoundException(ex.getMessage());
 			}

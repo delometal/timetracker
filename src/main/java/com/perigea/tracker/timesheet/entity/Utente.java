@@ -2,7 +2,6 @@ package com.perigea.tracker.timesheet.entity;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,9 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 import com.perigea.tracker.timesheet.enums.StatoUtenteType;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -60,6 +57,9 @@ public class Utente extends BaseEntity {
 	@OneToMany(mappedBy = "utente")
 	private List<UtenteRuoli> utenteRuoli = new ArrayList<>();
 
+	@Column(name = "codice_responsabile", nullable = false, insertable = false, updatable = false)
+	private String codiceResponsabile;
+	
 	@ManyToOne
 	@JoinColumn(name = "codice_responsabile")
 	private Utente responsabile;
@@ -77,12 +77,22 @@ public class Utente extends BaseEntity {
 		dipendente.setResponsabile(null);
 	}
 
-	public void addTimeSheet(Timesheet timesheet) {
+//	public void addTimesheet(TimesheetData timesheet) {
+//		this.timesheet.add(timesheet);
+//		timesheet.setUtenteTimesheet(this);
+//	}
+//
+//	public void removeTimesheet(TimesheetData timesheet) {
+//		this.timesheet.remove(timesheet);
+//		timesheet.setUtenteTimesheet(null);
+//	}
+	
+	public void addTimesheet(Timesheet timesheet) {
 		this.timesheet.add(timesheet);
 		timesheet.setUtenteTimesheet(this);
 	}
 
-	public void removeTimeSheet(Timesheet timesheet) {
+	public void removeTimesheet(Timesheet timesheet) {
 		this.timesheet.remove(timesheet);
 		timesheet.setUtenteTimesheet(null);
 	}

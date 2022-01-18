@@ -17,6 +17,10 @@ import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.dto.OrdineCommessaDto;
 import com.perigea.tracker.timesheet.dto.wrapper.CommessaFatturabileDtoWrapper;
 import com.perigea.tracker.timesheet.dto.wrapper.CommessaNonFatturabileDtoWrapper;
+import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
+import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
+import com.perigea.tracker.timesheet.entity.OrdineCommessa;
+import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.CommessaService;
 
 
@@ -31,36 +35,44 @@ public class CommessaController {
 	// Metodo per creare un timesheet
 	@PostMapping(value = "/create-commessa-fatturabile")
 	public ResponseEntity<GenericWrapperResponse<CommessaFatturabileDto>> createCommessaFatturabile(@RequestBody CommessaFatturabileDtoWrapper commessaParam) {
-		CommessaFatturabileDto dto = commessaService.createCommessaFatturabile(commessaParam);
+//		CommessaFatturabileDto dto = commessaService.createCommessaFatturabile(commessaParam);
+		CommessaFatturabile commessaEntity = commessaService.createCommessaFatturabile(commessaParam);
+		CommessaFatturabileDto commessaDto = DtoEntityMapper.INSTANCE.fromEntityToDtoCommessaFatturabile(commessaEntity);
 		GenericWrapperResponse<CommessaFatturabileDto> genericDto = GenericWrapperResponse.<CommessaFatturabileDto>builder()
-				.dataRichiesta(new Date()).risultato(dto).build();
+				.dataRichiesta(new Date()).risultato(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
 	// Metodo per creare un timesheet
 	@PostMapping(value = "/create-commessa-non-fatturabile")
 	public ResponseEntity<GenericWrapperResponse<CommessaNonFatturabileDto>> createCommessaNonFatturabile(@RequestBody CommessaNonFatturabileDtoWrapper body) {
-		CommessaNonFatturabileDto dto = commessaService.createCommessaNonFatturabile(body.getCommessaNonFatturabileDto());
+//		CommessaNonFatturabileDto dto = commessaService.createCommessaNonFatturabile(body.getCommessaNonFatturabileDto());
+		CommessaNonFatturabile commessaEntity = commessaService.createCommessaNonFatturabile(body.getCommessaNonFatturabileDto());
+		CommessaNonFatturabileDto commessaDto = DtoEntityMapper.INSTANCE.fromEntityToDtoCommessaNonFatturabile(commessaEntity);
 		GenericWrapperResponse<CommessaNonFatturabileDto> genericDto = GenericWrapperResponse.<CommessaNonFatturabileDto>builder()
-				.dataRichiesta(new Date()).risultato(dto).build();
+				.dataRichiesta(new Date()).risultato(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
 	// Metodo per creare un ordine commessa
 		@PostMapping(value = "/create-ordine-commessa")
-		public ResponseEntity<GenericWrapperResponse<OrdineCommessaDto>> createOrdineCommessa(@RequestBody CommessaFatturabileDtoWrapper body, @RequestParam String numeroOrdineCliente, @RequestParam String ragioneSocialeCliente) {
-			OrdineCommessaDto dto = commessaService.createOrdineCommessa(body,numeroOrdineCliente, ragioneSocialeCliente);
+		public ResponseEntity<GenericWrapperResponse<OrdineCommessaDto>> createOrdineCommessa(@RequestBody CommessaFatturabileDtoWrapper body,  @RequestParam String ragioneSocialeCliente) {
+//			OrdineCommessaDto dto = commessaService.createOrdineCommessa(body, ragioneSocialeCliente);
+			OrdineCommessa ordineCommessaEntity = commessaService.createOrdineCommessa(body, ragioneSocialeCliente);
+			OrdineCommessaDto ordineCommessaDto = DtoEntityMapper.INSTANCE.fromEntityToDtoOrdineCommessa(ordineCommessaEntity);
 			GenericWrapperResponse<OrdineCommessaDto> genericDto = GenericWrapperResponse.<OrdineCommessaDto>builder()
-					.dataRichiesta(new Date()).risultato(dto).build();
+					.dataRichiesta(new Date()).risultato(ordineCommessaDto).build();
 			return ResponseEntity.ok(genericDto);
 		}
 
 	// Metodo per creare un timesheet
 	@GetMapping(value = "/delete-commessa-non-fatturabile")
 	public ResponseEntity<GenericWrapperResponse<CommessaNonFatturabileDto>> deleteCommessaNonFatturabile(@RequestParam String codiceCommessa) {
-		CommessaNonFatturabileDto dto = commessaService.deleteCommessaNonFatturabile(codiceCommessa);
+//		CommessaNonFatturabileDto dto = commessaService.deleteCommessaNonFatturabile(codiceCommessa);
+		CommessaNonFatturabile commessaEntity = commessaService.deleteCommessaNonFatturabile(codiceCommessa);
+		CommessaNonFatturabileDto commessaDto = DtoEntityMapper.INSTANCE.fromEntityToDtoCommessaNonFatturabile(commessaEntity);
 		GenericWrapperResponse<CommessaNonFatturabileDto> genericDto = GenericWrapperResponse.<CommessaNonFatturabileDto>builder()
-				.dataRichiesta(new Date()).risultato(dto).build();
+				.dataRichiesta(new Date()).risultato(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 

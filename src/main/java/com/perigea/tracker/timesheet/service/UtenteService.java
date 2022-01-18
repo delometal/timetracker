@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.perigea.tracker.timesheet.dto.DipendenteCommessaDto;
 import com.perigea.tracker.timesheet.dto.RuoloDto;
-import com.perigea.tracker.timesheet.dto.TimeSheetDto;
+import com.perigea.tracker.timesheet.dto.TimesheetDataDto;
 import com.perigea.tracker.timesheet.dto.UtentePostDto;
-import com.perigea.tracker.timesheet.dto.UtenteViewDto;
 import com.perigea.tracker.timesheet.entity.DipendenteCommessa;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.exception.UtenteException;
@@ -20,6 +19,10 @@ import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
 import com.perigea.tracker.timesheet.repository.DipendenteCommessaRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
 import com.perigea.tracker.timesheet.utility.TSUtils;
+
+
+
+
 
 
 
@@ -36,7 +39,7 @@ public class UtenteService {
 	private DipendenteCommessaRepository dipendenteCommessaRepository;
 
 	// Metodo per creare un nuovo utente per poi inserirlo a database
-	public UtenteViewDto createUtente(UtentePostDto utenteDto, String codiceResponsabile) {
+	public Utente createUtente(UtentePostDto utenteDto, String codiceResponsabile) {
 		try {
 			Utente utente = DtoEntityMapper.INSTANCE.fromDtoToEntityUtente(utenteDto);
 			utente.setCodicePersona(TSUtils.uuid());
@@ -46,61 +49,69 @@ public class UtenteService {
 			logger.info("Utente creato");
 			utenteRepository.save(utente);
 			logger.info("Utente salvato a database");
-			UtenteViewDto responsabileDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
-			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(utente);
-			dto.setResponsabileDto(responsabileDto);
-			return dto;
+//			UtenteViewDto responsabileDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
+//			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(utente);
+//			dto.setResponsabileDto(responsabileDto);
+			utente.setResponsabile(responsabile);
+//			return dto;
+			return utente;
 		} catch (Exception ex) {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
 
 	// Metodo per leggere i dati di un determinato utente
-	public UtenteViewDto readUtente(String codicePersona) {
+	public Utente readUtente(String codicePersona) {
 		try {
-			Utente entity = utenteRepository.findByCodicePersona(codicePersona);
-			Utente responsabile = entity.getResponsabile();
-			UtenteViewDto respDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
-			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(entity);
-			dto.setResponsabileDto(respDto);
-			return dto;
+			Utente utente = utenteRepository.findByCodicePersona(codicePersona);
+			Utente responsabile = utente.getResponsabile();
+//			UtenteViewDto respDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
+//			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(utente);
+//			dto.setResponsabileDto(respDto);
+			utente.setResponsabile(responsabile);
+//			return dto;
+			return utente;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
 	}
 
 	// Metodo per aggiornare i dati di un utente
-	public UtenteViewDto updateUtente(UtentePostDto utenteDto, String codiceResponsabile) {
+	public Utente updateUtente(UtentePostDto utenteDto, String codiceResponsabile) {
 		try {
-			Utente entity = utenteRepository.findByCodicePersona(utenteDto.getCodicePersona());
+			Utente utente = utenteRepository.findByCodicePersona(utenteDto.getCodicePersona());
 			Utente responsabile = utenteRepository.findByCodicePersona(codiceResponsabile);
-			if (entity != null) {
-				entity = DtoEntityMapper.INSTANCE.fromDtoToEntityUtente(utenteDto);
-				entity.setResponsabile(responsabile);
-				responsabile.addDipendente(entity);
-				utenteRepository.save(entity);
+			if (utente != null) {
+				utente = DtoEntityMapper.INSTANCE.fromDtoToEntityUtente(utenteDto);
+				utente.setResponsabile(responsabile);
+				responsabile.addDipendente(utente);
+				utenteRepository.save(utente);
 			}
-			UtenteViewDto responsabileDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
-			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(entity);
-			dto.setResponsabileDto(responsabileDto);
-			return dto;
+//			UtenteViewDto responsabileDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
+//			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(utente);
+//			dto.setResponsabileDto(responsabileDto);
+			utente.setResponsabile(responsabile);
+//			return dto;
+			return utente;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
 	}
 
 	// Metodo per eliminare un utente da database
-	public UtenteViewDto deleteUtente(String codicePersona) {
+	public Utente deleteUtente(String codicePersona) {
 		try {
-			Utente entity = utenteRepository.findByCodicePersona(codicePersona);
-			Utente responsabile = entity.getResponsabile();
-			UtenteViewDto respDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
-			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(entity);
-			dto.setResponsabileDto(respDto);
-			if (entity != null) {
-				utenteRepository.delete(entity);
+			Utente utente = utenteRepository.findByCodicePersona(codicePersona);
+			Utente responsabile = utente.getResponsabile();
+//			UtenteViewDto respDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
+//			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(utente);
+//			dto.setResponsabileDto(respDto);
+			utente.setResponsabile(responsabile);
+			if (utente != null) {
+				utenteRepository.delete(utente);
 			}
-			return dto;
+//			return dto;
+			return utente;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
@@ -123,7 +134,7 @@ public class UtenteService {
 	}
 
 	// -------------------------------------------------------------------------------------------
-	public void editStatusTimeSheet(TimeSheetDto timeSheetParam) {
+	public void editStatusTimeSheet(TimesheetDataDto timeSheetParam) {
 		// if(mapEditUser.containsKey(key)) {
 		// TimeSheet
 		// timeSheetEntity=timeSheetRepo.findByCodicePersona(timeSheetParam.getCodiceCommessa());

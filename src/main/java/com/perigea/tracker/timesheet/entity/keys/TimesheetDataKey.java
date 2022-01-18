@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class TimesheetKey implements Serializable {
+public class TimesheetDataKey implements Serializable {
 
 	private static final long serialVersionUID = 3117858353342771303L;
 

@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class TimeSheetDto extends BaseDto {
+public class TimesheetDataDto extends BaseDto {
 	
 	private static final long serialVersionUID = 8273187903186747431L;
 
@@ -18,7 +18,6 @@ public class TimeSheetDto extends BaseDto {
 	private Integer giornoDiRiferimento;
 	private Integer ore;
 	private Boolean trasferta;
-	private StatoType statoType;
 	private String createUser;
 	private String lastUpdateUser;
 	

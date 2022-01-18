@@ -47,8 +47,9 @@ public class Commessa extends BaseEntity {
 	@OneToOne(mappedBy = "commessaSpesa")
 	private NotaSpese notaSpese;
 
-	@OneToMany(mappedBy = "commessaTimesheet")
-	private List<Timesheet> timesheet = new ArrayList<>();
+	@OneToMany()
+	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false, updatable = false, insertable = false)
+	private List<TimesheetData> timesheet = new ArrayList<>();
 
 	@OneToMany(mappedBy = "commessa")
 	private List<DipendenteCommessa> dipendenteCommessa = new ArrayList<>();

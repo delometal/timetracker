@@ -27,5 +27,6 @@ public class AnagraficaClienteDto extends BaseDto {
 	private String notePerLaFatturazione;
 	private String createUser;
 	private String lastUpdateUser;
+	private CommessaFatturabileDto commessaFatturabile;
 
 }

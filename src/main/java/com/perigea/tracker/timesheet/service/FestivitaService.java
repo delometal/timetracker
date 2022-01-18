@@ -12,6 +12,8 @@ import com.perigea.tracker.timesheet.repository.FestivitaRepository;
 
 
 
+
+
 @Service
 public class FestivitaService {
 
@@ -21,27 +23,29 @@ public class FestivitaService {
 	@Autowired
 	private Logger logger;
 
-	public FestivitaDto createFestivita(FestivitaDto festivitaDto) {
+	public Festivita createFestivita(FestivitaDto festivitaDto) {
 		try {
-			Festivita entity = DtoEntityMapper.INSTANCE.FromDtoToEntityFestivita(festivitaDto);
-			festivitaRepository.save(entity);
+			Festivita festivita = DtoEntityMapper.INSTANCE.FromDtoToEntityFestivita(festivitaDto);
+			festivitaRepository.save(festivita);
 			logger.info("festività inserita con successo a db");
-			FestivitaDto dto = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(entity);
-			return dto;
+//			FestivitaDto dto = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(entity);
+//			return dto;
+			return festivita;
 		} catch (Exception ex) {
 			throw new FestivitaException("festività non inserita");
 		}
 	}
 
-	public FestivitaDto updateFestivita(FestivitaDto festivitaDto) {
+	public Festivita updateFestivita(FestivitaDto festivitaDto) {
 		try {
-			Festivita entity = festivitaRepository.findByNomeFestivo(festivitaDto.getNomeFestivo());
-			if (entity != null) {
-				entity = DtoEntityMapper.INSTANCE.FromDtoToEntityFestivita(festivitaDto);
-				festivitaRepository.save(entity);
+			Festivita festivita = festivitaRepository.findByNomeFestivo(festivitaDto.getNomeFestivo());
+			if (festivita != null) {
+				festivita = DtoEntityMapper.INSTANCE.FromDtoToEntityFestivita(festivitaDto);
+				festivitaRepository.save(festivita);
 			}
-			FestivitaDto dto = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(entity);
-			return dto;
+//			FestivitaDto dto = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(entity);
+//			return dto;
+			return festivita;
 		} catch (Exception ex) {
 			throw new FestivitaException("festività non trovata");
 		}

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.timesheet.dto.FestivitaDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
+import com.perigea.tracker.timesheet.entity.Festivita;
+import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.FestivitaService;
 
 
@@ -23,17 +25,21 @@ public class FestivitaController {
 
 	@PostMapping(value = "/create-festivita")
 	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> createFestivita(@RequestBody FestivitaDto festivitaDto) {
-		FestivitaDto dto = festeService.createFestivita(festivitaDto);
+//		FestivitaDto dto = festeService.createFestivita(festivitaDto);
+		Festivita festivita = festeService.createFestivita(festivitaDto);
+		FestivitaDto dtoFestivita = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(festivita);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(new Date()).risultato(dto).build();
+				.dataRichiesta(new Date()).risultato(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
 	@PostMapping(value = "/update-festivita")
 	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> updateFestivita(@RequestBody FestivitaDto festivitaDto) {
-		FestivitaDto dto = festeService.updateFestivita(festivitaDto);
+//		FestivitaDto dto = festeService.updateFestivita(festivitaDto);
+		Festivita festivita = festeService.updateFestivita(festivitaDto);
+		FestivitaDto dtoFestivita = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(festivita);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(new Date()).risultato(dto).build();
+				.dataRichiesta(new Date()).risultato(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 }

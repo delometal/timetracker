@@ -31,7 +31,7 @@ public class OrdineCommessa extends BaseEntity {
 	private CommessaFatturabile commessaFatturabile;
 	
 	@ManyToOne
-	@JoinColumn(name = "partita_iva", referencedColumnName = "partita_iva", nullable = false)
+	@JoinColumn(name = "partita_iva", referencedColumnName = "partita_iva", nullable = false, insertable = false, updatable = false)
 	private AnagraficaCliente cliente;
 
 	@Column(name = "data_ordine")

@@ -7,11 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
-import com.perigea.tracker.timesheet.dto.TimeSheetDto;
+import com.perigea.tracker.timesheet.dto.TimesheetDataDto;
+import com.perigea.tracker.timesheet.dto.TimesheetResponseDto;
+import com.perigea.tracker.timesheet.dto.wrapper.TimesheetDataWrapper;
 import com.perigea.tracker.timesheet.service.TimesheetService;
 
 
@@ -24,12 +25,12 @@ public class TimesheetController {
 	private TimesheetService timeSheetService;
 
 	// Metodo per creare un timesheet
-	@PostMapping(value = "/create-timesheet")
-	public ResponseEntity<GenericWrapperResponse<TimeSheetDto>> createTimeSheet(@RequestBody TimeSheetDto timeDto, @RequestParam String codicePersona, @RequestParam String codiceCommessa) {
-		TimeSheetDto dto = timeSheetService.createTimeSheet(codicePersona, codiceCommessa, timeDto);
-		GenericWrapperResponse<TimeSheetDto> genericDto = GenericWrapperResponse.<TimeSheetDto>builder()
-				.dataRichiesta(new Date()).risultato(dto).build();
-		return ResponseEntity.ok(genericDto);
-	}
+//	@PostMapping(value = "/create-timesheet")
+//	public ResponseEntity<GenericWrapperResponse<TimesheetResponseDto>> createTimeSheet(@RequestBody TimesheetDataWrapper wrapper) {
+//		TimesheetResponseDto dto = timeSheetService.createTimeSheet(wrapper.getList(),wrapper.getDto());
+//		GenericWrapperResponse<TimesheetResponseDto> genericDto = GenericWrapperResponse.<TimesheetResponseDto>builder()
+//				.dataRichiesta(new Date()).risultato(dto).build();
+//		return ResponseEntity.ok(genericDto);
+//	}
 
 }

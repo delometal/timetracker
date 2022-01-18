@@ -15,7 +15,7 @@ public class OrdineCommessaDto extends BaseDto {
 	
 	private String codiceCommessa;
 	private String numeroOrdineCliente;
-	private String ragioneSocialeCliente;
+	private String partitaIva;
 	private Date dataOrdine;
 	private Double importoOrdine;
 	private Date dataInizio;

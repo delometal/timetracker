@@ -16,6 +16,7 @@ import com.perigea.tracker.timesheet.repository.AnagraficaClienteRepository;
 
 
 
+
 @Service
 public class ClienteService {
 
@@ -25,48 +26,52 @@ public class ClienteService {
 	@Autowired
 	private AnagraficaClienteRepository anagraficaClienteRepository;
 
-	public AnagraficaClienteDto createCustomerPersonalData(AnagraficaClienteDto anaClienteDto) {
+	public AnagraficaCliente createCustomerPersonalData(AnagraficaClienteDto anaClienteDto) {
 		try {
-			AnagraficaCliente entity = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(anaClienteDto);
-			anagraficaClienteRepository.save(entity);
+			AnagraficaCliente anagraficaClienteEntity = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(anaClienteDto);
+			anagraficaClienteRepository.save(anagraficaClienteEntity);
 			logger.info("Dati anagrafici cliente persistiti");
-			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
+//			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
+			return anagraficaClienteEntity;
 		} catch (Exception ex) {
 			throw new ClienteException(ex.getMessage());
 		}
 	}
 
-	public AnagraficaClienteDto readCustomerPersonalData(String partitaIva) {
+	public AnagraficaCliente readCustomerPersonalData(String partitaIva) {
 		try {
-			AnagraficaCliente entity = anagraficaClienteRepository.findByPartitaIva(partitaIva);
-			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
+			AnagraficaCliente anagraficaClienteEntity = anagraficaClienteRepository.findByPartitaIva(partitaIva);
+//			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
+			return anagraficaClienteEntity;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
 	}
 
-	public AnagraficaClienteDto updateCustomerPersonalData(AnagraficaClienteDto anaClienteDto) {
+	public AnagraficaCliente updateCustomerPersonalData(AnagraficaClienteDto anaClienteDto) {
 		try {
-			AnagraficaCliente entity = anagraficaClienteRepository.findByPartitaIva(anaClienteDto.getPartitaIva());
-			if (entity != null) {
-				entity = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(anaClienteDto);
-				entity.setLastUpdateTimestamp(new Date());
+			AnagraficaCliente anagraficaClienteEntity = anagraficaClienteRepository.findByPartitaIva(anaClienteDto.getPartitaIva());
+			if (anagraficaClienteEntity != null) {
+				anagraficaClienteEntity = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(anaClienteDto);
+				anagraficaClienteEntity.setLastUpdateTimestamp(new Date());
 				logger.info("Anagrafica Cliente Aggiornata");
-				anagraficaClienteRepository.save(entity);
+				anagraficaClienteRepository.save(anagraficaClienteEntity);
 			}
-			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
-		} catch (Exception ex) {
+//			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
+			return anagraficaClienteEntity;
+			} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
 	}
 
-	public AnagraficaClienteDto deleteCustomerPersonalData(String partitaIva) {
+	public AnagraficaCliente deleteCustomerPersonalData(String partitaIva) {
 		try {
-			AnagraficaCliente entity = anagraficaClienteRepository.findByPartitaIva(partitaIva);
-			if (entity != null) {
-				anagraficaClienteRepository.delete(entity);
+			AnagraficaCliente anagraficaClienteEntity = anagraficaClienteRepository.findByPartitaIva(partitaIva);
+			if (anagraficaClienteEntity != null) {
+				anagraficaClienteRepository.delete(anagraficaClienteEntity);
 			}
-			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
+//			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
+			return anagraficaClienteEntity;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}

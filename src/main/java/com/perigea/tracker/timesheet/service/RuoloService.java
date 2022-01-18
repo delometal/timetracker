@@ -15,6 +15,9 @@ import com.perigea.tracker.timesheet.repository.RuoliRepository;
 
 
 
+
+
+
 @Service
 public class RuoloService {
 
@@ -25,54 +28,58 @@ public class RuoloService {
 	private RuoliRepository ruoliRepository;
 
 	// Metodo per creare un nuovo ruolo
-	public RuoloDto createRole(RuoloDto ruoloDto) {
+	public Ruolo createRole(RuoloDto ruoloDto) {
 		try {
-			Ruolo role = DtoEntityMapper.INSTANCE.fromDtoToEntityRuoli(ruoloDto);
+			Ruolo ruolo = DtoEntityMapper.INSTANCE.fromDtoToEntityRuoli(ruoloDto);
 			logger.info("Role creato");
-			ruoliRepository.save(role);
+			ruoliRepository.save(ruolo);
 			logger.info("Role aggiunto a database");
-			RuoloDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(role);
-			return dto;
+//			RuoloDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(role);
+//			return dto;
+			return ruolo;
 		} catch (Exception ex) {
 			throw new RuoloException(ex.getMessage());
 		}
 	}
 
 	// Metodo per leggere le informazioni specifiche di un ruolo
-	public RuoloDto readRole(RuoloType ruolo) {
+	public Ruolo readRole(RuoloType ruolo) {
 		try {
-			Ruolo entity = ruoliRepository.findByTipo(ruolo);
-			RuoloDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(entity);
-			return dto;
+			Ruolo ruoloEntity = ruoliRepository.findByTipo(ruolo);
+//			RuoloDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(entity);
+//			return dto;
+			return ruoloEntity;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
 	}
 
 	// Metodo per aggiornare i dati di un ruolo già esistente
-	public RuoloDto updateRole(RuoloDto ruoloDto) {
+	public Ruolo updateRole(RuoloDto ruoloDto) {
 		try {
-			Ruolo entity = ruoliRepository.findByTipo(ruoloDto.getRuoloType());
-			if (entity != null) {
-				entity = DtoEntityMapper.INSTANCE.fromDtoToEntityRuoli(ruoloDto);
-				ruoliRepository.save(entity);
+			Ruolo ruolo = ruoliRepository.findByTipo(ruoloDto.getRuoloType());
+			if (ruolo != null) {
+				ruolo = DtoEntityMapper.INSTANCE.fromDtoToEntityRuoli(ruoloDto);
+				ruoliRepository.save(ruolo);
 			}
-			RuoloDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(entity);
-			return dto;
+//			RuoloDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(entity);
+//			return dto;
+			return ruolo;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
 	}
 
 	// Metodo per eliminare un ruolo da database
-	public RuoloDto deleteRole(RuoloType ruolo) {
+	public Ruolo deleteRole(RuoloType ruolo) {
 		try {
-			Ruolo entity = ruoliRepository.findByTipo(ruolo);
-			if (entity != null) {
-				ruoliRepository.delete(entity);
+			Ruolo ruoloEntity = ruoliRepository.findByTipo(ruolo);
+			if (ruoloEntity != null) {
+				ruoliRepository.delete(ruoloEntity);
 			}
-			RuoloDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(entity);
-			return dto;
+//			RuoloDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(entity);
+//			return dto;
+			return ruoloEntity;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}

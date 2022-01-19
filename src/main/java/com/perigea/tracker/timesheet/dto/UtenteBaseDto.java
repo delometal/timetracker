@@ -14,7 +14,7 @@ public class UtenteBaseDto extends BaseDto {
 	private String codicePersona;
 	private String nome;
 	private String cognome;
-	private StatoUtenteType statoUtenteType;
+	private StatoUtenteType statoUtente;
 	private String codiceResponsabile;
 
 }

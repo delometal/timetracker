@@ -26,11 +26,11 @@ public class NotaSpese extends BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "codice_persona", referencedColumnName = "codice_persona", nullable = false, insertable = false, updatable = false)
-	private Utente utenteSpesa;
+	private Utente utente;
 
 	@OneToOne
 	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false, insertable = false, updatable = false)
-	private Commessa commessaSpesa;
+	private Commessa commessa;
 
 	@Column(name = "importo")
 	private Double importo;

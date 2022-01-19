@@ -2,6 +2,7 @@ package com.perigea.tracker.timesheet.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 import com.perigea.tracker.timesheet.enums.StatoUtenteType;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -40,21 +43,21 @@ public class Utente extends BaseEntity {
 
 	@Column(name = "stato_utente")
 	@Enumerated(EnumType.STRING)
-	private StatoUtenteType statoUtenteType;
+	private StatoUtenteType statoUtente;
 
-	@OneToMany(mappedBy = "utenteSpesa")
+	@OneToMany(mappedBy = "utente")
 	private List<NotaSpese> noteSpese = new ArrayList<>();
 
-	@OneToOne(mappedBy = "utenteDipendente", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "utente", cascade = CascadeType.ALL)
 	private AnagraficaDipendente dipendente;
 
-	@OneToMany(mappedBy = "utenteTimesheet")
+	@OneToMany(mappedBy = "utente")
 	private List<Timesheet> timesheet = new ArrayList<>();
 
-	@OneToMany(mappedBy = "utente")
-	private List<DipendenteCommessa> relazioneCommessa = new ArrayList<>();
+	@OneToMany(mappedBy = "utente") // @TODO fare many to many come per ruoli
+	private List<DipendenteCommessa> commesseDipendente = new ArrayList<>();
 
-	@OneToMany(mappedBy = "utente")
+	@OneToMany(mappedBy = "utente") // @TODO fare many to many ruoli
 	private List<UtenteRuoli> utenteRuoli = new ArrayList<>();
 
 	@Column(name = "codice_responsabile", nullable = false, insertable = false, updatable = false)
@@ -76,24 +79,14 @@ public class Utente extends BaseEntity {
 		this.dipendenti.remove(dipendente);
 		dipendente.setResponsabile(null);
 	}
-
-//	public void addTimesheet(TimesheetData timesheet) {
-//		this.timesheet.add(timesheet);
-//		timesheet.setUtenteTimesheet(this);
-//	}
-//
-//	public void removeTimesheet(TimesheetData timesheet) {
-//		this.timesheet.remove(timesheet);
-//		timesheet.setUtenteTimesheet(null);
-//	}
 	
 	public void addTimesheet(Timesheet timesheet) {
 		this.timesheet.add(timesheet);
-		timesheet.setUtenteTimesheet(this);
+		timesheet.setUtente(this);
 	}
 
 	public void removeTimesheet(Timesheet timesheet) {
 		this.timesheet.remove(timesheet);
-		timesheet.setUtenteTimesheet(null);
+		timesheet.setUtente(null);
 	}
 }

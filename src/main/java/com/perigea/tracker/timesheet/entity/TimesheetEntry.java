@@ -4,49 +4,44 @@ package com.perigea.tracker.timesheet.entity;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Any;
-import org.hibernate.annotations.AnyMetaDef;
-import org.hibernate.annotations.MetaValue;
-
-import com.perigea.tracker.timesheet.entity.keys.TimesheetDataKey;
+import com.perigea.tracker.timesheet.entity.keys.TimesheetEntryKey;
+import com.perigea.tracker.timesheet.enums.CommessaType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@Table(name = "time_sheet_data")
+@Table(name = "time_sheet_entry")
 @EqualsAndHashCode(callSuper = true)
-public class TimesheetData extends BaseEntity {
+public class TimesheetEntry extends BaseEntity {
 
 	private static final long serialVersionUID = -3241359472237290256L;
 
 	@EmbeddedId
-	private TimesheetDataKey id;
+	private TimesheetEntryKey id;
 
 	@ManyToOne
 	@JoinColumns({
 			@JoinColumn(name = "codice_persona", referencedColumnName = "codice_persona", insertable = false, updatable = false),
 			@JoinColumn(name = "anno_di_riferimento", referencedColumnName = "anno_di_riferimento", insertable = false, updatable = false),
 			@JoinColumn(name = "mese_di_riferimento", referencedColumnName = "mese_di_riferimento", insertable = false, updatable = false) })
-	private Timesheet timeSheet;
+	private Timesheet timesheet;
 
-//	@ManyToOne
-//	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false, insertable=false, updatable=false)
-//	private Commessa commessaTimesheet;
-
-	@AnyMetaDef(name = "CommessaMetaDef", metaType = "string", idType = "string", metaValues = {
-			@MetaValue(value = "F", targetEntity = CommessaFatturabile.class),
-			@MetaValue(value = "NF", targetEntity = CommessaNonFatturabile.class) })
-	@Any(metaDef = "CommessaMetaDef", metaColumn = @Column(name = "tipo_commessa"),fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false, updatable = false, insertable = false)
 	private Commessa commessa;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "tipo_commessa")
+	private CommessaType tipoCommessa;
 
 	@Column(name = "ore")
 	private Integer ore;

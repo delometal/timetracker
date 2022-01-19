@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@Table(name = "relazione_dipendente_commessa")
+@Table(name = "dipendente_commessa")
 @EqualsAndHashCode(callSuper = true)
 public class DipendenteCommessa extends BaseEntity {
 

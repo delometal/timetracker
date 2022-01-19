@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.perigea.tracker.timesheet.dto.AnagraficaClienteDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.entity.AnagraficaCliente;
-import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.ClienteService;
+import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 
 

@@ -18,8 +18,8 @@ import com.perigea.tracker.timesheet.dto.UtentePostDto;
 import com.perigea.tracker.timesheet.dto.UtenteViewDto;
 import com.perigea.tracker.timesheet.entity.AnagraficaDipendente;
 import com.perigea.tracker.timesheet.entity.Utente;
-import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.DipendenteService;
+import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 
 
@@ -44,7 +44,7 @@ public class DipendenteController {
 	@GetMapping(value = "/read-dipendente")
 	public ResponseEntity<GenericWrapperResponse<AnagraficaDipendenteResponseDto>> readDipendente(@RequestParam String codicePersona) {
 		AnagraficaDipendente anagraficaDipendente = dipendenteService.readDipendente(codicePersona);
-		UtenteViewDto utenteResponseDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(anagraficaDipendente.getUtenteDipendente());
+		UtenteViewDto utenteResponseDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(anagraficaDipendente.getUtente());
 		AnagraficaDipendenteResponseDto anagraficaResponseDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagraficaDipendente);
 		anagraficaResponseDto.setUtenteDto(utenteResponseDto);
 //		AnagraficaDipendenteResponseDto anagraficaDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagraficaDipendente);

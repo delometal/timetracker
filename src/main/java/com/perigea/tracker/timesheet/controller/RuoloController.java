@@ -15,8 +15,8 @@ import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.dto.RuoloDto;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.enums.RuoloType;
-import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.RuoloService;
+import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 
 

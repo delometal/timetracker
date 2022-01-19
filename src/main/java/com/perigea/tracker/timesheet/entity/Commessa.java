@@ -42,17 +42,16 @@ public class Commessa extends BaseEntity {
 
 	@Column(name = "tipo_commessa", nullable = false, insertable = false, updatable = false)
 	@Enumerated(EnumType.STRING)
-	private CommessaType commessaType;
+	private CommessaType tipoCommessa;
 	
-	@OneToOne(mappedBy = "commessaSpesa")
+	@OneToOne(mappedBy = "commessa")
 	private NotaSpese notaSpese;
 
-	@OneToMany()
-	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false, updatable = false, insertable = false)
-	private List<TimesheetData> timesheet = new ArrayList<>();
+	@OneToMany(mappedBy = "commessa")
+	private List<TimesheetEntry> timesheet = new ArrayList<>();
 
 	@OneToMany(mappedBy = "commessa")
-	private List<DipendenteCommessa> dipendenteCommessa = new ArrayList<>();
+	private List<DipendenteCommessa> dipendente = new ArrayList<>();
 	
 	@ManyToOne
 	@JoinColumn(name = "partita_iva", referencedColumnName = "partita_iva", nullable = false)

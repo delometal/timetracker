@@ -1,23 +1,21 @@
 package com.perigea.tracker.timesheet.dto;
 
-import com.perigea.tracker.timesheet.enums.StatoType;
+import com.perigea.tracker.timesheet.enums.CommessaType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class TimesheetDataDto extends BaseDto {
+public class TimesheetEntryDto extends BaseDto {
 	
 	private static final long serialVersionUID = 8273187903186747431L;
 
-	private Integer annoDiRiferimento;
-	private Integer meseDiRiferimento;
-	private String codicePersona;
 	private String codiceCommessa;
-	private Integer giornoDiRiferimento;
+	private Integer giorno;
 	private Integer ore;
 	private Boolean trasferta;
+	private CommessaType tipoCommessa;
 	private String createUser;
 	private String lastUpdateUser;
 	

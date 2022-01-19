@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service;
 
 import com.perigea.tracker.timesheet.dto.DipendenteCommessaDto;
 import com.perigea.tracker.timesheet.dto.RuoloDto;
-import com.perigea.tracker.timesheet.dto.TimesheetDataDto;
+import com.perigea.tracker.timesheet.dto.TimesheetEntryDto;
 import com.perigea.tracker.timesheet.dto.UtentePostDto;
 import com.perigea.tracker.timesheet.entity.DipendenteCommessa;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.exception.UtenteException;
-import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
 import com.perigea.tracker.timesheet.repository.DipendenteCommessaRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
+import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 import com.perigea.tracker.timesheet.utility.TSUtils;
 
 
@@ -134,7 +134,7 @@ public class UtenteService {
 	}
 
 	// -------------------------------------------------------------------------------------------
-	public void editStatusTimeSheet(TimesheetDataDto timeSheetParam) {
+	public void editStatusTimeSheet(TimesheetEntryDto timeSheetParam) {
 		// if(mapEditUser.containsKey(key)) {
 		// TimeSheet
 		// timeSheetEntity=timeSheetRepo.findByCodicePersona(timeSheetParam.getCodiceCommessa());

@@ -28,7 +28,7 @@ public class AnagraficaDipendente extends BaseEntity {
 	@MapsId
 	@OneToOne
 	@JoinColumn(name = "codice_persona")
-	private Utente utenteDipendente;
+	private Utente utente;
 
 	@Column(name = "luogo_di_nascita")
 	private String luogoDiNascita;

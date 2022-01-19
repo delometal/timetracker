@@ -10,8 +10,8 @@ import com.perigea.tracker.timesheet.dto.RuoloDto;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.enums.RuoloType;
 import com.perigea.tracker.timesheet.exception.RuoloException;
-import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
 import com.perigea.tracker.timesheet.repository.RuoliRepository;
+import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 
 

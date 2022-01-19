@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.perigea.tracker.timesheet.dto.FestivitaDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.entity.Festivita;
-import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.FestivitaService;
+import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 
 @RestController

@@ -1,4 +1,4 @@
-package com.perigea.tracker.timesheet.mapstruct;
+package com.perigea.tracker.timesheet.utility;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import com.perigea.tracker.timesheet.dto.DipendenteCommessaDto;
 import com.perigea.tracker.timesheet.dto.FestivitaDto;
 import com.perigea.tracker.timesheet.dto.OrdineCommessaDto;
 import com.perigea.tracker.timesheet.dto.RuoloDto;
-import com.perigea.tracker.timesheet.dto.TimesheetDataDto;
+import com.perigea.tracker.timesheet.dto.TimesheetEntryDto;
 import com.perigea.tracker.timesheet.dto.TimesheetInputDto;
 import com.perigea.tracker.timesheet.dto.TimesheetResponseDto;
 import com.perigea.tracker.timesheet.dto.UtentePostDto;
@@ -31,7 +31,7 @@ import com.perigea.tracker.timesheet.entity.Festivita;
 import com.perigea.tracker.timesheet.entity.OrdineCommessa;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Timesheet;
-import com.perigea.tracker.timesheet.entity.TimesheetData;
+import com.perigea.tracker.timesheet.entity.TimesheetEntry;
 import com.perigea.tracker.timesheet.entity.Utente;
 
 
@@ -69,14 +69,14 @@ public interface DtoEntityMapper {
 	
 	CommessaDto fromEntityToDtoCommessa(Commessa entity);
 	
-	@Mapping (target= "codiceCommessa", source= "commessa.codiceCommessa")
-	@Mapping (target= "commessaType", source= "commessa.commessaType")
-	@Mapping (target= "descrizioneCommessa", source= "commessa.descrizioneCommessa")
+	@Mapping(target= "codiceCommessa", source= "commessa.codiceCommessa")
+	@Mapping(target= "tipoCommessa", source= "commessa.tipoCommessa")
+	@Mapping(target= "descrizioneCommessa", source= "commessa.descrizioneCommessa")
 	CommessaFatturabile fromDtoToEntityCommessaFatturabile(CommessaFatturabileDto dto);
 	
-	@Mapping (target= "commessa.codiceCommessa", source="codiceCommessa")
-	@Mapping (target= "commessa.commessaType", source="commessaType")
-	@Mapping (target= "commessa.descrizioneCommessa", source= "descrizioneCommessa")
+	@Mapping(target= "commessa.codiceCommessa", source="codiceCommessa")
+	@Mapping(target= "commessa.tipoCommessa", source="tipoCommessa")
+	@Mapping(target= "commessa.descrizioneCommessa", source= "descrizioneCommessa")
 	CommessaFatturabileDto fromEntityToDtoCommessaFatturabile(CommessaFatturabile entity);
 	
 	CommessaNonFatturabile fromDtoToEntityCommessaNonFatturabile(CommessaNonFatturabileDto dto);
@@ -85,16 +85,27 @@ public interface DtoEntityMapper {
 	
 	OrdineCommessa fromDtoToEntityOrdineCommessa(OrdineCommessaDto dto);
 	
-	@Mapping (target= ".", source="id")
+	@Mapping(target= ".", source="id")
 	OrdineCommessaDto fromEntityToDtoOrdineCommessa(OrdineCommessa entity);
 	
-	TimesheetData fromDtoToEntityTimeSheet(TimesheetDataDto dto);
+	@Mapping(target= "id.giorno", source="giorno")
+	@Mapping(target= "id.codiceCommessa", source="codiceCommessa")
+	TimesheetEntry fromDtoToEntityTimeSheet(TimesheetEntryDto dto);
 	
-	TimesheetDataDto fromEntityToDtoTimeSheet(TimesheetData entity);
+	@Mapping(target= "giorno", source="id.giorno")
+	@Mapping(target= "codiceCommessa", source="id.codiceCommessa")
+	TimesheetEntryDto fromEntityToDtoTimeSheet(TimesheetEntry entity);
 	
+	List<TimesheetEntry> fromEntityToDtoTimesheetData(List<TimesheetEntryDto> dtos);
+	
+	List<TimesheetEntryDto> fromDtoToEntityTimesheetData(List<TimesheetEntry> entities);
+
+	@Mapping(target= "id.anno", source="anno")
+	@Mapping(target= "id.mese", source="mese")
+	@Mapping(target= "id.codicePersona", source="codicePersona")
 	Timesheet fromDtoToEntityMensile(TimesheetInputDto dto);
 	
-	@Mapping (target= ".", source="id")
+	@Mapping(target= ".", source="id")
 	TimesheetResponseDto fromEntityToDtoMensile(Timesheet entity);
 	
 	DipendenteCommessa fromDtoToEntityRelazioneDipendenteCommessa(DipendenteCommessaDto dto);

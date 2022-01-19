@@ -1,11 +1,11 @@
 package com.perigea.tracker.timesheet.enums;
 
-public enum StatoType {
+public enum StatoRichiestaType {
 	I("INSERITO"),
 	C("CONFERMATO"),
 	V("VERIFICATO");
 
-	StatoType(String descrizione) {
+	StatoRichiestaType(String descrizione) {
 		this.descrizione = descrizione;
 	}
 	

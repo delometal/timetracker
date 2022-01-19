@@ -1,29 +1,31 @@
 package com.perigea.tracker.timesheet.service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.perigea.tracker.timesheet.dto.TimesheetDataDto;
+
+import com.perigea.tracker.timesheet.dto.TimesheetEntryDto;
 import com.perigea.tracker.timesheet.dto.TimesheetInputDto;
-import com.perigea.tracker.timesheet.dto.TimesheetResponseDto;
 import com.perigea.tracker.timesheet.entity.Commessa;
 import com.perigea.tracker.timesheet.entity.Festivita;
 import com.perigea.tracker.timesheet.entity.Timesheet;
-import com.perigea.tracker.timesheet.entity.TimesheetData;
+import com.perigea.tracker.timesheet.entity.TimesheetEntry;
 import com.perigea.tracker.timesheet.entity.Utente;
-import com.perigea.tracker.timesheet.entity.keys.TimesheetDataKey;
+import com.perigea.tracker.timesheet.entity.keys.TimesheetEntryKey;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
+import com.perigea.tracker.timesheet.enums.EMese;
+import com.perigea.tracker.timesheet.enums.StatoRichiestaType;
 import com.perigea.tracker.timesheet.exception.FestivitaException;
 import com.perigea.tracker.timesheet.exception.TimeSheetException;
-import com.perigea.tracker.timesheet.mapstruct.DtoEntityMapper;
 import com.perigea.tracker.timesheet.repository.CommessaRepository;
 import com.perigea.tracker.timesheet.repository.FestivitaRepository;
-import com.perigea.tracker.timesheet.repository.TimeSheetDataRepository;
-import com.perigea.tracker.timesheet.repository.TimeSheetRepository;
+import com.perigea.tracker.timesheet.repository.TimesheetRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
+import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 @Service
 public class TimesheetService {
@@ -31,8 +33,8 @@ public class TimesheetService {
 	@Autowired
 	private Logger logger;
 
-	@Autowired
-	private TimeSheetDataRepository timesheetRepository;
+//	@Autowired
+//	private TimesheetDataRepository timesheetDataRepository;
 
 	@Autowired
 	private FestivitaRepository festivitaRepository;
@@ -41,78 +43,49 @@ public class TimesheetService {
 	private UtenteRepository utenteRepository;
 
 	@Autowired
-	private CommessaRepository commessaRepo;
+	private CommessaRepository commessaRepository;
 
 	@Autowired
-	private TimeSheetRepository mensileRepo;
+	private TimesheetRepository timesheetRepository;
 
-	public TimesheetResponseDto createTimesheet(List<TimesheetDataDto> list, TimesheetInputDto timeDto) {
-		Timesheet timeSheet = DtoEntityMapper.INSTANCE.fromDtoToEntityMensile(timeDto);
-		Utente utente = utenteRepository.findByCodicePersona(timeDto.getCodicePersona());
-		timeSheet.setUtenteTimesheet(utente);
-		utente.addTimesheet(timeSheet);
-		TimesheetMensileKey id = new TimesheetMensileKey(timeDto.getAnnoDiRiferimento(), timeDto.getMeseDiRiferimento(),
-				timeDto.getCodicePersona());
-		timeSheet.setId(id);
-//		mensileRepo.save(timeSheet);
-		List<TimesheetDataDto> dataList = new ArrayList<TimesheetDataDto>();
-		Integer oreTot = 0;
-		for (TimesheetDataDto dataDto : list) {
-			Commessa commessa = commessaRepo.findByCodiceCommessa(dataDto.getCodiceCommessa());
-			TimesheetData data = DtoEntityMapper.INSTANCE.fromDtoToEntityTimeSheet(dataDto);
-			TimesheetDataKey dataKey = new TimesheetDataKey(dataDto.getAnnoDiRiferimento(),
-					dataDto.getMeseDiRiferimento(), dataDto.getGiornoDiRiferimento(),
-					dataDto.getCodicePersona(), dataDto.getCodiceCommessa());
-			data.setId(dataKey);
-			data.setCommessa(commessa);
-			data.setTimeSheet(timeSheet);
-			timeSheet.addTimesheet(data);
-			TimesheetDataDto dtoData = createTimeSheetData(dataDto);
-			oreTot = oreTot + data.getOre();
-			dataList.add(dtoData);
-		}
-		
-//		public TimeSheetResponseDto createTimeSheet(List<TimeSheetDataDto> list, TimeSheetInputDto timeDto) {
-		//
-//				TimeSheetMensileKey id = new TimeSheetMensileKey(2022, 1, "01");
-//				Optional<TimeSheet> timesheet = mensileRepo.findById(id);
-//				TimeSheet entity = timesheet.get();
-//				TimeSheetDataKey dataId = new TimeSheetDataKey(2022,1,3,"01","Ferie");
-//				Optional<TimeSheetData> dataTimesheet = timesheetRepository.findById(dataId);
-//				TimeSheetData dataEntity = dataTimesheet.get();
-//				return null;
-		//
-//			}
-		
-		timeSheet.setOreTotali(oreTot);
-		mensileRepo.save(timeSheet);
-		TimesheetResponseDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoMensile(timeSheet);
-		dto.setDataList(dataList);
-		return dto;
-	}
-
-	public TimesheetDataDto createTimeSheetData(TimesheetDataDto timeSheetParam) {
+	public Timesheet createTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timeDto) {
 		try {
-//			TimeSheet timeSheet = DtoEntityMapper.INSTANCE.fromDtoToEntityMensile(timeDto);
-			Commessa commessa = commessaRepo.findByCodiceCommessa(timeSheetParam.getCodiceCommessa());
-			TimesheetData data = DtoEntityMapper.INSTANCE.fromDtoToEntityTimeSheet(timeSheetParam);
-			giornoDiRiferimento(timeSheetParam);
-			data.setCommessa(commessa);
+			Integer oreTotali = 0;
+			Timesheet timesheet = DtoEntityMapper.INSTANCE.fromDtoToEntityMensile(timeDto);
+			Utente utente = utenteRepository.findByCodicePersona(timeDto.getCodicePersona());
+			timesheet.setUtente(utente);
+			utente.addTimesheet(timesheet);
+			TimesheetMensileKey tsKey = new TimesheetMensileKey(timeDto.getAnno(), timeDto.getMese(), timeDto.getCodicePersona());
+			timesheet.setId(tsKey);
+			timesheet.setStatoRichiesta(StatoRichiestaType.I);
+	
+			for (TimesheetEntryDto dataDto : timesheetDataList) {
+				oreTotali += dataDto.getOre();
+				Commessa commessa = commessaRepository.findByCodiceCommessa(dataDto.getCodiceCommessa());
+				TimesheetEntry entry = DtoEntityMapper.INSTANCE.fromDtoToEntityTimeSheet(dataDto);
+				TimesheetEntryKey entryKey = new TimesheetEntryKey(tsKey.getAnno(), tsKey.getMese(), dataDto.getGiorno(), tsKey.getCodicePersona(), dataDto.getCodiceCommessa());
+				entry.setId(entryKey);
+				entry.setCommessa(commessa);
+				entry.setTimesheet(timesheet);
+				entry.setTipoCommessa(commessa.getTipoCommessa());
+				timesheet.addTimesheet(entry);
+				timesheet.setOreTotali(oreTotali);		
+			}
 			
-			TimesheetDataKey id = new TimesheetDataKey(timeSheetParam.getAnnoDiRiferimento(),
-					timeSheetParam.getMeseDiRiferimento(), timeSheetParam.getGiornoDiRiferimento(),
-					timeSheetParam.getCodicePersona(), timeSheetParam.getCodiceCommessa());
-			data.setId(id);
-//			data.setTimeSheet(timeSheet);
-//			timeSheet.addTimeSheet(data);
-			timesheetRepository.save(data);
-			logger.info("TimeSheet creato e aggiunto a database");
-			TimesheetDataDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoTimeSheet(data);
-			return dto;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new TimeSheetException("Timesheet non creato " + ex.getMessage());
-
+			timesheetRepository.save(timesheet);
+			return timesheet;
+		} catch (Exception e) {
+			throw new TimeSheetException(e.getMessage());
+		}
+	}
+	
+	public Timesheet getTimesheet(Integer anno, EMese mese, String codicePersona) {
+		try {
+			Optional<Timesheet> optTimesheet = timesheetRepository.findById(new TimesheetMensileKey(anno, mese.getMonthId(), codicePersona));
+			Timesheet timesheet = optTimesheet.get();
+			return timesheet;
+		} catch(Exception e) {
+			throw new TimeSheetException(e.getMessage());
 		}
 	}
 
@@ -135,7 +108,7 @@ public class TimesheetService {
 //		}
 //	}
 //	
-	public void editStatusTimeSheet(TimesheetDataDto timeSheetParam) {
+	public void editStatusTimeSheet(TimesheetEntryDto timeSheetParam) {
 		// if(mapEditUser.containsKey(key)) {
 		// TimeSheet
 		// timeSheetEntity=timeSheetRepo.findByCodicePersona(timeSheetParam.getCodiceCommessa());
@@ -150,10 +123,9 @@ public class TimesheetService {
 		// }
 	}
 
-	public void giornoDiRiferimento(TimesheetDataDto timeSheetParam) {
+	public void giornoDiRiferimento(Integer anno, EMese mese, TimesheetEntryDto timesheetData) {
 		List<Festivita> festivi = festivitaRepository.findAll();
-		LocalDate data = LocalDate.of(timeSheetParam.getAnnoDiRiferimento(), timeSheetParam.getMeseDiRiferimento(),
-				timeSheetParam.getGiornoDiRiferimento());
+		LocalDate data = LocalDate.of(anno, mese.getMonthId(), timesheetData.getGiorno());
 		for (Festivita f : festivi) {
 			if (f.getData().isEqual(data) || data.getDayOfWeek() == DayOfWeek.SUNDAY
 					|| data.getDayOfWeek() == DayOfWeek.SATURDAY) {

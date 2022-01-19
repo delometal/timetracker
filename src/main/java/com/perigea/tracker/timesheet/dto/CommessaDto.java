@@ -12,7 +12,7 @@ public class CommessaDto extends BaseDto {
 	private static final long serialVersionUID = -2208822176373154627L;
 	
 	private String codiceCommessa;
-	private CommessaType commessaType;
+	private CommessaType tipoCommessa;
 	private String descrizioneCommessa;
 	
 }

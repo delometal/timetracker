@@ -14,33 +14,24 @@ public enum EMese {
 	NOV("NOVEMBRE", 11, "11"),
 	DIC("DICEMBRE", 12, "12");
 
-	EMese(String description, Integer index, String monthPart) {
+	EMese(String description, Integer monthId, String monthPart) {
 		this.description = description;
-		this.index = index;
+		this.monthId = monthId;
 		this.monthPart = monthPart;
 	}
 	
 	private String description;
-	private Integer index;
+	private Integer monthId;
 	private String monthPart;
 	
 	public String getDescription() {
 		return description;
 	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public Integer getIndex() {
-		return index;
-	}
-	public void setIndex(Integer index) {
-		this.index = index;
+	public Integer getMonthId() {
+		return monthId;
 	}
 	public String getMonthPart() {
 		return monthPart;
-	}
-	public void setMonthPart(String monthPart) {
-		this.monthPart = monthPart;
 	}
 
 }

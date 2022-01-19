@@ -1,6 +1,5 @@
 package com.perigea.tracker.timesheet.utility;
 
-import java.util.Date;
 import java.util.UUID;
 
 public class TSUtils {
@@ -13,8 +12,4 @@ public class TSUtils {
 		return UUID.randomUUID().toString();
 	}
 	
-	public static final Date newDate() {
-		return new Date();
-	}
-
 }

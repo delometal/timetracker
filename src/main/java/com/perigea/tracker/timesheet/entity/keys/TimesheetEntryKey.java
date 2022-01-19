@@ -13,18 +13,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class TimesheetDataKey implements Serializable {
+public class TimesheetEntryKey implements Serializable {
 
 	private static final long serialVersionUID = 3117858353342771303L;
 
 	@Column(name = "anno_di_riferimento")
-	private Integer annoDiRiferimento;
+	private Integer anno;
 
 	@Column(name = "mese_di_riferimento")
-	private Integer meseDiRiferimento;
+	private Integer mese;
 
 	@Column(name = "giorno_di_riferimento")
-	private Integer giornoDiRiferimento;
+	private Integer giorno;
 
 	@Column(name = "codice_persona")
 	private String codicePersona;

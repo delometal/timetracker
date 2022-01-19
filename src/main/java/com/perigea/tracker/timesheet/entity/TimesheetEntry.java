@@ -1,6 +1,9 @@
 package com.perigea.tracker.timesheet.entity;
 
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -9,6 +12,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.perigea.tracker.timesheet.entity.keys.TimesheetEntryKey;
@@ -39,6 +43,9 @@ public class TimesheetEntry extends BaseEntity {
 	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false, updatable = false, insertable = false)
 	private Commessa commessa;
 	
+	@OneToMany (mappedBy = "timesheetEntry", cascade = CascadeType.ALL)
+	private List<NotaSpese> notaSpese;
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "tipo_commessa")
 	private CommessaType tipoCommessa;
@@ -48,5 +55,15 @@ public class TimesheetEntry extends BaseEntity {
 
 	@Column(name = "trasferta")
 	private Boolean trasferta;
+	
+	public void addNotaSpese(NotaSpese notaSpesa) {
+		this.notaSpese.add(notaSpesa);
+		notaSpesa.setTimesheetEntry(this);
+	}
+
+	public void removeNotaSpese(NotaSpese notaSpesa) {
+		this.notaSpese.remove(notaSpesa);
+		notaSpesa.setTimesheetEntry(null);
+	}
 
 }

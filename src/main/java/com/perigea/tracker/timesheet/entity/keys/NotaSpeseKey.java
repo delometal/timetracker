@@ -9,19 +9,26 @@ import javax.persistence.Enumerated;
 
 import com.perigea.tracker.timesheet.enums.CostoNotaSpeseType;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Embeddable
+@NoArgsConstructor
+@AllArgsConstructor
 public class NotaSpeseKey implements Serializable {
 
 	private static final long serialVersionUID = 1084967773079390935L;
 
 	@Column(name = "anno_di_riferimento")
-	private Integer annoDiRiferimento;
+	private Integer anno;
 
 	@Column(name = "mese_di_riferimento")
-	private Integer meseDiRiferimento;
+	private Integer mese;
+	
+	@Column(name = "giorno_di_riferimento")
+	private Integer giorno;
 
 	@Column(name = "codice_persona")
 	private String codicePersona;
@@ -29,11 +36,8 @@ public class NotaSpeseKey implements Serializable {
 	@Column(name = "codice_commessa")
 	private String codiceCommessa;
 
-	@Column(name = "giorno_di_riferimento")
-	private Integer giornoDiRiferimento;
-
 	@Column(name = "tipo_costo")
 	@Enumerated(EnumType.STRING)
-	private CostoNotaSpeseType tipoCostoNotaSpeseType;
+	private CostoNotaSpeseType costoNotaSpeseType;
 
 }

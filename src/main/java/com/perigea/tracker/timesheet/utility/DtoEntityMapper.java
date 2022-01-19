@@ -14,6 +14,7 @@ import com.perigea.tracker.timesheet.dto.CommessaFatturabileDto;
 import com.perigea.tracker.timesheet.dto.CommessaNonFatturabileDto;
 import com.perigea.tracker.timesheet.dto.DipendenteCommessaDto;
 import com.perigea.tracker.timesheet.dto.FestivitaDto;
+import com.perigea.tracker.timesheet.dto.NotaSpeseDto;
 import com.perigea.tracker.timesheet.dto.OrdineCommessaDto;
 import com.perigea.tracker.timesheet.dto.RuoloDto;
 import com.perigea.tracker.timesheet.dto.TimesheetEntryDto;
@@ -28,6 +29,7 @@ import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
 import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
 import com.perigea.tracker.timesheet.entity.DipendenteCommessa;
 import com.perigea.tracker.timesheet.entity.Festivita;
+import com.perigea.tracker.timesheet.entity.NotaSpese;
 import com.perigea.tracker.timesheet.entity.OrdineCommessa;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Timesheet;
@@ -113,6 +115,21 @@ public interface DtoEntityMapper {
 	Festivita FromDtoToEntityFestivita(FestivitaDto dto);
 	
 	FestivitaDto FromEntityToDtoFestivita(Festivita entity);
+	
+	@Mapping(target= "id.anno", source="anno")
+	@Mapping(target= "id.mese", source="mese")
+	@Mapping(target= "id.giorno", source="giorno")
+	@Mapping(target= "id.codiceCommessa", source="codiceCommessa")
+	@Mapping(target= "id.codicePersona", source="codicePersona")
+	@Mapping(target= "id.costoNotaSpeseType", source="costoNotaSpeseType")
+	NotaSpese fromDtoToEntityNotaSpese (NotaSpeseDto dto);
+	
+	@Mapping(target= ".", source="id")
+	NotaSpeseDto fromEntityToDtoNotaSpese (NotaSpese entity);
+	
+	List<NotaSpese> fromDtoToEntityNotaSpese (List<NotaSpeseDto> dto);
+	
+	List<NotaSpeseDto> fromEntityToDtoNotaSpese (List<NotaSpese> entity);
 	
 //	UtenteRuoli FromDtoToEntityUtenteRuoli(RuoloUtenteDto dto);
 //	

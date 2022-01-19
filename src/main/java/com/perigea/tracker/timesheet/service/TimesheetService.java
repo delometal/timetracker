@@ -1,17 +1,24 @@
 package com.perigea.tracker.timesheet.service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.perigea.tracker.timesheet.dto.NotaSpeseDto;
 import com.perigea.tracker.timesheet.dto.TimesheetEntryDto;
 import com.perigea.tracker.timesheet.dto.TimesheetInputDto;
 import com.perigea.tracker.timesheet.entity.Commessa;
 import com.perigea.tracker.timesheet.entity.Festivita;
+import com.perigea.tracker.timesheet.entity.NotaSpese;
 import com.perigea.tracker.timesheet.entity.Timesheet;
 import com.perigea.tracker.timesheet.entity.TimesheetEntry;
 import com.perigea.tracker.timesheet.entity.Utente;
@@ -20,9 +27,11 @@ import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
 import com.perigea.tracker.timesheet.enums.EMese;
 import com.perigea.tracker.timesheet.enums.StatoRichiestaType;
 import com.perigea.tracker.timesheet.exception.FestivitaException;
+import com.perigea.tracker.timesheet.exception.NotaSpeseException;
 import com.perigea.tracker.timesheet.exception.TimeSheetException;
 import com.perigea.tracker.timesheet.repository.CommessaRepository;
 import com.perigea.tracker.timesheet.repository.FestivitaRepository;
+import com.perigea.tracker.timesheet.repository.NotaSpeseRepository;
 import com.perigea.tracker.timesheet.repository.TimesheetRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
@@ -47,8 +56,12 @@ public class TimesheetService {
 
 	@Autowired
 	private TimesheetRepository timesheetRepository;
+	
+	@Autowired
+	private NotaSpeseRepository notaSpeseRepository;
 
-	public Timesheet createTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timeDto) {
+	@Transactional
+	public Timesheet createTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timeDto, List<NotaSpeseDto> notaSpeseList) {
 		try {
 			Integer oreTotali = 0;
 			Timesheet timesheet = DtoEntityMapper.INSTANCE.fromDtoToEntityMensile(timeDto);
@@ -59,6 +72,22 @@ public class TimesheetService {
 			timesheet.setId(tsKey);
 			timesheet.setStatoRichiesta(StatoRichiestaType.I);
 	
+			Map<TimesheetEntryKey, List<NotaSpeseDto>> map = new HashMap<>();
+			notaSpeseList.forEach(r-> {
+				TimesheetEntryKey entryKey = new TimesheetEntryKey(r.getAnno(), r.getMese(), r.getGiorno(), r.getCodicePersona(), r.getCodiceCommessa());
+				r.setAnno(entryKey.getAnno());
+				r.setMese(entryKey.getMese());
+				r.setGiorno(entryKey.getGiorno());
+				r.setCodicePersona(entryKey.getCodicePersona());
+				r.setCodiceCommessa(entryKey.getCodiceCommessa());
+				if(map.containsKey(entryKey)) {
+					map.get(entryKey).add(r);
+				} else {
+					map.put(entryKey, new ArrayList<>());
+					map.get(entryKey).add(r);
+				}
+			});
+			
 			for (TimesheetEntryDto dataDto : timesheetDataList) {
 				oreTotali += dataDto.getOre();
 				Commessa commessa = commessaRepository.findByCodiceCommessa(dataDto.getCodiceCommessa());
@@ -69,9 +98,10 @@ public class TimesheetService {
 				entry.setTimesheet(timesheet);
 				entry.setTipoCommessa(commessa.getTipoCommessa());
 				timesheet.addTimesheet(entry);
-				timesheet.setOreTotali(oreTotali);		
-			}
-			
+				timesheet.setOreTotali(oreTotali);
+				List<NotaSpese> list= DtoEntityMapper.INSTANCE.fromDtoToEntityNotaSpese(map.get(entryKey));
+				entry.setNotaSpese(list);			
+				}
 			timesheetRepository.save(timesheet);
 			return timesheet;
 		} catch (Exception e) {
@@ -134,4 +164,5 @@ public class TimesheetService {
 			logger.info("Il giorno inserito è corretto");
 		}
 	}
+	
 }

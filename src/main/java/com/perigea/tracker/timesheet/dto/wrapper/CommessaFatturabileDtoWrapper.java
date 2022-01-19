@@ -3,6 +3,7 @@ package com.perigea.tracker.timesheet.dto.wrapper;
 import com.perigea.tracker.timesheet.dto.AnagraficaClienteDto;
 import com.perigea.tracker.timesheet.dto.BaseDto;
 import com.perigea.tracker.timesheet.dto.CommessaFatturabileDto;
+import com.perigea.tracker.timesheet.dto.NotaSpeseDto;
 import com.perigea.tracker.timesheet.dto.OrdineCommessaDto;
 
 import lombok.Data;
@@ -16,5 +17,4 @@ public class CommessaFatturabileDtoWrapper extends BaseDto {
 	private CommessaFatturabileDto commessaFatturabileDto;
 	private OrdineCommessaDto ordineCommessa;
 	private AnagraficaClienteDto anagraficaCliente;
-
 }

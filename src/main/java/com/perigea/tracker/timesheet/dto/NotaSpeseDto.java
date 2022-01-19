@@ -11,12 +11,12 @@ public class NotaSpeseDto extends BaseDto {
 
 	private static final long serialVersionUID = -2095879361695786844L;
 	
-	private Integer annoDiRiferimento;
-	private Integer meseDiRiferimento;
+	private Integer anno;
+	private Integer mese;
 	private String codicePersona;
 	private String codiceCommessa;
-	private Integer giornoDiRiferimento;
-	private CostoNotaSpeseType tipoCostoNotaSpeseType;
+	private Integer giorno;
+	private CostoNotaSpeseType costoNotaSpeseType;
 	private Double importo;
 	private String createUser;
 	private String lastUpdateUser;

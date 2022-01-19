@@ -46,13 +46,13 @@ public class Utente extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private StatoUtenteType statoUtenteType;
 
-	@OneToMany(mappedBy = "utenteSpesa")
+	@OneToMany(mappedBy = "utente")
 	private List<NotaSpese> noteSpese = new ArrayList<>();
 
 	@OneToOne(mappedBy = "utente", cascade = CascadeType.ALL)
 	private AnagraficaDipendente dipendente;
 
-	@OneToMany(mappedBy = "utenteTimesheet")
+	@OneToMany(mappedBy = "utente")
 	private List<Timesheet> timesheet = new ArrayList<>();
 
 	@OneToMany(mappedBy = "utente")

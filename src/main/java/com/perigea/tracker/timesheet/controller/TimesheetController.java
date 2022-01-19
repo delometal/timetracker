@@ -30,7 +30,7 @@ public class TimesheetController {
 	// Metodo per creare un timesheet
 	@PostMapping(value = "/create-timesheet")
 	public ResponseEntity<GenericWrapperResponse<TimesheetResponseDto>> createTimesheet(@RequestBody TimesheetDataWrapper wrapper) {
-		Timesheet timesheet = timesheetService.createTimesheet(wrapper.getEntries(), wrapper.getTimesheet());
+		Timesheet timesheet = timesheetService.createTimesheet(wrapper.getEntries(), wrapper.getTimesheet(), wrapper.getExpenseReport());
 		TimesheetResponseDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoMensile(timesheet);
 		GenericWrapperResponse<TimesheetResponseDto> genericDto = GenericWrapperResponse.<TimesheetResponseDto>builder()
 				.dataRichiesta(new Date()).risultato(dto).build();

@@ -31,7 +31,5 @@ public class Ruolo implements Serializable {
 	@Column(name = "descrizione_ruolo")
 	private String descrizione;
 
-	@OneToMany(mappedBy = "ruolo")
-	private List<UtenteRuoli> ruoli = new ArrayList<>();
-
+	
 }

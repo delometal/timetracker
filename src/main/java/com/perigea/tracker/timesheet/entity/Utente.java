@@ -1,5 +1,4 @@
 package com.perigea.tracker.timesheet.entity;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +9,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -43,26 +44,28 @@ public class Utente extends BaseEntity {
 
 	@Column(name = "stato_utente")
 	@Enumerated(EnumType.STRING)
-	private StatoUtenteType statoUtente;
+	private StatoUtenteType statoUtenteType;
 
-	@OneToMany(mappedBy = "utente")
+	@OneToMany(mappedBy = "utenteSpesa")
 	private List<NotaSpese> noteSpese = new ArrayList<>();
 
 	@OneToOne(mappedBy = "utente", cascade = CascadeType.ALL)
 	private AnagraficaDipendente dipendente;
 
-	@OneToMany(mappedBy = "utente")
+	@OneToMany(mappedBy = "utenteTimesheet")
 	private List<Timesheet> timesheet = new ArrayList<>();
 
-	@OneToMany(mappedBy = "utente") // @TODO fare many to many come per ruoli
-	private List<DipendenteCommessa> commesseDipendente = new ArrayList<>();
+	@OneToMany(mappedBy = "utente")
+	private List<DipendenteCommessa> commesse = new ArrayList<>();
 
-	@OneToMany(mappedBy = "utente") // @TODO fare many to many ruoli
-	private List<UtenteRuoli> utenteRuoli = new ArrayList<>();
+	@ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+        name = "utente_ruolo", 
+        joinColumns = { @JoinColumn(name = "codice_persona") }, 
+        inverseJoinColumns = { @JoinColumn(name = "ruolo") }
+    )
+	private List<Ruolo> ruoli=new ArrayList<>();
 
-	@Column(name = "codice_responsabile", nullable = false, insertable = false, updatable = false)
-	private String codiceResponsabile;
-	
 	@ManyToOne
 	@JoinColumn(name = "codice_responsabile")
 	private Utente responsabile;
@@ -79,7 +82,7 @@ public class Utente extends BaseEntity {
 		this.dipendenti.remove(dipendente);
 		dipendente.setResponsabile(null);
 	}
-	
+
 	public void addTimesheet(Timesheet timesheet) {
 		this.timesheet.add(timesheet);
 		timesheet.setUtente(this);
@@ -89,4 +92,13 @@ public class Utente extends BaseEntity {
 		this.timesheet.remove(timesheet);
 		timesheet.setUtente(null);
 	}
+	
+	public void addRuolo(Ruolo ruolo) {
+		this.ruoli.add(ruolo);
+	}
+	
+	public void removeRuolo(Ruolo ruolo) {
+		this.ruoli.remove(ruolo);
+	}
+	
 }

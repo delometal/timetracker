@@ -1,5 +1,7 @@
 package com.perigea.tracker.timesheet.dto;
 
+import java.util.List;
+
 import com.perigea.tracker.timesheet.enums.StatoUtenteType;
 
 import lombok.Data;
@@ -16,5 +18,5 @@ public class UtenteBaseDto extends BaseDto {
 	private String cognome;
 	private StatoUtenteType statoUtente;
 	private String codiceResponsabile;
-
+	private List<RuoloDto> ruoli;
 }

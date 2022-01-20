@@ -2,12 +2,14 @@ package com.perigea.tracker.timesheet.entity;
 
 import java.util.Date;
 
+import javax.persistence.AssociationOverride;
+import javax.persistence.AssociationOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.perigea.tracker.timesheet.entity.keys.DipendenteCommessaKey;
 
@@ -18,20 +20,17 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "dipendente_commessa")
 @EqualsAndHashCode(callSuper = true)
+@AssociationOverrides({
+    @AssociationOverride(name = "id.utente",
+        joinColumns = @JoinColumn(name = "codice_persona")),
+    @AssociationOverride(name = "id.commessa",
+        joinColumns = @JoinColumn(name = "codice_commessa")) })
 public class DipendenteCommessa extends BaseEntity {
 
 	private static final long serialVersionUID = -2109547859283092218L;
 
 	@EmbeddedId
 	private DipendenteCommessaKey id;
-
-	@ManyToOne
-	@JoinColumn(name = "codice_persona", referencedColumnName = "codice_persona", nullable = false, insertable = false, updatable = false)
-	private Utente utente;
-
-	@ManyToOne
-	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false, insertable = false, updatable = false)
-	private Commessa commessa;
 
 	@Column(name = "data_inizio_allocazione")
 	private Date dataInizioAllocazione;
@@ -59,5 +58,15 @@ public class DipendenteCommessa extends BaseEntity {
 
 	@Column(name = "importo_residuo")
 	private Double importoResiduo;
+	
+	@Transient
+	public Utente getUtente() {
+		return id.getUtente();
+	}
+
+	@Transient
+	private Commessa getCommessa() {
+		return id.getCommessa();
+	}
 
 }

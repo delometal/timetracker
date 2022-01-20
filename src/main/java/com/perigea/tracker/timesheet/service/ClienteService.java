@@ -14,9 +14,6 @@ import com.perigea.tracker.timesheet.exception.ClienteException;
 import com.perigea.tracker.timesheet.repository.AnagraficaClienteRepository;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
-
-
-
 @Service
 public class ClienteService {
 
@@ -26,29 +23,42 @@ public class ClienteService {
 	@Autowired
 	private AnagraficaClienteRepository anagraficaClienteRepository;
 
-	public AnagraficaCliente createCustomerPersonalData(AnagraficaClienteDto anaClienteDto) {
+	/**
+	 * creazione anagrafica cliente
+	 * @param anaClienteDto
+	 * @return
+	 */
+	public AnagraficaCliente createAnagraficaCliente(AnagraficaClienteDto anaClienteDto) {
 		try {
 			AnagraficaCliente anagraficaClienteEntity = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(anaClienteDto);
 			anagraficaClienteRepository.save(anagraficaClienteEntity);
 			logger.info("Dati anagrafici cliente persistiti");
-//			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
 			return anagraficaClienteEntity;
 		} catch (Exception ex) {
 			throw new ClienteException(ex.getMessage());
 		}
 	}
 
-	public AnagraficaCliente readCustomerPersonalData(String partitaIva) {
+	/**
+	 * lettura anagrafica cliente
+	 * @param partitaIva
+	 * @return
+	 */
+	public AnagraficaCliente readAnagraficaCliente(String partitaIva) {
 		try {
 			AnagraficaCliente anagraficaClienteEntity = anagraficaClienteRepository.findByPartitaIva(partitaIva);
-//			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
 			return anagraficaClienteEntity;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
 	}
 
-	public AnagraficaCliente updateCustomerPersonalData(AnagraficaClienteDto anaClienteDto) {
+	/**
+	 * update anagrafica cliente
+	 * @param anaClienteDto
+	 * @return
+	 */
+	public AnagraficaCliente updateAnagraficaCliente(AnagraficaClienteDto anaClienteDto) {
 		try {
 			AnagraficaCliente anagraficaClienteEntity = anagraficaClienteRepository.findByPartitaIva(anaClienteDto.getPartitaIva());
 			if (anagraficaClienteEntity != null) {
@@ -57,20 +67,23 @@ public class ClienteService {
 				logger.info("Anagrafica Cliente Aggiornata");
 				anagraficaClienteRepository.save(anagraficaClienteEntity);
 			}
-//			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
 			return anagraficaClienteEntity;
 			} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
 	}
 
-	public AnagraficaCliente deleteCustomerPersonalData(String partitaIva) {
+	/**
+	 * cancellazione anagrafica cliente
+	 * @param partitaIva
+	 * @return
+	 */
+	public AnagraficaCliente deleteAnagraficaCliente(String partitaIva) {
 		try {
 			AnagraficaCliente anagraficaClienteEntity = anagraficaClienteRepository.findByPartitaIva(partitaIva);
 			if (anagraficaClienteEntity != null) {
 				anagraficaClienteRepository.delete(anagraficaClienteEntity);
 			}
-//			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(entity);
 			return anagraficaClienteEntity;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());

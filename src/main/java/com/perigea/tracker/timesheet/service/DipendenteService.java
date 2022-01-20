@@ -5,25 +5,23 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteInputDto;
 import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteResponseDto;
 import com.perigea.tracker.timesheet.dto.RuoloDto;
-import com.perigea.tracker.timesheet.dto.UtentePostDto;
 import com.perigea.tracker.timesheet.dto.UtenteViewDto;
 import com.perigea.tracker.timesheet.entity.AnagraficaDipendente;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Utente;
+import com.perigea.tracker.timesheet.enums.StatoUtenteType;
+import com.perigea.tracker.timesheet.exception.DipendenteException;
 import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
-import com.perigea.tracker.timesheet.exception.UtenteException;
 import com.perigea.tracker.timesheet.repository.AnagraficaDipendenteRepository;
-import com.perigea.tracker.timesheet.repository.RuoliRepository;
+import com.perigea.tracker.timesheet.repository.ApplicationDao;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 import com.perigea.tracker.timesheet.utility.TSUtils;
-
-
-
 
 @Service
 public class DipendenteService {
@@ -36,11 +34,16 @@ public class DipendenteService {
 
 	@Autowired
 	private UtenteRepository utenteRepository;
-
+	
 	@Autowired
-	private RuoliRepository ruoliRepository;
+	private ApplicationDao applicationDao;
 
-	// metodo per creare un dipendente
+	/**
+	 * Creazione anagrafica dipendente e utente
+	 * @param dipendenteDto
+	 * @param codiceResponsabile
+	 * @return
+	 */
 	public AnagraficaDipendenteResponseDto createDipendente(AnagraficaDipendenteInputDto dipendenteDto, String codiceResponsabile) {
 		try {
 			Utente utente = DtoEntityMapper.INSTANCE.fromDtoToEntityUtente(dipendenteDto.getUtenteDto());
@@ -60,11 +63,15 @@ public class DipendenteService {
 			logger.info("done");
 			return anagraficaResponseDto;
 		} catch (Exception ex) {
-			throw new UtenteException(ex.getMessage());
+			throw new DipendenteException(ex.getMessage());
 		}
 	}
 
-	// Metodo per leggere i dati di un determinato dipendente
+	/**
+	 * Lettura dati di un dipendente
+	 * @param dipendenteParam
+	 * @return
+	 */
 	public AnagraficaDipendenteResponseDto readDipendente(String dipendenteParam) {
 		try {
 			AnagraficaDipendente anagDipendente = dipendenteRepository.findByCodicePersona(dipendenteParam);
@@ -77,7 +84,11 @@ public class DipendenteService {
 		}
 	}
 
-	// Metodo per aggiornare i dati di un dipendente
+	/**
+	 * Aggiornamento dati dipendente
+	 * @param dipendenteParam
+	 * @return
+	 */
 	public AnagraficaDipendenteResponseDto updateDipendente(AnagraficaDipendenteInputDto dipendenteParam) {
 		try {
 			AnagraficaDipendente anagDipendente = dipendenteRepository.findByCodicePersona(dipendenteParam.getUtenteDto().getCodicePersona());
@@ -89,11 +100,16 @@ public class DipendenteService {
 			anagraficaResponseDto.setUtenteDto(utenteResponseDto);
 			return anagraficaResponseDto;
 		} catch (Exception ex) {
-			throw new EntityNotFoundException(ex.getMessage());
+			throw new DipendenteException(ex.getMessage());
 		}
 	}
 
-	// Metodo per eliminare un dipendente da database
+	/**
+	 * Cancellazione dipendente
+	 * @param id
+	 * @return
+	 */
+	@Transactional
 	public AnagraficaDipendenteResponseDto deleteDipendente(String id) {
 		try {
 			AnagraficaDipendente anagDipendente = dipendenteRepository.findByCodicePersona(id);
@@ -106,55 +122,57 @@ public class DipendenteService {
 			anagraficaResponseDto.setUtenteDto(utenteResponseDto);
 			return anagraficaResponseDto;
 		} catch (Exception ex) {
-			throw new EntityNotFoundException(ex.getMessage());
+			throw new DipendenteException(ex.getMessage());
 		}
 	}
 
 	// Metodo per aggiornare lo stato (attivo/cessato) di un utente
-	public UtenteViewDto editStatusUser(UtentePostDto utenteDto) {
+	public UtenteViewDto updateUserStatus(String codicePersona, StatoUtenteType newStatus) {
 		try {
-			Utente entity = utenteRepository.findByCodicePersona(utenteDto.getCodicePersona());
-			if (entity != null) {
-				entity.setStatoUtenteType(utenteDto.getStatoUtente());
-				entity.setLastUpdateUser("");
-				utenteRepository.save(entity);
+			Integer edits = applicationDao.updateUserStatus(codicePersona, newStatus);
+			if (edits != null && edits == 1) {
+				return DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(utenteRepository.findByCodicePersona(codicePersona));
+			} else {
+				throw new Exception(String.format("Si è verificato un errore durante l'aggiornamento per l'utente %s con il nuovo stato %s", codicePersona, newStatus.name()));
 			}
-//			Utente responsabile = entity.getResponsabile();
-//			UtenteViewDto respDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(responsabile);
-			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(entity);
-//			dto.setResponsabileDto(respDto);
-			return dto;
 		} catch (Exception ex) {
-			throw new EntityNotFoundException(ex.getMessage());
+			throw new DipendenteException(ex.getMessage());
 		}
 	}
 
+	/**
+	 * Aggiornamento ruoli utente
+	 * @param ruoloList
+	 * @param utente
+	 * @return
+	 */
 	private UtenteViewDto editUserRoles(List<Ruolo> ruoloList, Utente utente) {
 		try {
-			ruoloList.forEach(r ->{
-				if(utente.getRuoli().contains(r)) {
-					utente.removeRuolo(r);
-				} else {
+			ruoloList.forEach(r -> {
+				if(!utente.getRuoli().contains(r)) {
 					utente.addRuolo(r);
 				}
 			});
 			utenteRepository.save(utente);
-			UtenteViewDto dto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(utente);
-			return dto;
+			return DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(utente);
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
 	}
 	
+	/**
+	 * Aggiornamento ruoli utente
+	 * @param ruoloList
+	 * @param utente
+	 * @return
+	 */
 	public UtenteViewDto editUserRolesDto(List<RuoloDto> ruoloList, String codicePersona) {
 		try {
-			Utente entity= utenteRepository.findByCodicePersona(codicePersona);
-			List<Ruolo> list= new ArrayList<>();
+			Utente entity = utenteRepository.findByCodicePersona(codicePersona);
+			List<Ruolo> ruoli = new ArrayList<>();
 			if(entity != null && !ruoloList.isEmpty()) {
-				ruoloList.forEach( r-> {
-					list.add(DtoEntityMapper.INSTANCE.fromDtoToEntityRuoli(r));
-				});
-				return editUserRoles(list,entity);
+				ruoloList.forEach(r -> ruoli.add(DtoEntityMapper.INSTANCE.fromDtoToEntityRuoli(r)));
+				return editUserRoles(ruoli, entity);
 			}
 			throw new EntityNotFoundException("Utente non trovato o ruoli non passati correttamente");
 		} catch (Exception ex) {

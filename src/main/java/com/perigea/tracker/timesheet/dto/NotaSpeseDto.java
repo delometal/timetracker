@@ -13,10 +13,10 @@ public class NotaSpeseDto extends BaseDto {
 	
 	private Integer anno;
 	private Integer mese;
-	private String codicePersona;
-	private String codiceCommessa;
-	private Integer giorno;
-	private CostoNotaSpeseType costoNotaSpeseType;
+//	private String codicePersona;
+//	private String codiceCommessa;
+//	private Integer giorno;
+	private CostoNotaSpeseType costoNotaSpese;
 	private Double importo;
 	private String createUser;
 	private String lastUpdateUser;

@@ -49,7 +49,6 @@ public class CommessaService {
 	@Autowired
 	private AnagraficaClienteRepository anagraficaClienteRepo;
 
-//	@TODO nel service far ritornare le entity
 	
 	public CommessaFatturabile createCommessaFatturabile(CommessaFatturabileDtoWrapper commessaFatturabileDtoWrapper) {
 		try {

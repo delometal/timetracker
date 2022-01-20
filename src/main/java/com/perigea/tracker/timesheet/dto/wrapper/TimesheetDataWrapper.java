@@ -18,5 +18,5 @@ public class TimesheetDataWrapper implements Serializable {
 	
 	private List<TimesheetEntryDto> entries = new ArrayList<>();
 	private TimesheetInputDto timesheet;
-	private List<NotaSpeseDto> expenseReport = new ArrayList<>();
+//	private List<NotaSpeseDto> expenseReport = new ArrayList<>();
 }

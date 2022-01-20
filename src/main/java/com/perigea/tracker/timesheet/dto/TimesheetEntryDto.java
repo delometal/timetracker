@@ -1,5 +1,8 @@
 package com.perigea.tracker.timesheet.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.perigea.tracker.timesheet.enums.CommessaType;
 
 import lombok.Data;
@@ -18,5 +21,6 @@ public class TimesheetEntryDto extends BaseDto {
 	private CommessaType tipoCommessa;
 	private String createUser;
 	private String lastUpdateUser;
+	private List<NotaSpeseDto> expenseReport = new ArrayList<>();;
 	
 }

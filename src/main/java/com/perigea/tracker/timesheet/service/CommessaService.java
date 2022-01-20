@@ -46,9 +46,9 @@ public class CommessaService {
 	@Autowired
 	private ApplicationProperties applicationProperties;
 
-	/**
-	 * metodo per creare una commessa non fatturabile
 	 * @param commessaNonFatturabileDto
+	 * metodo per creare una commessa non fatturabile
+	/**
 	 * @return
 	 */
 	public CommessaNonFatturabile createCommessaNonFatturabile(CommessaNonFatturabileDto commessaNonFatturabileDto) {

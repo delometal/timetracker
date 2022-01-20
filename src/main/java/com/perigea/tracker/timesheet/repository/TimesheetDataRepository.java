@@ -7,7 +7,9 @@ import com.perigea.tracker.timesheet.entity.TimesheetEntry;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetEntryKey;
 
 @Repository
-public interface TimesheetDataRepository extends JpaRepository<TimesheetEntry, TimesheetEntryKey> {
+public interface TimesheetDataRepository extends JpaRepository<TimesheetEntry, Long> {
+
+	public TimesheetEntry findById(TimesheetEntryKey id);
 	
 
 

@@ -26,10 +26,8 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto=GenericWrapperResponse.<GenericError>builder()
-				.dataRichiesta(new Date())
-				.risultato(eObject)
-				.build();
-		return ResponseEntity.ok(errorDto);
+				.dataRichiesta(new Date()).risultato(eObject).build();
+		return ResponseEntity.badRequest().body(errorDto);
 	}
 
 	@ExceptionHandler(CommessaException.class)
@@ -38,10 +36,8 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto=GenericWrapperResponse.<GenericError>builder()
-				.dataRichiesta(new Date())
-				.risultato(eObject)
-				.build();
-		return ResponseEntity.ok(errorDto);
+				.dataRichiesta(new Date()).risultato(eObject).build();
+		return ResponseEntity.badRequest().body(errorDto);
 
 	}
 
@@ -51,10 +47,8 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto=GenericWrapperResponse.<GenericError>builder()
-				.dataRichiesta(new Date())
-				.risultato(eObject)
-				.build();
-		return ResponseEntity.ok(errorDto);
+				.dataRichiesta(new Date()).risultato(eObject).build();
+		return ResponseEntity.badRequest().body(errorDto);
 
 	}
 
@@ -65,10 +59,8 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto=GenericWrapperResponse.<GenericError>builder()
-				.dataRichiesta(new Date())
-				.risultato(eObject)
-				.build();
-		return ResponseEntity.ok(errorDto);
+				.dataRichiesta(new Date()).risultato(eObject).build();
+		return ResponseEntity.badRequest().body(errorDto);
 
 	}
 
@@ -78,23 +70,19 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto=GenericWrapperResponse.<GenericError>builder()
-				.dataRichiesta(new Date())
-				.risultato(eObject)
-				.build();
-		return ResponseEntity.ok(errorDto);
+				.dataRichiesta(new Date()).risultato(eObject).build();
+		return ResponseEntity.badRequest().body(errorDto);
 
 	}
 	
 	@ExceptionHandler(EntityNotFoundException.class)
 	public final ResponseEntity<?> handleEntityNonFoundException(EntityNotFoundException ex){
-		GenericError eObject= new GenericError();
-		eObject.setStatusCode(HttpStatus.NOT_FOUND.value());
-		eObject.setMessage(ex.getMessage());
-		GenericWrapperResponse<GenericError> errorDto=GenericWrapperResponse.<GenericError>builder()
-				.dataRichiesta(new Date())
-				.risultato(eObject)
-				.build();
-		return ResponseEntity.ok(errorDto);
+//		GenericError eObject= new GenericError();
+//		eObject.setStatusCode(HttpStatus.NOT_FOUND.value());
+//		eObject.setMessage(ex.getMessage());
+//		GenericWrapperResponse<GenericError> errorDto=GenericWrapperResponse.<GenericError>builder()
+//				.dataRichiesta(new Date()).risultato(eObject).build();
+		return ResponseEntity.notFound().build();
 
 	}
 	
@@ -104,10 +92,8 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto=GenericWrapperResponse.<GenericError>builder()
-				.dataRichiesta(new Date())
-				.risultato(eObject)
-				.build();
-		return ResponseEntity.ok(errorDto);
+				.dataRichiesta(new Date()).risultato(eObject).build();
+		return ResponseEntity.badRequest().body(errorDto);
 
 	}
 

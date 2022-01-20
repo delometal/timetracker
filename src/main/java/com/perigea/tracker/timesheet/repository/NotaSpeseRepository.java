@@ -7,6 +7,8 @@ import com.perigea.tracker.timesheet.entity.NotaSpese;
 import com.perigea.tracker.timesheet.entity.keys.NotaSpeseKey;
 
 @Repository
-public interface NotaSpeseRepository extends JpaRepository<NotaSpese, NotaSpeseKey> {
+public interface NotaSpeseRepository extends JpaRepository<NotaSpese, Long> {
+	
+	public NotaSpese findById (NotaSpeseKey id);
+}
 
-} 

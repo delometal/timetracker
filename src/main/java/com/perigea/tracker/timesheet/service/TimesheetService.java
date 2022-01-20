@@ -21,6 +21,7 @@ import com.perigea.tracker.timesheet.entity.NotaSpese;
 import com.perigea.tracker.timesheet.entity.Timesheet;
 import com.perigea.tracker.timesheet.entity.TimesheetEntry;
 import com.perigea.tracker.timesheet.entity.Utente;
+import com.perigea.tracker.timesheet.entity.keys.NotaSpeseKey;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetEntryKey;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
 import com.perigea.tracker.timesheet.enums.EMese;
@@ -56,8 +57,9 @@ public class TimesheetService {
 	private ApplicationDao applicationDao;
 	
 	@Transactional
-	public Timesheet createTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timeDto, List<NotaSpeseDto> notaSpeseList) {
+	public Timesheet createTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timeDto) {
 		try {
+			assertTimesheetIsValid(timesheetDataList, timeDto);
 			Integer oreTotali = 0;
 			Timesheet timesheet = DtoEntityMapper.INSTANCE.fromDtoToEntityMensile(timeDto);
 			Utente utente = utenteRepository.findByCodicePersona(timeDto.getCodicePersona());
@@ -66,40 +68,37 @@ public class TimesheetService {
 			TimesheetMensileKey tsKey = new TimesheetMensileKey(timeDto.getAnno(), timeDto.getMese(), timeDto.getCodicePersona());
 			timesheet.setId(tsKey);
 			timesheet.setStatoRichiesta(StatoRichiestaType.I);
-	
-			applicationDao.updateTimesheetStatus(new TimesheetMensileKey(2020, EMese.GEN.getMonthId(), "01"), StatoRichiestaType.C);
 
-//			Map<TimesheetEntryKey, List<NotaSpeseDto>> map = new HashMap<>();
-//			notaSpeseList.forEach(r-> {
-//				TimesheetEntryKey entryKey = new TimesheetEntryKey(r.getAnno(), r.getMese(), r.getGiorno(), r.getCodicePersona(), r.getCodiceCommessa());
-//				r.setAnno(entryKey.getAnno());
-//				r.setMese(entryKey.getMese());
-//				r.setGiorno(entryKey.getGiorno());
-//				r.setCodicePersona(entryKey.getCodicePersona());
-//				r.setCodiceCommessa(entryKey.getCodiceCommessa());
-//				if(map.containsKey(entryKey)) {
-//					map.get(entryKey).add(r);
-//				} else {
-//					map.put(entryKey, new ArrayList<>());
-//					map.get(entryKey).add(r);
-//				}
-//			});
-//			
-//			for (TimesheetEntryDto dataDto : timesheetDataList) {
-//				oreTotali += dataDto.getOre();
-//				Commessa commessa = commessaRepository.findByCodiceCommessa(dataDto.getCodiceCommessa());
-//				TimesheetEntry entry = DtoEntityMapper.INSTANCE.fromDtoToEntityTimeSheet(dataDto);
-//				TimesheetEntryKey entryKey = new TimesheetEntryKey(tsKey.getAnno(), tsKey.getMese(), dataDto.getGiorno(), tsKey.getCodicePersona(), dataDto.getCodiceCommessa());
-//				entry.setId(entryKey);
-//				entry.setCommessa(commessa);
-//				entry.setTimesheet(timesheet);
-//				entry.setTipoCommessa(commessa.getTipoCommessa());
-//				timesheet.addTimesheet(entry);
-//				timesheet.setOreTotali(oreTotali);
-//				List<NotaSpese> list= DtoEntityMapper.INSTANCE.fromDtoToEntityNotaSpese(map.get(entryKey));
-//				entry.setNotaSpese(list);			
-//				}
-//			timesheetRepository.save(timesheet);
+			Map<TimesheetEntryKey, List<NotaSpese>> map = new HashMap<>();
+			timesheetDataList.forEach(entry-> {
+				entry.getExpenseReport().forEach(r-> {
+					TimesheetEntryKey entryKey = new TimesheetEntryKey(timesheet.getId().getAnno(), timesheet.getId().getMese(), entry.getGiorno(), timesheet.getId().getCodicePersona(), entry.getCodiceCommessa());
+					NotaSpeseKey notaSpeseKey=new NotaSpeseKey(entryKey.getAnno(),entryKey.getMese(),entryKey.getGiorno(),entryKey.getCodicePersona(),entryKey.getCodiceCommessa(),r.getCostoNotaSpese());
+					NotaSpese notaSpese = new NotaSpese();
+					notaSpese.setId(notaSpeseKey);
+					notaSpese.setImporto(r.getImporto());
+					if(map.containsKey(entryKey)) {
+						map.get(entryKey).add(notaSpese);
+					} else {
+						map.put(entryKey, new ArrayList<>());
+						map.get(entryKey).add(notaSpese);
+					}
+				});
+			});
+			for (TimesheetEntryDto dataDto : timesheetDataList) {
+				oreTotali += dataDto.getOre();
+				Commessa commessa = commessaRepository.findByCodiceCommessa(dataDto.getCodiceCommessa());
+				TimesheetEntry entry = DtoEntityMapper.INSTANCE.fromDtoToEntityTimeSheet(dataDto);
+				TimesheetEntryKey entryKey = new TimesheetEntryKey(timesheet.getId().getAnno(), timesheet.getId().getMese(), dataDto.getGiorno(), timesheet.getId().getCodicePersona(), dataDto.getCodiceCommessa());
+				entry.setId(entryKey);
+				entry.setCommessa(commessa);
+				entry.setTimesheet(timesheet);
+				entry.setTipoCommessa(commessa.getTipoCommessa());
+				timesheet.addTimesheet(entry);
+				timesheet.setOreTotali(oreTotali);
+				entry.setNotaSpese(map.get(entryKey));	
+			}
+			timesheetRepository.save(timesheet);
 			return timesheet;
 		} catch (Exception e) {
 			throw new TimeSheetException(e.getMessage());
@@ -113,6 +112,17 @@ public class TimesheetService {
 			return timesheet;
 		} catch(Exception e) {
 			throw new TimeSheetException(e.getMessage());
+		}
+	}
+	
+	public Timesheet deleteTimesheet(Integer anno, EMese mese, String codicePersona) {
+		try {
+			Optional<Timesheet> optTimeSheet = timesheetRepository.findById(new TimesheetMensileKey(anno, mese.getMonthId(), codicePersona));
+			Timesheet timesheet = optTimeSheet.get();
+			timesheetRepository.delete(timesheet);
+			return timesheet;
+		}catch(Exception ex) {
+			throw new TimeSheetException(ex.getMessage());
 		}
 	}
 
@@ -150,15 +160,38 @@ public class TimesheetService {
 		// }
 	}
 
-	public void giornoDiRiferimento(Integer anno, EMese mese, TimesheetEntryDto timesheetData) {
-		List<Festivita> festivi = festivitaRepository.findAll();
-		LocalDate data = LocalDate.of(anno, mese.getMonthId(), timesheetData.getGiorno());
+	public void controlloFestivita(List<Festivita> festivi, TimesheetEntryDto timesheetData, TimesheetInputDto timesheetDto) {
+		LocalDate data = LocalDate.of(timesheetDto.getAnno(), timesheetDto.getMese(), timesheetData.getGiorno());
 		for (Festivita f : festivi) {
 			if (f.getData().isEqual(data) || data.getDayOfWeek() == DayOfWeek.SUNDAY
 					|| data.getDayOfWeek() == DayOfWeek.SATURDAY) {
 				throw new FestivitaException("Il giorno inserito non è corretto");
 			}
-			logger.info("Il giorno inserito è corretto");
+		}
+	}
+	
+	private void assertTimesheetIsValid(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timesheetDto) throws TimeSheetException {
+		List<Festivita> festivi = festivitaRepository.findAll();
+		Map<Integer, List<TimesheetEntryDto>> dataMap = new HashMap<Integer, List<TimesheetEntryDto>>();
+		timesheetDataList.forEach(r -> {
+			Integer giorno = r.getGiorno();
+			if (dataMap.containsKey(giorno)) {
+				dataMap.get(giorno).add(r);
+			} else {
+				dataMap.put(giorno, new ArrayList<>());
+				dataMap.get(giorno).add(r);
+			}
+		});
+		for (Integer key : dataMap.keySet()) {
+			List<TimesheetEntryDto> list = dataMap.get(key);
+			int oreGiorno = 0;
+			for (TimesheetEntryDto dto : list) {
+				oreGiorno = oreGiorno + dto.getOre();
+				controlloFestivita(festivi, dto,timesheetDto);
+			}
+			if(oreGiorno>8) {
+				throw new TimeSheetException("numero ore giornaliere inserite non valido");
+			}
 		}
 	}
 	

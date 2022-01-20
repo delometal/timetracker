@@ -118,15 +118,15 @@ public interface DtoEntityMapper {
 	
 	@Mapping(target= "id.anno", source="anno")
 	@Mapping(target= "id.mese", source="mese")
-	@Mapping(target= "id.giorno", source="giorno")
-	@Mapping(target= "id.codiceCommessa", source="codiceCommessa")
-	@Mapping(target= "id.codicePersona", source="codicePersona")
 	@Mapping(target= "id.costoNotaSpeseType", source="costoNotaSpeseType")
 	NotaSpese fromDtoToEntityNotaSpese (NotaSpeseDto dto);
 	
 	@Mapping(target= ".", source="id")
 	NotaSpeseDto fromEntityToDtoNotaSpese (NotaSpese entity);
 	
+	@Mapping(target= "id.giorno", source="giorno")
+	@Mapping(target= "id.codicePersona", source="codicePersona")
+	@Mapping(target= "id.codiceCommessa", source="ccodiceCommessa")
 	List<NotaSpese> fromDtoToEntityNotaSpese (List<NotaSpeseDto> dto);
 	
 	List<NotaSpeseDto> fromEntityToDtoNotaSpese (List<NotaSpese> entity);

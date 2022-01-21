@@ -21,6 +21,6 @@ public class TimesheetEntryDto extends BaseDto {
 	private CommessaType tipoCommessa;
 	private String createUser;
 	private String lastUpdateUser;
-	private List<NotaSpeseDto> expenseReport = new ArrayList<>();;
+	private List<NotaSpeseDto> noteSpesa = new ArrayList<>();
 	
 }

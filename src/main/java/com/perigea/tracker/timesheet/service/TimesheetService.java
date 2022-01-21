@@ -1,4 +1,5 @@
 package com.perigea.tracker.timesheet.service;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,13 +10,10 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-
-
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.perigea.tracker.timesheet.dto.NotaSpeseDto;
 import com.perigea.tracker.timesheet.dto.TimesheetEntryDto;
 import com.perigea.tracker.timesheet.dto.TimesheetInputDto;
 import com.perigea.tracker.timesheet.entity.Commessa;
@@ -29,6 +27,7 @@ import com.perigea.tracker.timesheet.entity.keys.TimesheetEntryKey;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
 import com.perigea.tracker.timesheet.enums.EMese;
 import com.perigea.tracker.timesheet.enums.StatoRichiestaType;
+import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
 import com.perigea.tracker.timesheet.exception.FestivitaException;
 import com.perigea.tracker.timesheet.exception.TimeSheetException;
 import com.perigea.tracker.timesheet.repository.CommessaRepository;
@@ -44,9 +43,6 @@ public class TimesheetService {
 	@Autowired
 	private Logger logger;
 
-//	@Autowired
-//	private TimesheetDataRepository timesheetDataRepository;
-
 	@Autowired
 	private FestivitaRepository festivitaRepository;
 
@@ -58,9 +54,7 @@ public class TimesheetService {
 
 	@Autowired
 	private TimesheetRepository timesheetRepository;
-	
-	@Autowired
-	private NotaSpeseRepository notaSpeseRepository;
+
 
 	@Transactional
 	public Timesheet createTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timeDto) {
@@ -77,7 +71,7 @@ public class TimesheetService {
 
 			Map<TimesheetEntryKey, List<NotaSpese>> map = new HashMap<>();
 			timesheetDataList.forEach(entry-> {
-				entry.getExpenseReport().forEach(r-> {
+				entry.getNoteSpesa().forEach(r-> {
 					TimesheetEntryKey entryKey = new TimesheetEntryKey(timesheet.getId().getAnno(), timesheet.getId().getMese(), entry.getGiorno(), timesheet.getId().getCodicePersona(), entry.getCodiceCommessa());
 					NotaSpeseKey notaSpeseKey=new NotaSpeseKey(entryKey.getAnno(),entryKey.getMese(),entryKey.getGiorno(),entryKey.getCodicePersona(),entryKey.getCodiceCommessa(),r.getCostoNotaSpese());
 					NotaSpese notaSpese = new NotaSpese();
@@ -102,7 +96,7 @@ public class TimesheetService {
 				entry.setTipoCommessa(commessa.getTipoCommessa());
 				timesheet.addTimesheet(entry);
 				timesheet.setOreTotali(oreTotali);
-				entry.setNotaSpese(map.get(entryKey));	
+				entry.setNoteSpesa(map.get(entryKey));	
 			}
 			timesheetRepository.save(timesheet);
 			return timesheet;
@@ -123,47 +117,29 @@ public class TimesheetService {
 	
 	public Timesheet deleteTimesheet(Integer anno, EMese mese, String codicePersona) {
 		try {
-			Optional<Timesheet> optTimeSheet = timesheetRepository.findById(new TimesheetMensileKey(anno, mese.getMonthId(), codicePersona));
-			Timesheet timesheet = optTimeSheet.get();
+			Timesheet timesheet = getTimesheet(anno, mese, codicePersona);
+			timesheet.getEntries().forEach(e-> e.getNoteSpesa().clear());
+			timesheet.getEntries().clear();
 			timesheetRepository.delete(timesheet);
 			return timesheet;
 		}catch(Exception ex) {
 			throw new TimeSheetException(ex.getMessage());
 		}
 	}
-
-//
-//	public TimeSheetDataDto editTimeSheet(TimeSheetDataDto timeSheetParam, Commessa commessa, Utente utente) {
-//		try {
-//			TimeSheetData timeSheetEntity=timesheetRepository.findByUtenteTimesheet(utente);
-//			if(timeSheetEntity != null) {
-//				timesheetRepository.delete(timeSheetEntity);
-//				timeSheetEntity = DtoEntityMapper.INSTANCE.fromDtoToEntityTimeSheet(timeSheetParam);
-//				timeSheetEntity.setUtenteTimesheet(utente);
-//				timeSheetEntity.setCommessaTimesheet(commessa);
-//				timesheetRepository.save(timeSheetEntity);
-//				logger.info("Timesheet modificato");
-//			}
-//			TimeSheetDataDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoTimeSheet(timeSheetEntity);
-//			return dto;
-//		}catch(Exception ex) {
-//			throw new EntityNotFoundException("Timesheet non trovato "+ ex.getMessage());	
-//		}
-//	}
-//	
+	
+	@Transactional
+	public Timesheet updateTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timeDto) {
+		try {
+			deleteTimesheet(timeDto.getAnno(), EMese.getByMonthId(timeDto.getMese()), timeDto.getCodicePersona());
+			return createTimesheet(timesheetDataList, timeDto);
+		}catch(Exception ex) {
+			throw new TimeSheetException(ex.getMessage());
+		}
+	}
+	
+	
 	public void editStatusTimeSheet(TimesheetEntryDto timeSheetParam) {
-		// if(mapEditUser.containsKey(key)) {
-		// TimeSheet
-		// timeSheetEntity=timeSheetRepo.findByCodicePersona(timeSheetParam.getCodiceCommessa());
-		// if(timeSheetEntity != null) {
-		// timeSheetEntity.setStatoType(timeSheetParam.getStatoType().toString());
-		// timeSheetRepo.save(timeSheetEntity);
-		// } else {
-		// LOGGER.info("CodicePersona non trovato");
-		// }
-		// } else {
-		// LOGGER.info("CreateUser non trovato");
-		// }
+
 	}
 
 	public void controlloFestivita(List<Festivita> festivi, TimesheetEntryDto timesheetData, TimesheetInputDto timesheetDto) {

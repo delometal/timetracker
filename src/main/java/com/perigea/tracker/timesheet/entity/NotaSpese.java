@@ -30,7 +30,7 @@ public class NotaSpese extends BaseEntity {
 	@JoinColumn(name = "codice_persona", referencedColumnName = "codice_persona", nullable = false, insertable = false, updatable = false)
 	private Utente utente;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false, insertable = false, updatable = false)
 	private Commessa commessa;
 	

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.dto.NotaSpeseDto;
+import com.perigea.tracker.timesheet.dto.NotaSpeseInputDto;
 import com.perigea.tracker.timesheet.dto.wrapper.NotaSpeseDtoWrpper;
 import com.perigea.tracker.timesheet.entity.NotaSpese;
 import com.perigea.tracker.timesheet.service.NotaSpeseService;
@@ -29,7 +30,7 @@ public class NotaSpeseController {
 	// Metodo per aggiornare una nota spese
 	@PostMapping(value = "/create-nota-spese")
 	public ResponseEntity<GenericWrapperResponse<NotaSpeseDto>> createNotaSpese(@RequestBody NotaSpeseDtoWrpper notaSpeseDtoWrpper ) {
-		NotaSpese notaSpese = notaSpeseService.createNotaSpese(notaSpeseDtoWrpper.getNotaSpeseDto(), notaSpeseDtoWrpper.getId());
+		NotaSpese notaSpese = notaSpeseService.createNotaSpese(notaSpeseDtoWrpper.getNotaSpeseDto());
 		NotaSpeseDto dtoNotaSpese = DtoEntityMapper.INSTANCE.fromEntityToDtoNotaSpese(notaSpese);
 		GenericWrapperResponse<NotaSpeseDto> genericDto = GenericWrapperResponse.<NotaSpeseDto>builder()
 				.dataRichiesta(new Date()).risultato(dtoNotaSpese).build();
@@ -48,8 +49,8 @@ public class NotaSpeseController {
 
 	// Metodo per aggiornare una nota spese
 	@PostMapping(value = "/update-nota-spese")
-	public ResponseEntity<GenericWrapperResponse<NotaSpeseDto>> updateNotaSpese(@RequestBody NotaSpeseDto notaSpeseDto) {
-		NotaSpese notaSpese = notaSpeseService.updateNotaSpese(notaSpeseDto);
+	public ResponseEntity<GenericWrapperResponse<NotaSpeseDto>> updateNotaSpese(@RequestBody NotaSpeseInputDto notaSpeseInputDto) {
+		NotaSpese notaSpese = notaSpeseService.updateNotaSpese(notaSpeseInputDto);
 		NotaSpeseDto dtoNotaSpese = DtoEntityMapper.INSTANCE.fromEntityToDtoNotaSpese(notaSpese);
 		GenericWrapperResponse<NotaSpeseDto> genericDto = GenericWrapperResponse.<NotaSpeseDto>builder()
 				.dataRichiesta(new Date()).risultato(dtoNotaSpese).build();
@@ -58,8 +59,8 @@ public class NotaSpeseController {
 
 	// Metodo per rimuovere una nota spese
 	@GetMapping(value = "/delete-nota-spese")
-	public ResponseEntity<GenericWrapperResponse<NotaSpeseDto>> deleteNotaSpese(@RequestParam String codicePersona, @RequestParam String codiceCommessa) {
-		NotaSpese notaSpese = notaSpeseService.deleteNotaSpese(codicePersona, codiceCommessa);
+	public ResponseEntity<GenericWrapperResponse<NotaSpeseDto>> deleteNotaSpese(@RequestParam String codicePersona, @RequestParam String codiceCommessa, @RequestParam String tipoCosto) {
+		NotaSpese notaSpese = notaSpeseService.deleteNotaSpese(codicePersona, codiceCommessa, tipoCosto);
 		NotaSpeseDto dtoNotaSpese = DtoEntityMapper.INSTANCE.fromEntityToDtoNotaSpese(notaSpese);
 		GenericWrapperResponse<NotaSpeseDto> genericDto = GenericWrapperResponse.<NotaSpeseDto>builder()
 				.dataRichiesta(new Date()).risultato(dtoNotaSpese).build();

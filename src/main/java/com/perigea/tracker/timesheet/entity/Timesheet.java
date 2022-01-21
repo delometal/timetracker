@@ -42,7 +42,7 @@ public class Timesheet extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private StatoRichiestaType statoRichiesta;
 
-	@OneToMany(mappedBy = "timesheet", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "timesheet", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<TimesheetEntry> entries = new ArrayList<TimesheetEntry>();
 
 	public void addTimesheet(TimesheetEntry timesheet) {

@@ -44,8 +44,8 @@ public class Commessa extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private CommessaType tipoCommessa;
 	
-	@OneToOne(mappedBy = "commessa")
-	private NotaSpese notaSpese;
+	@OneToMany(mappedBy = "commessa")
+	private List<NotaSpese> notaSpese;
 
 	@OneToMany(mappedBy = "commessa")
 	private List<TimesheetEntry> timesheet = new ArrayList<>();

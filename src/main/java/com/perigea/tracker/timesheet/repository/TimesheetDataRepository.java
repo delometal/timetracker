@@ -10,6 +10,8 @@ import com.perigea.tracker.timesheet.entity.keys.TimesheetEntryKey;
 public interface TimesheetDataRepository extends JpaRepository<TimesheetEntry, Long> {
 
 	public TimesheetEntry findById(TimesheetEntryKey id);
+
+//	public TimesheetEntry findByCodiceCommessaAndCodicePersona(String codiceCommessa, String codicePersona);
 	
 
 

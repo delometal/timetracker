@@ -38,6 +38,6 @@ public class NotaSpeseKey implements Serializable {
 
 	@Column(name = "tipo_costo")
 	@Enumerated(EnumType.STRING)
-	private CostoNotaSpeseType costoNotaSpeseType;
+	private CostoNotaSpeseType costoNotaSpese;
 
 }

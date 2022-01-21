@@ -43,8 +43,8 @@ public class TimesheetEntry extends BaseEntity {
 	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false, updatable = false, insertable = false)
 	private Commessa commessa;
 	
-	@OneToMany (mappedBy = "timesheetEntry", cascade = CascadeType.ALL)
-	private List<NotaSpese> notaSpese;
+	@OneToMany (mappedBy = "timesheetEntry", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<NotaSpese> noteSpesa;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "tipo_commessa")
@@ -57,12 +57,12 @@ public class TimesheetEntry extends BaseEntity {
 	private Boolean trasferta;
 	
 	public void addNotaSpese(NotaSpese notaSpesa) {
-		this.notaSpese.add(notaSpesa);
+		this.noteSpesa.add(notaSpesa);
 		notaSpesa.setTimesheetEntry(this);
 	}
 
 	public void removeNotaSpese(NotaSpese notaSpesa) {
-		this.notaSpese.remove(notaSpesa);
+		this.noteSpesa.remove(notaSpesa);
 		notaSpesa.setTimesheetEntry(null);
 	}
 

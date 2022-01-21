@@ -34,4 +34,12 @@ public enum EMese {
 		return monthPart;
 	}
 
+	public static EMese getByMonthId(Integer mese) {
+		for (EMese e : EMese.values()) {
+			if(e.getMonthId() == mese) {
+				return e;
+			}
+		}
+		return null;
+	}
 }

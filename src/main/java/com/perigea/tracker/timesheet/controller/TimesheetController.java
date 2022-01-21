@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.dto.TimesheetResponseDto;
-import com.perigea.tracker.timesheet.dto.wrapper.TimesheetDataWrapper;
+import com.perigea.tracker.timesheet.dto.wrapper.TimesheetWrapper;
 import com.perigea.tracker.timesheet.entity.Timesheet;
 import com.perigea.tracker.timesheet.enums.EMese;
 import com.perigea.tracker.timesheet.service.TimesheetService;
@@ -31,7 +31,7 @@ public class TimesheetController {
 
 	// Metodo per creare un timesheet
 	@PostMapping(value = "/create-timesheet")
-	public ResponseEntity<GenericWrapperResponse<TimesheetResponseDto>> createTimesheet(@RequestBody TimesheetDataWrapper wrapper) {
+	public ResponseEntity<GenericWrapperResponse<TimesheetResponseDto>> createTimesheet(@RequestBody TimesheetWrapper wrapper) {
 		Timesheet timesheet = timesheetService.createTimesheet(wrapper.getEntries(), wrapper.getTimesheet()/*, wrapper.getExpenseReport()*/);
 		TimesheetResponseDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoMensile(timesheet);
 		GenericWrapperResponse<TimesheetResponseDto> genericDto = GenericWrapperResponse.<TimesheetResponseDto>builder()
@@ -60,4 +60,12 @@ public class TimesheetController {
 		return ResponseEntity.ok(genericDto);
 	}
 
+	@PostMapping(value = "/update-timesheet")
+	public ResponseEntity<GenericWrapperResponse<TimesheetResponseDto>> updateTimesheet(@RequestBody TimesheetWrapper wrapper) {
+		Timesheet timesheetEntry = timesheetService.updateTimesheet(wrapper.getEntries(), wrapper.getTimesheet());
+		TimesheetResponseDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoMensile(timesheetEntry);
+		GenericWrapperResponse<TimesheetResponseDto> genericDto = GenericWrapperResponse.<TimesheetResponseDto>builder()
+				.dataRichiesta(new Date()).risultato(dto).build();
+		return ResponseEntity.ok(genericDto);
+	}
 }

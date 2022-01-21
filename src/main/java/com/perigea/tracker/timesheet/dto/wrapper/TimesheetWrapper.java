@@ -12,7 +12,7 @@ import com.perigea.tracker.timesheet.dto.TimesheetInputDto;
 import lombok.Data;
 
 @Data
-public class TimesheetDataWrapper implements Serializable {
+public class TimesheetWrapper implements Serializable {
 	
 	private static final long serialVersionUID = -8392790428900594810L;
 	

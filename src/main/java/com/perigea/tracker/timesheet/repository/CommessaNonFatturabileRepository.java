@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
 
 @Repository
-public interface CommessaNonFatturabileRepository extends JpaRepository<CommessaNonFatturabile,Long> {
+public interface CommessaNonFatturabileRepository extends JpaRepository<CommessaNonFatturabile, String> {
 	
 	public CommessaNonFatturabile findByCodiceCommessa(String codiceCommessa);
 

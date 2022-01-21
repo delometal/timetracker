@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.perigea.tracker.timesheet.entity.AnagraficaDipendente;
 
 @Repository
-public interface AnagraficaDipendenteRepository extends JpaRepository<AnagraficaDipendente,Long> {
+public interface AnagraficaDipendenteRepository extends JpaRepository<AnagraficaDipendente, String> {
 	
 	public AnagraficaDipendente findByCodicePersona(String codicePersona);
 

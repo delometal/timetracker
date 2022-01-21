@@ -44,7 +44,7 @@ public class Utente extends BaseEntity {
 
 	@Column(name = "stato_utente")
 	@Enumerated(EnumType.STRING)
-	private StatoUtenteType statoUtenteType;
+	private StatoUtenteType statoUtente;
 
 	@OneToMany(mappedBy = "utente")
 	private List<NotaSpese> noteSpese = new ArrayList<>();
@@ -55,8 +55,8 @@ public class Utente extends BaseEntity {
 	@OneToMany(mappedBy = "utente")
 	private List<Timesheet> timesheet = new ArrayList<>();
 
-	@OneToMany(mappedBy = "utente")
-	private List<DipendenteCommessa> commesse = new ArrayList<>();
+	@OneToMany(mappedBy = "id.utente", cascade = CascadeType.ALL)
+	private List<DipendenteCommessa> commesseDipendente = new ArrayList<>();
 
 	@ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
@@ -64,7 +64,7 @@ public class Utente extends BaseEntity {
         joinColumns = { @JoinColumn(name = "codice_persona") }, 
         inverseJoinColumns = { @JoinColumn(name = "ruolo") }
     )
-	private List<Ruolo> ruoli=new ArrayList<>();
+	private List<Ruolo> ruoli = new ArrayList<>();
 
 	@ManyToOne
 	@JoinColumn(name = "codice_responsabile")

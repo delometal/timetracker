@@ -50,7 +50,7 @@ public class Commessa extends BaseEntity {
 	@OneToMany(mappedBy = "commessa")
 	private List<TimesheetEntry> timesheet = new ArrayList<>();
 
-	@OneToMany(mappedBy = "commessa")
+	@OneToMany(mappedBy = "id.commessa")
 	private List<DipendenteCommessa> dipendente = new ArrayList<>();
 	
 	@ManyToOne

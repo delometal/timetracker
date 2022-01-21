@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.perigea.tracker.timesheet.entity.AnagraficaCliente;
 
 @Repository
-public interface AnagraficaClienteRepository extends JpaRepository<AnagraficaCliente,Long> {
+public interface AnagraficaClienteRepository extends JpaRepository<AnagraficaCliente, String> {
 
 	public AnagraficaCliente findByPartitaIva(String partitaIva);
 	

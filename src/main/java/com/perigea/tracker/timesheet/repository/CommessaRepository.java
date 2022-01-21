@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.perigea.tracker.timesheet.entity.Commessa;
 
 @Repository
-public interface CommessaRepository extends JpaRepository<Commessa,Long> {
+public interface CommessaRepository extends JpaRepository<Commessa, String> {
 	
 	public Commessa findByCodiceCommessa(String codiceCommessa);
 

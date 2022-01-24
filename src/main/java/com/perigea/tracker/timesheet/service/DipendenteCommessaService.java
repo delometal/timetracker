@@ -1,5 +1,6 @@
 package com.perigea.tracker.timesheet.service;
 
+
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
@@ -43,7 +44,9 @@ public class DipendenteCommessaService {
 			DipendenteCommessa dipendenteCommessa = DtoEntityMapper.INSTANCE.fromDtoToEntityRelazioneDipendenteCommessa(dipendenteCommessaDto);
 			Utente utente = utenteRepository.findByCodicePersona(dipendenteCommessaDto.getCodicePersona());
 			Commessa commessa = commessaRepository.findByCodiceCommessa(dipendenteCommessaDto.getCodiceCommessa());
-			dipendenteCommessa.setId(new DipendenteCommessaKey(utente, commessa));
+			dipendenteCommessa.setCommessa(commessa);
+			dipendenteCommessa.setUtente(utente);
+			dipendenteCommessa.setId(new DipendenteCommessaKey(dipendenteCommessaDto.getCodicePersona(), dipendenteCommessaDto.getCodiceCommessa()));
 			dipendenteCommessaRepository.save(dipendenteCommessa);
 			logger.info("Relazione Dipendente-commessa creata");
 			return dipendenteCommessa;
@@ -69,34 +72,38 @@ public class DipendenteCommessaService {
 	}
 	
 	/**
-	 * Update relazione dipendente commessa
+	 * 	
 	 * @param dipendenteCommessaDto
+	 * @return
 	 */
-	public void updateRelazioneDipendenteCommessa(DipendenteCommessaDto dipendenteCommessaDto) {
+	public DipendenteCommessa updateRelazioneDipendenteCommessa(DipendenteCommessaDto dipendenteCommessaDto) {
 		try {
-			DipendenteCommessa dipendenteCommessa = DtoEntityMapper.INSTANCE.fromDtoToEntityRelazioneDipendenteCommessa(dipendenteCommessaDto);
+			DipendenteCommessaKey id = new DipendenteCommessaKey(dipendenteCommessaDto.getCodicePersona(), dipendenteCommessaDto.getCodiceCommessa());
+			DipendenteCommessa dipendenteCommessa = readRelazioneDipendenteCommessa(id);
 			Utente utente = utenteRepository.findByCodicePersona(dipendenteCommessaDto.getCodicePersona());
 			Commessa commessa = commessaRepository.findByCodiceCommessa(dipendenteCommessaDto.getCodiceCommessa());
-			dipendenteCommessa.setId(new DipendenteCommessaKey(utente, commessa));
+			dipendenteCommessa.setCommessa(commessa);
+			dipendenteCommessa.setUtente(utente);
+			dipendenteCommessa = DtoEntityMapper.INSTANCE.fromDtoToEntityRelazioneDipendenteCommessa(dipendenteCommessaDto);
+			dipendenteCommessa.setId(id);
 			dipendenteCommessaRepository.save(dipendenteCommessa);
 			logger.info("Relazione Dipendente-commessa aggiornata");
+			return dipendenteCommessa;
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());
 		}
 	}
 	
 	/**
-	 * Delete relazione dipendente commessa
-	 * @param dipendenteCommessaDto
+	 * 
+	 * @param id
 	 */
-	public void deleteRelazioneDipendenteCommessa(DipendenteCommessaDto dipendenteCommessaDto) {
+	public DipendenteCommessa deleteRelazioneDipendenteCommessa(DipendenteCommessaKey id) {
 		try {
-			DipendenteCommessa dipendenteCommessa = DtoEntityMapper.INSTANCE.fromDtoToEntityRelazioneDipendenteCommessa(dipendenteCommessaDto);
-			Utente utente = utenteRepository.findByCodicePersona(dipendenteCommessaDto.getCodicePersona());
-			Commessa commessa = commessaRepository.findByCodiceCommessa(dipendenteCommessaDto.getCodiceCommessa());
-			dipendenteCommessa.setId(new DipendenteCommessaKey(utente, commessa));
-			dipendenteCommessaRepository.save(dipendenteCommessa);
+			DipendenteCommessa dipendenteCommessa = readRelazioneDipendenteCommessa(id);
+			dipendenteCommessaRepository.delete(dipendenteCommessa);
 			logger.info("Relazione Dipendente-commessa cancellata");
+			return dipendenteCommessa;
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());
 		}

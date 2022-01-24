@@ -55,7 +55,7 @@ public class Utente extends BaseEntity {
 	@OneToMany(mappedBy = "utente")
 	private List<Timesheet> timesheet = new ArrayList<>();
 
-	@OneToMany(mappedBy = "id.utente", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
 	private List<DipendenteCommessa> commesseDipendente = new ArrayList<>();
 
 	@ManyToMany(cascade = { CascadeType.ALL })

@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +26,6 @@ import com.perigea.tracker.timesheet.entity.keys.TimesheetEntryKey;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
 import com.perigea.tracker.timesheet.enums.EMese;
 import com.perigea.tracker.timesheet.enums.StatoRichiestaType;
-import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
 import com.perigea.tracker.timesheet.exception.FestivitaException;
 import com.perigea.tracker.timesheet.exception.TimeSheetException;
 import com.perigea.tracker.timesheet.repository.ApplicationDao;
@@ -39,6 +36,7 @@ import com.perigea.tracker.timesheet.repository.UtenteRepository;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 @Service
+@Transactional
 public class TimesheetService {
 
 	@Autowired
@@ -59,7 +57,7 @@ public class TimesheetService {
 	@Autowired
 	private ApplicationDao applicationDao;
 	
-	@Transactional
+	
 	public Timesheet createTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timeDto) {
 		try {
 			assertTimesheetIsValid(timesheetDataList, timeDto);
@@ -71,7 +69,7 @@ public class TimesheetService {
 			TimesheetMensileKey tsKey = new TimesheetMensileKey(timeDto.getAnno(), timeDto.getMese(), timeDto.getCodicePersona());
 			timesheet.setId(tsKey);
 			timesheet.setStatoRichiesta(StatoRichiestaType.I);
-
+			
 			Map<TimesheetEntryKey, List<NotaSpese>> map = new HashMap<>();
 			timesheetDataList.forEach(entry-> {
 				entry.getNoteSpesa().forEach(r-> {
@@ -130,19 +128,25 @@ public class TimesheetService {
 		}
 	}
 	
-	@Transactional
 	public Timesheet updateTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timeDto) {
 		try {
 			deleteTimesheet(timeDto.getAnno(), EMese.getByMonthId(timeDto.getMese()), timeDto.getCodicePersona());
 			return createTimesheet(timesheetDataList, timeDto);
-		}catch(Exception ex) {
-			throw new TimeSheetException(ex.getMessage());
+		} catch (Exception ex) {
+			throw new TimeSheetException(" error " + ex.getMessage());
 		}
 	}
 	
 	
-	public void editStatusTimeSheet(TimesheetEntryDto timeSheetParam) {
-
+	public Boolean editTimesheetStatus(TimesheetMensileKey key, StatoRichiestaType newStatus) {
+		try {
+			if(applicationDao.updateTimesheetStatus(key, newStatus) == 1) {
+				return true;
+			}
+			return false;
+		} catch (Exception ex) {
+			throw new TimeSheetException(" error " + ex.getMessage());
+		}
 	}
 
 	public void controlloFestivita(List<Festivita> festivi, TimesheetEntryDto timesheetData, TimesheetInputDto timesheetDto) {

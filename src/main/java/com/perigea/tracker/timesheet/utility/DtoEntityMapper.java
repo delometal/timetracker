@@ -111,14 +111,14 @@ public interface DtoEntityMapper {
 	@Mapping(target= ".", source="id")
 	TimesheetResponseDto fromEntityToDtoMensile(Timesheet entity);
 	
-	DipendenteCommessa fromDtoToEntityRelazioneDipendenteCommessa(DipendenteCommessaDto dto);
+//	DipendenteCommessa fromDtoToEntityRelazioneDipendenteCommessa(DipendenteCommessaDto dto);
 	
 	Festivita FromDtoToEntityFestivita(FestivitaDto dto);
 	
 	FestivitaDto FromEntityToDtoFestivita(Festivita entity);
 	
-	@Mapping(target= "id.anno", source="anno")
-	@Mapping(target= "id.mese", source="mese")
+//	@Mapping(target= "id.anno", source="anno")
+//	@Mapping(target= "id.mese", source="mese")
 	@Mapping(target= "id.costoNotaSpese", source="costoNotaSpese")
 	NotaSpese fromDtoToEntityNotaSpese (NotaSpeseDto dto);
 	
@@ -145,4 +145,11 @@ public interface DtoEntityMapper {
 //	UtenteRuoli FromDtoToEntityUtenteRuoli(RuoloUtenteDto dto);
 //	
 //	RuoloUtenteDto FromEntityToDtoUtenteRuoli(UtenteRuoli entity);
+	
+	@Mapping(target= "id.codicePersona", source="codicePersona")
+	@Mapping(target= "id.codiceCommessa", source="codiceCommessa")
+	DipendenteCommessa fromDtoToEntityRelazioneDipendenteCommessa(DipendenteCommessaDto dto);
+	
+	@Mapping(target= ".", source="id")
+	DipendenteCommessaDto fromEntityToDtoDipendenteCommessa(DipendenteCommessa entity);
 }

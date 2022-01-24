@@ -6,17 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
+import com.perigea.tracker.timesheet.dto.TimesheetInputDto;
 import com.perigea.tracker.timesheet.dto.TimesheetResponseDto;
 import com.perigea.tracker.timesheet.dto.wrapper.TimesheetWrapper;
 import com.perigea.tracker.timesheet.entity.Timesheet;
+import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
 import com.perigea.tracker.timesheet.enums.EMese;
+import com.perigea.tracker.timesheet.enums.StatoRichiestaType;
 import com.perigea.tracker.timesheet.service.TimesheetService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
@@ -58,12 +63,26 @@ public class TimesheetController {
 		return ResponseEntity.ok(genericDto);
 	}
 
-	@PostMapping(value = "/update-timesheet")
+	@PutMapping(value = "/update-timesheet")
 	public ResponseEntity<GenericWrapperResponse<TimesheetResponseDto>> updateTimesheet(@RequestBody TimesheetWrapper wrapper) {
 		Timesheet timesheetEntry = timesheetService.updateTimesheet(wrapper.getEntries(), wrapper.getTimesheet());
 		TimesheetResponseDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoMensile(timesheetEntry);
 		GenericWrapperResponse<TimesheetResponseDto> genericDto = GenericWrapperResponse.<TimesheetResponseDto>builder()
 				.dataRichiesta(new Date()).risultato(dto).build();
 		return ResponseEntity.ok(genericDto);
+	}
+	
+	@PutMapping(value = "/update-timesheet-status/{status}")
+	public ResponseEntity<GenericWrapperResponse<Boolean>> updateTimesheetStatus(@RequestBody TimesheetInputDto timesheetDto, @PathVariable(value = "status") StatoRichiestaType newStatus) {
+//	public ResponseEntity<GenericWrapperResponse<Boolean>> updateTimesheetStatus(@RequestBody TimesheetInputDto timesheetDto, @RequestParam StatoRichiestaType newStatus) {	
+		
+		TimesheetMensileKey tsKey = new TimesheetMensileKey(timesheetDto.getAnno(), timesheetDto.getMese(), timesheetDto.getCodicePersona());
+		Boolean update = timesheetService.editTimesheetStatus(tsKey, newStatus);
+		GenericWrapperResponse<Boolean> genericDto = GenericWrapperResponse.<Boolean>builder()
+				.dataRichiesta(new Date()).risultato(update).build();
+		if(update) {
+			return ResponseEntity.ok(genericDto);
+		}
+		return ResponseEntity.badRequest().body(genericDto);
 	}
 }

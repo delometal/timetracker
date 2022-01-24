@@ -27,7 +27,7 @@ import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
 import com.perigea.tracker.timesheet.enums.EMese;
 import com.perigea.tracker.timesheet.enums.StatoRichiestaType;
 import com.perigea.tracker.timesheet.exception.FestivitaException;
-import com.perigea.tracker.timesheet.exception.TimeSheetException;
+import com.perigea.tracker.timesheet.exception.TimesheetException;
 import com.perigea.tracker.timesheet.repository.ApplicationDao;
 import com.perigea.tracker.timesheet.repository.CommessaRepository;
 import com.perigea.tracker.timesheet.repository.FestivitaRepository;
@@ -102,7 +102,7 @@ public class TimesheetService {
 			timesheetRepository.save(timesheet);
 			return timesheet;
 		} catch (Exception e) {
-			throw new TimeSheetException(e.getMessage());
+			throw new TimesheetException(e.getMessage());
 		}
 	}
 	
@@ -112,7 +112,7 @@ public class TimesheetService {
 			Timesheet timesheet = optTimesheet.get();
 			return timesheet;
 		} catch(Exception e) {
-			throw new TimeSheetException(e.getMessage());
+			throw new TimesheetException(e.getMessage());
 		}
 	}
 	
@@ -124,7 +124,7 @@ public class TimesheetService {
 			timesheetRepository.delete(timesheet);
 			return timesheet;
 		}catch(Exception ex) {
-			throw new TimeSheetException(ex.getMessage());
+			throw new TimesheetException(ex.getMessage());
 		}
 	}
 	
@@ -133,7 +133,7 @@ public class TimesheetService {
 			deleteTimesheet(timeDto.getAnno(), EMese.getByMonthId(timeDto.getMese()), timeDto.getCodicePersona());
 			return createTimesheet(timesheetDataList, timeDto);
 		} catch (Exception ex) {
-			throw new TimeSheetException(" error " + ex.getMessage());
+			throw new TimesheetException(" error " + ex.getMessage());
 		}
 	}
 	
@@ -145,7 +145,7 @@ public class TimesheetService {
 			}
 			return false;
 		} catch (Exception ex) {
-			throw new TimeSheetException(" error " + ex.getMessage());
+			throw new TimesheetException(" error " + ex.getMessage());
 		}
 	}
 
@@ -159,7 +159,7 @@ public class TimesheetService {
 		}
 	}
 	
-	private void assertTimesheetIsValid(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timesheetDto) throws TimeSheetException {
+	private void assertTimesheetIsValid(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timesheetDto) throws TimesheetException {
 		List<Festivita> festivi = festivitaRepository.findAll();
 		Map<Integer, List<TimesheetEntryDto>> dataMap = new HashMap<Integer, List<TimesheetEntryDto>>();
 		timesheetDataList.forEach(r -> {
@@ -179,7 +179,7 @@ public class TimesheetService {
 				controlloFestivita(festivi, dto,timesheetDto);
 			}
 			if(oreGiorno>8) {
-				throw new TimeSheetException("numero ore giornaliere inserite non valido");
+				throw new TimesheetException("numero ore giornaliere inserite non valido");
 			}
 		}
 	}

@@ -12,8 +12,10 @@ import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteResponseDto;
 import com.perigea.tracker.timesheet.dto.CommessaDto;
 import com.perigea.tracker.timesheet.dto.CommessaFatturabileDto;
 import com.perigea.tracker.timesheet.dto.CommessaNonFatturabileDto;
+import com.perigea.tracker.timesheet.dto.ContattoDto;
 import com.perigea.tracker.timesheet.dto.DipendenteCommessaDto;
 import com.perigea.tracker.timesheet.dto.FestivitaDto;
+import com.perigea.tracker.timesheet.dto.GruppoContattoDto;
 import com.perigea.tracker.timesheet.dto.NotaSpeseDto;
 import com.perigea.tracker.timesheet.dto.NotaSpeseInputDto;
 import com.perigea.tracker.timesheet.dto.OrdineCommessaDto;
@@ -28,8 +30,10 @@ import com.perigea.tracker.timesheet.entity.AnagraficaDipendente;
 import com.perigea.tracker.timesheet.entity.Commessa;
 import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
 import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
+import com.perigea.tracker.timesheet.entity.Contatto;
 import com.perigea.tracker.timesheet.entity.DipendenteCommessa;
 import com.perigea.tracker.timesheet.entity.Festivita;
+import com.perigea.tracker.timesheet.entity.Gruppo;
 import com.perigea.tracker.timesheet.entity.NotaSpese;
 import com.perigea.tracker.timesheet.entity.OrdineCommessa;
 import com.perigea.tracker.timesheet.entity.Ruolo;
@@ -86,6 +90,9 @@ public interface DtoEntityMapper {
 	
 	CommessaNonFatturabileDto fromEntityToDtoCommessaNonFatturabile(CommessaNonFatturabile entity);
 	
+	@Mapping(target= "id.codiceCommessa", source="codiceCommessa")
+	@Mapping(target= "id.numeroOrdineCliente", source="numeroOrdineCliente")
+	@Mapping(target= "id.partitaIva", source="partitaIva")
 	OrdineCommessa fromDtoToEntityOrdineCommessa(OrdineCommessaDto dto);
 	
 	@Mapping(target= ".", source="id")
@@ -115,14 +122,10 @@ public interface DtoEntityMapper {
 	@Mapping (target = "mailAziendale", source = "utente.dipendente.mailAziendale")
 	TimesheetResponseDto fromEntityToDtoMensile(Timesheet entity);
 	
-//	DipendenteCommessa fromDtoToEntityRelazioneDipendenteCommessa(DipendenteCommessaDto dto);
-	
 	Festivita FromDtoToEntityFestivita(FestivitaDto dto);
 	
 	FestivitaDto FromEntityToDtoFestivita(Festivita entity);
 	
-//	@Mapping(target= "id.anno", source="anno")
-//	@Mapping(target= "id.mese", source="mese")
 	@Mapping(target= "id.costoNotaSpese", source="costoNotaSpese")
 	NotaSpese fromDtoToEntityNotaSpese (NotaSpeseDto dto);
 	
@@ -146,14 +149,18 @@ public interface DtoEntityMapper {
 	@Mapping(target= "id.costoNotaSpese", source="costoNotaSpese")
 	NotaSpese fromDtoToEntityNotaSpese(NotaSpeseInputDto notaSpeseDto);
 	
-//	UtenteRuoli FromDtoToEntityUtenteRuoli(RuoloUtenteDto dto);
-//	
-//	RuoloUtenteDto FromEntityToDtoUtenteRuoli(UtenteRuoli entity);
-	
 	@Mapping(target= "id.codicePersona", source="codicePersona")
 	@Mapping(target= "id.codiceCommessa", source="codiceCommessa")
 	DipendenteCommessa fromDtoToEntityRelazioneDipendenteCommessa(DipendenteCommessaDto dto);
 	
 	@Mapping(target= ".", source="id")
 	DipendenteCommessaDto fromEntityToDtoDipendenteCommessa(DipendenteCommessa entity);
+	
+	Contatto fromDtoToEntityContatto(ContattoDto contatto);
+	List<Contatto> fromDtoToEntityContatto(List<ContattoDto> contatto);
+	ContattoDto fromEntityToDtoContatto(Contatto contatto);
+	List<ContattoDto> fromEntityToDtoContatto(List<Contatto> contatto);
+	Gruppo fromDtoToEntityGruppo(GruppoContattoDto gruppo);
+	GruppoContattoDto fromEntityToDtoGruppo(Gruppo gruppo);
+	
 }

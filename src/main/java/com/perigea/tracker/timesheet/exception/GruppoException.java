@@ -4,11 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class TimeSheetException extends GenericTimesheetException {
+public class GruppoException extends GenericTimesheetException {
 
-	private static final long serialVersionUID = -4057094117432592811L;
+	private static final long serialVersionUID = 5313588146595746895L;
 
-	public TimeSheetException(String exception) {
+	public GruppoException(String exception) {
 		super(exception);
 	}
 }

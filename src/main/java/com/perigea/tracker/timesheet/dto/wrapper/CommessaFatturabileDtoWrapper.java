@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 public class CommessaFatturabileDtoWrapper extends BaseDto {
 
 	private static final long serialVersionUID = 6731565659187101446L;
-	private CommessaFatturabileDto commessaFatturabileDto;
+	private CommessaFatturabileDto commessaFatturabile;
 	private OrdineCommessaDto ordineCommessa;
 	private AnagraficaClienteDto anagraficaCliente;
 }

@@ -6,12 +6,10 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.perigea.tracker.timesheet.dto.RuoloDto;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.enums.RuoloType;
 import com.perigea.tracker.timesheet.exception.RuoloException;
 import com.perigea.tracker.timesheet.repository.RuoliRepository;
-import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 @Service
 public class RuoloService {
@@ -24,12 +22,11 @@ public class RuoloService {
 
 	/**
 	 * Creazione ruolo
-	 * @param ruoloDto
+	 * @param ruolo
 	 * @return
 	 */
-	public Ruolo createRole(RuoloDto ruoloDto) {
+	public Ruolo createRole(Ruolo ruolo) {
 		try {
-			Ruolo ruolo = DtoEntityMapper.INSTANCE.fromDtoToEntityRuoli(ruoloDto);
 			logger.info("Role creato");
 			ruoliRepository.save(ruolo);
 			logger.info("Role aggiunto a database");
@@ -57,13 +54,9 @@ public class RuoloService {
 	 * @param ruoloDto
 	 * @return
 	 */
-	public Ruolo updateRole(RuoloDto ruoloDto) {
+	public Ruolo updateRole(Ruolo ruolo) {
 		try {
-			Ruolo ruolo = ruoliRepository.findByTipo(ruoloDto.getRuoloType());
-			if (ruolo != null) {
-				ruolo = DtoEntityMapper.INSTANCE.fromDtoToEntityRuoli(ruoloDto);
-				ruoliRepository.save(ruolo);
-			}
+			ruoliRepository.save(ruolo);
 			return ruolo;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());

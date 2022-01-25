@@ -6,12 +6,10 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.perigea.tracker.timesheet.dto.FestivitaDto;
 import com.perigea.tracker.timesheet.entity.Festivita;
 import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
 import com.perigea.tracker.timesheet.exception.FestivitaException;
 import com.perigea.tracker.timesheet.repository.FestivitaRepository;
-import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 @Service
 public class FestivitaService {
@@ -24,12 +22,11 @@ public class FestivitaService {
 
 	/**
 	 * creazione festività
-	 * @param festivitaDto
+	 * @param festivita
 	 * @return
 	 */
-	public Festivita createFestivita(FestivitaDto festivitaDto) {
+	public Festivita createFestivita(Festivita festivita) {
 		try {
-			Festivita festivita = DtoEntityMapper.INSTANCE.FromDtoToEntityFestivita(festivitaDto);
 			festivitaRepository.save(festivita);
 			logger.info("festività inserita a db");
 			return festivita;
@@ -56,16 +53,12 @@ public class FestivitaService {
 
 	/**
 	 * Aggiornamento di una festività
-	 * @param festivitaDto
+	 * @param festivita
 	 * @return
 	 */
-	public Festivita updateFestivita(FestivitaDto festivitaDto) {
+	public Festivita updateFestivita(Festivita festivita) {
 		try {
-			Festivita festivita = festivitaRepository.findByNomeFestivo(festivitaDto.getNomeFestivo());
-			if (festivita != null) {
-				festivita = DtoEntityMapper.INSTANCE.FromDtoToEntityFestivita(festivitaDto);
-				festivitaRepository.save(festivita);
-			}
+			festivitaRepository.save(festivita);
 			return festivita;
 		} catch (Exception ex) {
 			throw new FestivitaException("festività non trovata");
@@ -79,7 +72,7 @@ public class FestivitaService {
 	 */
 	public Festivita deleteFestivita(Integer id) {
 		try {
-			Festivita festivita =  festivitaRepository.findById(id).get();
+			Festivita festivita = festivitaRepository.findById(id).get();
 			festivitaRepository.deleteById(id);
 			return festivita;
 		} catch (Exception ex) {

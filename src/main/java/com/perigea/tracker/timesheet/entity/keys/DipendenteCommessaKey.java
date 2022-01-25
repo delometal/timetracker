@@ -22,5 +22,5 @@ public class DipendenteCommessaKey implements Serializable {
 	
 	@Column(name = "codice_commessa", nullable = false)
 	private String codiceCommessa;
-
+	
 }

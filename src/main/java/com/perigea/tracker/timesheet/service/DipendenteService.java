@@ -5,12 +5,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteInputDto;
-import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteResponseDto;
 import com.perigea.tracker.timesheet.dto.RuoloDto;
-import com.perigea.tracker.timesheet.dto.UtenteViewDto;
 import com.perigea.tracker.timesheet.entity.AnagraficaDipendente;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Utente;
@@ -40,14 +37,13 @@ public class DipendenteService {
 
 	/**
 	 * Creazione anagrafica dipendente e utente
-	 * @param dipendenteDto
+	 * @param utente
+	 * @param dipendente
 	 * @param codiceResponsabile
 	 * @return
 	 */
-	public AnagraficaDipendenteResponseDto createDipendente(AnagraficaDipendenteInputDto dipendenteDto, String codiceResponsabile) {
+	public Utente createUtenteDipendente(Utente utente, AnagraficaDipendente dipendente, String codiceResponsabile) {
 		try {
-			Utente utente = DtoEntityMapper.INSTANCE.fromDtoToEntityUtente(dipendenteDto.getUtenteDto());
-			AnagraficaDipendente dipendente = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaDipendente(dipendenteDto);
 			dipendente.setUtente(utente);
 			dipendente.setCodicePersona(TSUtils.uuid());
 			utente.setDipendente(dipendente);
@@ -57,11 +53,8 @@ public class DipendenteService {
 				responsabile.addDipendente(utente);
 			}
 			utenteRepository.save(utente);
-			UtenteViewDto utenteResponseDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(utente);
-			AnagraficaDipendenteResponseDto anagraficaResponseDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(dipendente);
-			anagraficaResponseDto.setUtenteDto(utenteResponseDto);
 			logger.info("done");
-			return anagraficaResponseDto;
+			return utente;
 		} catch (Exception ex) {
 			throw new DipendenteException(ex.getMessage());
 		}
@@ -72,13 +65,15 @@ public class DipendenteService {
 	 * @param dipendenteParam
 	 * @return
 	 */
-	public AnagraficaDipendenteResponseDto readDipendente(String dipendenteParam) {
+	public Utente readDipendente(String codicePersona) {
 		try {
-			AnagraficaDipendente anagDipendente = dipendenteRepository.findByCodicePersona(dipendenteParam);
-			UtenteViewDto utenteResponseDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(anagDipendente.getUtente());
-			AnagraficaDipendenteResponseDto anagraficaResponseDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagDipendente);
-			anagraficaResponseDto.setUtenteDto(utenteResponseDto);
-			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagDipendente);
+			Utente utente = utenteRepository.findByCodicePersona(codicePersona);
+//			AnagraficaDipendente anagDipendente = dipendenteRepository.findByCodicePersona(dipendenteParam);
+//			UtenteViewDto utenteResponseDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(anagDipendente.getUtente());
+//			AnagraficaDipendenteResponseDto anagraficaResponseDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagDipendente);
+//			anagraficaResponseDto.setUtenteDto(utenteResponseDto);
+//			return DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagDipendente);
+			return utente;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
@@ -89,16 +84,13 @@ public class DipendenteService {
 	 * @param dipendenteParam
 	 * @return
 	 */
-	public AnagraficaDipendenteResponseDto updateDipendente(AnagraficaDipendenteInputDto dipendenteParam) {
+	public Utente updateDipendente(AnagraficaDipendenteInputDto dipendenteParam) {
 		try {
 			AnagraficaDipendente anagDipendente = dipendenteRepository.findByCodicePersona(dipendenteParam.getUtenteDto().getCodicePersona());
 			if (anagDipendente != null) {
 				dipendenteRepository.save(anagDipendente);
 			}
-			UtenteViewDto utenteResponseDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(anagDipendente.getUtente());
-			AnagraficaDipendenteResponseDto anagraficaResponseDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagDipendente);
-			anagraficaResponseDto.setUtenteDto(utenteResponseDto);
-			return anagraficaResponseDto;
+			return anagDipendente.getUtente();
 		} catch (Exception ex) {
 			throw new DipendenteException(ex.getMessage());
 		}
@@ -109,29 +101,23 @@ public class DipendenteService {
 	 * @param id
 	 * @return
 	 */
-	@Transactional
-	public AnagraficaDipendenteResponseDto deleteDipendente(String id) {
+	public Utente deleteDipendente(String id) {
 		try {
 			AnagraficaDipendente anagDipendente = dipendenteRepository.findByCodicePersona(id);
-			if (anagDipendente != null) {
-				utenteRepository.delete(anagDipendente.getUtente());
-				dipendenteRepository.delete(anagDipendente);
-			}
-			AnagraficaDipendenteResponseDto anagraficaResponseDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaDipendenteView(anagDipendente);
-			UtenteViewDto utenteResponseDto = DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(anagDipendente.getUtente());
-			anagraficaResponseDto.setUtenteDto(utenteResponseDto);
-			return anagraficaResponseDto;
+			Utente utente = anagDipendente.getUtente();
+			utenteRepository.delete(utente);
+			return utente;
 		} catch (Exception ex) {
 			throw new DipendenteException(ex.getMessage());
 		}
 	}
 
 	// Metodo per aggiornare lo stato (attivo/cessato) di un utente
-	public UtenteViewDto updateUserStatus(String codicePersona, StatoUtenteType newStatus) {
+	public Utente updateUserStatus(String codicePersona, StatoUtenteType newStatus) {
 		try {
 			Integer edits = applicationDao.updateUserStatus(codicePersona, newStatus);
 			if (edits != null && edits == 1) {
-				return DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(utenteRepository.findByCodicePersona(codicePersona));
+				return utenteRepository.findByCodicePersona(codicePersona);
 			} else {
 				throw new Exception(String.format("Si è verificato un errore durante l'aggiornamento per l'utente %s con il nuovo stato %s", codicePersona, newStatus.name()));
 			}
@@ -146,15 +132,14 @@ public class DipendenteService {
 	 * @param utente
 	 * @return
 	 */
-	private UtenteViewDto editUserRoles(List<Ruolo> ruoloList, Utente utente) {
+	private Utente editUserRoles(List<Ruolo> ruoloList, Utente utente) {
 		try {
 			ruoloList.forEach(r -> {
 				if(!utente.getRuoli().contains(r)) {
 					utente.addRuolo(r);
 				}
 			});
-			utenteRepository.save(utente);
-			return DtoEntityMapper.INSTANCE.fromEntityToUtenteViewDto(utente);
+			return utenteRepository.save(utente);
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
 		}
@@ -166,7 +151,7 @@ public class DipendenteService {
 	 * @param utente
 	 * @return
 	 */
-	public UtenteViewDto editUserRolesDto(List<RuoloDto> ruoloList, String codicePersona) {
+	public Utente editUserRolesDto(List<RuoloDto> ruoloList, String codicePersona) {
 		try {
 			Utente entity = utenteRepository.findByCodicePersona(codicePersona);
 			List<Ruolo> ruoli = new ArrayList<>();

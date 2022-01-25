@@ -29,7 +29,8 @@ public class FestivitaController {
 
 	@PostMapping(value = "/create-festivita")
 	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> createFestivita(@RequestBody FestivitaDto festivitaDto) {
-		Festivita festivita = festeService.createFestivita(festivitaDto);
+		Festivita festivita = DtoEntityMapper.INSTANCE.FromDtoToEntityFestivita(festivitaDto);
+		festivita = festeService.createFestivita(festivita);
 		FestivitaDto dtoFestivita = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(festivita);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
 				.dataRichiesta(new Date()).risultato(dtoFestivita).build();
@@ -47,7 +48,8 @@ public class FestivitaController {
 	
 	@PutMapping(value = "/update-festivita")
 	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> updateFestivita(@RequestBody FestivitaDto festivitaDto) {
-		Festivita festivita = festeService.updateFestivita(festivitaDto);
+		Festivita festivita = DtoEntityMapper.INSTANCE.FromDtoToEntityFestivita(festivitaDto);
+		festivita = festeService.updateFestivita(festivita);
 		FestivitaDto dtoFestivita = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(festivita);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
 				.dataRichiesta(new Date()).risultato(dtoFestivita).build();

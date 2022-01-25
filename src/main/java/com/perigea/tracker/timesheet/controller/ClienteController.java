@@ -27,8 +27,9 @@ public class ClienteController {
 	private ClienteService clienteService;
 
 	@PostMapping(value = "/create-anagrafica-cliente")
-	public ResponseEntity<GenericWrapperResponse<AnagraficaClienteDto>> createClient(@RequestBody AnagraficaClienteDto dtoParam) {
-		AnagraficaCliente anagraficaCliente = clienteService.createAnagraficaCliente(dtoParam);
+	public ResponseEntity<GenericWrapperResponse<AnagraficaClienteDto>> saveCliente(@RequestBody AnagraficaClienteDto anaClienteDto) {
+		AnagraficaCliente anagraficaCliente = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(anaClienteDto);
+		anagraficaCliente = clienteService.saveAnagraficaCliente(anagraficaCliente);
 		AnagraficaClienteDto anagraficaClienteDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(anagraficaCliente);
 		GenericWrapperResponse<AnagraficaClienteDto> genericResponse = GenericWrapperResponse
 				.<AnagraficaClienteDto>builder().dataRichiesta(new Date()).risultato(anagraficaClienteDto).build();
@@ -36,7 +37,7 @@ public class ClienteController {
 	}
 
 	@GetMapping(value = "/read-anagrafica-cliente")
-	public ResponseEntity<GenericWrapperResponse<AnagraficaClienteDto>> readClient(@RequestParam String ragioneSociale) {
+	public ResponseEntity<GenericWrapperResponse<AnagraficaClienteDto>> readCliente(@RequestParam String ragioneSociale) {
 		AnagraficaCliente anagraficaCliente = clienteService.readAnagraficaCliente(ragioneSociale);
 		AnagraficaClienteDto anagraficaClienteDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(anagraficaCliente);
 		GenericWrapperResponse<AnagraficaClienteDto> genericResponse = GenericWrapperResponse
@@ -45,8 +46,9 @@ public class ClienteController {
 	}
 
 	@PutMapping(value = "/update-anagrafica-cliente")
-	public ResponseEntity<GenericWrapperResponse<AnagraficaClienteDto>> updateClient(@RequestBody AnagraficaClienteDto dtoParam) {
-		AnagraficaCliente anagraficaCliente = clienteService.updateAnagraficaCliente(dtoParam);
+	public ResponseEntity<GenericWrapperResponse<AnagraficaClienteDto>> updateCliente(@RequestBody AnagraficaClienteDto anaClienteDto) {
+		AnagraficaCliente anagraficaCliente = DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(anaClienteDto);
+		anagraficaCliente = clienteService.saveAnagraficaCliente(anagraficaCliente);
 		AnagraficaClienteDto anagraficaClienteDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(anagraficaCliente);
 		GenericWrapperResponse<AnagraficaClienteDto> genericResponse = GenericWrapperResponse
 				.<AnagraficaClienteDto>builder().dataRichiesta(new Date()).risultato(anagraficaClienteDto).build();
@@ -54,7 +56,7 @@ public class ClienteController {
 	}
 
 	@DeleteMapping(value = "/delete-anagrafica-cliente")
-	public ResponseEntity<GenericWrapperResponse<AnagraficaClienteDto>> deleteClient(@RequestParam String ragioneSociale) {
+	public ResponseEntity<GenericWrapperResponse<AnagraficaClienteDto>> deleteCliente(@RequestParam String ragioneSociale) {
 		AnagraficaCliente anagraficaCliente = clienteService.deleteAnagraficaCliente(ragioneSociale);
 		AnagraficaClienteDto anagraficaClienteDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(anagraficaCliente);
 		GenericWrapperResponse<AnagraficaClienteDto> genericResponse = GenericWrapperResponse

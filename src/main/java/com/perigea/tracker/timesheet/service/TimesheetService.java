@@ -57,7 +57,6 @@ public class TimesheetService {
 	@Autowired
 	private ApplicationDao applicationDao;
 	
-	
 	public Timesheet createTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timeDto) {
 		try {
 			assertTimesheetIsValid(timesheetDataList, timeDto);
@@ -100,6 +99,7 @@ public class TimesheetService {
 				entry.setNoteSpesa(map.get(entryKey));	
 			}
 			timesheetRepository.save(timesheet);
+			logger.info("TImesheet salvato");
 			return timesheet;
 		} catch (Exception e) {
 			throw new TimesheetException(e.getMessage());
@@ -109,8 +109,7 @@ public class TimesheetService {
 	public Timesheet getTimesheet(Integer anno, EMese mese, String codicePersona) {
 		try {
 			Optional<Timesheet> optTimesheet = timesheetRepository.findById(new TimesheetMensileKey(anno, mese.getMonthId(), codicePersona));
-			Timesheet timesheet = optTimesheet.get();
-			return timesheet;
+			return optTimesheet.get();
 		} catch(Exception e) {
 			throw new TimesheetException(e.getMessage());
 		}

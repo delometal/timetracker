@@ -15,7 +15,7 @@ import com.perigea.tracker.timesheet.exception.FestivitaException;
 import com.perigea.tracker.timesheet.exception.GenericError;
 import com.perigea.tracker.timesheet.exception.GruppoException;
 import com.perigea.tracker.timesheet.exception.RuoloException;
-import com.perigea.tracker.timesheet.exception.TimeSheetException;
+import com.perigea.tracker.timesheet.exception.TimesheetException;
 import com.perigea.tracker.timesheet.exception.UtenteException;
 
 @ControllerAdvice
@@ -52,8 +52,8 @@ public class ExceptionHandlerController {
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 
-	@ExceptionHandler(TimeSheetException.class)
-	public final ResponseEntity<?> handleTimeSheetException(TimeSheetException ex){
+	@ExceptionHandler(TimesheetException.class)
+	public final ResponseEntity<?> handleTimeSheetException(TimesheetException ex){
 		GenericError eObject = new GenericError();
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());

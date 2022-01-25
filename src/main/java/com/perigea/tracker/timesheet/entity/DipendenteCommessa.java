@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.perigea.tracker.timesheet.entity.keys.DipendenteCommessaKey;
 
@@ -22,10 +21,8 @@ import lombok.EqualsAndHashCode;
 @Table(name = "dipendente_commessa")
 @EqualsAndHashCode(callSuper = true)
 @AssociationOverrides({
-    @AssociationOverride(name = "id.utente",
-        joinColumns = @JoinColumn(name = "codice_persona")),
-    @AssociationOverride(name = "id.commessa",
-        joinColumns = @JoinColumn(name = "codice_commessa")) })
+    @AssociationOverride(name = "id", joinColumns = @JoinColumn(name = "codice_persona")),
+    @AssociationOverride(name = "id", joinColumns = @JoinColumn(name = "codice_commessa")) })
 public class DipendenteCommessa extends BaseEntity {
 
 	private static final long serialVersionUID = -2109547859283092218L;
@@ -68,14 +65,4 @@ public class DipendenteCommessa extends BaseEntity {
 	@Column(name = "importo_residuo")
 	private Double importoResiduo;
 	
-//	@Transient
-//	public Utente getUtente() {
-//		return id.getUtente();
-//	}
-//
-//	@Transient
-//	private Commessa getCommessa() {
-//		return id.getCommessa();
-//	}
-
 }

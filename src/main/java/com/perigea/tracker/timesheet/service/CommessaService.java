@@ -1,13 +1,12 @@
 package com.perigea.tracker.timesheet.service;
 
+import java.util.NoSuchElementException;
+
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
-import com.perigea.tracker.timesheet.dto.CommessaFatturabileDto;
-import com.perigea.tracker.timesheet.dto.CommessaNonFatturabileDto;
-import com.perigea.tracker.timesheet.dto.wrapper.CommessaFatturabileDtoWrapper;
 import com.perigea.tracker.timesheet.entity.AnagraficaCliente;
 import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
 import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
@@ -19,17 +18,14 @@ import com.perigea.tracker.timesheet.repository.AnagraficaClienteRepository;
 import com.perigea.tracker.timesheet.repository.CommessaFatturabileRepository;
 import com.perigea.tracker.timesheet.repository.CommessaNonFatturabileRepository;
 import com.perigea.tracker.timesheet.repository.OrdineCommessaRepository;
-import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @Service
+@Transactional
 public class CommessaService {
 
 	@Autowired
 	private Logger logger;
-
-	@Autowired
-	private ClienteService clienteService;
 
 	@Autowired
 	private CommessaNonFatturabileRepository commessaNonFatturabileRepository;
@@ -43,22 +39,15 @@ public class CommessaService {
 	@Autowired
 	private AnagraficaClienteRepository anagraficaClienteRepository;
 
-	@Autowired
-	private ApplicationProperties applicationProperties;
-
 	/**
-	 * @param commessaNonFatturabileDto
-	 * metodo per creare una commessa non fatturabile
+	 * @param commessaNonFatturabile
+	 * metodo per creare o aggiornate una commessa non fatturabile
 	 * @return
 	 */
-	public CommessaNonFatturabile createCommessaNonFatturabile(CommessaNonFatturabileDto commessaNonFatturabileDto) {
+	public CommessaNonFatturabile saveCommessaNonFatturabile(CommessaNonFatturabile commessa) {
 		try {
-			AnagraficaCliente anagraficaCliente = anagraficaClienteRepository.findByPartitaIva(applicationProperties.getPartitaIvaPerigea());
-			CommessaNonFatturabile commessaNonFatturabile = DtoEntityMapper.INSTANCE.fromDtoToEntityCommessaNonFatturabile(commessaNonFatturabileDto);
-			commessaNonFatturabile.setCodiceCommessa(TSUtils.uuid());
-			commessaNonFatturabile.setCliente(anagraficaCliente);
-			commessaNonFatturabileRepository.save(commessaNonFatturabile);
-			return commessaNonFatturabile;
+			commessaNonFatturabileRepository.save(commessa);
+			return commessa;
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());
 		}
@@ -69,33 +58,14 @@ public class CommessaService {
 	 * @param codiceCommessa
 	 * @return
 	 */
-	public CommessaNonFatturabile getCommessaNonFatturabile(String codiceCommessa) {
+	public CommessaNonFatturabile readCommessaNonFatturabile(String codiceCommessa) {
 		try {
-			CommessaNonFatturabile commessa = commessaNonFatturabileRepository.findByCodiceCommessa(codiceCommessa);
-			if(commessa == null) {
-				throw new EntityNotFoundException(String.format("commessa non trovata con il codice %s", codiceCommessa));
-			} 
-			return commessa;
+			return commessaNonFatturabileRepository.findByCodiceCommessa(codiceCommessa);
 		} catch (Exception ex) {
-			throw ex;
-		}
-	}
-
-	/**
-	 * metodo per aggiornare i dati di una commessa non fatturabile
-	 * @param dtoParam
-	 * @return
-	 */
-	public CommessaNonFatturabile updateCommessaNonFatturabile(CommessaNonFatturabileDto dtoParam) {
-		try {
-			CommessaNonFatturabile commessaNonFatturabile = commessaNonFatturabileRepository.findByCodiceCommessa(dtoParam.getCommessa().getCodiceCommessa());
-			if (commessaNonFatturabile != null) {
-				commessaNonFatturabile = DtoEntityMapper.INSTANCE.fromDtoToEntityCommessaNonFatturabile(dtoParam);
-				commessaNonFatturabileRepository.save(commessaNonFatturabile);
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
 			}
-			return commessaNonFatturabile;
-		} catch (Exception ex) {
-			throw new EntityNotFoundException(ex.getMessage());
+			throw new CommessaException(ex.getMessage());
 		}
 	}
 
@@ -116,33 +86,33 @@ public class CommessaService {
 		}
 	}
 	
+	
+	/**
+	 *************************************** FATTURABILE **************************************
+	 */
+	
 	/**
 	 * creazione commessa fatturabile
 	 * @param commessaFatturabileDtoWrapper
 	 * @return
 	 */
-	public CommessaFatturabile createCommessaFatturabile(CommessaFatturabileDtoWrapper commessaFatturabileDtoWrapper) {
+	public CommessaFatturabile createCommessaFatturabile(CommessaFatturabile commessa, AnagraficaCliente anagraficaCliente) {
 		try {
-			AnagraficaCliente anagraficaEntity = anagraficaClienteRepository.findByPartitaIva(commessaFatturabileDtoWrapper.getAnagraficaCliente().getPartitaIva());
-			CommessaFatturabile commessaFatturabile=new CommessaFatturabile();
-			if(anagraficaEntity==null) {
-				anagraficaEntity = clienteService.createAnagraficaCliente(commessaFatturabileDtoWrapper.getAnagraficaCliente());
-				commessaFatturabile.setCodiceCommessa(TSUtils.uuid());
+			if(anagraficaCliente == null) {
+				anagraficaCliente = anagraficaClienteRepository.save(anagraficaCliente);
 			}
-
-			//Commessa fatturabile
-			commessaFatturabile = DtoEntityMapper.INSTANCE.fromDtoToEntityCommessaFatturabile(commessaFatturabileDtoWrapper.getCommessaFatturabileDto());
-			commessaFatturabile.setCliente(anagraficaEntity);
-			commessaFatturabileRepository.save(commessaFatturabile);
+			commessa.setCliente(anagraficaCliente);
+			commessa.setCodiceCommessa(TSUtils.uuid());
+			commessaFatturabileRepository.save(commessa);
 			logger.info("CommessaFatturabile creata e salvata a database");
-			return commessaFatturabile;
+			return commessa;
 		} catch(Exception ex) {
 			throw new CommessaException(ex.getMessage());
 		}
 	}
 	
 	/**
-	 * metodo per leggere i dati di una commessa  fatturabile
+	 * metodo per leggere i dati di una commessa fatturabile
 	 * @param codiceCommessa
 	 * @return
 	 */
@@ -150,7 +120,7 @@ public class CommessaService {
 		try {
 			CommessaFatturabile commessa = commessaFatturabileRepository.findByCodiceCommessa(codiceCommessa);
 			if(commessa == null) {
-				throw new EntityNotFoundException(String.format("commessa non trovata con il codice %s", codiceCommessa));
+				throw new EntityNotFoundException(String.format("Commessa non trovata con il codice %s", codiceCommessa));
 			} 
 			return commessa;
 		} catch (Exception ex) {
@@ -163,13 +133,9 @@ public class CommessaService {
 	 * @param dtoParam
 	 * @return
 	 */
-	public CommessaFatturabile updateCommessaFatturabile(CommessaFatturabileDto dtoParam) {
+	public CommessaFatturabile updateCommessaFatturabile(CommessaFatturabile commessa) {
 		try {
-			CommessaFatturabile commessa = commessaFatturabileRepository.findByCodiceCommessa(dtoParam.getCommessa().getCodiceCommessa());
-			if (commessa != null) {
-				commessa = DtoEntityMapper.INSTANCE.fromDtoToEntityCommessaFatturabile(dtoParam);
-				commessaFatturabileRepository.save(commessa);
-			}
+			commessaFatturabileRepository.save(commessa);
 			return commessa;
 		} catch (Exception ex) {
 			throw new EntityNotFoundException(ex.getMessage());
@@ -199,18 +165,16 @@ public class CommessaService {
 	 * @param ragioneSocialeCliente
 	 * @return
 	 */
-	public OrdineCommessa createOrdineCommessa(CommessaFatturabileDtoWrapper commessaFatturabileWrapper, String ragioneSocialeCliente) {
+	public OrdineCommessa createOrdineCommessa(OrdineCommessa ordineCommessa, CommessaFatturabile commessa, AnagraficaCliente anagraficaCliente) {
 		try {
-			OrdineCommessa entityOrdineCommessa = DtoEntityMapper.INSTANCE.fromDtoToEntityOrdineCommessa(commessaFatturabileWrapper.getOrdineCommessa());
-			CommessaFatturabile entityCommessaFatturabile = createCommessaFatturabile(commessaFatturabileWrapper);
-			OrdineCommessaKey id = new OrdineCommessaKey(entityCommessaFatturabile.getCodiceCommessa(),TSUtils.uuid(),ragioneSocialeCliente);
-			entityOrdineCommessa.setId(id);	
-			AnagraficaCliente anaCliente=DtoEntityMapper.INSTANCE.fromDtoToEntityAnagraficaCliente(commessaFatturabileWrapper.getAnagraficaCliente());
-			entityOrdineCommessa.setCliente(anaCliente);	
-			entityOrdineCommessa.setCommessaFatturabile(entityCommessaFatturabile);
-			ordineCommessaRepository.save(entityOrdineCommessa);
+			commessa = createCommessaFatturabile(commessa, anagraficaCliente);
+			ordineCommessa.setId(new OrdineCommessaKey(commessa.getCodiceCommessa(), TSUtils.uuid(), anagraficaCliente.getPartitaIva()));	
+			
+			ordineCommessa.setCommessaFatturabile(commessa);
+			ordineCommessa.setCliente(anagraficaCliente);
+			ordineCommessaRepository.save(ordineCommessa);
 			logger.info("Ordine commessa creato e salvato a database");
-			return entityOrdineCommessa;
+			return ordineCommessa;
 		} catch (Exception ex) {
 			throw new CommessaException("Ordine commessa non creata");
 		}

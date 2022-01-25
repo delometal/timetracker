@@ -1,27 +1,20 @@
 package com.perigea.tracker.timesheet.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.perigea.tracker.timesheet.dto.NotaSpeseDto;
-import com.perigea.tracker.timesheet.dto.NotaSpeseInputDto;
 import com.perigea.tracker.timesheet.entity.Commessa;
 import com.perigea.tracker.timesheet.entity.NotaSpese;
 import com.perigea.tracker.timesheet.entity.TimesheetEntry;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.entity.keys.NotaSpeseKey;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetEntryKey;
-import com.perigea.tracker.timesheet.enums.CostoNotaSpeseType;
 import com.perigea.tracker.timesheet.exception.NotaSpeseException;
 import com.perigea.tracker.timesheet.repository.CommessaRepository;
 import com.perigea.tracker.timesheet.repository.NotaSpeseRepository;
 import com.perigea.tracker.timesheet.repository.TimesheetDataRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
-import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 @Service
 public class NotaSpeseService {
@@ -30,10 +23,10 @@ public class NotaSpeseService {
 	private NotaSpeseRepository notaSpeseRepository;
 	
 	@Autowired
-	private CommessaRepository commessaReposirory;
+	private CommessaRepository commessaRepository;
 	
 	@Autowired
-	private UtenteRepository utenteReposirory;
+	private UtenteRepository utenteRepository;
 
 	@Autowired
 	private TimesheetDataRepository timesheetEntryRepository;
@@ -41,72 +34,61 @@ public class NotaSpeseService {
 	@Autowired
 	private Logger logger;
 
-	public NotaSpese createNotaSpese(NotaSpeseInputDto notaSpeseDto) {
+	public NotaSpese createNotaSpese(NotaSpese notaSpese) {
 		try {
-			NotaSpese notaSpese = DtoEntityMapper.INSTANCE.fromDtoToEntityNotaSpese(notaSpeseDto);
-			NotaSpeseKey id = new NotaSpeseKey(notaSpeseDto.getAnno(), notaSpeseDto.getMese(), notaSpeseDto.getGiorno(),
-					notaSpeseDto.getCodicePersona(), notaSpeseDto.getCodiceCommessa(),
-					notaSpeseDto.getCostoNotaSpese());
+			NotaSpeseKey id = new NotaSpeseKey(notaSpese.getId().getAnno(), notaSpese.getId().getMese(), notaSpese.getId().getGiorno(),
+					notaSpese.getId().getCodicePersona(), notaSpese.getId().getCodiceCommessa(),
+					notaSpese.getId().getCostoNotaSpese());
 			notaSpese.setId(id);
-			TimesheetEntryKey tsKey = new TimesheetEntryKey(notaSpeseDto.getAnno(), notaSpeseDto.getMese(), notaSpeseDto.getGiorno(), notaSpeseDto.getCodicePersona(), notaSpeseDto.getCodiceCommessa());
+			TimesheetEntryKey tsKey = new TimesheetEntryKey(notaSpese.getId().getAnno(), notaSpese.getId().getMese(), notaSpese.getId().getGiorno(), notaSpese.getId().getCodicePersona(), notaSpese.getId().getCodiceCommessa());
 			TimesheetEntry timesheetEntry = timesheetEntryRepository.findById(tsKey);
-			Commessa commessa = commessaReposirory.findByCodiceCommessa(notaSpeseDto.getCodiceCommessa());
-			Utente utente = utenteReposirory.findByCodicePersona(notaSpeseDto.getCodicePersona());
+			Commessa commessa = commessaRepository.findByCodiceCommessa(notaSpese.getId().getCodiceCommessa());
+			Utente utente = utenteRepository.findByCodicePersona(notaSpese.getId().getCodicePersona());
 			if(timesheetEntry != null) {
 				notaSpese.setTimesheetEntry(timesheetEntry);
 			}
 			notaSpese.setCommessa(commessa);
 			notaSpese.setUtente(utente);
 			notaSpeseRepository.save(notaSpese);
+			logger.info("Nota spese salvata");
 			return notaSpese;
 		} catch (Exception ex) {
 			throw new NotaSpeseException("NotaSpese non creata");
 		}
 	}
+	
 
-	public List<NotaSpese> readNotaSpese(String codicePersona) {
+	public NotaSpese readNotaSpese(NotaSpeseKey key) {
 		try {
-			List<NotaSpese> allNotaSpeseList = notaSpeseRepository.findAll();
-			List<NotaSpese> notaSpeseList = new ArrayList<>();
-			for (NotaSpese entity : allNotaSpeseList) {
-				if (entity.getUtente().getCodicePersona().equalsIgnoreCase(codicePersona)) {
-					notaSpeseList.add(entity);
-				}
-			}
-			return notaSpeseList;
-		} catch (Exception ex) {
-			throw new NotaSpeseException("Note Spese non trovate");
-		}
-	}
-
-	public NotaSpese updateNotaSpese(NotaSpeseInputDto notaSpeseInputDto) {
-		try {
-			NotaSpeseKey id = new NotaSpeseKey(notaSpeseInputDto.getAnno(), notaSpeseInputDto.getMese(), notaSpeseInputDto.getGiorno(),
-					notaSpeseInputDto.getCodicePersona(), notaSpeseInputDto.getCodiceCommessa(),
-					notaSpeseInputDto.getCostoNotaSpese());
-			NotaSpese notaSpesa = notaSpeseRepository.findById(id);
-			notaSpesa = DtoEntityMapper.INSTANCE.fromDtoToEntityNotaSpeseInput(notaSpeseInputDto);
-			notaSpesa.setId(id);
-				notaSpeseRepository.save(notaSpesa);
-			return notaSpesa;
+			return notaSpeseRepository.findById(key).get();
 		} catch (Exception ex) {
 			throw new NotaSpeseException("NotaSpese non trovata");
 		}
 	}
 
-	public NotaSpese deleteNotaSpese(String codicePersona, String codiceCommessa, String tipoCostoNotaSpese) {
+	public NotaSpese updateNotaSpese(NotaSpese notaSpese) {
 		try {
-			List<NotaSpese> notaSpeseList = notaSpeseRepository.findAll();
-			CostoNotaSpeseType costo = CostoNotaSpeseType.valueOf(tipoCostoNotaSpese);
-			for (NotaSpese entity : notaSpeseList) {
-				if (entity.getUtente().getCodicePersona().equalsIgnoreCase(codicePersona)
-						&& entity.getCommessa().getCodiceCommessa().equalsIgnoreCase(codiceCommessa)
-						&& entity.getId().getCostoNotaSpese().equals(costo)) {
-					notaSpeseRepository.delete(entity);
-					return entity;
-				}
-			}
-			return null;
+			notaSpeseRepository.save(notaSpese);
+			return notaSpese;
+		} catch (Exception ex) {
+			throw new NotaSpeseException("NotaSpese non trovata");
+		}
+	}
+
+	public NotaSpese deleteNotaSpese(NotaSpeseKey key) {
+		try {
+			NotaSpese notaSpese = notaSpeseRepository.findById(key).get();
+			notaSpeseRepository.deleteById(key);
+			return notaSpese;
+		} catch (Exception ex) {
+			throw new NotaSpeseException("NotaSpese non trovata");
+		}
+	}
+
+	public NotaSpese deleteNotaSpese(NotaSpese notaSpese) {
+		try {
+			notaSpeseRepository.delete(notaSpese);
+			return notaSpese;
 		} catch (Exception ex) {
 			throw new NotaSpeseException("NotaSpese non trovata");
 		}

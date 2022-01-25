@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.perigea.tracker.timesheet.dto.NotaSpeseDto;
 import com.perigea.tracker.timesheet.dto.TimesheetEntryDto;
 import com.perigea.tracker.timesheet.dto.TimesheetInputDto;
 
@@ -18,5 +17,5 @@ public class TimesheetWrapper implements Serializable {
 	
 	private List<TimesheetEntryDto> entries = new ArrayList<>();
 	private TimesheetInputDto timesheet;
-//	private List<NotaSpeseDto> expenseReport = new ArrayList<>();
+
 }

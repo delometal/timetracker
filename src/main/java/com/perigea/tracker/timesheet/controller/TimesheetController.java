@@ -32,17 +32,15 @@ public class TimesheetController {
 	@Autowired
 	private TimesheetService timesheetService;
 
-	// Metodo per creare un timesheet
 	@PostMapping(value = "/create-timesheet")
 	public ResponseEntity<GenericWrapperResponse<TimesheetResponseDto>> createTimesheet(@RequestBody TimesheetWrapper wrapper) {
-		Timesheet timesheet = timesheetService.createTimesheet(wrapper.getEntries(), wrapper.getTimesheet()/*, wrapper.getExpenseReport()*/);
+		Timesheet timesheet = timesheetService.createTimesheet(wrapper.getEntries(), wrapper.getTimesheet());
 		TimesheetResponseDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoMensile(timesheet);
 		GenericWrapperResponse<TimesheetResponseDto> genericDto = GenericWrapperResponse.<TimesheetResponseDto>builder()
 				.dataRichiesta(new Date()).risultato(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
-	// Metodo per creare un timesheet
 	@GetMapping(value = "/read-timesheet")
 	public ResponseEntity<GenericWrapperResponse<TimesheetResponseDto>> readTimesheet() {
 		Timesheet timesheet = timesheetService.getTimesheet(2020, EMese.GEN, "01");
@@ -52,7 +50,6 @@ public class TimesheetController {
 		return ResponseEntity.ok(genericDto);
 	}
 	
-	//Metodo per eliminare un timesheet
 	@DeleteMapping(value = "/delete-timesheet")
 	public ResponseEntity<GenericWrapperResponse<TimesheetResponseDto>> deleteTimesheet(@RequestParam Integer anno,
 			EMese mese,@RequestParam String codicePersona) {
@@ -74,8 +71,6 @@ public class TimesheetController {
 	
 	@PutMapping(value = "/update-timesheet-status/{status}")
 	public ResponseEntity<GenericWrapperResponse<Boolean>> updateTimesheetStatus(@RequestBody TimesheetInputDto timesheetDto, @PathVariable(value = "status") StatoRichiestaType newStatus) {
-//	public ResponseEntity<GenericWrapperResponse<Boolean>> updateTimesheetStatus(@RequestBody TimesheetInputDto timesheetDto, @RequestParam StatoRichiestaType newStatus) {	
-		
 		TimesheetMensileKey tsKey = new TimesheetMensileKey(timesheetDto.getAnno(), timesheetDto.getMese(), timesheetDto.getCodicePersona());
 		Boolean update = timesheetService.editTimesheetStatus(tsKey, newStatus);
 		GenericWrapperResponse<Boolean> genericDto = GenericWrapperResponse.<Boolean>builder()
@@ -85,4 +80,5 @@ public class TimesheetController {
 		}
 		return ResponseEntity.badRequest().body(genericDto);
 	}
+	
 }

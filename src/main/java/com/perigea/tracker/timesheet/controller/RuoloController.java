@@ -29,7 +29,8 @@ public class RuoloController {
 
 	@PostMapping(value = "/create-role")
 	public ResponseEntity<GenericWrapperResponse<RuoloDto>> createRole(@RequestBody RuoloDto ruoloDto) {
-		Ruolo ruolo = roleService.createRole(ruoloDto);
+		Ruolo ruolo = DtoEntityMapper.INSTANCE.fromDtoToEntityRuoli(ruoloDto);
+		ruolo = roleService.createRole(ruolo);
 		RuoloDto dtoRuolo = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(ruolo);
 		GenericWrapperResponse<RuoloDto> genericDto = GenericWrapperResponse.<RuoloDto>builder()
 				.dataRichiesta(new Date()).risultato(dtoRuolo).build();
@@ -47,7 +48,8 @@ public class RuoloController {
 	
 	@PutMapping(value = "/update-role")
 	public ResponseEntity<GenericWrapperResponse<RuoloDto>> updateRole(@RequestBody RuoloDto ruoloDto) {
-		Ruolo ruolo = roleService.updateRole(ruoloDto);
+		Ruolo ruolo = DtoEntityMapper.INSTANCE.fromDtoToEntityRuoli(ruoloDto);
+		ruolo = roleService.updateRole(ruolo);
 		RuoloDto dtoRuolo = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(ruolo);
 		GenericWrapperResponse<RuoloDto> genericDto = GenericWrapperResponse.<RuoloDto>builder()
 				.dataRichiesta(new Date()).risultato(dtoRuolo).build();

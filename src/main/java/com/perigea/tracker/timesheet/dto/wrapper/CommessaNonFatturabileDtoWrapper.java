@@ -11,6 +11,6 @@ import lombok.EqualsAndHashCode;
 public class CommessaNonFatturabileDtoWrapper extends BaseDto {
 
 	private static final long serialVersionUID = -8479993455768944044L;
-	private CommessaNonFatturabileDto commessaNonFatturabileDto;
+	private CommessaNonFatturabileDto commessaNonFatturabile;
 
 }

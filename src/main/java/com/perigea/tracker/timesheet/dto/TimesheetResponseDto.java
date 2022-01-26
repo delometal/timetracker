@@ -21,5 +21,8 @@ public class TimesheetResponseDto extends BaseDto {
 	private List<TimesheetEntryDto> entries;
 	private String createUser;
 	private String lastUpdateUser;
+	private String nome;
+	private String cognome;
+	private String mailAziendale;
 	
 }

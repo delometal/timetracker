@@ -22,5 +22,6 @@ public class TimesheetEntryDto extends BaseDto {
 	private String createUser;
 	private String lastUpdateUser;
 	private List<NotaSpeseDto> noteSpesa = new ArrayList<>();
+	private String descrizioneCommessa;
 	
 }

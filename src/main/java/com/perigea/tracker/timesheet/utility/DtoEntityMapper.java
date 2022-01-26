@@ -104,6 +104,7 @@ public interface DtoEntityMapper {
 	
 	@Mapping(target= "id.giorno", source="giorno")
 	@Mapping(target= "id.codiceCommessa", source="codiceCommessa")
+	@Mapping(target= "commessa.descrizioneCommessa", source="descrizioneCommessa")
 	TimesheetEntry fromDtoToEntityTimeSheet(TimesheetEntryDto dto);
 	
 	@Mapping(target= "giorno", source="id.giorno")
@@ -120,6 +121,9 @@ public interface DtoEntityMapper {
 	Timesheet fromDtoToEntityMensile(TimesheetInputDto dto);
 	
 	@Mapping(target= ".", source="id")
+	@Mapping(target= "nome", source="utente.nome")
+	@Mapping(target= "cognome", source="utente.cognome")
+	@Mapping (target = "mailAziendale", source = "utente.dipendente.mailAziendale")
 	TimesheetResponseDto fromEntityToDtoMensile(Timesheet entity);
 	
 	Festivita FromDtoToEntityFestivita(FestivitaDto dto);

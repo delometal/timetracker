@@ -58,8 +58,9 @@ public class RuoloController {
 
 	@DeleteMapping(value = "/delete-role")
 	public ResponseEntity<GenericWrapperResponse<RuoloDto>> deleteRole(@RequestParam RuoloType ruoloTipo) {
-		Ruolo ruolo = roleService.deleteRole(ruoloTipo);
+		Ruolo ruolo = roleService.readRole(ruoloTipo);
 		RuoloDto dtoRuolo = DtoEntityMapper.INSTANCE.fromEntityToDtoRuoli(ruolo);
+		roleService.deleteRole(ruoloTipo);
 		GenericWrapperResponse<RuoloDto> genericDto = GenericWrapperResponse.<RuoloDto>builder()
 				.dataRichiesta(new Date()).risultato(dtoRuolo).build();
 		return ResponseEntity.ok(genericDto);

@@ -31,13 +31,13 @@ public class Contatto extends BaseEntity {
 	@Column(name = "codice_fiscale", unique = true)
 	private String codiceFiscale;
 
-	@Column(name = "mail_aziendale")
+	@Column(name = "mail_aziendale", unique = true)
 	private String mailAziendale;
 
-	@Column(name = "mail_privata")
+	@Column(name = "mail_privata", unique = true)
 	private String mailPrivata;
 
-	@Column(name = "cellulare")
+	@Column(name = "cellulare", unique = true)
 	private String cellulare;
 
 	@Column(name = "provincia_di_domicilio")

@@ -18,6 +18,9 @@ import com.perigea.tracker.timesheet.repository.UtenteRepository;
 
 @Service
 public class NotaSpeseService {
+	
+	@Autowired
+	private Logger logger;
 
 	@Autowired
 	private NotaSpeseRepository notaSpeseRepository;
@@ -31,9 +34,6 @@ public class NotaSpeseService {
 	@Autowired
 	private TimesheetDataRepository timesheetEntryRepository;
 
-	@Autowired
-	private Logger logger;
-
 	public NotaSpese createNotaSpese(NotaSpese notaSpese) {
 		try {
 			NotaSpeseKey id = new NotaSpeseKey(notaSpese.getId().getAnno(), notaSpese.getId().getMese(), notaSpese.getId().getGiorno(),
@@ -41,9 +41,9 @@ public class NotaSpeseService {
 					notaSpese.getId().getCostoNotaSpese());
 			notaSpese.setId(id);
 			TimesheetEntryKey tsKey = new TimesheetEntryKey(notaSpese.getId().getAnno(), notaSpese.getId().getMese(), notaSpese.getId().getGiorno(), notaSpese.getId().getCodicePersona(), notaSpese.getId().getCodiceCommessa());
-			TimesheetEntry timesheetEntry = timesheetEntryRepository.findById(tsKey);
-			Commessa commessa = commessaRepository.findByCodiceCommessa(notaSpese.getId().getCodiceCommessa());
-			Utente utente = utenteRepository.findByCodicePersona(notaSpese.getId().getCodicePersona());
+			TimesheetEntry timesheetEntry = timesheetEntryRepository.findById(tsKey).get();
+			Commessa commessa = commessaRepository.findByCodiceCommessa(notaSpese.getId().getCodiceCommessa()).get();
+			Utente utente = utenteRepository.findByCodicePersona(notaSpese.getId().getCodicePersona()).get();
 			if(timesheetEntry != null) {
 				notaSpese.setTimesheetEntry(timesheetEntry);
 			}
@@ -57,7 +57,6 @@ public class NotaSpeseService {
 		}
 	}
 	
-
 	public NotaSpese readNotaSpese(NotaSpeseKey key) {
 		try {
 			return notaSpeseRepository.findById(key).get();
@@ -71,26 +70,23 @@ public class NotaSpeseService {
 			notaSpeseRepository.save(notaSpese);
 			return notaSpese;
 		} catch (Exception ex) {
-			throw new NotaSpeseException("NotaSpese non trovata");
+			throw new NotaSpeseException(ex.getMessage());
 		}
 	}
 
-	public NotaSpese deleteNotaSpese(NotaSpeseKey key) {
+	public void deleteNotaSpese(NotaSpeseKey key) {
 		try {
-			NotaSpese notaSpese = notaSpeseRepository.findById(key).get();
 			notaSpeseRepository.deleteById(key);
-			return notaSpese;
 		} catch (Exception ex) {
-			throw new NotaSpeseException("NotaSpese non trovata");
+			throw new NotaSpeseException(ex.getMessage());
 		}
 	}
 
-	public NotaSpese deleteNotaSpese(NotaSpese notaSpese) {
+	public void deleteNotaSpese(NotaSpese notaSpese) {
 		try {
 			notaSpeseRepository.delete(notaSpese);
-			return notaSpese;
 		} catch (Exception ex) {
-			throw new NotaSpeseException("NotaSpese non trovata");
+			throw new NotaSpeseException(ex.getMessage());
 		}
 	}
 }

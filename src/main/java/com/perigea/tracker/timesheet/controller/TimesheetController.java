@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
@@ -20,7 +19,6 @@ import com.perigea.tracker.timesheet.dto.TimesheetResponseDto;
 import com.perigea.tracker.timesheet.dto.wrapper.TimesheetWrapper;
 import com.perigea.tracker.timesheet.entity.Timesheet;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
-import com.perigea.tracker.timesheet.enums.EMese;
 import com.perigea.tracker.timesheet.enums.StatoRichiestaType;
 import com.perigea.tracker.timesheet.service.TimesheetService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
@@ -42,8 +40,8 @@ public class TimesheetController {
 	}
 	
 	@GetMapping(value = "/read-timesheet")
-	public ResponseEntity<GenericWrapperResponse<TimesheetResponseDto>> readTimesheet() {
-		Timesheet timesheet = timesheetService.getTimesheet(2020, EMese.GEN, "01");
+	public ResponseEntity<GenericWrapperResponse<TimesheetResponseDto>> readTimesheet(@RequestBody TimesheetMensileKey id) {
+		Timesheet timesheet = timesheetService.getTimesheet(id);
 		TimesheetResponseDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoMensile(timesheet);
 		GenericWrapperResponse<TimesheetResponseDto> genericDto = GenericWrapperResponse.<TimesheetResponseDto>builder()
 				.dataRichiesta(new Date()).risultato(dto).build();
@@ -51,9 +49,8 @@ public class TimesheetController {
 	}
 	
 	@DeleteMapping(value = "/delete-timesheet")
-	public ResponseEntity<GenericWrapperResponse<TimesheetResponseDto>> deleteTimesheet(@RequestParam Integer anno,
-			EMese mese,@RequestParam String codicePersona) {
-		Timesheet timesheet = timesheetService.getTimesheet(anno, mese, codicePersona);
+	public ResponseEntity<GenericWrapperResponse<TimesheetResponseDto>> deleteTimesheet(@RequestBody TimesheetMensileKey id) {
+		Timesheet timesheet = timesheetService.getTimesheet(id);
 		TimesheetResponseDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoMensile(timesheet);
 		GenericWrapperResponse<TimesheetResponseDto> genericDto = GenericWrapperResponse.<TimesheetResponseDto>builder()
 				.dataRichiesta(new Date()).risultato(dto).build();

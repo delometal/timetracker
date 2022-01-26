@@ -56,8 +56,9 @@ public class NotaSpeseController {
 
 	@GetMapping(value = "/delete-nota-spese")
 	public ResponseEntity<GenericWrapperResponse<NotaSpeseDto>> deleteNotaSpese(@RequestBody NotaSpeseKey notaSpeseKey) {
-		NotaSpese notaSpese = notaSpeseService.deleteNotaSpese(notaSpeseKey);
+		NotaSpese notaSpese = notaSpeseService.readNotaSpese(notaSpeseKey);
 		NotaSpeseDto dtoNotaSpese = DtoEntityMapper.INSTANCE.fromEntityToDtoNotaSpese(notaSpese);
+		notaSpeseService.deleteNotaSpese(notaSpeseKey);
 		GenericWrapperResponse<NotaSpeseDto> genericDto = GenericWrapperResponse.<NotaSpeseDto>builder()
 				.dataRichiesta(new Date()).risultato(dtoNotaSpese).build();
 		return ResponseEntity.ok(genericDto);

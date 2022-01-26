@@ -46,8 +46,7 @@ public class CommessaService {
 	 */
 	public CommessaNonFatturabile saveCommessaNonFatturabile(CommessaNonFatturabile commessa) {
 		try {
-			commessaNonFatturabileRepository.save(commessa);
-			return commessa;
+			return commessaNonFatturabileRepository.save(commessa);
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());
 		}
@@ -60,7 +59,7 @@ public class CommessaService {
 	 */
 	public CommessaNonFatturabile readCommessaNonFatturabile(String codiceCommessa) {
 		try {
-			return commessaNonFatturabileRepository.findByCodiceCommessa(codiceCommessa);
+			return commessaNonFatturabileRepository.findByCodiceCommessa(codiceCommessa).get();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -74,14 +73,11 @@ public class CommessaService {
 	 * @param codiceCommessa
 	 * @return
 	 */
-	public CommessaNonFatturabile deleteCommessaNonFatturabile(String codiceCommessa) {
+	public void deleteCommessaNonFatturabile(String codiceCommessa) {
 		try {
-			CommessaNonFatturabile commessaNonFatturabile = commessaNonFatturabileRepository.findByCodiceCommessa(codiceCommessa);
-			if (commessaNonFatturabile != null) {
-				commessaNonFatturabileRepository.delete(commessaNonFatturabile);
-			}
-			return commessaNonFatturabile;
+			commessaNonFatturabileRepository.deleteById(codiceCommessa);
 		} catch (Exception ex) {
+			logger.error(ex.getMessage());
 			throw new CommessaException(ex.getMessage());
 		}
 	}
@@ -98,7 +94,7 @@ public class CommessaService {
 	 */
 	public CommessaFatturabile createCommessaFatturabile(CommessaFatturabile commessa, AnagraficaCliente anagraficaCliente) {
 		try {
-			if(anagraficaCliente == null) {
+			if(anagraficaClienteRepository.findByPartitaIva(anagraficaCliente.getPartitaIva()) == null) {
 				anagraficaCliente = anagraficaClienteRepository.save(anagraficaCliente);
 			}
 			commessa.setCliente(anagraficaCliente);
@@ -116,15 +112,14 @@ public class CommessaService {
 	 * @param codiceCommessa
 	 * @return
 	 */
-	public CommessaFatturabile readCommessaFatturabile(String codiceCommessa) {
+	public CommessaFatturabile readCommessaFatturabile(final String codiceCommessa) {
 		try {
-			CommessaFatturabile commessa = commessaFatturabileRepository.findByCodiceCommessa(codiceCommessa);
-			if(commessa == null) {
-				throw new EntityNotFoundException(String.format("Commessa non trovata con il codice %s", codiceCommessa));
-			} 
-			return commessa;
+			return commessaFatturabileRepository.findByCodiceCommessa(codiceCommessa).get();
 		} catch (Exception ex) {
-			throw ex;
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new CommessaException(ex.getMessage());
 		}
 	}
 	
@@ -135,10 +130,9 @@ public class CommessaService {
 	 */
 	public CommessaFatturabile updateCommessaFatturabile(CommessaFatturabile commessa) {
 		try {
-			commessaFatturabileRepository.save(commessa);
-			return commessa;
+			return commessaFatturabileRepository.save(commessa);
 		} catch (Exception ex) {
-			throw new EntityNotFoundException(ex.getMessage());
+			throw new CommessaException(ex.getMessage());
 		}
 	}
 	
@@ -147,13 +141,9 @@ public class CommessaService {
 	 * @param codiceCommessa
 	 * @return
 	 */
-	public CommessaFatturabile deleteCommessaFatturabile(String codiceCommessa) {
+	public void deleteCommessaFatturabile(final String codiceCommessa) {
 		try {
-			CommessaFatturabile commessa = commessaFatturabileRepository.findByCodiceCommessa(codiceCommessa);
-			if (commessa != null) {
-				commessaFatturabileRepository.delete(commessa);
-			}
-			return commessa;
+			commessaFatturabileRepository.deleteById(codiceCommessa);
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());
 		}

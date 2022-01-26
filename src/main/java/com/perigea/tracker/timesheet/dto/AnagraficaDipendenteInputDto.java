@@ -9,6 +9,6 @@ public class AnagraficaDipendenteInputDto extends AnagraficaDipendenteDto {
 
 	private static final long serialVersionUID = -8948320302365869807L;
 	
-	private UtentePostDto utenteDto;
+	private UtentePostDto utente;
 
 }

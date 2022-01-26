@@ -15,10 +15,10 @@ import com.perigea.tracker.timesheet.repository.AnagraficaClienteRepository;
 
 @Service
 public class ClienteService {
-
+	
 	@Autowired
 	private Logger logger;
-	
+
 	@Autowired
 	private ApplicationProperties applicationProperties;
 
@@ -32,9 +32,7 @@ public class ClienteService {
 	 */
 	public AnagraficaCliente saveAnagraficaCliente(AnagraficaCliente anagraficaCliente) {
 		try {
-			anagraficaClienteRepository.save(anagraficaCliente);
-			logger.info("Dati anagrafici cliente persistiti");
-			return anagraficaCliente;
+			return anagraficaClienteRepository.save(anagraficaCliente);
 		} catch (Exception ex) {
 			throw new ClienteException(ex.getMessage());
 		}
@@ -47,7 +45,7 @@ public class ClienteService {
 	 */
 	public AnagraficaCliente readAnagraficaCliente(String id) {
 		try {
-			return anagraficaClienteRepository.findByPartitaIva(id);
+			return anagraficaClienteRepository.findByPartitaIva(id).get();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -61,15 +59,15 @@ public class ClienteService {
 	 * @param partitaIva
 	 * @return
 	 */
-	public AnagraficaCliente deleteAnagraficaCliente(String id) {
+	public void deleteAnagraficaCliente(String id) {
 		try {
-			AnagraficaCliente anagraficaClienteEntity = anagraficaClienteRepository.findByPartitaIva(id);
-			if (anagraficaClienteEntity != null) {
-				anagraficaClienteRepository.delete(anagraficaClienteEntity);
-			}
-			return anagraficaClienteEntity;
+			anagraficaClienteRepository.deleteById(id);
+			logger.info("Relazione Dipendente-commessa cancellata");
 		} catch (Exception ex) {
-			throw new EntityNotFoundException(ex.getMessage());
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new ClienteException(ex.getMessage());
 		}
 	}
 	
@@ -82,7 +80,7 @@ public class ClienteService {
 		try {
 			return readAnagraficaCliente(applicationProperties.getPartitaIvaPerigea());
 		} catch (Exception ex) {
-			throw new ClienteException(ex.getMessage());
+			throw ex;
 		}
 	}
 	

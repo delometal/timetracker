@@ -29,13 +29,13 @@ public class Gruppo implements Serializable {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 
-	@Column(name = "nome")
+	@Column(name = "nome", nullable = false, unique = true)
 	private String nome;
 
 	@Column(name = "descrizione")
 	private String descrizione;
 	
-	@ManyToMany(cascade = { CascadeType.ALL })
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
     @JoinTable(
         name = "gruppo_contatto", 
         joinColumns = { @JoinColumn(name = "id_gruppo") }, 

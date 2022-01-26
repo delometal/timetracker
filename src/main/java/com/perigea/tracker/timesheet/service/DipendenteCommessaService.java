@@ -29,9 +29,7 @@ public class DipendenteCommessaService {
 	 */
 	public DipendenteCommessa createDipendenteCommessa(DipendenteCommessa dipendenteCommessa) {
 		try {
-			dipendenteCommessa = dipendenteCommessaRepository.save(dipendenteCommessa);
-			logger.info("Relazione Dipendente-commessa creata");
-			return dipendenteCommessa;
+			return dipendenteCommessaRepository.save(dipendenteCommessa);
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());
 		}
@@ -60,9 +58,7 @@ public class DipendenteCommessaService {
 	 */
 	public DipendenteCommessa updateDipendenteCommessa(DipendenteCommessa dipendenteCommessa) {
 		try {
-			dipendenteCommessaRepository.save(dipendenteCommessa);
-			logger.info("Relazione Dipendente-commessa aggiornata");
-			return dipendenteCommessa;
+			return dipendenteCommessaRepository.save(dipendenteCommessa);
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());
 		}
@@ -72,12 +68,10 @@ public class DipendenteCommessaService {
 	 * 
 	 * @param id
 	 */
-	public DipendenteCommessa deleteDipendenteCommessa(DipendenteCommessaKey id) {
+	public void deleteDipendenteCommessa(DipendenteCommessaKey id) {
 		try {
-			DipendenteCommessa dipendenteCommessa = readDipendenteCommessa(id);
-			dipendenteCommessaRepository.delete(dipendenteCommessa);
+			dipendenteCommessaRepository.deleteById(id);
 			logger.info("Relazione Dipendente-commessa cancellata");
-			return dipendenteCommessa;
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());
 		}

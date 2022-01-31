@@ -1,6 +1,6 @@
 package com.perigea.tracker.timesheet.entity;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
@@ -39,10 +39,10 @@ public class DipendenteCommessa extends BaseEntity {
 	private Commessa commessa;
 
 	@Column(name = "data_inizio_allocazione")
-	private Date dataInizioAllocazione;
+	private LocalDate dataInizioAllocazione;
 
 	@Column(name = "data_fine_allocazione")
-	private Date dataFineAllocazione;
+	private LocalDate dataFineAllocazione;
 
 	@Column(name = "tariffa")
 	private Double tariffa;

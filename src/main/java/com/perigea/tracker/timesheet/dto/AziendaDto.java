@@ -6,13 +6,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
-public class AnagraficaClienteDto extends BaseDto {
+@EqualsAndHashCode(callSuper=true)
+public class AziendaDto extends BaseDto {
 
-	private static final long serialVersionUID = 3875267041004676543L;
+	private static final long serialVersionUID = -7928482382601116096L;
 	
-	private String ragioneSocialeCliente;
+	private String codiceAzienda;
 	private String partitaIva;
+	private String ragioneSociale;
 	private String codiceFiscale;
 	private String codiceDestinatario;
 	private String sedeLegaleComune;
@@ -25,8 +26,5 @@ public class AnagraficaClienteDto extends BaseDto {
 	private Integer progressivoPerCommesse;
 	private PagamentoType tipologiaPagamentoType;
 	private String notePerLaFatturazione;
-	private String createUser;
-	private String lastUpdateUser;
-	private CommessaFatturabileDto commessaFatturabile;
-
+	
 }

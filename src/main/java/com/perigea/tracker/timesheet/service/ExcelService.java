@@ -38,8 +38,8 @@ public class ExcelService {
 			fiveRow.createCell(1).setCellValue("trasferta");
 
 			String codicePersona = timesheetExcelWrapper.getTimesheet().getCodicePersona();
-			String nome = timesheetExcelWrapper.getUtente().getNome();
-			String cognome = timesheetExcelWrapper.getUtente().getCognome();
+			String nome = timesheetExcelWrapper.getDipendente().getNome();
+			String cognome = timesheetExcelWrapper.getDipendente().getCognome();
 			Integer annoDiRiferimento = timesheetExcelWrapper.getTimesheet().getAnno();
 			Integer meseDiRiferimento = timesheetExcelWrapper.getTimesheet().getMese();
 			for (TimesheetEntryDto t : timesheetExcelWrapper.getTimesheet().getEntries()) {

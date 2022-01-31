@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.perigea.tracker.timesheet.entity.Contatto;
+import com.perigea.tracker.timesheet.entity.Anagrafica;
 import com.perigea.tracker.timesheet.entity.Gruppo;
 
 import lombok.AllArgsConstructor;
@@ -30,7 +30,7 @@ public class GruppoContattoKey implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "id_contatto", referencedColumnName = "id_contatto", updatable = false, insertable = false)
-	private Contatto contatto;
+	private Anagrafica contatto;
 
 	@ManyToOne
 	@JoinColumn(name = "id_gruppo", referencedColumnName = "id_gruppo", updatable = false, insertable = false)

@@ -7,13 +7,18 @@ import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
-import com.perigea.tracker.timesheet.entity.AnagraficaCliente;
+import com.perigea.tracker.timesheet.entity.Anagrafica;
+import com.perigea.tracker.timesheet.entity.Cliente;
 import com.perigea.tracker.timesheet.exception.ClienteException;
-import com.perigea.tracker.timesheet.repository.AnagraficaClienteRepository;
+import com.perigea.tracker.timesheet.repository.AnagraficaRepository;
+import com.perigea.tracker.timesheet.repository.ClienteRepository;
+import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @Service
+@Transactional
 public class ClienteService {
 	
 	@Autowired
@@ -23,16 +28,19 @@ public class ClienteService {
 	private ApplicationProperties applicationProperties;
 
 	@Autowired
-	private AnagraficaClienteRepository anagraficaClienteRepository;
+	private ClienteRepository clienteRepository;
+
+	@Autowired
+	private AnagraficaRepository anagraficaRepository;
 
 	/**
 	 * creazione anagrafica cliente
 	 * @param anaClienteDto
 	 * @return
 	 */
-	public AnagraficaCliente saveAnagraficaCliente(AnagraficaCliente anagraficaCliente) {
+	public Cliente saveCliente(Cliente cliente) {
 		try {
-			return anagraficaClienteRepository.save(anagraficaCliente);
+			return clienteRepository.save(cliente);
 		} catch (Exception ex) {
 			throw new ClienteException(ex.getMessage());
 		}
@@ -43,9 +51,9 @@ public class ClienteService {
 	 * @param partitaIva
 	 * @return
 	 */
-	public AnagraficaCliente readAnagraficaCliente(String id) {
+	public Cliente readCliente(String id) {
 		try {
-			return anagraficaClienteRepository.findByPartitaIva(id).get();
+			return clienteRepository.findByPartitaIva(id).get();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -59,10 +67,10 @@ public class ClienteService {
 	 * @param partitaIva
 	 * @return
 	 */
-	public void deleteAnagraficaCliente(String id) {
+	public void deleteCliente(String id) {
 		try {
-			anagraficaClienteRepository.deleteById(id);
-			logger.info("Relazione Dipendente-commessa cancellata");
+			clienteRepository.deleteById(id);
+			logger.info("Cliente cancellato");
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -76,11 +84,55 @@ public class ClienteService {
 	 * @param partitaIva
 	 * @return
 	 */
-	public AnagraficaCliente loadAnagraficaClientePerigea() {
+	public Cliente loadClientePerigea() {
 		try {
-			return readAnagraficaCliente(applicationProperties.getPartitaIvaPerigea());
+			return readCliente(applicationProperties.getPartitaIvaPerigea());
 		} catch (Exception ex) {
 			throw ex;
+		}
+	}
+	
+	/**
+	 * add contatto
+	 * @param cliente
+	 * @param contatto
+	 */
+	public void addContatto(Cliente cliente, Anagrafica contatto) {
+		try {
+			contatto.setCodicePersona(TSUtils.uuid());
+			cliente.addContatto(contatto);
+			clienteRepository.save(cliente);
+		} catch (Exception ex) {
+			throw new ClienteException(ex.getMessage());
+		}
+	}
+	
+	/**
+	 * remove contatto
+	 * @param cliente
+	 * @param contatto
+	 */
+	public void removeContatto(Cliente cliente, Anagrafica contatto) {
+		try {
+			cliente.removeContatto(contatto);
+			clienteRepository.save(cliente);
+		} catch (Exception ex) {
+			throw new ClienteException(ex.getMessage());
+		}
+	}
+	
+	/**
+	 * delete contatto
+	 * @param fornitore
+	 * @param contatto
+	 */
+	public void deleteContatto(Cliente cliente, Anagrafica contatto) {
+		try {
+			cliente.removeContatto(contatto);
+			clienteRepository.save(cliente);
+			anagraficaRepository.deleteById(contatto.getCodicePersona());
+		} catch (Exception ex) {
+			throw new ClienteException(ex.getMessage());
 		}
 	}
 	

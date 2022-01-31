@@ -1,6 +1,5 @@
 package com.perigea.tracker.timesheet.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.timesheet.dto.AnagraficaDto;
 import com.perigea.tracker.timesheet.dto.ContattoDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.dto.GruppoContattoDto;
-import com.perigea.tracker.timesheet.entity.Contatto;
+import com.perigea.tracker.timesheet.entity.Anagrafica;
 import com.perigea.tracker.timesheet.entity.Gruppo;
 import com.perigea.tracker.timesheet.service.GruppoContattoService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
+import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @RestController
 @RequestMapping("/contatti-e-gruppi")
@@ -29,100 +30,103 @@ public class GruppoContattoController {
 
 	@Autowired
 	private GruppoContattoService gruppoContattoService;
+	
+	@Autowired
+	private DtoEntityMapper dtoEntityMapper;
 
 	@PostMapping(value = "/create-gruppo")
 	public ResponseEntity<GenericWrapperResponse<GruppoContattoDto>> createGruppo(@RequestBody GruppoContattoDto gruppoContattoDto) {
-		Gruppo gruppo = DtoEntityMapper.INSTANCE.fromDtoToEntityGruppo(gruppoContattoDto);
+		Gruppo gruppo = dtoEntityMapper.dtoToEntity(gruppoContattoDto);
 		gruppo = gruppoContattoService.createGruppo(gruppo);
-		GruppoContattoDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoGruppo(gruppo);
+		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppo);
 		GenericWrapperResponse<GruppoContattoDto> genericResponse = GenericWrapperResponse
-				.<GruppoContattoDto>builder().dataRichiesta(new Date()).risultato(dto).build();
+				.<GruppoContattoDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@GetMapping(value = "/read-gruppo")
 	public ResponseEntity<GenericWrapperResponse<GruppoContattoDto>> readGruppo(@RequestParam Long id) {
 		Gruppo gruppoContatto = gruppoContattoService.readGruppo(id);
-		GruppoContattoDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoGruppo(gruppoContatto);
+		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppoContatto);
 		GenericWrapperResponse<GruppoContattoDto> genericResponse = GenericWrapperResponse
-				.<GruppoContattoDto>builder().dataRichiesta(new Date()).risultato(dto).build();
+				.<GruppoContattoDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@PutMapping(value = "/update-gruppo")
 	public ResponseEntity<GenericWrapperResponse<GruppoContattoDto>> updateGruppo(@RequestBody GruppoContattoDto gruppoContattoDto) {
-		Gruppo gruppo = DtoEntityMapper.INSTANCE.fromDtoToEntityGruppo(gruppoContattoDto);
+		Gruppo gruppo = dtoEntityMapper.dtoToEntity(gruppoContattoDto);
 		gruppo = gruppoContattoService.updateGruppo(gruppo);
-		GruppoContattoDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoGruppo(gruppo);
+		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppo);
 		GenericWrapperResponse<GruppoContattoDto> genericResponse = GenericWrapperResponse
-				.<GruppoContattoDto>builder().dataRichiesta(new Date()).risultato(dto).build();
+				.<GruppoContattoDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@DeleteMapping(value = "/delete-gruppo")
-	ResponseEntity<GenericWrapperResponse<GruppoContattoDto>> deleteGruppo(@RequestParam Long id) {
+	public ResponseEntity<GenericWrapperResponse<GruppoContattoDto>> deleteGruppo(@RequestParam Long id) {
 		Gruppo gruppoContatto = gruppoContattoService.readGruppo(id);
-		GruppoContattoDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoGruppo(gruppoContatto);
+		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppoContatto);
 		gruppoContattoService.deleteGruppo(id);
 		GenericWrapperResponse<GruppoContattoDto> genericResponse = GenericWrapperResponse
-				.<GruppoContattoDto>builder().dataRichiesta(new Date()).risultato(dto).build();
+				.<GruppoContattoDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
 	@PostMapping(value = "/create-contatto")
-	public ResponseEntity<GenericWrapperResponse<ContattoDto>> createContatto(@RequestBody ContattoDto contattoDto) {
-		Contatto contatto = DtoEntityMapper.INSTANCE.fromDtoToEntityContatto(contattoDto);
+	public ResponseEntity<GenericWrapperResponse<AnagraficaDto>> createContatto(@RequestBody ContattoDto contattoDto) {
+		Anagrafica contatto = dtoEntityMapper.dtoToEntity(contattoDto);
 		contatto = gruppoContattoService.createContatto(contatto);
-		ContattoDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoContatto(contatto);
-		GenericWrapperResponse<ContattoDto> genericResponse = GenericWrapperResponse
-				.<ContattoDto>builder().dataRichiesta(new Date()).risultato(dto).build();
+		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
+		GenericWrapperResponse<AnagraficaDto> genericResponse = GenericWrapperResponse
+				.<AnagraficaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@GetMapping(value = "/read-contatto")
-	public ResponseEntity<GenericWrapperResponse<ContattoDto>> readContatto(@RequestParam Long id) {
-		Contatto contatto = gruppoContattoService.readContatto(id);
-		ContattoDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoContatto(contatto);
-		GenericWrapperResponse<ContattoDto> genericResponse = GenericWrapperResponse
-				.<ContattoDto>builder().dataRichiesta(new Date()).risultato(dto).build();
+	public ResponseEntity<GenericWrapperResponse<AnagraficaDto>> readContatto(@RequestParam String id) {
+		Anagrafica contatto = gruppoContattoService.readContatto(id);
+		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
+		GenericWrapperResponse<AnagraficaDto> genericResponse = GenericWrapperResponse
+				.<AnagraficaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@PutMapping(value = "/update-contatto")
-	public ResponseEntity<GenericWrapperResponse<ContattoDto>> updateContatto(@RequestBody ContattoDto contattoDto) {
-		Contatto contatto = DtoEntityMapper.INSTANCE.fromDtoToEntityContatto(contattoDto);
+	public ResponseEntity<GenericWrapperResponse<AnagraficaDto>> updateContatto(@RequestBody ContattoDto contattoDto) {
+		Anagrafica contatto = dtoEntityMapper.dtoToEntity(contattoDto);
 		contatto = gruppoContattoService.updateContatto(contatto);
-		ContattoDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoContatto(contatto);
-		GenericWrapperResponse<ContattoDto> genericResponse = GenericWrapperResponse
-				.<ContattoDto>builder().dataRichiesta(new Date()).risultato(dto).build();
+		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
+		GenericWrapperResponse<AnagraficaDto> genericResponse = GenericWrapperResponse
+				.<AnagraficaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@DeleteMapping(value = "/delete-contatto")
-	public ResponseEntity<GenericWrapperResponse<ContattoDto>> deleteContatto(@RequestParam Long id) {
-		Contatto contatto = gruppoContattoService.readContatto(id);
-		ContattoDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoContatto(contatto);
+	public ResponseEntity<GenericWrapperResponse<AnagraficaDto>> deleteContatto(@RequestParam String id) {
+		Anagrafica contatto = gruppoContattoService.readContatto(id);
+		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
 		gruppoContattoService.deleteContatto(id);
-		GenericWrapperResponse<ContattoDto> genericResponse = GenericWrapperResponse
-				.<ContattoDto>builder().dataRichiesta(new Date()).risultato(dto).build();
+		GenericWrapperResponse<AnagraficaDto> genericResponse = GenericWrapperResponse
+				.<AnagraficaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@GetMapping(value = "/read-all-contatti")
-	public ResponseEntity<GenericWrapperResponse<List<ContattoDto>>> readAllContatti() {
-		List<Contatto> contatti = gruppoContattoService.readAllContatti();
-		List<ContattoDto> dtos = DtoEntityMapper.INSTANCE.fromEntityToDtoContatto(contatti);
-		GenericWrapperResponse<List<ContattoDto>> genericResponse = GenericWrapperResponse
-				.<List<ContattoDto>>builder().dataRichiesta(new Date()).risultato(dtos).build();
+	public ResponseEntity<GenericWrapperResponse<List<AnagraficaDto>>> readAllContatti() {
+		List<Anagrafica> contatti = gruppoContattoService.readAllContatti();
+		List<AnagraficaDto> dtos = dtoEntityMapper.entityToDtoAnagraficaList(contatti);
+		GenericWrapperResponse<List<AnagraficaDto>> genericResponse = GenericWrapperResponse
+				.<List<AnagraficaDto>>builder().dataRichiesta(TSUtils.now()).risultato(dtos).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
 	@GetMapping(value = "/read-all-contatti/{groupId}")
-	public ResponseEntity<GenericWrapperResponse<List<ContattoDto>>> readAllContatti(@PathVariable(name = "groupId") Long groupId) {
-		List<Contatto> contatti = gruppoContattoService.readAllContactsByGroupId(groupId);
-		List<ContattoDto> dtos = DtoEntityMapper.INSTANCE.fromEntityToDtoContatto(contatti);
-		GenericWrapperResponse<List<ContattoDto>> genericResponse = GenericWrapperResponse
-				.<List<ContattoDto>>builder().dataRichiesta(new Date()).risultato(dtos).build();
+	public ResponseEntity<GenericWrapperResponse<List<AnagraficaDto>>> readAllContatti(@PathVariable(name = "groupId") Long groupId) {
+		List<Anagrafica> contatti = gruppoContattoService.readAllContactsByGroupId(groupId);
+		List<AnagraficaDto> dtos = dtoEntityMapper.entityToDtoAnagraficaList(contatti);
+		GenericWrapperResponse<List<AnagraficaDto>> genericResponse = GenericWrapperResponse
+				.<List<AnagraficaDto>>builder().dataRichiesta(TSUtils.now()).risultato(dtos).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 }

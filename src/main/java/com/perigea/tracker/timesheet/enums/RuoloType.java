@@ -1,6 +1,7 @@
 package com.perigea.tracker.timesheet.enums;
 
 public enum RuoloType {
+	
 	M("MANAGEMENT"),
 	A("AMMINISTRAZIONE"),
 	H("HR"),
@@ -8,7 +9,8 @@ public enum RuoloType {
 	C("CONSULENTE"),
 	R("REFERENTE/CAPO PROGETTO"),
 	X("ADMIN"),
-	S("SALES");
+	S("SALES"),
+	P("CONTATTO");
 	
 	RuoloType(String descrizione) {
 		this.descrizione = descrizione;

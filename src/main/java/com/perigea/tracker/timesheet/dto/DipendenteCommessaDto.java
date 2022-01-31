@@ -1,6 +1,6 @@
 package com.perigea.tracker.timesheet.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,8 +13,8 @@ public class DipendenteCommessaDto extends BaseDto {
 
 	private String codiceCommessa;
 	private String codicePersona;
-	private Date dataInizioAllocazione;
-	private Date dataFineAllocazione;
+	private LocalDate dataInizioAllocazione;
+	private LocalDate dataFineAllocazione;
 	private Double tariffa;
 	private Integer giorniPrevisti;
 	private Integer giorniErogati;
@@ -22,7 +22,5 @@ public class DipendenteCommessaDto extends BaseDto {
 	private Double importoPrevisto;
 	private Double importoErogato;
 	private Double importoResiduo;
-	private String createUser;
-	private String lastUpdateUser;
 
 }

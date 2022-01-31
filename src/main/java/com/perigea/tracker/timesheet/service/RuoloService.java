@@ -42,7 +42,7 @@ public class RuoloService {
 	 */
 	public Ruolo readRole(RuoloType ruolo) {
 		try {
-			return ruoliRepository.findByTipo(ruolo).get();
+			return ruoliRepository.findById(ruolo).get();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

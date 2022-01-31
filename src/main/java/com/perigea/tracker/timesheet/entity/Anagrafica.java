@@ -1,40 +1,50 @@
 package com.perigea.tracker.timesheet.entity;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.perigea.tracker.timesheet.enums.AnagraficaType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@Table(name = "anagrafica_dipendente")
+@Table(name = "anagrafica_persona")
 @EqualsAndHashCode(callSuper = true)
-public class AnagraficaDipendente extends BaseEntity {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class Anagrafica extends BaseEntity {
 
 	private static final long serialVersionUID = -1364490410610646111L;
 
 	@Id
 	@Column(name = "codice_persona")
 	private String codicePersona;
+	
+	@Column(name = "codice_fiscale")
+	private String codiceFiscale;
+	
+	@Column(name = "tipo", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private AnagraficaType tipo;
+	
+	@Column(name = "nome", nullable = false)
+	private String nome;
 
-	@MapsId
-	@OneToOne
-	@JoinColumn(name = "codice_persona")
-	private Utente utente;
-
-	@Column(name = "luogo_di_nascita")
-	private String luogoDiNascita;
-
-	@Column(name = "data_di_nascita")
-	private Date dataDiNascita;
+	@Column(name = "cognome", nullable = false)
+	private String cognome;
 
 	@Column(name = "mail_aziendale")
 	private String mailAziendale;
@@ -44,7 +54,16 @@ public class AnagraficaDipendente extends BaseEntity {
 
 	@Column(name = "cellulare")
 	private String cellulare;
+	
+	@Column(name = "iban")
+	private String iban;
+	
+	@Column(name = "luogo_di_nascita")
+	private String luogoDiNascita;
 
+	@Column(name = "data_di_nascita")
+	private LocalDate dataDiNascita;
+	
 	@Column(name = "provincia_di_domicilio")
 	private String provinciaDiDomicilio;
 
@@ -53,7 +72,7 @@ public class AnagraficaDipendente extends BaseEntity {
 
 	@Column(name = "indirizzo_di_domicilio")
 	private String indirizzoDiDomicilio;
-
+	
 	@Column(name = "provincia_di_residenza")
 	private String provinciaDiResidenza;
 
@@ -68,17 +87,14 @@ public class AnagraficaDipendente extends BaseEntity {
 
 	@Column(name = "cellulare_contatto_emergenza")
 	private String cellulareContattoEmergenza;
-
-	@Column(name = "data_assunzione")
-	private Date dataAssunzione;
-
-	@Column(name = "iban")
-	private String iban;
-
-	@Column(name = "data_cessazione")
-	private Date dataCessazione;
-
-	@Column(name = "codice_fiscale")
-	private String codiceFiscale;
+	
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "codice_azienda", insertable = false, updatable = false)
+	private Azienda azienda;
+	
+	@MapsId
+	@OneToOne
+	@JoinColumn(name = "codice_persona")
+	private Utente utente;
 
 }

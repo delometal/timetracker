@@ -1,6 +1,6 @@
 package com.perigea.tracker.timesheet.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import com.perigea.tracker.timesheet.enums.CommessaFatturabileType;
 
@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper=true)
 public class CommessaFatturabileDto extends BaseDto {
 	
 	private static final long serialVersionUID = 7646888920117640691L;
@@ -16,8 +16,8 @@ public class CommessaFatturabileDto extends BaseDto {
 	private CommessaDto commessa;
 	private CommessaFatturabileType tipoCommessaFatturabile;
 	private String descrizioneCommessaCliente;
-	private Date dataInizioCommessa;
-	private Date dataFineCommessa;
+	private LocalDate dataInizioCommessa;
+	private LocalDate dataFineCommessa;
 	private Double importoCommessaInizialePresunto;
 	private Double totaleEstensioni;
 	private Double ordineInternoCorrente;

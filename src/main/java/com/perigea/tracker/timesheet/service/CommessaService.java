@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.perigea.tracker.timesheet.entity.AnagraficaCliente;
+import com.perigea.tracker.timesheet.entity.Cliente;
 import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
 import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
 import com.perigea.tracker.timesheet.entity.OrdineCommessa;
 import com.perigea.tracker.timesheet.entity.keys.OrdineCommessaKey;
 import com.perigea.tracker.timesheet.exception.CommessaException;
 import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
-import com.perigea.tracker.timesheet.repository.AnagraficaClienteRepository;
+import com.perigea.tracker.timesheet.repository.ClienteRepository;
 import com.perigea.tracker.timesheet.repository.CommessaFatturabileRepository;
 import com.perigea.tracker.timesheet.repository.CommessaNonFatturabileRepository;
 import com.perigea.tracker.timesheet.repository.OrdineCommessaRepository;
@@ -37,7 +37,7 @@ public class CommessaService {
 	private OrdineCommessaRepository ordineCommessaRepository;
 
 	@Autowired
-	private AnagraficaClienteRepository anagraficaClienteRepository;
+	private ClienteRepository clienteRepository;
 
 	/**
 	 * @param commessaNonFatturabile
@@ -92,12 +92,12 @@ public class CommessaService {
 	 * @param commessaFatturabileDtoWrapper
 	 * @return
 	 */
-	public CommessaFatturabile createCommessaFatturabile(CommessaFatturabile commessa, AnagraficaCliente anagraficaCliente) {
+	public CommessaFatturabile createCommessaFatturabile(CommessaFatturabile commessa, Cliente cliente) {
 		try {
-			if(anagraficaClienteRepository.findByPartitaIva(anagraficaCliente.getPartitaIva()) == null) {
-				anagraficaCliente = anagraficaClienteRepository.save(anagraficaCliente);
+			if(clienteRepository.findByPartitaIva(cliente.getPartitaIva()) == null) {
+				cliente = clienteRepository.save(cliente);
 			}
-			commessa.setCliente(anagraficaCliente);
+			commessa.setCliente(cliente);
 			commessa.setCodiceCommessa(TSUtils.uuid());
 			commessaFatturabileRepository.save(commessa);
 			logger.info("CommessaFatturabile creata e salvata a database");
@@ -155,13 +155,13 @@ public class CommessaService {
 	 * @param ragioneSocialeCliente
 	 * @return
 	 */
-	public OrdineCommessa createOrdineCommessa(OrdineCommessa ordineCommessa, CommessaFatturabile commessa, AnagraficaCliente anagraficaCliente) {
+	public OrdineCommessa createOrdineCommessa(OrdineCommessa ordineCommessa, CommessaFatturabile commessa, Cliente cliente) {
 		try {
-			commessa = createCommessaFatturabile(commessa, anagraficaCliente);
-			ordineCommessa.setId(new OrdineCommessaKey(commessa.getCodiceCommessa(), TSUtils.uuid(), anagraficaCliente.getPartitaIva()));	
+			commessa = createCommessaFatturabile(commessa, cliente);
+			ordineCommessa.setId(new OrdineCommessaKey(commessa.getCodiceCommessa(), TSUtils.uuid(), cliente.getPartitaIva()));	
 			
 			ordineCommessa.setCommessaFatturabile(commessa);
-			ordineCommessa.setCliente(anagraficaCliente);
+			ordineCommessa.setCliente(cliente);
 			ordineCommessaRepository.save(ordineCommessa);
 			logger.info("Ordine commessa creato e salvato a database");
 			return ordineCommessa;

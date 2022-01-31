@@ -11,7 +11,7 @@ public class RuoloDto extends BaseDto {
 
 	private static final long serialVersionUID = 8808088437222733010L;
 
-	private RuoloType ruoloType;
-	private String descrizioneRuolo;
+	private RuoloType id;
+	private String descrizione;
 
 }

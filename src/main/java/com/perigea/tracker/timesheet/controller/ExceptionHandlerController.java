@@ -1,7 +1,5 @@
 package com.perigea.tracker.timesheet.controller;
 
-import java.util.Date;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,6 +15,7 @@ import com.perigea.tracker.timesheet.exception.GruppoException;
 import com.perigea.tracker.timesheet.exception.RuoloException;
 import com.perigea.tracker.timesheet.exception.TimesheetException;
 import com.perigea.tracker.timesheet.exception.UtenteException;
+import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @ControllerAdvice
 public class ExceptionHandlerController {
@@ -27,7 +26,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto = GenericWrapperResponse.<GenericError>builder()
-				.dataRichiesta(new Date()).risultato(eObject).build();
+				.dataRichiesta(TSUtils.now()).risultato(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 
@@ -37,7 +36,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto = GenericWrapperResponse.<GenericError>builder()
-				.dataRichiesta(new Date()).risultato(eObject).build();
+				.dataRichiesta(TSUtils.now()).risultato(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 
 	}
@@ -48,7 +47,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto = GenericWrapperResponse.<GenericError>builder()
-				.dataRichiesta(new Date()).risultato(eObject).build();
+				.dataRichiesta(TSUtils.now()).risultato(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 
@@ -58,7 +57,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto = GenericWrapperResponse.<GenericError>builder()
-				.dataRichiesta(new Date()).risultato(eObject).build();
+				.dataRichiesta(TSUtils.now()).risultato(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 
@@ -68,7 +67,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto = GenericWrapperResponse.<GenericError>builder()
-				.dataRichiesta(new Date()).risultato(eObject).build();
+				.dataRichiesta(TSUtils.now()).risultato(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 
 	}
@@ -84,7 +83,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto = GenericWrapperResponse.<GenericError>builder()
-				.dataRichiesta(new Date()).risultato(eObject).build();
+				.dataRichiesta(TSUtils.now()).risultato(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 	}	
 	
@@ -94,7 +93,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto = GenericWrapperResponse.<GenericError>builder()
-				.dataRichiesta(new Date()).risultato(eObject).build();
+				.dataRichiesta(TSUtils.now()).risultato(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.timesheet.dto.TimesheetEntryDto;
-import com.perigea.tracker.timesheet.dto.TimesheetInputDto;
+import com.perigea.tracker.timesheet.dto.TimesheetRefDto;
 import com.perigea.tracker.timesheet.entity.Commessa;
 import com.perigea.tracker.timesheet.entity.Festivita;
 import com.perigea.tracker.timesheet.entity.NotaSpese;
@@ -56,11 +56,14 @@ public class TimesheetService {
 	@Autowired
 	private ApplicationDao applicationDao;
 	
-	public Timesheet createTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timeDto) {
+	@Autowired
+	private DtoEntityMapper dtoEntityMapper;
+	
+	public Timesheet createTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetRefDto timeDto) {
 		try {
 			assertTimesheetIsValid(timesheetDataList, timeDto);
 			Integer oreTotali = 0;
-			Timesheet timesheet = DtoEntityMapper.INSTANCE.fromDtoToEntityMensile(timeDto);
+			Timesheet timesheet = dtoEntityMapper.dtoToEntity(timeDto);
 			Utente utente = utenteRepository.findByCodicePersona(timeDto.getCodicePersona()).get();
 			timesheet.setUtente(utente);
 			utente.addTimesheet(timesheet);
@@ -87,7 +90,7 @@ public class TimesheetService {
 			for (TimesheetEntryDto dataDto : timesheetDataList) {
 				oreTotali += dataDto.getOre();
 				Commessa commessa = commessaRepository.findByCodiceCommessa(dataDto.getCodiceCommessa()).get();
-				TimesheetEntry entry = DtoEntityMapper.INSTANCE.fromDtoToEntityTimeSheet(dataDto);
+				TimesheetEntry entry = dtoEntityMapper.dtoToEntity(dataDto);
 				TimesheetEntryKey entryKey = new TimesheetEntryKey(timesheet.getId().getAnno(), timesheet.getId().getMese(), dataDto.getGiorno(), timesheet.getId().getCodicePersona(), dataDto.getCodiceCommessa());
 				entry.setId(entryKey);
 				entry.setCommessa(commessa);
@@ -133,7 +136,7 @@ public class TimesheetService {
 		}
 	}
 	
-	public Timesheet updateTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timeDto) {
+	public Timesheet updateTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetRefDto timeDto) {
 		try {
 			deleteTimesheet(timeDto.getAnno(), EMese.getByMonthId(timeDto.getMese()), timeDto.getCodicePersona());
 			return createTimesheet(timesheetDataList, timeDto);
@@ -154,7 +157,7 @@ public class TimesheetService {
 		}
 	}
 
-	private void controlloFestivita(List<Festivita> festivi, TimesheetEntryDto timesheetData, TimesheetInputDto timesheetDto) {
+	private void controlloFestivita(List<Festivita> festivi, TimesheetEntryDto timesheetData, TimesheetRefDto timesheetDto) {
 		LocalDate data = LocalDate.of(timesheetDto.getAnno(), timesheetDto.getMese(), timesheetData.getGiorno());
 		for (Festivita f : festivi) {
 			if (f.getData().isEqual(data) || data.getDayOfWeek() == DayOfWeek.SUNDAY || data.getDayOfWeek() == DayOfWeek.SATURDAY) {
@@ -163,7 +166,7 @@ public class TimesheetService {
 		}
 	}
 	
-	private void assertTimesheetIsValid(List<TimesheetEntryDto> timesheetDataList, TimesheetInputDto timesheetDto) throws TimesheetException {
+	private void assertTimesheetIsValid(List<TimesheetEntryDto> timesheetDataList, TimesheetRefDto timesheetDto) throws TimesheetException {
 		List<Festivita> festivi = festivitaRepository.findAll();
 		Map<Integer, List<TimesheetEntryDto>> dataMap = new HashMap<Integer, List<TimesheetEntryDto>>();
 		timesheetDataList.forEach(r -> {

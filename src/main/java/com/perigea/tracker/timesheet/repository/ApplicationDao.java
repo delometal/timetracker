@@ -50,7 +50,7 @@ public class ApplicationDao {
 			CriteriaUpdate<Utente> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(Utente.class);
 			Root<Utente> user = criteriaUpdate.from(Utente.class);
 
-			criteriaUpdate.set("statoUtente", status);
+			criteriaUpdate.set("stato", status);
 			criteriaUpdate.where(criteriaBuilder.equal(user.<String>get("codicePersona"), codicePersona));
 
 			return entityManager.createQuery(criteriaUpdate).executeUpdate();

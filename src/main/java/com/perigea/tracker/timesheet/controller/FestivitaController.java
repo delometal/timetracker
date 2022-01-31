@@ -1,7 +1,5 @@
 package com.perigea.tracker.timesheet.controller;
 
-import java.util.Date;
-
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +17,7 @@ import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.entity.Festivita;
 import com.perigea.tracker.timesheet.service.FestivitaService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
+import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @RestController
 @RequestMapping("/backoffice/festivita")
@@ -26,43 +25,46 @@ public class FestivitaController {
 
 	@Autowired
 	private FestivitaService festeService;
+	
+	@Autowired
+	private DtoEntityMapper dtoEntityMapper;
 
 	@PostMapping(value = "/create-festivita")
 	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> createFestivita(@RequestBody FestivitaDto festivitaDto) {
-		Festivita festivita = DtoEntityMapper.INSTANCE.FromDtoToEntityFestivita(festivitaDto);
+		Festivita festivita = dtoEntityMapper.dtoToEntity(festivitaDto);
 		festivita = festeService.createFestivita(festivita);
-		FestivitaDto dtoFestivita = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(festivita);
+		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(new Date()).risultato(dtoFestivita).build();
+				.dataRichiesta(TSUtils.now()).risultato(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
 	@GetMapping(value = "/read-festivita/{id}")
 	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> readFestivita(@PathParam("id") Integer id) {
 		Festivita festivita = festeService.readFestivita(id);
-		FestivitaDto dtoFestivita = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(festivita);
+		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(new Date()).risultato(dtoFestivita).build();
+				.dataRichiesta(TSUtils.now()).risultato(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
 	@PutMapping(value = "/update-festivita")
 	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> updateFestivita(@RequestBody FestivitaDto festivitaDto) {
-		Festivita festivita = DtoEntityMapper.INSTANCE.FromDtoToEntityFestivita(festivitaDto);
+		Festivita festivita = dtoEntityMapper.dtoToEntity(festivitaDto);
 		festivita = festeService.updateFestivita(festivita);
-		FestivitaDto dtoFestivita = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(festivita);
+		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(new Date()).risultato(dtoFestivita).build();
+				.dataRichiesta(TSUtils.now()).risultato(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
 	@DeleteMapping(value = "/delete-festivita")
 	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> deleteFestivita(@PathParam("id") Integer id) {
 		Festivita festivita = festeService.readFestivita(id);
-		FestivitaDto festivitaDto = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(festivita);
+		FestivitaDto festivitaDto = dtoEntityMapper.entityToDto(festivita);
 		festeService.deleteFestivita(id);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(new Date()).risultato(festivitaDto).build();
+				.dataRichiesta(TSUtils.now()).risultato(festivitaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	

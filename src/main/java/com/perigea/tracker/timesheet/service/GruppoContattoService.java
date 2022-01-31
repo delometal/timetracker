@@ -1,23 +1,29 @@
 package com.perigea.tracker.timesheet.service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteResponseDto;
-import com.perigea.tracker.timesheet.entity.Contatto;
+import com.perigea.tracker.timesheet.entity.Anagrafica;
 import com.perigea.tracker.timesheet.entity.Gruppo;
-import com.perigea.tracker.timesheet.events.UserCrudEvent;
+import com.perigea.tracker.timesheet.entity.Ruolo;
+import com.perigea.tracker.timesheet.entity.Utente;
+import com.perigea.tracker.timesheet.enums.AnagraficaType;
+import com.perigea.tracker.timesheet.enums.RuoloType;
+import com.perigea.tracker.timesheet.enums.StatoUtenteType;
 import com.perigea.tracker.timesheet.exception.ContattoException;
 import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
 import com.perigea.tracker.timesheet.exception.GruppoException;
-import com.perigea.tracker.timesheet.repository.ContattoRepository;
+import com.perigea.tracker.timesheet.repository.AnagraficaRepository;
 import com.perigea.tracker.timesheet.repository.GruppoRepository;
+import com.perigea.tracker.timesheet.repository.RuoliRepository;
+import com.perigea.tracker.timesheet.repository.UtenteRepository;
+import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @Service
 public class GruppoContattoService {
@@ -29,7 +35,13 @@ public class GruppoContattoService {
 	private GruppoRepository gruppoRepository;
 
 	@Autowired
-	private ContattoRepository contattoRepository;
+	private AnagraficaRepository anagraficaRepository;
+	
+	@Autowired
+	private UtenteRepository utenteRepository;
+	
+	@Autowired
+	private RuoliRepository ruoliRepository;
 	
 	/**
 	 * Creazione gruppo
@@ -93,9 +105,21 @@ public class GruppoContattoService {
 	 * @param contatto
 	 * @return
 	 */
-	public Contatto createContatto(Contatto contatto) {
+	public Anagrafica createContatto(Anagrafica contatto) {
 		try {
-			return contattoRepository.save(contatto);
+			List<Ruolo> ruoli = new ArrayList<Ruolo>(1);
+			ruoli.add(ruoliRepository.getById(RuoloType.P));
+			Utente utente = new Utente();
+			utente.setCodicePersona(TSUtils.uuid());
+			utente.setAnagrafica(contatto);
+			utente.setStato(StatoUtenteType.A);
+			utente.setResponsabile(null);
+			utente.setRuoli(ruoli);
+			contatto.setUtente(utente);
+			contatto.setCodicePersona(utente.getCodicePersona());
+			contatto.setTipo(AnagraficaType.C);
+			utenteRepository.save(utente);
+			return contatto;
 		} catch (Exception ex) {
 			throw new GruppoException(ex.getMessage());
 		}
@@ -106,9 +130,9 @@ public class GruppoContattoService {
 	 * @param id
 	 * @return
 	 */
-	public Contatto readContatto(final Long id) {
+	public Anagrafica readContatto(final String id) {
 		try {
-			return contattoRepository.findById(id).get();
+			return anagraficaRepository.findById(id).get();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -122,9 +146,9 @@ public class GruppoContattoService {
 	 * @param id
 	 * @return
 	 */
-	public List<Contatto> readAllContatti() {
+	public List<Anagrafica> readAllContatti() {
 		try {
-			return contattoRepository.findAll();
+			return anagraficaRepository.findAll();
 		} catch (Exception ex) {
 			throw new ContattoException(ex.getMessage());
 		}
@@ -135,7 +159,7 @@ public class GruppoContattoService {
 	 * @param id
 	 * @return
 	 */
-	public List<Contatto> readAllContactsByGroupId(Long groupId) {
+	public List<Anagrafica> readAllContactsByGroupId(Long groupId) {
 		try {
 			return gruppoRepository.getById(groupId).getContatti();
 		} catch (Exception ex) {
@@ -148,9 +172,9 @@ public class GruppoContattoService {
 	 * @param gruppo
 	 * @return
 	 */
-	public Contatto updateContatto(Contatto contatto) {
+	public Anagrafica updateContatto(Anagrafica contatto) {
 		try {
-			return contattoRepository.save(contatto);
+			return anagraficaRepository.save(contatto);
 		} catch (Exception ex) {
 			throw new ContattoException(ex.getMessage());
 		}
@@ -160,51 +184,51 @@ public class GruppoContattoService {
 	 * 
 	 * @param id
 	 */
-	public void deleteContatto(final Long id) {
+	public void deleteContatto(final String id) {
 		try {
-			contattoRepository.deleteById(id);
+			anagraficaRepository.deleteById(id);
 		} catch (Exception ex) {
 			throw new ContattoException(ex.getMessage());
 		}
 	}
 	
-	@EventListener
-	public void handleUserCrudEvent(UserCrudEvent event) {
-		try {
-			logger.info("UserCrudEvent handling request");
-			AnagraficaDipendenteResponseDto persona = event.getAnagraficaDto();
-			String email = persona.getMailAziendale();
-			Contatto contatto = contattoRepository.findByMailAziendale(email).get();
-			if(contatto != null) {
-				switch (event.getCrudType()) {
-					case UPDATE:
-						contatto.setNome(persona.getUtenteDto().getNome());
-						contatto.setCognome(persona.getUtenteDto().getNome());
-						contatto.setCodiceFiscale(persona.getCodiceFiscale());
-						contatto.setMailPrivata(persona.getMailPrivata());
-						contatto.setMailAziendale(email);
-						contatto.setCellulare(persona.getCellulare());
-						contatto.setComuneDiDomicilio(persona.getComuneDiDomicilio());
-						contatto.setIndirizzoDiDomicilio(persona.getIndirizzoDiDomicilio());
-						contatto.setProvinciaDiDomicilio(persona.getProvinciaDiDomicilio());
-						contattoRepository.save(contatto);
-						logger.info(String.format("Contatto con email aziendale %s è stato aggiornato", email));
-						break;
-					case DELETE:
-						contattoRepository.delete(contatto);
-						logger.info(String.format("Contatto con email aziendale %s è stato rimosso", email));
-						break;
-					case CREATE:
-					case READ:
-					default:
-					break;
-				}
-			} else {
-				logger.info(String.format("Contatto con email aziendale %s non è tra i contatti", email));
-			}
-		} catch(Exception ex) {
-			logger.error(ex.getMessage());
-		}
-	}
+//	@EventListener
+//	public void handleUserCrudEvent(UserCrudEvent event) {
+//		try {
+//			logger.info("UserCrudEvent handling request");
+//			DipendenteDto persona = event.getDipendente();
+//			String email = persona.getMailAziendale();
+//			Anagrafica contatto = anagraficaRepository.findByMailAziendale(email).get();
+//			if(contatto != null) {
+//				switch (event.getCrudType()) {
+//					case UPDATE:
+//						contatto.setNome(persona.getNome());
+//						contatto.setCognome(persona.getCognome());
+//						contatto.setCodiceFiscale(persona.getCodiceFiscale());
+//						contatto.setMailPrivata(persona.getMailPrivata());
+//						contatto.setMailAziendale(email);
+//						contatto.setCellulare(persona.getCellulare());
+//						contatto.setComuneDiDomicilio(persona.getComuneDiDomicilio());
+//						contatto.setIndirizzoDiDomicilio(persona.getIndirizzoDiDomicilio());
+//						contatto.setProvinciaDiDomicilio(persona.getProvinciaDiDomicilio());
+//						anagraficaRepository.save(contatto);
+//						logger.info(String.format("Contatto con email aziendale %s è stato aggiornato", email));
+//						break;
+//					case DELETE:
+//						anagraficaRepository.delete(contatto);
+//						logger.info(String.format("Contatto con email aziendale %s è stato rimosso", email));
+//						break;
+//					case CREATE:
+//					case READ:
+//					default:
+//					break;
+//				}
+//			} else {
+//				logger.info(String.format("Contatto con email aziendale %s non è tra i contatti", email));
+//			}
+//		} catch(Exception ex) {
+//			logger.error(ex.getMessage());
+//		}
+//	}
 	
 }

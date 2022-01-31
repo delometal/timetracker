@@ -1,6 +1,6 @@
 package com.perigea.tracker.timesheet.entity;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -31,20 +31,20 @@ public class OrdineCommessa extends BaseEntity {
 	private CommessaFatturabile commessaFatturabile;
 	
 	@ManyToOne
-	@JoinColumn(name = "partita_iva", referencedColumnName = "partita_iva", nullable = false, insertable = false, updatable = false)
-	private AnagraficaCliente cliente;
+	@JoinColumn(name = "codice_azienda", nullable = false, insertable = false, updatable = false)
+	private Cliente cliente;
 
 	@Column(name = "data_ordine")
-	private Date dataOrdine;
+	private LocalDate dataOrdine;
 
 	@Column(name = "importo_ordine")
 	private Double importoOrdine;
 
 	@Column(name = "data_inizio")
-	private Date dataInizio;
+	private LocalDate dataInizio;
 
 	@Column(name = "data_fine")
-	private Date dataFine;
+	private LocalDate dataFine;
 
 	@Column(name = "importo_residuo")
 	private Double importoResiduo;

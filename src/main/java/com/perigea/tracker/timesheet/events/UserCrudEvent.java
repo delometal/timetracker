@@ -2,19 +2,19 @@ package com.perigea.tracker.timesheet.events;
 
 import org.springframework.context.ApplicationEvent;
 
-import com.perigea.tracker.timesheet.dto.AnagraficaDipendenteResponseDto;
+import com.perigea.tracker.timesheet.dto.DipendenteDto;
 import com.perigea.tracker.timesheet.enums.CrudType;
 
 public class UserCrudEvent extends ApplicationEvent {
 
 	private static final long serialVersionUID = -3127678851169887814L;
 	private CrudType crudType;
-	private AnagraficaDipendenteResponseDto anagraficaDto;
+	private DipendenteDto dipendente;
 	
-	public UserCrudEvent(Object source, AnagraficaDipendenteResponseDto anagraficaDto, CrudType crudType) {
+	public UserCrudEvent(Object source, DipendenteDto dipendente, CrudType crudType) {
 		super(source);
 		this.crudType = crudType;
-		this.anagraficaDto = anagraficaDto;
+		this.dipendente = dipendente;
 	}
 
 	public CrudType getCrudType() {
@@ -25,12 +25,12 @@ public class UserCrudEvent extends ApplicationEvent {
 		this.crudType = crudType;
 	}
 
-	public AnagraficaDipendenteResponseDto getAnagraficaDto() {
-		return anagraficaDto;
+	public DipendenteDto getDipendente() {
+		return dipendente;
 	}
 
-	public void setAnagraficaDto(AnagraficaDipendenteResponseDto anagraficaDto) {
-		this.anagraficaDto = anagraficaDto;
+	public void setDipendenteDto(DipendenteDto dipendente) {
+		this.dipendente = dipendente;
 	}
 
 }

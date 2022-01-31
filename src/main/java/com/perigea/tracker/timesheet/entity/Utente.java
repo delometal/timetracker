@@ -33,24 +33,18 @@ public class Utente extends BaseEntity {
 	@Column(name = "codice_persona", nullable = false)
 	private String codicePersona;
 
-	@Column(name = "nome", nullable = false)
-	private String nome;
-
-	@Column(name = "cognome", nullable = false)
-	private String cognome;
-
 	@Column(name = "password")
 	private String password;
 
 	@Column(name = "stato_utente")
 	@Enumerated(EnumType.STRING)
-	private StatoUtenteType statoUtente;
+	private StatoUtenteType stato;
 
 	@OneToMany(mappedBy = "utente")
 	private List<NotaSpese> noteSpese = new ArrayList<>();
 
 	@OneToOne(mappedBy = "utente", cascade = CascadeType.ALL)
-	private AnagraficaDipendente dipendente;
+	private Anagrafica anagrafica;
 
 	@OneToMany(mappedBy = "utente")
 	private List<Timesheet> timesheet = new ArrayList<>();
@@ -62,7 +56,7 @@ public class Utente extends BaseEntity {
     @JoinTable(
         name = "utente_ruolo", 
         joinColumns = { @JoinColumn(name = "codice_persona") }, 
-        inverseJoinColumns = { @JoinColumn(name = "ruolo") }
+        inverseJoinColumns = { @JoinColumn(name = "id") }
     )
 	private List<Ruolo> ruoli = new ArrayList<>();
 

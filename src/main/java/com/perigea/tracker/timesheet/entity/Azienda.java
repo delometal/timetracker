@@ -3,14 +3,19 @@ package com.perigea.tracker.timesheet.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
+import com.perigea.tracker.timesheet.enums.AziendaType;
 import com.perigea.tracker.timesheet.enums.PagamentoType;
 
 import lombok.Data;
@@ -18,20 +23,28 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@Table(name = "anagrafica_cliente")
 @EqualsAndHashCode(callSuper = true)
-public class AnagraficaCliente extends BaseEntity {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="tipo", discriminatorType = DiscriminatorType.STRING)
+public class Azienda extends BaseEntity {
 
 	private static final long serialVersionUID = -2863146642413765101L;
 
 	@Id
-	@Column(name = "partita_iva", nullable = false)
+	@Column(name = "codice_azienda", nullable = false)
+	private String codiceAzienda;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "tipo", nullable = false, insertable = false, updatable = false)
+	private AziendaType tipo;
+	
+	@Column(name = "partita_iva")
 	private String partitaIva;
 	
-	@Column(name = "ragione_sociale_cliente")
-	private String ragioneSocialeCliente;
+	@Column(name = "ragione_sociale")
+	private String ragioneSociale;
 
-	@Column(name = "codice_fiscale", nullable = false)
+	@Column(name = "codice_fiscale")
 	private String codiceFiscale;
 
 	@Column(name = "codice_destinatario")
@@ -67,11 +80,18 @@ public class AnagraficaCliente extends BaseEntity {
 
 	@Column(name = "note_per_la_fatturazione")
 	private String notePerLaFatturazione;
+	
+	@OneToMany(mappedBy = "azienda", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+	private List<Anagrafica> contatti = new ArrayList<>();
+	
+	public void addContatto(Anagrafica contatto) {
+		this.contatti.add(contatto);
+		contatto.setAzienda(this);
+	}
 
-	@OneToMany(mappedBy = "cliente")
-	private List<CommessaFatturabile> commesse = new ArrayList<>();
-
-	@OneToMany(mappedBy = "cliente")
-	private List<OrdineCommessa> ordiniCommesse = new ArrayList<>();
+	public void removeContatto(Anagrafica contatto) {
+		this.contatti.remove(contatto);
+		contatto.setAzienda(null);
+	}
 
 }

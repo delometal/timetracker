@@ -15,6 +15,6 @@ public class GruppoContattoDto extends BaseDto {
 	private Long id;
 	private String nome;
 	private String descrizione;
-	private List<ContattoDto> contatti = new ArrayList<>();
+	private List<AnagraficaDto> contatti = new ArrayList<>();
 
 }

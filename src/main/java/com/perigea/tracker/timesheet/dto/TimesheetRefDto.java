@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class TimesheetInputDto extends BaseDto {
+public class TimesheetRefDto extends BaseDto {
 
 	private static final long serialVersionUID = 4872236196662689797L;
 

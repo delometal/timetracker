@@ -25,7 +25,7 @@ public class Gruppo implements Serializable {
 	private static final long serialVersionUID = -6564545853025079938L;
 
 	@Id
-	@Column(name = "id_gruppo", nullable = false)
+	@Column(name = "codice_gruppo", nullable = false)
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 
@@ -38,9 +38,9 @@ public class Gruppo implements Serializable {
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
     @JoinTable(
         name = "gruppo_contatto", 
-        joinColumns = { @JoinColumn(name = "id_gruppo") }, 
-        inverseJoinColumns = { @JoinColumn(name = "id_contatto") }
+        joinColumns = { @JoinColumn(name = "codice_gruppo") }, 
+        inverseJoinColumns = { @JoinColumn(name = "codice_persona") }
     )
-	private List<Contatto> contatti = new ArrayList<>();
+	private List<Anagrafica> contatti = new ArrayList<>();
 
 }

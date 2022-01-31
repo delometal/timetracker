@@ -23,7 +23,7 @@ public class OrdineCommessaKey implements Serializable {
 	@Column(name = "numero_ordine_cliente")
 	private String numeroOrdineCliente;
 	
-	@Column(name = "partita_iva", nullable = false)
-	private String partitaIva;
+	@Column(name = "codice_azienda", nullable = false)
+	private String codiceAzienda;
 
 }

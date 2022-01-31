@@ -21,9 +21,9 @@ public class Ruolo implements Serializable {
 	private static final long serialVersionUID = -870008112526011657L;
 
 	@Id
-	@Column(name = "ruolo")
+	@Column(name = "id")
 	@Enumerated(EnumType.STRING)
-	private RuoloType tipo;
+	private RuoloType id;
 
 	@Column(name = "descrizione_ruolo")
 	private String descrizione;

@@ -1,6 +1,7 @@
 package com.perigea.tracker.timesheet.enums;
 
 public enum StatoRichiestaType {
+	
 	I("INSERITO"),
 	C("CONFERMATO"),
 	V("VERIFICATO");

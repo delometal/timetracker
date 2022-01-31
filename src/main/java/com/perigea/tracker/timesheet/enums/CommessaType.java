@@ -2,8 +2,8 @@ package com.perigea.tracker.timesheet.enums;
 
 public enum CommessaType {
 	
-	F("FATTURABILE"),
-	NF("NON FATTURABILE");
+	F("Free lancer a Partita Iva"),
+	S("Società");
 
 	CommessaType(String descrizione) {
 		this.descrizione = descrizione;

@@ -1,6 +1,6 @@
 package com.perigea.tracker.timesheet.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import lombok.Builder;
 import lombok.Data;
@@ -15,13 +15,11 @@ public class OrdineCommessaDto extends BaseDto {
 	
 	private String codiceCommessa;
 	private String numeroOrdineCliente;
-	private String partitaIva;
-	private Date dataOrdine;
+	private String codiceAzienda;
 	private Double importoOrdine;
-	private Date dataInizio;
-	private Date dataFine;	
+	private LocalDate dataOrdine;
+	private LocalDate dataInizio;
+	private LocalDate dataFine;	
 	private Double importoResiduo;
-	private String createUser;
-	private String lastUpdateUser;
 
 }

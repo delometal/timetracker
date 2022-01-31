@@ -53,7 +53,7 @@ public class Commessa extends BaseEntity {
 	private List<DipendenteCommessa> dipendente = new ArrayList<>();
 	
 	@ManyToOne
-	@JoinColumn(name = "partita_iva", referencedColumnName = "partita_iva", nullable = false)
-	private AnagraficaCliente cliente;
-
+	@JoinColumn(name = "codice_azienda", nullable = false)
+	private Cliente cliente;
+	
 }

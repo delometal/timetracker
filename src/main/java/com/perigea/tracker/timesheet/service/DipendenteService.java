@@ -4,26 +4,28 @@ import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.perigea.tracker.timesheet.entity.AnagraficaDipendente;
+import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.enums.StatoUtenteType;
 import com.perigea.tracker.timesheet.exception.DipendenteException;
 import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
 import com.perigea.tracker.timesheet.exception.PersistenceException;
-import com.perigea.tracker.timesheet.repository.AnagraficaDipendenteRepository;
 import com.perigea.tracker.timesheet.repository.ApplicationDao;
+import com.perigea.tracker.timesheet.repository.DipendenteRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
 import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @Service
+@Transactional
 public class DipendenteService {
 
 	@Autowired
 	private Logger logger;
 
 	@Autowired
-	private AnagraficaDipendenteRepository dipendenteRepository;
+	private DipendenteRepository dipendenteRepository;
 
 	@Autowired
 	private UtenteRepository utenteRepository;
@@ -38,11 +40,11 @@ public class DipendenteService {
 	 * @param codiceResponsabile
 	 * @return
 	 */
-	public Utente createUtenteDipendente(Utente utente, AnagraficaDipendente dipendente) {
+	public Utente createUtenteDipendente(Utente utente, Dipendente dipendente) {
 		try {
 			dipendente.setUtente(utente);
 			dipendente.setCodicePersona(TSUtils.uuid());
-			utente.setDipendente(dipendente);
+			utente.setAnagrafica(dipendente);
 			utenteRepository.save(utente);
 			logger.info("utente salvato");
 			return utente;
@@ -73,7 +75,7 @@ public class DipendenteService {
 	 * @param dipendenteParam
 	 * @return
 	 */
-	public AnagraficaDipendente readAnagraficaDipendente(String codicePersona) {
+	public Dipendente readAnagraficaDipendente(String codicePersona) {
 		try {
 			return dipendenteRepository.findByCodicePersona(codicePersona).get();
 		} catch (Exception ex) {

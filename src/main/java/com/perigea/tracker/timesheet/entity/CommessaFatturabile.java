@@ -1,6 +1,6 @@
 package com.perigea.tracker.timesheet.entity;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -26,14 +26,14 @@ public class CommessaFatturabile extends Commessa {
 	private String descrizioneCommessaCliente;
 
 	@Column(name = "data_inizio_commessa")
-	private Date dataInizioCommessa;
+	private LocalDate dataInizioCommessa;
 
 	@Column(name = "tipo_commessa_fatturabile")
 	@Enumerated(EnumType.STRING)
 	private CommessaFatturabileType tipoCommessaFatturabileType;
 
 	@Column(name = "data_fine_commessa")
-	private Date dataFineCommessa;
+	private LocalDate dataFineCommessa;
 
 	@Column(name = "importo_commessa_iniziale_presunto")
 	private Double importoCommessaInizialePresunto;
@@ -91,5 +91,5 @@ public class CommessaFatturabile extends Commessa {
 
 	@OneToOne(mappedBy = "commessaFatturabile")
 	private OrdineCommessa ordineCommessa;
-
+	
 }

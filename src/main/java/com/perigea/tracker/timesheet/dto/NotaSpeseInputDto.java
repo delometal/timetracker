@@ -16,9 +16,7 @@ public class NotaSpeseInputDto extends BaseDto {
 	private String codicePersona;
 	private String codiceCommessa;
 	private Integer giorno;
-	private CostoNotaSpeseType costoNotaSpese;
 	private Double importo;
-	private String createUser;
-	private String lastUpdateUser;
+	private CostoNotaSpeseType costoNotaSpese;
 	
 }

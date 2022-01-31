@@ -1,5 +1,4 @@
 package com.perigea.tracker.timesheet.utility;
-
 import java.util.List;
 
 import org.mapstruct.Mapper;
@@ -98,15 +97,6 @@ public interface DtoEntityMapper {
 	@Mapping(target= ".", source="id")
 	OrdineCommessaDto fromEntityToDtoOrdineCommessa(OrdineCommessa entity);
 	
-	@Mapping(target= "id.giorno", source="giorno")
-	@Mapping(target= "id.codiceCommessa", source="codiceCommessa")
-	@Mapping(target= "commessa.descrizioneCommessa", source="descrizioneCommessa")
-	TimesheetEntry fromDtoToEntityTimeSheet(TimesheetEntryDto dto);
-	
-	@Mapping(target= "giorno", source="id.giorno")
-	@Mapping(target= "codiceCommessa", source="id.codiceCommessa")
-	TimesheetEntryDto fromEntityToDtoTimeSheet(TimesheetEntry entity);
-	
 	List<TimesheetEntry> fromEntityToDtoTimesheetData(List<TimesheetEntryDto> dtos);
 	
 	List<TimesheetEntryDto> fromDtoToEntityTimesheetData(List<TimesheetEntry> entities);
@@ -115,12 +105,6 @@ public interface DtoEntityMapper {
 	@Mapping(target= "id.mese", source="mese")
 	@Mapping(target= "id.codicePersona", source="codicePersona")
 	Timesheet fromDtoToEntityMensile(TimesheetInputDto dto);
-	
-	@Mapping(target= ".", source="id")
-	@Mapping(target= "nome", source="utente.nome")
-	@Mapping(target= "cognome", source="utente.cognome")
-	@Mapping (target = "mailAziendale", source = "utente.dipendente.mailAziendale")
-	TimesheetResponseDto fromEntityToDtoMensile(Timesheet entity);
 	
 	Festivita FromDtoToEntityFestivita(FestivitaDto dto);
 	
@@ -139,7 +123,7 @@ public interface DtoEntityMapper {
 	
 	@Mapping(target= "id.giorno", source="giorno")
 	@Mapping(target= "id.codicePersona", source="codicePersona")
-	@Mapping(target= "id.codiceCommessa", source="ccodiceCommessa")
+	@Mapping(target= "id.codiceCommessa", source="codiceCommessa")
 	List<NotaSpese> fromDtoToEntityNotaSpese (List<NotaSpeseDto> dto);
 	
 	List<NotaSpeseDto> fromEntityToDtoNotaSpese (List<NotaSpese> entity);
@@ -162,5 +146,23 @@ public interface DtoEntityMapper {
 	List<ContattoDto> fromEntityToDtoContatto(List<Contatto> contatto);
 	Gruppo fromDtoToEntityGruppo(GruppoContattoDto gruppo);
 	GruppoContattoDto fromEntityToDtoGruppo(Gruppo gruppo);
+	
+	@Mapping(target= ".", source="id")
+	@Mapping(target= "nome", source="utente.nome")
+	@Mapping(target= "cognome", source="utente.cognome")
+	@Mapping (target = "mailAziendale", source = "utente.dipendente.mailAziendale")
+	TimesheetResponseDto fromEntityToDtoMensile(Timesheet entity);
+	
+	@Mapping(target = "id.giorno", source = "giorno")
+	@Mapping(target = "id.codiceCommessa", source = "codiceCommessa")
+	@Mapping(target = "commessa.descrizioneCommessa", source = "descrizioneCommessa")
+	@Mapping(target = "commessa.cliente.ragioneSociale", source = "ragioneSociale")
+	TimesheetEntry fromDtoToEntityTimeSheet(TimesheetEntryDto dto);
+	
+	@Mapping(target= "giorno", source="id.giorno")
+	@Mapping(target= "codiceCommessa", source="id.codiceCommessa")
+	@Mapping (target = "descrizioneCommessa", source = "commessa.descrizioneCommessa")
+	@Mapping (target = "ragioneSociale", source = "commessa.cliente.ragioneSociale")
+	TimesheetEntryDto fromEntityToDtoTimeSheet(TimesheetEntry entity);
 	
 }

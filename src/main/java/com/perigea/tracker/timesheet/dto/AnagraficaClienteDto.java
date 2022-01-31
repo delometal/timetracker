@@ -11,7 +11,7 @@ public class AnagraficaClienteDto extends BaseDto {
 
 	private static final long serialVersionUID = 3875267041004676543L;
 	
-	private String ragioneSocialeCliente;
+	private String ragioneSociale;
 	private String partitaIva;
 	private String codiceFiscale;
 	private String codiceDestinatario;

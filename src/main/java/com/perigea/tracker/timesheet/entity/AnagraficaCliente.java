@@ -29,7 +29,7 @@ public class AnagraficaCliente extends BaseEntity {
 	private String partitaIva;
 	
 	@Column(name = "ragione_sociale_cliente")
-	private String ragioneSocialeCliente;
+	private String ragioneSociale;
 
 	@Column(name = "codice_fiscale", nullable = false)
 	private String codiceFiscale;

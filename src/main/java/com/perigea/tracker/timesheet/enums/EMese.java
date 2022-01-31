@@ -45,12 +45,14 @@ public enum EMese {
 	
 	public static Integer getDays(Integer monthId) {
 		for (EMese e : EMese.values()) {
-			if(e.getMonthId()== 1 || e.getMonthId()==3 || e.getMonthId()==5 || e.getMonthId()==7 || e.getMonthId()==8 || e.getMonthId()==10 || e.getMonthId()==12) {
-				return 31;
-			} else if (e.getMonthId()==2) {
-				return 28;
-			} else {
-				return 30;
+			if(e.getMonthId()== monthId.intValue()) {
+				if (e.getMonthId()==2) {
+					return 28;
+				} 	else  if(e.getMonthId()== 1 || e.getMonthId()==3 || e.getMonthId()==5 || e.getMonthId()==7 || e.getMonthId()==8 || e.getMonthId()==10 || e.getMonthId()==12) {
+					return 31;
+				} else {
+					return 30;
+				}
 			}
 		}
 		return null;

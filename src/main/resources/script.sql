@@ -337,6 +337,50 @@
 	COMMENT ON COLUMN TRACKER.UTENTE_RUOLO.RUOLO IS 'M=Management, A=Amministrazione , H=HR , D=Dipendente , C=Consulente , R=Referente/Capo progetto , X=Admin , S=Sales';
 -- TRIGGERS
 
+	CREATE TABLE IF NOT EXISTS tracker.gruppo
+(
+    id_gruppo integer NOT NULL,
+    descrizione character varying(255) COLLATE pg_catalog."default",
+    nome character varying(255) COLLATE pg_catalog."default",
+    CONSTRAINT gruppo_pkey PRIMARY KEY (id_gruppo),
+    CONSTRAINT gruppo_nome_key UNIQUE (nome)
+);
+
+CREATE TABLE IF NOT EXISTS tracker.gruppo_contatto
+(
+    id_contatto integer NOT NULL,
+    id_gruppo integer NOT NULL,
+    CONSTRAINT gruppo_contatto_pkey PRIMARY KEY (id_contatto, id_gruppo),
+    CONSTRAINT fkij6c22g0j8w4b33ev80v96mfn FOREIGN KEY (id_contatto)
+        REFERENCES tracker.contatto (id_contatto) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fksdjcnyaciahnmdeg0nf94sqsv FOREIGN KEY (id_gruppo)
+        REFERENCES tracker.gruppo (id_gruppo) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+
+CREATE TABLE IF NOT EXISTS tracker.contatto
+(
+    id_contatto integer NOT NULL,
+    cellulare character varying(255) COLLATE pg_catalog."default",
+    codice_fiscale character varying(255) COLLATE pg_catalog."default",
+    cognome character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    comune_di_domicilio character varying(255) COLLATE pg_catalog."default",
+    indirizzo_di_domicilio character varying(255) COLLATE pg_catalog."default",
+    mail_aziendale character varying(255) COLLATE pg_catalog."default",
+    mail_privata character varying(255) COLLATE pg_catalog."default",
+    nome character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    provincia_di_domicilio character varying(255) COLLATE pg_catalog."default",
+    CONSTRAINT contatto_pkey PRIMARY KEY (id_contatto),
+    CONSTRAINT contatto_cellulare_key UNIQUE (cellulare),
+    CONSTRAINT contatto_codice_fiscale_key UNIQUE (codice_fiscale),
+    CONSTRAINT contatto_mail_aziendale_key UNIQUE (mail_aziendale),
+    CONSTRAINT contatto_mail_privata_key UNIQUE (mail_privata)
+);
+
 	-- FUNZIONE PER GENERARE IL CREATE_TIMESTAMP E LAST_UPDATE_TIMESTAMP
 	CREATE FUNCTION TRACKER.SET_CREATE_UPDATE_TIMESTAMP() RETURNS trigger AS $$
 	DECLARE

@@ -58,10 +58,11 @@ public class FestivitaController {
 	
 	@DeleteMapping(value = "/delete-festivita")
 	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> deleteFestivita(@PathParam("id") Integer id) {
-		Festivita festivita = festeService.deleteFestivita(id);
-		FestivitaDto dtoFestivita = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(festivita);
+		Festivita festivita = festeService.readFestivita(id);
+		FestivitaDto festivitaDto = DtoEntityMapper.INSTANCE.FromEntityToDtoFestivita(festivita);
+		festeService.deleteFestivita(id);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(new Date()).risultato(dtoFestivita).build();
+				.dataRichiesta(new Date()).risultato(festivitaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	

@@ -57,8 +57,9 @@ public class ClienteController {
 
 	@DeleteMapping(value = "/delete-anagrafica-cliente")
 	public ResponseEntity<GenericWrapperResponse<AnagraficaClienteDto>> deleteCliente(@RequestParam String ragioneSociale) {
-		AnagraficaCliente anagraficaCliente = clienteService.deleteAnagraficaCliente(ragioneSociale);
+		AnagraficaCliente anagraficaCliente = clienteService.readAnagraficaCliente(ragioneSociale);
 		AnagraficaClienteDto anagraficaClienteDto = DtoEntityMapper.INSTANCE.fromEntityToDtoAnagraficaCliente(anagraficaCliente);
+		clienteService.deleteAnagraficaCliente(ragioneSociale);
 		GenericWrapperResponse<AnagraficaClienteDto> genericResponse = GenericWrapperResponse
 				.<AnagraficaClienteDto>builder().dataRichiesta(new Date()).risultato(anagraficaClienteDto).build();
 		return ResponseEntity.ok(genericResponse);

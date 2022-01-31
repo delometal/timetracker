@@ -23,10 +23,10 @@ import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 @RestController
 @RequestMapping("/relazione-dipendente-commessa")
 public class DipendenteCommessaController {
-
+	
 	@Autowired
 	private DipendenteCommessaService dipendenteCommessaService;
-
+	
 	@PostMapping(value = "/create-dipendente-commessa")
 	public ResponseEntity<GenericWrapperResponse<DipendenteCommessaDto>> createDipendenteCommessa(@RequestBody DipendenteCommessaDto dipendenteCommessaDto) {
 		DipendenteCommessa dipendenteCommessa = DtoEntityMapper.INSTANCE.fromDtoToEntityRelazioneDipendenteCommessa(dipendenteCommessaDto);
@@ -58,10 +58,12 @@ public class DipendenteCommessaController {
 
 	@DeleteMapping(value = "/delete-dipendente-commessa")
 	ResponseEntity<GenericWrapperResponse<DipendenteCommessaDto>> deleteDipendenteCommessa(@RequestParam String codicePersona, @RequestParam String codiceCommessa) {
-		DipendenteCommessa dipendenteCommessa = dipendenteCommessaService.deleteDipendenteCommessa(new DipendenteCommessaKey(codicePersona, codiceCommessa));
+		DipendenteCommessa dipendenteCommessa = dipendenteCommessaService.readDipendenteCommessa(new DipendenteCommessaKey(codicePersona, codiceCommessa));
 		DipendenteCommessaDto dto = DtoEntityMapper.INSTANCE.fromEntityToDtoDipendenteCommessa(dipendenteCommessa);
+		dipendenteCommessaService.deleteDipendenteCommessa(dipendenteCommessa.getId());
 		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
 				.<DipendenteCommessaDto>builder().dataRichiesta(new Date()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
+	
 }

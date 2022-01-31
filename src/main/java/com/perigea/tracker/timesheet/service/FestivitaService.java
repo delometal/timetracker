@@ -13,12 +13,12 @@ import com.perigea.tracker.timesheet.repository.FestivitaRepository;
 
 @Service
 public class FestivitaService {
+	
+	@Autowired
+	private Logger logger;
 
 	@Autowired
 	private FestivitaRepository festivitaRepository;
-
-	@Autowired
-	private Logger logger;
 
 	/**
 	 * creazione festività
@@ -27,9 +27,7 @@ public class FestivitaService {
 	 */
 	public Festivita createFestivita(Festivita festivita) {
 		try {
-			festivitaRepository.save(festivita);
-			logger.info("festività inserita a db");
-			return festivita;
+			return festivitaRepository.save(festivita);
 		} catch (Exception ex) {
 			throw new FestivitaException("festività non inserita");
 		}
@@ -58,8 +56,7 @@ public class FestivitaService {
 	 */
 	public Festivita updateFestivita(Festivita festivita) {
 		try {
-			festivitaRepository.save(festivita);
-			return festivita;
+			return festivitaRepository.save(festivita);
 		} catch (Exception ex) {
 			throw new FestivitaException("festività non trovata");
 		}
@@ -70,11 +67,10 @@ public class FestivitaService {
 	 * @param id
 	 * @return
 	 */
-	public Festivita deleteFestivita(Integer id) {
+	public void deleteFestivita(Integer id) {
 		try {
-			Festivita festivita = festivitaRepository.findById(id).get();
 			festivitaRepository.deleteById(id);
-			return festivita;
+			logger.info(String.format("Festività con id $s cancellata", id));
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

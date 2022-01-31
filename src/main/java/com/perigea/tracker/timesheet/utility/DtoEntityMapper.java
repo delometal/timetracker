@@ -48,6 +48,8 @@ public interface DtoEntityMapper {
 
 	Utente fromDtoToEntityUtente(UtentePostDto dto);
 
+	Utente fromDtoToEntityUtente(UtenteViewDto dto);
+
 	@Mapping(ignore = true, target = "password")
 	UtentePostDto fromEntityToDtoUtente(Utente entity);
 	
@@ -60,6 +62,8 @@ public interface DtoEntityMapper {
 	AnagraficaCliente fromDtoToEntityAnagraficaCliente(AnagraficaClienteDto dto);
 
 	AnagraficaClienteDto fromEntityToDtoAnagraficaCliente(AnagraficaCliente entity);
+	
+	Utente fromDtoToEntityUtente(AnagraficaDipendenteInputDto dto);
 	
 	AnagraficaDipendente fromDtoToEntityAnagraficaDipendente(AnagraficaDipendenteInputDto dto);
 	

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +61,7 @@ public class TimesheetService {
 			assertTimesheetIsValid(timesheetDataList, timeDto);
 			Integer oreTotali = 0;
 			Timesheet timesheet = DtoEntityMapper.INSTANCE.fromDtoToEntityMensile(timeDto);
-			Utente utente = utenteRepository.findByCodicePersona(timeDto.getCodicePersona());
+			Utente utente = utenteRepository.findByCodicePersona(timeDto.getCodicePersona()).get();
 			timesheet.setUtente(utente);
 			utente.addTimesheet(timesheet);
 			TimesheetMensileKey tsKey = new TimesheetMensileKey(timeDto.getAnno(), timeDto.getMese(), timeDto.getCodicePersona());
@@ -87,7 +86,7 @@ public class TimesheetService {
 			});
 			for (TimesheetEntryDto dataDto : timesheetDataList) {
 				oreTotali += dataDto.getOre();
-				Commessa commessa = commessaRepository.findByCodiceCommessa(dataDto.getCodiceCommessa());
+				Commessa commessa = commessaRepository.findByCodiceCommessa(dataDto.getCodiceCommessa()).get();
 				TimesheetEntry entry = DtoEntityMapper.INSTANCE.fromDtoToEntityTimeSheet(dataDto);
 				TimesheetEntryKey entryKey = new TimesheetEntryKey(timesheet.getId().getAnno(), timesheet.getId().getMese(), dataDto.getGiorno(), timesheet.getId().getCodicePersona(), dataDto.getCodiceCommessa());
 				entry.setId(entryKey);
@@ -108,8 +107,15 @@ public class TimesheetService {
 	
 	public Timesheet getTimesheet(Integer anno, EMese mese, String codicePersona) {
 		try {
-			Optional<Timesheet> optTimesheet = timesheetRepository.findById(new TimesheetMensileKey(anno, mese.getMonthId(), codicePersona));
-			return optTimesheet.get();
+			return timesheetRepository.findById(new TimesheetMensileKey(anno, mese.getMonthId(), codicePersona)).get();
+		} catch(Exception e) {
+			throw new TimesheetException(e.getMessage());
+		}
+	}
+	
+	public Timesheet getTimesheet(TimesheetMensileKey id) {
+		try {
+			return timesheetRepository.findById(id).get();
 		} catch(Exception e) {
 			throw new TimesheetException(e.getMessage());
 		}
@@ -132,7 +138,7 @@ public class TimesheetService {
 			deleteTimesheet(timeDto.getAnno(), EMese.getByMonthId(timeDto.getMese()), timeDto.getCodicePersona());
 			return createTimesheet(timesheetDataList, timeDto);
 		} catch (Exception ex) {
-			throw new TimesheetException(" error " + ex.getMessage());
+			throw new TimesheetException(ex.getMessage());
 		}
 	}
 	
@@ -144,15 +150,14 @@ public class TimesheetService {
 			}
 			return false;
 		} catch (Exception ex) {
-			throw new TimesheetException(" error " + ex.getMessage());
+			throw new TimesheetException(ex.getMessage());
 		}
 	}
 
-	public void controlloFestivita(List<Festivita> festivi, TimesheetEntryDto timesheetData, TimesheetInputDto timesheetDto) {
+	private void controlloFestivita(List<Festivita> festivi, TimesheetEntryDto timesheetData, TimesheetInputDto timesheetDto) {
 		LocalDate data = LocalDate.of(timesheetDto.getAnno(), timesheetDto.getMese(), timesheetData.getGiorno());
 		for (Festivita f : festivi) {
-			if (f.getData().isEqual(data) || data.getDayOfWeek() == DayOfWeek.SUNDAY
-					|| data.getDayOfWeek() == DayOfWeek.SATURDAY) {
+			if (f.getData().isEqual(data) || data.getDayOfWeek() == DayOfWeek.SUNDAY || data.getDayOfWeek() == DayOfWeek.SATURDAY) {
 				throw new FestivitaException("Il giorno inserito non è corretto");
 			}
 		}
@@ -177,7 +182,7 @@ public class TimesheetService {
 				oreGiorno = oreGiorno + dto.getOre();
 				controlloFestivita(festivi, dto,timesheetDto);
 			}
-			if(oreGiorno>8) {
+			if(oreGiorno > 8) {
 				throw new TimesheetException("numero ore giornaliere inserite non valido");
 			}
 		}

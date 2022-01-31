@@ -1,5 +1,7 @@
 package com.perigea.tracker.timesheet.service;
 
+import java.util.NoSuchElementException;
+
 import javax.persistence.EntityNotFoundException;
 
 import org.slf4j.Logger;
@@ -27,10 +29,7 @@ public class RuoloService {
 	 */
 	public Ruolo createRole(Ruolo ruolo) {
 		try {
-			logger.info("Role creato");
-			ruoliRepository.save(ruolo);
-			logger.info("Role aggiunto a database");
-			return ruolo;
+			return ruoliRepository.save(ruolo);
 		} catch (Exception ex) {
 			throw new RuoloException(ex.getMessage());
 		}
@@ -43,8 +42,11 @@ public class RuoloService {
 	 */
 	public Ruolo readRole(RuoloType ruolo) {
 		try {
-			return ruoliRepository.findByTipo(ruolo);
+			return ruoliRepository.findByTipo(ruolo).get();
 		} catch (Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
 			throw new RuoloException(ex.getMessage());
 		}
 	}
@@ -59,7 +61,7 @@ public class RuoloService {
 			ruoliRepository.save(ruolo);
 			return ruolo;
 		} catch (Exception ex) {
-			throw new EntityNotFoundException(ex.getMessage());
+			throw new RuoloException(ex.getMessage());
 		}
 	}
 
@@ -68,15 +70,12 @@ public class RuoloService {
 	 * @param ruolo
 	 * @return
 	 */
-	public Ruolo deleteRole(RuoloType ruolo) {
+	public void deleteRole(final RuoloType ruoloId) {
 		try {
-			Ruolo ruoloEntity = ruoliRepository.findByTipo(ruolo);
-			if (ruoloEntity != null) {
-				ruoliRepository.delete(ruoloEntity);
-			}
-			return ruoloEntity;
+			ruoliRepository.deleteById(ruoloId);
+			logger.info("Ruolo eliminato");
 		} catch (Exception ex) {
-			throw new EntityNotFoundException(ex.getMessage());
+			throw new RuoloException(ex.getMessage());
 		}
 	}
 }

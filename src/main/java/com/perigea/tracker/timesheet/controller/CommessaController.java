@@ -98,8 +98,9 @@ public class CommessaController {
 
 	@DeleteMapping(value = "/delete-commessa-fatturabile")
 	public ResponseEntity<GenericWrapperResponse<CommessaFatturabileDto>> deleteCommessaFatturabile(@RequestParam String codiceCommessa) {
-		CommessaFatturabile commessaEntity = commessaService.deleteCommessaFatturabile(codiceCommessa);
+		CommessaFatturabile commessaEntity = commessaService.readCommessaFatturabile(codiceCommessa);
 		CommessaFatturabileDto commessaDto = DtoEntityMapper.INSTANCE.fromEntityToDtoCommessaFatturabile(commessaEntity);
+		commessaService.deleteCommessaFatturabile(codiceCommessa);
 		GenericWrapperResponse<CommessaFatturabileDto> genericDto = GenericWrapperResponse.<CommessaFatturabileDto>builder()
 				.dataRichiesta(new Date()).risultato(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
@@ -107,8 +108,9 @@ public class CommessaController {
 	
 	@DeleteMapping(value = "/delete-commessa-non-fatturabile")
 	public ResponseEntity<GenericWrapperResponse<CommessaNonFatturabileDto>> deleteCommessaNonFatturabile(@RequestParam String codiceCommessa) {
-		CommessaNonFatturabile commessaEntity = commessaService.deleteCommessaNonFatturabile(codiceCommessa);
+		CommessaNonFatturabile commessaEntity = commessaService.readCommessaNonFatturabile(codiceCommessa);
 		CommessaNonFatturabileDto commessaDto = DtoEntityMapper.INSTANCE.fromEntityToDtoCommessaNonFatturabile(commessaEntity);
+		commessaService.deleteCommessaNonFatturabile(codiceCommessa);
 		GenericWrapperResponse<CommessaNonFatturabileDto> genericDto = GenericWrapperResponse.<CommessaNonFatturabileDto>builder()
 				.dataRichiesta(new Date()).risultato(commessaDto).build();
 		return ResponseEntity.ok(genericDto);

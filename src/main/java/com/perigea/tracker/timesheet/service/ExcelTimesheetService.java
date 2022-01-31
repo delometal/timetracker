@@ -1,7 +1,9 @@
 package com.perigea.tracker.timesheet.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -17,6 +19,7 @@ import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -36,6 +39,7 @@ import com.perigea.tracker.timesheet.entity.Timesheet;
 import com.perigea.tracker.timesheet.enums.CostoNotaSpeseType;
 import com.perigea.tracker.timesheet.enums.EGiorno;
 import com.perigea.tracker.timesheet.enums.EMese;
+import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 @Service
@@ -50,14 +54,16 @@ public class ExcelTimesheetService {
 	@Autowired
 	private TimesheetService timesheetService;
 
-	@SuppressWarnings("deprecation")
-	public void createExcelTimesheet(TimesheetExcelWrapper timesheetExcelWrapper) {
-		try {
-			File newFile = new File(percorsoFile);
-			XSSFWorkbook workbook = new XSSFWorkbook();
-			XSSFSheet sheet = workbook.createSheet("Timesheet excel");
+//	@ TODO anno_mese_giorno_nome_cognome
 
-			XSSFSheet secondSheet = workbook.createSheet("NoteSpesa excel");
+	@SuppressWarnings("deprecation")
+	public byte[] createExcelTimesheet(TimesheetExcelWrapper timesheetExcelWrapper) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		try {
+			XSSFSheet sheet = workbook.createSheet("Timesheet");
+
+			XSSFSheet secondSheet = workbook.createSheet("NoteSpesa");
 
 			XSSFCellStyle style = workbook.createCellStyle();
 			XSSFFont defaultFont = workbook.createFont();
@@ -458,8 +464,11 @@ public class ExcelTimesheetService {
 							cellGiorniTotaliPerRiga2.setCellValue(giorniTotaliPerRiga);
 							if (index % 2 == 0) {
 								XSSFCellStyle style2 = workbook.createCellStyle();
+								XSSFFont font2 = workbook.createFont();
 								style2.setFillForegroundColor(IndexedColors.VIOLET.getIndex());
 								style2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+								font2.setColor(IndexedColors.WHITE.getIndex());
+								style2.setFont(font2);
 								int indexStyleCell = 0;
 								while (indexStyleCell < EMese.getDays(timesheetExcelWrapper.getTimesheet().getMese(),
 										timesheetExcelWrapper.getTimesheet().getAnno()) + 7) {
@@ -507,21 +516,28 @@ public class ExcelTimesheetService {
 				secondSheet.autoSizeColumn(columnIndex);
 			}
 
-			FileOutputStream file = new FileOutputStream(percorsoFile);
-			workbook.write(file);
+			workbook.write(bos);
+			bos.close();
 			workbook.close();
-			file.close();
 			logger.info("Complete");
+			return bos.toByteArray();
 		} catch (Exception e) {
-			e.getMessage();
+			throw new EntityNotFoundException(e.getMessage());
+		} finally {
+			try {
+				bos.close();
+				workbook.close();
+			} catch (IOException e) {
+				logger.error(e.getMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 
-
-	public void downloadExcelTimesheet(Integer anno, EMese mese, UtenteViewDto utente) {
+	public byte[] downloadExcelTimesheet(Integer anno, EMese mese, UtenteViewDto utente) {
 		Timesheet timesheet = timesheetService.getTimesheet(anno, mese, utente.getCodicePersona());
 		TimesheetResponseDto timesheetResponseDto = DtoEntityMapper.INSTANCE.fromEntityToDtoMensile(timesheet);
 		TimesheetExcelWrapper timesheetExcelWrapper = new TimesheetExcelWrapper(timesheetResponseDto, utente);
-		createExcelTimesheet(timesheetExcelWrapper);
+		return createExcelTimesheet(timesheetExcelWrapper);
 	}
 }

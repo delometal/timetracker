@@ -6,14 +6,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perigea.tracker.timesheet.dto.AnagraficaDto;
 import com.perigea.tracker.timesheet.dto.TimesheetEntryDto;
 import com.perigea.tracker.timesheet.dto.TimesheetRefDto;
+import com.perigea.tracker.timesheet.dto.TimesheetResponseDto;
+import com.perigea.tracker.timesheet.dto.wrapper.TimesheetExcelWrapper;
 import com.perigea.tracker.timesheet.entity.Commessa;
 import com.perigea.tracker.timesheet.entity.Festivita;
 import com.perigea.tracker.timesheet.entity.NotaSpese;
@@ -25,6 +29,7 @@ import com.perigea.tracker.timesheet.entity.keys.TimesheetEntryKey;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
 import com.perigea.tracker.timesheet.enums.EMese;
 import com.perigea.tracker.timesheet.enums.StatoRichiestaType;
+import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
 import com.perigea.tracker.timesheet.exception.FestivitaException;
 import com.perigea.tracker.timesheet.exception.TimesheetException;
 import com.perigea.tracker.timesheet.repository.ApplicationDao;
@@ -58,6 +63,9 @@ public class TimesheetService {
 	
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
+	
+	@Autowired 
+	private ExcelTimesheetService excelTimesheetService;
 	
 	public Timesheet createTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetRefDto timeDto) {
 		try {
@@ -103,24 +111,33 @@ public class TimesheetService {
 			timesheetRepository.save(timesheet);
 			logger.info("TImesheet salvato");
 			return timesheet;
-		} catch (Exception e) {
-			throw new TimesheetException(e.getMessage());
+		} catch (Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new TimesheetException(ex.getMessage());
 		}
 	}
 	
 	public Timesheet getTimesheet(Integer anno, EMese mese, String codicePersona) {
 		try {
 			return timesheetRepository.findById(new TimesheetMensileKey(anno, mese.getMonthId(), codicePersona)).get();
-		} catch(Exception e) {
-			throw new TimesheetException(e.getMessage());
+		} catch(Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new TimesheetException(ex.getMessage());
 		}
 	}
 	
 	public Timesheet getTimesheet(TimesheetMensileKey id) {
 		try {
 			return timesheetRepository.findById(id).get();
-		} catch(Exception e) {
-			throw new TimesheetException(e.getMessage());
+		} catch(Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new TimesheetException(ex.getMessage());
 		}
 	}
 	
@@ -132,6 +149,9 @@ public class TimesheetService {
 			timesheetRepository.delete(timesheet);
 			return timesheet;
 		}catch(Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
@@ -189,6 +209,13 @@ public class TimesheetService {
 				throw new TimesheetException("numero ore giornaliere inserite non valido");
 			}
 		}
+	}
+	
+	public byte[] downloadExcelTimesheet(Integer anno, EMese mese, AnagraficaDto angrafica) {
+		Timesheet timesheet = getTimesheet(anno, mese, angrafica.getCodicePersona());
+		TimesheetResponseDto timesheetResponseDto = dtoEntityMapper.entityToDto(timesheet);
+		TimesheetExcelWrapper timesheetExcelWrapper = new TimesheetExcelWrapper(timesheetResponseDto, angrafica);
+		return excelTimesheetService.createExcelTimesheet(timesheetExcelWrapper);
 	}
 	
 }

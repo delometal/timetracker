@@ -1,5 +1,4 @@
 package com.perigea.tracker.timesheet.utility;
-
 import java.util.List;
 
 import org.mapstruct.Mapper;
@@ -96,33 +95,14 @@ public interface DtoEntityMapper {
 	
 	@Mapping(target= ".", source="id")
 	OrdineCommessaDto entityToDto(OrdineCommessa entity);
-	
-	@Mapping(target= "id.giorno", source="giorno")
-	@Mapping(target= "id.codiceCommessa", source="codiceCommessa")
-	@Mapping(target= "commessa.descrizioneCommessa", source="descrizioneCommessa")
-	TimesheetEntry dtoToEntity(TimesheetEntryDto dto);
-	
-	@Mapping(target= "giorno", source="id.giorno")
-	@Mapping(target= "codiceCommessa", source="id.codiceCommessa")
-	TimesheetEntryDto entityToDto(TimesheetEntry entity);
-	
-	List<TimesheetEntry> fromEntityToDtoTimesheetData(List<TimesheetEntryDto> dtos);
-	List<TimesheetEntryDto> entityToDtoTimesheetEntryList(List<TimesheetEntry> entities);
 
 	@Mapping(target= "id.anno", source="anno")
 	@Mapping(target= "id.mese", source="mese")
 	@Mapping(target= "id.codicePersona", source="codicePersona")
 	Timesheet dtoToEntity(TimesheetRefDto dto);
 	
-	@Mapping(target= ".", source="id")
-	@Mapping(target= "nome", source="utente.anagrafica.nome")
-	@Mapping(target= "cognome", source="utente.anagrafica.cognome")
-	@Mapping (target = "mailAziendale", source = "utente.anagrafica.mailAziendale")
-	TimesheetResponseDto entityToDto(Timesheet entity);
-	
 	Festivita dtoToEntity(FestivitaDto dto);
 	FestivitaDto entityToDto(Festivita entity);
-	
 	@Mapping(target= "id.costoNotaSpese", source="costoNotaSpese")
 	NotaSpese dtoToEntity(NotaSpeseDto dto);
 	
@@ -138,7 +118,6 @@ public interface DtoEntityMapper {
 	@Mapping(target= "id.codicePersona", source="codicePersona")
 	@Mapping(target= "id.codiceCommessa", source="ccodiceCommessa")
 	List<NotaSpese> dtoToEntityList(List<NotaSpeseDto> dto);
-	
 	List<NotaSpeseDto> entityToDtoNotaSpeseList(List<NotaSpese> entity);
 
 	@Mapping(target= "id.codicePersona", source="codicePersona")
@@ -162,6 +141,26 @@ public interface DtoEntityMapper {
 	
 	DatiEconomiciConsulenteDto entityToDto(DatiEconomiciConsulente entity);
 	DatiEconomiciConsulente dtoToEntity(DatiEconomiciConsulenteDto dto);
+	
+	@Mapping(target = "id.giorno", source = "giorno")
+	@Mapping(target = "id.codiceCommessa", source = "codiceCommessa")
+	@Mapping(target = "commessa.descrizioneCommessa", source = "descrizioneCommessa")
+	@Mapping(target = "commessa.cliente.ragioneSociale", source = "ragioneSociale")
+	TimesheetEntry dtoToEntity(TimesheetEntryDto dto);
+	
+	@Mapping(target= "giorno", source="id.giorno")
+	@Mapping(target= "codiceCommessa", source="id.codiceCommessa")
+	@Mapping (target = "descrizioneCommessa", source = "commessa.descrizioneCommessa")
+	@Mapping (target = "ragioneSociale", source = "commessa.cliente.ragioneSociale")
+	TimesheetEntryDto entityToDto(TimesheetEntry entity);
+	
+	List<TimesheetEntry> fromEntityToDtoTimesheetData(List<TimesheetEntryDto> dtos);
+	List<TimesheetEntryDto> entityToDtoTimesheetEntryList(List<TimesheetEntry> entities);
 
+	@Mapping(target= ".", source="id")
+	@Mapping(target= "nome", source="utente.anagrafica.nome")
+	@Mapping(target= "cognome", source="utente.anagrafica.cognome")
+	@Mapping (target = "mailAziendale", source = "utente.anagrafica.mailAziendale")
+	TimesheetResponseDto entityToDto(Timesheet entity);
 	
 }

@@ -1,7 +1,7 @@
 package com.perigea.tracker.timesheet.enums;
 
 public enum CostoNotaSpeseType {
-	
+
 	AEREO,
 	ALLOGGIO,
 	TRASPORTI_E_CARBURANTE,

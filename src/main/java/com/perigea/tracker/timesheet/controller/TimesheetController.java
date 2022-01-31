@@ -1,6 +1,8 @@
 package com.perigea.tracker.timesheet.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,13 +13,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.timesheet.dto.AnagraficaDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.dto.TimesheetRefDto;
 import com.perigea.tracker.timesheet.dto.TimesheetResponseDto;
 import com.perigea.tracker.timesheet.dto.wrapper.TimesheetWrapper;
 import com.perigea.tracker.timesheet.entity.Timesheet;
+import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
+import com.perigea.tracker.timesheet.enums.EMese;
 import com.perigea.tracker.timesheet.enums.StatoRichiestaType;
+import com.perigea.tracker.timesheet.service.DipendenteService;
 import com.perigea.tracker.timesheet.service.TimesheetService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 import com.perigea.tracker.timesheet.utility.TSUtils;
@@ -31,6 +37,9 @@ public class TimesheetController {
 	
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
+
+	@Autowired
+	private DipendenteService dipendenteService;
 
 	@PostMapping(value = "/create-timesheet")
 	public ResponseEntity<GenericWrapperResponse<TimesheetResponseDto>> createTimesheet(@RequestBody TimesheetWrapper wrapper) {
@@ -80,4 +89,15 @@ public class TimesheetController {
 		return ResponseEntity.badRequest().body(genericDto);
 	}
 	
+	@GetMapping(value = "/download-excel-timesheet/{anno}/{mese}/{codicePersona}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public ResponseEntity<byte[]> downloadExcelTimesheet(@PathVariable(value = "anno") Integer anno, @PathVariable(value = "mese") EMese mese, @PathVariable(value = "codicePersona") String codicePersona) {
+		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
+		String fileName = TSUtils.removeAllSpaces(anno + mese.getMonthPart() + "_" + utente.getAnagrafica().getCognome() + TSUtils.EXCEL_EXT).trim();
+		AnagraficaDto angraficaDto = dtoEntityMapper.entityToDto(utente.getAnagrafica());
+		byte[] excel = timesheetService.downloadExcelTimesheet(anno, mese, angraficaDto);
+		return ResponseEntity.ok()
+	            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+	            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ fileName + "\"")
+	            .body(excel);
+	}
 }

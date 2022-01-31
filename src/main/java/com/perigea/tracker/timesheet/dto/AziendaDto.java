@@ -12,8 +12,8 @@ public class AziendaDto extends BaseDto {
 	private static final long serialVersionUID = -7928482382601116096L;
 	
 	private String codiceAzienda;
-	private String partitaIva;
 	private String ragioneSociale;
+	private String partitaIva;
 	private String codiceFiscale;
 	private String codiceDestinatario;
 	private String sedeLegaleComune;

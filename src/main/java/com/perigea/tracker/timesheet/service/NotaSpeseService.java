@@ -1,5 +1,7 @@
 package com.perigea.tracker.timesheet.service;
 
+import java.util.NoSuchElementException;
+
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import com.perigea.tracker.timesheet.entity.TimesheetEntry;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.entity.keys.NotaSpeseKey;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetEntryKey;
+import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
 import com.perigea.tracker.timesheet.exception.NotaSpeseException;
 import com.perigea.tracker.timesheet.repository.CommessaRepository;
 import com.perigea.tracker.timesheet.repository.NotaSpeseRepository;
@@ -61,6 +64,9 @@ public class NotaSpeseService {
 		try {
 			return notaSpeseRepository.findById(key).get();
 		} catch (Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
 			throw new NotaSpeseException("NotaSpese non trovata");
 		}
 	}
@@ -78,6 +84,9 @@ public class NotaSpeseService {
 		try {
 			notaSpeseRepository.deleteById(key);
 		} catch (Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
 			throw new NotaSpeseException(ex.getMessage());
 		}
 	}
@@ -86,6 +95,9 @@ public class NotaSpeseService {
 		try {
 			notaSpeseRepository.delete(notaSpese);
 		} catch (Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
 			throw new NotaSpeseException(ex.getMessage());
 		}
 	}

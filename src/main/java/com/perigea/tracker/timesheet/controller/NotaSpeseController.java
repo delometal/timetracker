@@ -18,7 +18,7 @@ import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @RestController
-@RequestMapping("/nota_spese")
+@RequestMapping("/note-spesa")
 public class NotaSpeseController {
 
 	@Autowired
@@ -27,7 +27,7 @@ public class NotaSpeseController {
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
 
-	@PostMapping(value = "/create-nota-spese")
+	@PostMapping(value = "/create")
 	public ResponseEntity<GenericWrapperResponse<NotaSpeseDto>> createNotaSpese(@RequestBody NotaSpeseInputDto notaSpeseInputDto) {
 		NotaSpese notaSpese = dtoEntityMapper.dtoToEntity(notaSpeseInputDto);
 		notaSpese = notaSpeseService.createNotaSpese(notaSpese);
@@ -37,7 +37,7 @@ public class NotaSpeseController {
 		return ResponseEntity.ok(genericDto);
 	}
 		
-	@GetMapping(value = "/read-nota-spese")
+	@GetMapping(value = "/read")
 	public ResponseEntity<GenericWrapperResponse<NotaSpeseDto>> readNotaSpese(@RequestBody NotaSpeseKey notaSpeseKey) {
 		NotaSpese notaSpese = notaSpeseService.readNotaSpese(notaSpeseKey);
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);
@@ -46,7 +46,7 @@ public class NotaSpeseController {
 		return ResponseEntity.ok(genericDto);
 	}
 
-	@PostMapping(value = "/update-nota-spese")
+	@PostMapping(value = "/update")
 	public ResponseEntity<GenericWrapperResponse<NotaSpeseDto>> updateNotaSpese(@RequestBody NotaSpeseInputDto notaSpeseInputDto) {
 		NotaSpese notaSpese = dtoEntityMapper.dtoToEntity(notaSpeseInputDto);
 		notaSpese = notaSpeseService.updateNotaSpese(notaSpese);
@@ -56,7 +56,7 @@ public class NotaSpeseController {
 		return ResponseEntity.ok(genericDto);
 	}
 
-	@GetMapping(value = "/delete-nota-spese")
+	@GetMapping(value = "/delete")
 	public ResponseEntity<GenericWrapperResponse<NotaSpeseDto>> deleteNotaSpese(@RequestBody NotaSpeseKey notaSpeseKey) {
 		NotaSpese notaSpese = notaSpeseService.readNotaSpese(notaSpeseKey);
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);

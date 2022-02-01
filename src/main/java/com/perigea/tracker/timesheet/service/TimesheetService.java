@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.timesheet.dto.AnagraficaDto;
+import com.perigea.tracker.timesheet.dto.InfoAutoDto;
 import com.perigea.tracker.timesheet.dto.TimesheetEntryDto;
 import com.perigea.tracker.timesheet.dto.TimesheetRefDto;
 import com.perigea.tracker.timesheet.dto.TimesheetResponseDto;
@@ -211,10 +212,10 @@ public class TimesheetService {
 		}
 	}
 	
-	public byte[] downloadExcelTimesheet(Integer anno, EMese mese, AnagraficaDto angrafica) {
+	public byte[] downloadExcelTimesheet(Integer anno, EMese mese, AnagraficaDto angrafica, InfoAutoDto infoAuto) {
 		Timesheet timesheet = getTimesheet(anno, mese, angrafica.getCodicePersona());
 		TimesheetResponseDto timesheetResponseDto = dtoEntityMapper.entityToDto(timesheet);
-		TimesheetExcelWrapper timesheetExcelWrapper = new TimesheetExcelWrapper(timesheetResponseDto, angrafica);
+		TimesheetExcelWrapper timesheetExcelWrapper = new TimesheetExcelWrapper(timesheetResponseDto, angrafica, infoAuto);
 		return excelTimesheetService.createExcelTimesheet(timesheetExcelWrapper);
 	}
 	

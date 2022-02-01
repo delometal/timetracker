@@ -10,6 +10,7 @@ import com.perigea.tracker.timesheet.exception.ClienteException;
 import com.perigea.tracker.timesheet.exception.CommessaException;
 import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
 import com.perigea.tracker.timesheet.exception.FestivitaException;
+import com.perigea.tracker.timesheet.exception.FileUploadException;
 import com.perigea.tracker.timesheet.exception.GenericError;
 import com.perigea.tracker.timesheet.exception.GruppoException;
 import com.perigea.tracker.timesheet.exception.RuoloException;
@@ -31,18 +32,17 @@ public class ExceptionHandlerController {
 	}
 
 	@ExceptionHandler(CommessaException.class)
-	public final ResponseEntity<?> handleCommessaException(CommessaException ex){
+	public final ResponseEntity<?> handleCommessaException(CommessaException ex) {
 		GenericError eObject = new GenericError();
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto = GenericWrapperResponse.<GenericError>builder()
 				.dataRichiesta(TSUtils.now()).risultato(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
-
 	}
 
 	@ExceptionHandler(RuoloException.class)
-	public final ResponseEntity<?> handleRoleException(RuoloException ex){
+	public final ResponseEntity<?> handleRoleException(RuoloException ex) {
 		GenericError eObject = new GenericError();
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
@@ -52,7 +52,7 @@ public class ExceptionHandlerController {
 	}
 
 	@ExceptionHandler(TimesheetException.class)
-	public final ResponseEntity<?> handleTimeSsheetException(TimesheetException ex){
+	public final ResponseEntity<?> handleTimeSsheetException(TimesheetException ex) {
 		GenericError eObject = new GenericError();
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
@@ -62,7 +62,7 @@ public class ExceptionHandlerController {
 	}
 
 	@ExceptionHandler(UtenteException.class)
-	public final ResponseEntity<?> handleUserException(UtenteException ex){
+	public final ResponseEntity<?> handleUserException(UtenteException ex) {
 		GenericError eObject = new GenericError();
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
@@ -71,24 +71,44 @@ public class ExceptionHandlerController {
 		return ResponseEntity.badRequest().body(errorDto);
 
 	}
-	
+
 	@ExceptionHandler(EntityNotFoundException.class)
-	public final ResponseEntity<?> handleEntityNonFoundException(EntityNotFoundException ex){
+	public final ResponseEntity<?> handleEntityNonFoundException(EntityNotFoundException ex) {
 		return ResponseEntity.notFound().build();
 	}
-	
+
 	@ExceptionHandler(FestivitaException.class)
-	public final ResponseEntity<?> handleFestivitaException(FestivitaException ex){
+	public final ResponseEntity<?> handleFestivitaException(FestivitaException ex) {
 		GenericError eObject = new GenericError();
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		GenericWrapperResponse<GenericError> errorDto = GenericWrapperResponse.<GenericError>builder()
 				.dataRichiesta(TSUtils.now()).risultato(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
-	}	
-	
+	}
+
 	@ExceptionHandler(GruppoException.class)
-	public final ResponseEntity<?> handleGruppoException(GruppoException ex){
+	public final ResponseEntity<?> handleGruppoException(GruppoException ex) {
+		GenericError eObject = new GenericError();
+		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+		eObject.setMessage(ex.getMessage());
+		GenericWrapperResponse<GenericError> errorDto = GenericWrapperResponse.<GenericError>builder()
+				.dataRichiesta(TSUtils.now()).risultato(eObject).build();
+		return ResponseEntity.badRequest().body(errorDto);
+	}
+
+	@ExceptionHandler(FileUploadException.class)
+	public ResponseEntity<?> handleMaxSizeException(FileUploadException ex) {
+		GenericError eObject = new GenericError();
+		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+		eObject.setMessage(ex.getMessage());
+		GenericWrapperResponse<GenericError> errorDto = GenericWrapperResponse.<GenericError>builder()
+				.dataRichiesta(TSUtils.now()).risultato(eObject).build();
+		return ResponseEntity.badRequest().body(errorDto);
+	}
+
+	@ExceptionHandler(RuntimeException.class)
+	public final ResponseEntity<?> handleEntityNonFoundException(RuntimeException ex) {
 		GenericError eObject = new GenericError();
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());

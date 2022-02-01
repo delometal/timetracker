@@ -29,7 +29,7 @@ public class RuoloController {
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
 
-	@PostMapping(value = "/create-role")
+	@PostMapping(value = "/create")
 	public ResponseEntity<GenericWrapperResponse<RuoloDto>> createRole(@RequestBody RuoloDto ruoloDto) {
 		Ruolo ruolo = dtoEntityMapper.dtoToEntity(ruoloDto);
 		ruolo = roleService.createRole(ruolo);
@@ -39,7 +39,7 @@ public class RuoloController {
 		return ResponseEntity.ok(genericDto);
 	}
 
-	@GetMapping(value = "/read-role")
+	@GetMapping(value = "/read")
 	public ResponseEntity<GenericWrapperResponse<RuoloDto>> readRole(@RequestParam RuoloType ruoloTipo) {
 		Ruolo ruolo = roleService.readRole(ruoloTipo);
 		RuoloDto dtoRuolo = dtoEntityMapper.entityToDto(ruolo);
@@ -48,7 +48,7 @@ public class RuoloController {
 		return ResponseEntity.ok(genericDto);
 	}
 	
-	@PutMapping(value = "/update-role")
+	@PutMapping(value = "/update")
 	public ResponseEntity<GenericWrapperResponse<RuoloDto>> updateRole(@RequestBody RuoloDto ruoloDto) {
 		Ruolo ruolo = dtoEntityMapper.dtoToEntity(ruoloDto);
 		ruolo = roleService.updateRole(ruolo);
@@ -58,7 +58,7 @@ public class RuoloController {
 		return ResponseEntity.ok(genericDto);
 	}
 
-	@DeleteMapping(value = "/delete-role")
+	@DeleteMapping(value = "/delete")
 	public ResponseEntity<GenericWrapperResponse<RuoloDto>> deleteRole(@RequestParam RuoloType ruoloTipo) {
 		Ruolo ruolo = roleService.readRole(ruoloTipo);
 		RuoloDto dtoRuolo = dtoEntityMapper.entityToDto(ruolo);

@@ -15,54 +15,54 @@ import com.perigea.tracker.timesheet.dto.DipendenteCommessaDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.entity.DipendenteCommessa;
 import com.perigea.tracker.timesheet.entity.keys.DipendenteCommessaKey;
-import com.perigea.tracker.timesheet.service.DipendenteCommessaService;
+import com.perigea.tracker.timesheet.service.AssegnazioneCommessaService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @RestController
-@RequestMapping("/dipendenti-commesse")
-public class DipendenteCommessaController {
+@RequestMapping("/assegnazione-commesse")
+public class AssegnazioneCommessaController {
 	
 	@Autowired
-	private DipendenteCommessaService dipendenteCommessaService;
+	private AssegnazioneCommessaService assegnazioneCommessaService;
 	
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
 	
-	@PostMapping(value = "/create-dipendente-commessa")
+	@PostMapping(value = "/create")
 	public ResponseEntity<GenericWrapperResponse<DipendenteCommessaDto>> createDipendenteCommessa(@RequestBody DipendenteCommessaDto dipendenteCommessaDto) {
 		DipendenteCommessa dipendenteCommessa = dtoEntityMapper.dtoToEntity(dipendenteCommessaDto);
-		dipendenteCommessa = dipendenteCommessaService.createDipendenteCommessa(dipendenteCommessa);
+		dipendenteCommessa = assegnazioneCommessaService.createDipendenteCommessa(dipendenteCommessa);
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
 		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
 				.<DipendenteCommessaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@GetMapping(value = "/read-dipendente-commessa")
+	@GetMapping(value = "/read")
 	public ResponseEntity<GenericWrapperResponse<DipendenteCommessaDto>> readDipendenteCommessa(@RequestParam String codicePersona, @RequestParam String codiceCommessa) {
-		DipendenteCommessa dipendenteCommessa = dipendenteCommessaService.readDipendenteCommessa(new DipendenteCommessaKey(codicePersona, codiceCommessa));
+		DipendenteCommessa dipendenteCommessa = assegnazioneCommessaService.readDipendenteCommessa(new DipendenteCommessaKey(codicePersona, codiceCommessa));
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
 		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
 				.<DipendenteCommessaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@PutMapping(value = "/update-dipendente-commessa")
+	@PutMapping(value = "/update")
 	public ResponseEntity<GenericWrapperResponse<DipendenteCommessaDto>> updateDipendenteCommessa(@RequestBody DipendenteCommessaDto dipendenteCommessaDto) {
 		DipendenteCommessa dipendenteCommessa = dtoEntityMapper.dtoToEntity(dipendenteCommessaDto);
-		dipendenteCommessa = dipendenteCommessaService.updateDipendenteCommessa(dipendenteCommessa);
+		dipendenteCommessa = assegnazioneCommessaService.updateDipendenteCommessa(dipendenteCommessa);
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
 		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
 				.<DipendenteCommessaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@DeleteMapping(value = "/delete-dipendente-commessa")
+	@DeleteMapping(value = "/delete")
 	ResponseEntity<GenericWrapperResponse<DipendenteCommessaDto>> deleteDipendenteCommessa(@RequestParam String codicePersona, @RequestParam String codiceCommessa) {
-		DipendenteCommessa dipendenteCommessa = dipendenteCommessaService.readDipendenteCommessa(new DipendenteCommessaKey(codicePersona, codiceCommessa));
+		DipendenteCommessa dipendenteCommessa = assegnazioneCommessaService.readDipendenteCommessa(new DipendenteCommessaKey(codicePersona, codiceCommessa));
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
-		dipendenteCommessaService.deleteDipendenteCommessa(dipendenteCommessa.getId());
+		assegnazioneCommessaService.deleteDipendenteCommessa(dipendenteCommessa.getId());
 		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
 				.<DipendenteCommessaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);

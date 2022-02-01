@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.perigea.tracker.timesheet.dto.InfoAutoDto;
 import com.perigea.tracker.timesheet.dto.NotaSpeseDto;
 import com.perigea.tracker.timesheet.dto.TimesheetEntryDto;
 import com.perigea.tracker.timesheet.dto.TimesheetResponseDto;
@@ -36,6 +37,11 @@ import com.perigea.tracker.timesheet.enums.EMese;
 import com.perigea.tracker.timesheet.exception.TimesheetException;
 import com.perigea.tracker.timesheet.utility.TSUtils;
 
+/**
+ * TODO calcolo dei rimborsi kilometrici con i dati contenuti in InfoAutoDto,
+ * capire la differenza tra CostoNotaSpeseType.KILOMETRI e CostoNotaSpeseType.RIMBORSO_KILOMETRICO 
+ * e come legarli ai valori del modello degli economics
+ */
 @Service
 public class ExcelTimesheetService {
 
@@ -50,6 +56,7 @@ public class ExcelTimesheetService {
 			String codicePersona = timesheet.getCodicePersona();
 			String nome = timesheetExcelWrapper.getAngrafica().getNome();
 			String cognome = timesheetExcelWrapper.getAngrafica().getCognome();
+			InfoAutoDto infoAuto = timesheetExcelWrapper.getInfoAuto();
 			Integer anno = timesheet.getAnno();
 			Integer mese = timesheet.getMese();
 			String statoTimesheet = timesheet.getStatoRichiesta().getDescrizione();
@@ -98,9 +105,11 @@ public class ExcelTimesheetService {
 			Row1.getCell(3).setCellStyle(style);
 			XSSFRow Row2 = secondSheet.createRow(2);
 			Row2.createCell(1).setCellValue("Rimborso Km in €");
+			Row2.createCell(3).setCellValue((infoAuto.getRimborsoPerKm()==null)? 0.0f : infoAuto.getRimborsoPerKm());
 			Row2.getCell(1).setCellStyle(style);
 			XSSFRow Row3 = secondSheet.createRow(3);
 			Row3.createCell(1).setCellValue("Auto");
+			Row3.createCell(3).setCellValue((infoAuto.getModelloAuto()==null)? "" : infoAuto.getModelloAuto());
 			Row3.getCell(1).setCellStyle(style);
 			XSSFRow Row4 = secondSheet.createRow(4);
 			Row4.createCell(1).setCellValue("Totale");
@@ -119,7 +128,7 @@ public class ExcelTimesheetService {
 			Row6.getCell(5).setCellStyle(style);
 			Row6.createCell(6).setCellValue("Pasti");
 			Row6.getCell(6).setCellStyle(style);
-			Row6.createCell(7).setCellValue("Conferene e seminari");
+			Row6.createCell(7).setCellValue("Conferenze e seminari");
 			Row6.getCell(7).setCellStyle(style);
 			Row6.createCell(8).setCellValue("Kilometri");
 			Row6.getCell(8).setCellStyle(style);

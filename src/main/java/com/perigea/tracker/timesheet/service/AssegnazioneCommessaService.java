@@ -11,16 +11,16 @@ import com.perigea.tracker.timesheet.entity.DipendenteCommessa;
 import com.perigea.tracker.timesheet.entity.keys.DipendenteCommessaKey;
 import com.perigea.tracker.timesheet.exception.CommessaException;
 import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
-import com.perigea.tracker.timesheet.repository.DipendenteCommessaRepository;
+import com.perigea.tracker.timesheet.repository.AssegnazioneCommessaRepository;
 
 @Service
-public class DipendenteCommessaService {
+public class AssegnazioneCommessaService {
 
 	@Autowired
 	private Logger logger;
 
 	@Autowired
-	private DipendenteCommessaRepository dipendenteCommessaRepository;
+	private AssegnazioneCommessaRepository assegnazioneCommessaRepository;
 	
 	/**
 	 * Creazione relazione dipendente commessa
@@ -29,7 +29,7 @@ public class DipendenteCommessaService {
 	 */
 	public DipendenteCommessa createDipendenteCommessa(DipendenteCommessa dipendenteCommessa) {
 		try {
-			return dipendenteCommessaRepository.save(dipendenteCommessa);
+			return assegnazioneCommessaRepository.save(dipendenteCommessa);
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());
 		}
@@ -42,7 +42,7 @@ public class DipendenteCommessaService {
 	 */
 	public DipendenteCommessa readDipendenteCommessa(DipendenteCommessaKey id) {
 		try {
-			return dipendenteCommessaRepository.findById(id).get();
+			return assegnazioneCommessaRepository.findById(id).get();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -58,7 +58,7 @@ public class DipendenteCommessaService {
 	 */
 	public DipendenteCommessa updateDipendenteCommessa(DipendenteCommessa dipendenteCommessa) {
 		try {
-			return dipendenteCommessaRepository.save(dipendenteCommessa);
+			return assegnazioneCommessaRepository.save(dipendenteCommessa);
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());
 		}
@@ -70,7 +70,7 @@ public class DipendenteCommessaService {
 	 */
 	public void deleteDipendenteCommessa(DipendenteCommessaKey id) {
 		try {
-			dipendenteCommessaRepository.deleteById(id);
+			assegnazioneCommessaRepository.deleteById(id);
 			logger.info("Relazione Dipendente-commessa cancellata");
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());

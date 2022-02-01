@@ -5,8 +5,6 @@ import javax.websocket.server.PathParam;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +25,7 @@ import com.perigea.tracker.timesheet.entity.Consulente;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciConsulente;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Utente;
-import com.perigea.tracker.timesheet.enums.CrudType;
 import com.perigea.tracker.timesheet.enums.StatoUtenteType;
-import com.perigea.tracker.timesheet.events.UserCrudEvent;
 import com.perigea.tracker.timesheet.service.ConsulenteService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 import com.perigea.tracker.timesheet.utility.TSUtils;
@@ -44,13 +40,13 @@ public class ConsulenteController {
 	@Autowired
 	private ConsulenteService consulenteService;
 	
-	@Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
+//	@Autowired
+//    private ApplicationEventPublisher applicationEventPublisher;
 	
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
 
-	@PostMapping(value = "/create-consulente")
+	@PostMapping(value = "/create")
 	public ResponseEntity<GenericWrapperResponse<ConsulenteDto>> createConsulente(@RequestBody ConsulenteDto consulenteDto) {
 		Utente responsabile = consulenteService.readUtenteConsulente(consulenteDto.getUtente().getCodiceResponsabile());
 		Utente utente = dtoEntityMapper.dtoToEntity(consulenteDto.getUtente());
@@ -70,7 +66,7 @@ public class ConsulenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@GetMapping(value = "/read-consulente")
+	@GetMapping(value = "/read")
 	public ResponseEntity<GenericWrapperResponse<ConsulenteDto>> readConsulente(@RequestParam String codicePersona) {
 		Utente utente = consulenteService.readUtenteConsulente(codicePersona);
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
@@ -85,7 +81,7 @@ public class ConsulenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@DeleteMapping(value = "/delete-consulente")
+	@DeleteMapping(value = "/delete")
 	public ResponseEntity<GenericWrapperResponse<ConsulenteDto>> deleteConsulente(@RequestParam String codicePersona) {
 		Utente utente = consulenteService.readUtenteConsulente(codicePersona);
 		Consulente consulente = (Consulente) utente.getAnagrafica();
@@ -99,11 +95,11 @@ public class ConsulenteController {
 				.dataRichiesta(TSUtils.now())
 				.risultato(consulenteDto)
 				.build();
-		publishEvent(new UserCrudEvent(this, consulenteDto, CrudType.DELETE));
+//		publishEvent(new UserCrudEvent(this, consulenteDto, CrudType.DELETE));
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@PutMapping(value = "/update-consulente")
+	@PutMapping(value = "/update")
 	public ResponseEntity<GenericWrapperResponse<ConsulenteDto>> updateUser(@RequestBody ConsulenteDto consulenteDto) {
 		Utente responsabile = consulenteService.readUtenteConsulente(consulenteDto.getUtente().getCodiceResponsabile());
 		Utente utente = consulenteService.readUtenteConsulente(consulenteDto.getUtente().getCodicePersona());
@@ -122,11 +118,11 @@ public class ConsulenteController {
 				.dataRichiesta(TSUtils.now())
 				.risultato(anagraficaResponseDto)
 				.build();
-		publishEvent(new UserCrudEvent(this, anagraficaResponseDto, CrudType.UPDATE));
+//		publishEvent(new UserCrudEvent(this, anagraficaResponseDto, CrudType.UPDATE));
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PutMapping(value = "/update-utente")
+	@PutMapping(value = "/update-user")
 	public ResponseEntity<GenericWrapperResponse<ConsulenteDto>> updateUser(@RequestBody UtenteDto UtenteDto) {
 		Utente utente = dtoEntityMapper.dtoToEntity(UtenteDto);
 		Utente responsabile = consulenteService.readUtenteConsulente(UtenteDto.getCodiceResponsabile());
@@ -145,28 +141,27 @@ public class ConsulenteController {
 				.dataRichiesta(TSUtils.now())
 				.risultato(consulenteDto)
 				.build();
-		publishEvent(new UserCrudEvent(this, consulenteDto, CrudType.UPDATE));
+//		publishEvent(new UserCrudEvent(this, consulenteDto, CrudType.UPDATE));
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PutMapping(value = "/update-user-status/{codicePersona}/{status}")
+	@PutMapping(value = "/update-status/{codicePersona}/{status}")
 	public ResponseEntity<GenericWrapperResponse<UtenteDto>> editStatusUser(@PathVariable("codicePersona") String codicePersona, @PathParam("status") StatoUtenteType status) {
 		Utente utente = consulenteService.updateUtenteStatus(codicePersona, status);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
-		Consulente anagrafica = (Consulente)utente.getAnagrafica();
-
-		ConsulenteDto consulenteDto = dtoEntityMapper.entityToDto(anagrafica);
+//		Consulente anagrafica = (Consulente)utente.getAnagrafica();
+//		ConsulenteDto consulenteDto = dtoEntityMapper.entityToDto(anagrafica);
 		GenericWrapperResponse<UtenteDto> genericResponse = GenericWrapperResponse.<UtenteDto>builder()
 				.dataRichiesta(TSUtils.now())
 				.risultato(utenteResponseDto)
 				.build();
-		if(status == StatoUtenteType.C) {
-			publishEvent(new UserCrudEvent(this, consulenteDto, CrudType.UPDATE));
-		}
+//		if(status == StatoUtenteType.C) {
+//			publishEvent(new UserCrudEvent(this, consulenteDto, CrudType.UPDATE));
+//		}
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PutMapping(value = "/update-user-roles")
+	@PutMapping(value = "/update-roles")
 	public ResponseEntity<GenericWrapperResponse<UtenteDto>> editRoleUser(@RequestParam String codicePersona, @RequestBody List<RuoloDto> ruoliDto) {
 		Utente utente = consulenteService.readUtenteConsulente(codicePersona);
 		List<Ruolo> ruoli = dtoEntityMapper.dtoToEntityRuoloList(ruoliDto);
@@ -181,7 +176,7 @@ public class ConsulenteController {
 	}
 	
 	
-	@PutMapping(value = "/update-economics-consulente")
+	@PutMapping(value = "/update-economics")
 	public ResponseEntity<GenericWrapperResponse<DatiEconomiciConsulenteDto>> editDatiEconomiciConsulente(@RequestParam String codicePersona, @RequestBody DatiEconomiciConsulenteDto datiEconomiciConsulenteDto) {
 		Utente utente = consulenteService.readUtenteConsulente(codicePersona);
 		DatiEconomiciConsulente economics = dtoEntityMapper.dtoToEntity(datiEconomiciConsulenteDto);
@@ -200,13 +195,13 @@ public class ConsulenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	/**
-	 * Publish an event
-	 * @param event
-	 */
-	private void publishEvent(ApplicationEvent event) {
-		logger.info("Sending event to GruppoService {}", event);
-		applicationEventPublisher.publishEvent(event);
-	}
+//	/**
+//	 * Publish an event
+//	 * @param event
+//	 */
+//	private void publishEvent(ApplicationEvent event) {
+//		logger.info("Sending event to GruppoService {}", event);
+//		applicationEventPublisher.publishEvent(event);
+//	}
 
 }

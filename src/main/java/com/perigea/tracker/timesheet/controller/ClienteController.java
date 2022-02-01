@@ -31,7 +31,7 @@ public class ClienteController {
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
 
-	@PostMapping(value = "/create-cliente")
+	@PostMapping(value = "/create")
 	public ResponseEntity<GenericWrapperResponse<ClienteDto>> saveCliente(@RequestBody ClienteDto clienteDto) {
 		Cliente cliente = dtoEntityMapper.dtoToEntity(clienteDto);
 		cliente = clienteService.saveCliente(cliente);
@@ -41,7 +41,7 @@ public class ClienteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@GetMapping(value = "/read-cliente")
+	@GetMapping(value = "/read")
 	public ResponseEntity<GenericWrapperResponse<ClienteDto>> readCliente(@RequestParam String ragioneSociale) {
 		Cliente cliente = clienteService.readCliente(ragioneSociale);
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);
@@ -50,7 +50,7 @@ public class ClienteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@PutMapping(value = "/update-cliente")
+	@PutMapping(value = "/update")
 	public ResponseEntity<GenericWrapperResponse<ClienteDto>> updateCliente(@RequestBody ClienteDto anaClienteDto) {
 		Cliente cliente = dtoEntityMapper.dtoToEntity(anaClienteDto);
 		cliente = clienteService.saveCliente(cliente);
@@ -60,7 +60,7 @@ public class ClienteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@DeleteMapping(value = "/delete-cliente")
+	@DeleteMapping(value = "/delete")
 	public ResponseEntity<GenericWrapperResponse<ClienteDto>> deleteCliente(@RequestParam String id) {
 		Cliente cliente = clienteService.readCliente(id);
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);

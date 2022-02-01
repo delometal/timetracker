@@ -47,7 +47,7 @@ public class DipendenteController {
 //	@Autowired
 //    private ApplicationEventPublisher applicationEventPublisher;
 
-	@PostMapping(value = "/create-dipendente")
+	@PostMapping(value = "/create")
 	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> createDipendente(@RequestBody DipendenteDto dipendenteDto) {
 		Utente responsabile = null;
 		try {
@@ -72,7 +72,7 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@GetMapping(value = "/read-dipendente")
+	@GetMapping(value = "/read")
 	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> readDipendente(@RequestParam String codicePersona) {
 		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
@@ -87,7 +87,7 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@DeleteMapping(value = "/delete-dipendente")
+	@DeleteMapping(value = "/delete")
 	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> deleteDipendente(@RequestParam String codicePersona) {
 		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
 		Dipendente dipendente = (Dipendente) utente.getAnagrafica();
@@ -105,7 +105,7 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@PutMapping(value = "/update-dipendente")
+	@PutMapping(value = "/update")
 	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> updateUser(@RequestBody DipendenteDto dipendenteDto) {
 		Utente responsabile = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodiceResponsabile());
 		Utente utente = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodicePersona());
@@ -128,7 +128,7 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PutMapping(value = "/update-utente")
+	@PutMapping(value = "/update-user")
 	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> updateUser(@RequestBody UtenteDto UtenteDto) {
 		Utente utente = dtoEntityMapper.dtoToEntity(UtenteDto);
 		Utente responsabile = dipendenteService.readUtenteDipendente(UtenteDto.getCodiceResponsabile());
@@ -151,7 +151,7 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PutMapping(value = "/update-user-status/{codicePersona}/{status}")
+	@PutMapping(value = "/update-status/{codicePersona}/{status}")
 	public ResponseEntity<GenericWrapperResponse<UtenteDto>> editStatusUser(@PathVariable("codicePersona") String codicePersona, @PathParam("status") StatoUtenteType status) {
 		Utente utente = dipendenteService.updateUtenteStatus(codicePersona, status);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
@@ -167,7 +167,7 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PutMapping(value = "/update-user-roles")
+	@PutMapping(value = "/update-roles")
 	public ResponseEntity<GenericWrapperResponse<UtenteDto>> editRoleUser(@RequestParam String codicePersona, @RequestBody List<RuoloDto> ruoliDto) {
 		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
 		List<Ruolo> ruoli = dtoEntityMapper.dtoToEntityRuoloList(ruoliDto);
@@ -181,7 +181,7 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PutMapping(value = "/update-economics-dipendente")
+	@PutMapping(value = "/update-economics")
 	public ResponseEntity<GenericWrapperResponse<DatiEconomiciDipendenteDto>> editDatiEconomiciDipendente(@RequestParam String codicePersona, @RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
 		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
 		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(datiEconomiciDipendenteDto);

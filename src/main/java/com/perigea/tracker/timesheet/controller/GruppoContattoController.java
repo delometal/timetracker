@@ -34,7 +34,7 @@ public class GruppoContattoController {
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
 
-	@PostMapping(value = "/create-gruppo")
+	@PostMapping(value = "/create")
 	public ResponseEntity<GenericWrapperResponse<GruppoContattoDto>> createGruppo(@RequestBody GruppoContattoDto gruppoContattoDto) {
 		Gruppo gruppo = dtoEntityMapper.dtoToEntity(gruppoContattoDto);
 		gruppo = gruppoContattoService.createGruppo(gruppo);
@@ -44,7 +44,7 @@ public class GruppoContattoController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@GetMapping(value = "/read-gruppo")
+	@GetMapping(value = "/read")
 	public ResponseEntity<GenericWrapperResponse<GruppoContattoDto>> readGruppo(@RequestParam Long id) {
 		Gruppo gruppoContatto = gruppoContattoService.readGruppo(id);
 		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppoContatto);
@@ -53,7 +53,7 @@ public class GruppoContattoController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@PutMapping(value = "/update-gruppo")
+	@PutMapping(value = "/update")
 	public ResponseEntity<GenericWrapperResponse<GruppoContattoDto>> updateGruppo(@RequestBody GruppoContattoDto gruppoContattoDto) {
 		Gruppo gruppo = dtoEntityMapper.dtoToEntity(gruppoContattoDto);
 		gruppo = gruppoContattoService.updateGruppo(gruppo);
@@ -63,7 +63,7 @@ public class GruppoContattoController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@DeleteMapping(value = "/delete-gruppo")
+	@DeleteMapping(value = "/delete")
 	public ResponseEntity<GenericWrapperResponse<GruppoContattoDto>> deleteGruppo(@RequestParam Long id) {
 		Gruppo gruppoContatto = gruppoContattoService.readGruppo(id);
 		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppoContatto);
@@ -73,7 +73,7 @@ public class GruppoContattoController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PostMapping(value = "/create-contatto")
+	@PostMapping(value = "/contatti/create")
 	public ResponseEntity<GenericWrapperResponse<AnagraficaDto>> createContatto(@RequestBody ContattoDto contattoDto) {
 		Anagrafica contatto = dtoEntityMapper.dtoToEntity(contattoDto);
 		contatto = gruppoContattoService.createContatto(contatto);
@@ -83,7 +83,7 @@ public class GruppoContattoController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@GetMapping(value = "/read-contatto")
+	@GetMapping(value = "/contatti/read")
 	public ResponseEntity<GenericWrapperResponse<AnagraficaDto>> readContatto(@RequestParam String id) {
 		Anagrafica contatto = gruppoContattoService.readContatto(id);
 		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
@@ -92,7 +92,7 @@ public class GruppoContattoController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@PutMapping(value = "/update-contatto")
+	@PutMapping(value = "/contatti/update")
 	public ResponseEntity<GenericWrapperResponse<AnagraficaDto>> updateContatto(@RequestBody ContattoDto contattoDto) {
 		Anagrafica contatto = dtoEntityMapper.dtoToEntity(contattoDto);
 		contatto = gruppoContattoService.updateContatto(contatto);
@@ -102,7 +102,7 @@ public class GruppoContattoController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@DeleteMapping(value = "/delete-contatto")
+	@DeleteMapping(value = "/contatti/delete")
 	public ResponseEntity<GenericWrapperResponse<AnagraficaDto>> deleteContatto(@RequestParam String id) {
 		Anagrafica contatto = gruppoContattoService.readContatto(id);
 		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);

@@ -16,4 +16,7 @@ public class ApplicationProperties {
 	@Value("${perigea.data.partita-iva}")
 	private String partitaIvaPerigea;
 
+	@Value("${perigea.system.uploads.dir}")
+	private String uploadDirectory;
+
 }

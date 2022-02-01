@@ -29,7 +29,7 @@ public class FestivitaController {
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
 
-	@PostMapping(value = "/create-festivita")
+	@PostMapping(value = "/create")
 	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> createFestivita(@RequestBody FestivitaDto festivitaDto) {
 		Festivita festivita = dtoEntityMapper.dtoToEntity(festivitaDto);
 		festivita = festeService.createFestivita(festivita);
@@ -39,7 +39,7 @@ public class FestivitaController {
 		return ResponseEntity.ok(genericDto);
 	}
 
-	@GetMapping(value = "/read-festivita/{id}")
+	@GetMapping(value = "/read/{id}")
 	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> readFestivita(@PathParam("id") Integer id) {
 		Festivita festivita = festeService.readFestivita(id);
 		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
@@ -48,7 +48,7 @@ public class FestivitaController {
 		return ResponseEntity.ok(genericDto);
 	}
 	
-	@PutMapping(value = "/update-festivita")
+	@PutMapping(value = "/update")
 	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> updateFestivita(@RequestBody FestivitaDto festivitaDto) {
 		Festivita festivita = dtoEntityMapper.dtoToEntity(festivitaDto);
 		festivita = festeService.updateFestivita(festivita);
@@ -58,7 +58,7 @@ public class FestivitaController {
 		return ResponseEntity.ok(genericDto);
 	}
 	
-	@DeleteMapping(value = "/delete-festivita")
+	@DeleteMapping(value = "/delete")
 	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> deleteFestivita(@PathParam("id") Integer id) {
 		Festivita festivita = festeService.readFestivita(id);
 		FestivitaDto festivitaDto = dtoEntityMapper.entityToDto(festivita);

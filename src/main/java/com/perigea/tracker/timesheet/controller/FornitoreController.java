@@ -31,7 +31,7 @@ public class FornitoreController {
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
 
-	@PostMapping(value = "/create-fornitore")
+	@PostMapping(value = "/create")
 	public ResponseEntity<GenericWrapperResponse<FornitoreDto>> saveFornitore(@RequestBody FornitoreDto fornitoreDto) {
 		Fornitore fornitore = dtoEntityMapper.dtoToEntity(fornitoreDto);
 		fornitore = fornitoreService.saveFornitore(fornitore);
@@ -41,7 +41,7 @@ public class FornitoreController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@GetMapping(value = "/read-fornitore")
+	@GetMapping(value = "/read")
 	public ResponseEntity<GenericWrapperResponse<FornitoreDto>> readFornitore(@RequestParam String id) {
 		Fornitore fornitore = fornitoreService.readFornitore(id);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
@@ -50,7 +50,7 @@ public class FornitoreController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@PutMapping(value = "/update-fornitore")
+	@PutMapping(value = "/update")
 	public ResponseEntity<GenericWrapperResponse<FornitoreDto>> updateFornitore(@RequestBody FornitoreDto anaFornitoreDto) {
 		Fornitore fornitore = dtoEntityMapper.dtoToEntity(anaFornitoreDto);
 		fornitore = fornitoreService.saveFornitore(fornitore);
@@ -60,7 +60,7 @@ public class FornitoreController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@DeleteMapping(value = "/delete-fornitore")
+	@DeleteMapping(value = "/delete")
 	public ResponseEntity<GenericWrapperResponse<FornitoreDto>> deleteFornitore(@RequestParam String id) {
 		Fornitore fornitore = fornitoreService.readFornitore(id);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);

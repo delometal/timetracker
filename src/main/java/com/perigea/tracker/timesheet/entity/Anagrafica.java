@@ -2,6 +2,7 @@ package com.perigea.tracker.timesheet.entity;
 
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +15,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.perigea.tracker.timesheet.enums.AnagraficaType;
 
@@ -96,5 +100,11 @@ public class Anagrafica extends BaseEntity {
 	@OneToOne
 	@JoinColumn(name = "codice_persona")
 	private Utente utente;
+	
+	@MapsId
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "codice_persona")
+	@NotFound(action = NotFoundAction.IGNORE)
+	private CurriculumVitae cv;
 
 }

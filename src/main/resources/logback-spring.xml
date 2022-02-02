@@ -34,7 +34,7 @@
 		<appender-ref ref="ROLLING_FILE_LOGGER" />
 		<appender-ref ref="CONSOLE" />
 	</logger>
-		<logger name="com.perigea.teacker" level="${LOG_LEVEL}" additivity="false">
+		<logger name="com.perigea.tracker" level="${LOG_LEVEL}" additivity="false">
 		<appender-ref ref="ROLLING_FILE_LOGGER" />
 		<appender-ref ref="CONSOLE" />
 	</logger>
@@ -70,7 +70,6 @@
 		<appender-ref ref="ROLLING_FILE_LOGGER" />
 		<appender-ref ref="CONSOLE" />
 	</logger>
-	
 	<root level="${LOG_LEVEL}">
 		<appender-ref ref="ROLLING_FILE_LOGGER" />
 		<appender-ref ref="CONSOLE" />

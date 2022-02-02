@@ -18,5 +18,11 @@ public class ApplicationProperties {
 
 	@Value("${perigea.system.uploads.dir}")
 	private String uploadDirectory;
-
+	
+	@Value("${perigea.system.curriculum.dir}")
+	private String curriculumDiskDir;
+	
+	@Value("${perigea.system.curriculum.disk.persistence:false}")
+	private boolean curriculumDiskPersistence;
+	
 }

@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -34,5 +35,16 @@ public class CurriculumVitae extends BaseEntity {
 	
 	@OneToOne(mappedBy = "utente", cascade = CascadeType.ALL)
 	private Anagrafica anagrafica;
+	
+	/**
+	 * this method allow the usage of the CurriculumRepository in order to directly delete the cv 
+	 * without cascading from the utente entity. 
+	 * It just synchronize the relation between anagrafica and cv
+	 */
+	@PreRemove
+	private void preRemove() {
+		if(anagrafica!=null)
+			anagrafica.setCv(null);
+	}
 	
 }

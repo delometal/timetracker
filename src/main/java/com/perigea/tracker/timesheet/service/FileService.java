@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -13,6 +14,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,16 +22,14 @@ import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
 import com.perigea.tracker.timesheet.entity.Anagrafica;
 import com.perigea.tracker.timesheet.entity.CurriculumVitae;
 import com.perigea.tracker.timesheet.entity.Utente;
+import com.perigea.tracker.timesheet.exception.FileDownloadException;
 import com.perigea.tracker.timesheet.exception.FileUploadException;
+import com.perigea.tracker.timesheet.repository.CurriculumVitaeRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
 import com.perigea.tracker.timesheet.utility.TSUtils;
 
-/**
- * TODO rendere opzionale la peristenza su filesystem
- * TODO estrarre nome del file o posizionare nome in tabella
- *
- */
 @Service
+@Transactional
 public class FileService {
 
 	@Autowired
@@ -41,16 +41,25 @@ public class FileService {
 	@Autowired
 	private UtenteRepository utenteRepository;
 	
+	@Autowired
+	private CurriculumVitaeRepository curriculumVitaeRepository;
+	
 	@PostConstruct
 	public void init() {
 		try {
-			Path archivio = Paths.get(applicationProperties.getUploadDirectory());
+			Path uploadRoot = Paths.get(applicationProperties.getUploadDirectory());
+			Path archivio = Paths.get(applicationProperties.getCurriculumDiskDir());
+			
+			if(!Files.exists(uploadRoot, LinkOption.values())) {
+				Files.createDirectories(uploadRoot);
+				logger.info(String.format("Upload root folder created in: %s ", uploadRoot.toAbsolutePath()));
+			}
 			if(!Files.exists(archivio, LinkOption.values())) {
-				Files.createDirectory(archivio);
+				Files.createDirectories(archivio);
 				logger.info(String.format("Archivio folder created in: %s ", archivio.toAbsolutePath()));
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("Could not initialize folder for upload!");
+			throw new FileUploadException("Could not initialize folder for upload!");
 		}
 	}
 
@@ -59,25 +68,31 @@ public class FileService {
 			Utente utente = utenteRepository.getById(codicePersona);
 			Anagrafica anagrafica = utente.getAnagrafica();
 			String filepath = extractCurriculumFilename(codicePersona, anagrafica);
-			Path archivio = loadArchivioFolder();
-			Path childPath = archivio.resolve(filepath);
-			if(!Files.exists(childPath, LinkOption.values())) {
-				Files.createDirectory(childPath);
-			}
-			if(Files.exists(childPath.resolve(file.getOriginalFilename()), LinkOption.values())) {
-				Files.delete(childPath.resolve(file.getOriginalFilename()));
-			}
 			
-			Files.copy(file.getInputStream(), childPath.resolve(file.getOriginalFilename()));
+			if(applicationProperties.isCurriculumDiskPersistence()) {
+				Path archivio = loadArchivioFolder();
+				Path childPath = archivio.resolve(filepath);
+				
+				if(!Files.exists(childPath, LinkOption.values())) {
+					Files.createDirectory(childPath);
+				}
+				if(Files.exists(childPath.resolve(file.getOriginalFilename()), LinkOption.values())) {
+					Files.delete(childPath.resolve(file.getOriginalFilename()));
+				}
+				Files.copy(file.getInputStream(), childPath.resolve(file.getOriginalFilename()));
+			}
 			
 			byte[] fileData = IOUtils.toByteArray(file.getInputStream());
+			Optional<CurriculumVitae> cvOpt = curriculumVitaeRepository.findByCodicePersona(codicePersona);
+			if(cvOpt.isPresent()) {
+				curriculumVitaeRepository.deleteById(codicePersona);
+			}
+			
 			CurriculumVitae cv = new CurriculumVitae();
 			cv.setCodicePersona(codicePersona);
 			cv.setCv(fileData);
 			cv.setFilename(file.getOriginalFilename());
-			utente.getAnagrafica().setCv(cv);
-			utenteRepository.save(utente);
-			
+			curriculumVitaeRepository.save(cv);
 		} catch (Exception e) {
 			throw new FileUploadException("Could not store the file. Error: " + e.getMessage());
 		}
@@ -93,7 +108,7 @@ public class FileService {
 			Utente utente = utenteRepository.getById(codicePersona);
 			return utente.getAnagrafica().getCv();
 		} catch (Exception e) {
-			throw new RuntimeException("Error: " + e.getMessage());
+			throw new FileDownloadException("Error: " + e.getMessage());
 		}
 	}
 
@@ -106,12 +121,12 @@ public class FileService {
 			Path archivio = loadArchivioFolder();
 			return Files.walk(archivio, 1).filter(path -> !path.equals(archivio)).map(archivio::relativize);
 		} catch (IOException e) {
-			throw new RuntimeException("Could not load the files!");
+			throw new FileDownloadException("Could not load the files!");
 		}
 	}
 
 	private Path loadArchivioFolder() {
-		return Paths.get(applicationProperties.getUploadDirectory());
+		return Paths.get(applicationProperties.getCurriculumDiskDir());
 	}
 
 }

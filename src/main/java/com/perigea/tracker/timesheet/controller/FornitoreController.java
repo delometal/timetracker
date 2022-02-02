@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.dto.AnagraficaDto;
 import com.perigea.tracker.timesheet.dto.FornitoreDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
@@ -19,7 +20,6 @@ import com.perigea.tracker.timesheet.entity.Anagrafica;
 import com.perigea.tracker.timesheet.entity.Fornitore;
 import com.perigea.tracker.timesheet.service.FornitoreService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @RestController
 @RequestMapping("/fornitori")
@@ -37,7 +37,7 @@ public class FornitoreController {
 		fornitore = fornitoreService.saveFornitore(fornitore);
 		fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
 		GenericWrapperResponse<FornitoreDto> genericResponse = GenericWrapperResponse
-				.<FornitoreDto>builder().dataRichiesta(TSUtils.now()).risultato(fornitoreDto).build();
+				.<FornitoreDto>builder().dataRichiesta(Utils.now()).risultato(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -46,7 +46,7 @@ public class FornitoreController {
 		Fornitore fornitore = fornitoreService.readFornitore(id);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
 		GenericWrapperResponse<FornitoreDto> genericResponse = GenericWrapperResponse
-				.<FornitoreDto>builder().dataRichiesta(TSUtils.now()).risultato(fornitoreDto).build();
+				.<FornitoreDto>builder().dataRichiesta(Utils.now()).risultato(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -56,7 +56,7 @@ public class FornitoreController {
 		fornitore = fornitoreService.saveFornitore(fornitore);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
 		GenericWrapperResponse<FornitoreDto> genericResponse = GenericWrapperResponse
-				.<FornitoreDto>builder().dataRichiesta(TSUtils.now()).risultato(fornitoreDto).build();
+				.<FornitoreDto>builder().dataRichiesta(Utils.now()).risultato(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -66,7 +66,7 @@ public class FornitoreController {
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
 		fornitoreService.deleteFornitore(id);
 		GenericWrapperResponse<FornitoreDto> genericResponse = GenericWrapperResponse
-				.<FornitoreDto>builder().dataRichiesta(TSUtils.now()).risultato(fornitoreDto).build();
+				.<FornitoreDto>builder().dataRichiesta(Utils.now()).risultato(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
@@ -77,7 +77,7 @@ public class FornitoreController {
 		fornitoreService.addContatto(fornitore, contatto);
 		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
 		GenericWrapperResponse<AnagraficaDto> genericResponse = GenericWrapperResponse
-				.<AnagraficaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<AnagraficaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
@@ -88,7 +88,7 @@ public class FornitoreController {
 		fornitoreService.removeContatto(fornitore, contatto);
 		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
 		GenericWrapperResponse<AnagraficaDto> genericResponse = GenericWrapperResponse
-				.<AnagraficaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<AnagraficaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
@@ -99,7 +99,7 @@ public class FornitoreController {
 		fornitoreService.deleteContatto(fornitore, contatto);
 		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
 		GenericWrapperResponse<AnagraficaDto> genericResponse = GenericWrapperResponse
-				.<AnagraficaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<AnagraficaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	

@@ -6,16 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perigea.tracker.commons.enums.StatoUtenteType;
+import com.perigea.tracker.commons.exception.DipendenteException;
+import com.perigea.tracker.commons.exception.EntityNotFoundException;
+import com.perigea.tracker.commons.exception.PersistenceException;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.Utente;
-import com.perigea.tracker.timesheet.enums.StatoUtenteType;
-import com.perigea.tracker.timesheet.exception.DipendenteException;
-import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
-import com.perigea.tracker.timesheet.exception.PersistenceException;
 import com.perigea.tracker.timesheet.repository.ApplicationDao;
 import com.perigea.tracker.timesheet.repository.DipendenteRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @Service
 @Transactional
@@ -43,7 +43,7 @@ public class DipendenteService {
 	public Utente createUtenteDipendente(Utente utente, Dipendente dipendente) {
 		try {
 			dipendente.setUtente(utente);
-			dipendente.setCodicePersona(TSUtils.uuid());
+			dipendente.setCodicePersona(Utils.uuid());
 			utente.setAnagrafica(dipendente);
 			utenteRepository.save(utente);
 			logger.info("utente salvato");

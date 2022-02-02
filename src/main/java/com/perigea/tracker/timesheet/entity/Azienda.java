@@ -15,8 +15,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
-import com.perigea.tracker.timesheet.enums.AziendaType;
-import com.perigea.tracker.timesheet.enums.PagamentoType;
+import com.perigea.tracker.commons.enums.AziendaType;
+import com.perigea.tracker.commons.enums.PagamentoType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

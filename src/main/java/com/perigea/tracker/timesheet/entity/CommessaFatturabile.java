@@ -9,7 +9,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToOne;
 
-import com.perigea.tracker.timesheet.enums.CommessaFatturabileType;
+import com.perigea.tracker.commons.enums.CommessaFatturabileType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

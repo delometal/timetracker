@@ -14,8 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.perigea.tracker.commons.enums.StatoRichiestaType;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
-import com.perigea.tracker.timesheet.enums.StatoRichiestaType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

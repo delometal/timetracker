@@ -10,12 +10,12 @@ import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perigea.tracker.commons.enums.StatoRichiestaType;
+import com.perigea.tracker.commons.enums.StatoUtenteType;
+import com.perigea.tracker.commons.exception.PersistenceException;
 import com.perigea.tracker.timesheet.entity.Timesheet;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
-import com.perigea.tracker.timesheet.enums.StatoRichiestaType;
-import com.perigea.tracker.timesheet.enums.StatoUtenteType;
-import com.perigea.tracker.timesheet.exception.PersistenceException;
 
 @Repository
 public class ApplicationDao {

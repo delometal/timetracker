@@ -2,7 +2,7 @@ package com.perigea.tracker.timesheet.dto;
 
 import java.time.LocalDate;
 
-import com.perigea.tracker.timesheet.enums.CommessaFatturabileType;
+import com.perigea.tracker.commons.enums.CommessaFatturabileType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

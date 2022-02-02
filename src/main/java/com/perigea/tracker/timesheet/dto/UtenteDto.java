@@ -2,7 +2,7 @@ package com.perigea.tracker.timesheet.dto;
 
 import java.util.List;
 
-import com.perigea.tracker.timesheet.enums.StatoUtenteType;
+import com.perigea.tracker.commons.enums.StatoUtenteType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

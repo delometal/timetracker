@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.enums.StatoUtenteType;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.dto.ConsulenteDto;
 import com.perigea.tracker.timesheet.dto.DatiEconomiciConsulenteDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
@@ -25,10 +27,8 @@ import com.perigea.tracker.timesheet.entity.Consulente;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciConsulente;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Utente;
-import com.perigea.tracker.timesheet.enums.StatoUtenteType;
 import com.perigea.tracker.timesheet.service.ConsulenteService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @RestController
 @RequestMapping("/consulenti")
@@ -60,7 +60,7 @@ public class ConsulenteController {
 		consulenteDto.setUtente(utenteDto);
 		GenericWrapperResponse<ConsulenteDto> genericResponse = GenericWrapperResponse
 				.<ConsulenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(consulenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
@@ -75,7 +75,7 @@ public class ConsulenteController {
 		consulenteDto.setUtente(utenteDto);
 		GenericWrapperResponse<ConsulenteDto> genericResponse = GenericWrapperResponse
 				.<ConsulenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(consulenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
@@ -92,7 +92,7 @@ public class ConsulenteController {
 		consulenteService.deleteUtenteConsulente(codicePersona);
 		GenericWrapperResponse<ConsulenteDto> genericResponse = GenericWrapperResponse
 				.<ConsulenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(consulenteDto)
 				.build();
 //		publishEvent(new UserCrudEvent(this, consulenteDto, CrudType.DELETE));
@@ -115,7 +115,7 @@ public class ConsulenteController {
 		anagraficaResponseDto.setUtente(utenteResponseDto);
 		GenericWrapperResponse<ConsulenteDto> genericResponse = GenericWrapperResponse
 				.<ConsulenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(anagraficaResponseDto)
 				.build();
 //		publishEvent(new UserCrudEvent(this, anagraficaResponseDto, CrudType.UPDATE));
@@ -138,7 +138,7 @@ public class ConsulenteController {
 		consulenteDto.setUtente(utenteResponseDto);
 		GenericWrapperResponse<ConsulenteDto> genericResponse = GenericWrapperResponse
 				.<ConsulenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(consulenteDto)
 				.build();
 //		publishEvent(new UserCrudEvent(this, consulenteDto, CrudType.UPDATE));
@@ -152,7 +152,7 @@ public class ConsulenteController {
 //		Consulente anagrafica = (Consulente)utente.getAnagrafica();
 //		ConsulenteDto consulenteDto = dtoEntityMapper.entityToDto(anagrafica);
 		GenericWrapperResponse<UtenteDto> genericResponse = GenericWrapperResponse.<UtenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(utenteResponseDto)
 				.build();
 //		if(status == StatoUtenteType.C) {
@@ -169,7 +169,7 @@ public class ConsulenteController {
 		utente = consulenteService.updateUtenteConsulente(utente);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
 		GenericWrapperResponse<UtenteDto> genericResponse = GenericWrapperResponse.<UtenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(utenteResponseDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
@@ -189,7 +189,7 @@ public class ConsulenteController {
 		datiEconomiciConsulenteDto = dtoEntityMapper.entityToDto(economics);
 
 		GenericWrapperResponse<DatiEconomiciConsulenteDto> genericResponse = GenericWrapperResponse.<DatiEconomiciConsulenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(datiEconomiciConsulenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);

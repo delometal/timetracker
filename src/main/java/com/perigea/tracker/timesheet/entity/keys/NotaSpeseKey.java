@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
-import com.perigea.tracker.timesheet.enums.CostoNotaSpeseType;
+import com.perigea.tracker.commons.enums.CostoNotaSpeseType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

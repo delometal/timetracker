@@ -9,7 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.perigea.tracker.timesheet.enums.RuoloType;
+import com.perigea.tracker.commons.enums.RuoloType;
 
 import lombok.Data;
 

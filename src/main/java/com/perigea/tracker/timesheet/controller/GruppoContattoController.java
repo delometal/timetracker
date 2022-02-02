@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.dto.AnagraficaDto;
 import com.perigea.tracker.timesheet.dto.ContattoDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
@@ -22,7 +23,6 @@ import com.perigea.tracker.timesheet.entity.Anagrafica;
 import com.perigea.tracker.timesheet.entity.Gruppo;
 import com.perigea.tracker.timesheet.service.GruppoContattoService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @RestController
 @RequestMapping("/contatti-e-gruppi")
@@ -40,7 +40,7 @@ public class GruppoContattoController {
 		gruppo = gruppoContattoService.createGruppo(gruppo);
 		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppo);
 		GenericWrapperResponse<GruppoContattoDto> genericResponse = GenericWrapperResponse
-				.<GruppoContattoDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<GruppoContattoDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -49,7 +49,7 @@ public class GruppoContattoController {
 		Gruppo gruppoContatto = gruppoContattoService.readGruppo(id);
 		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppoContatto);
 		GenericWrapperResponse<GruppoContattoDto> genericResponse = GenericWrapperResponse
-				.<GruppoContattoDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<GruppoContattoDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -59,7 +59,7 @@ public class GruppoContattoController {
 		gruppo = gruppoContattoService.updateGruppo(gruppo);
 		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppo);
 		GenericWrapperResponse<GruppoContattoDto> genericResponse = GenericWrapperResponse
-				.<GruppoContattoDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<GruppoContattoDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -69,7 +69,7 @@ public class GruppoContattoController {
 		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppoContatto);
 		gruppoContattoService.deleteGruppo(id);
 		GenericWrapperResponse<GruppoContattoDto> genericResponse = GenericWrapperResponse
-				.<GruppoContattoDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<GruppoContattoDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
@@ -79,7 +79,7 @@ public class GruppoContattoController {
 		contatto = gruppoContattoService.createContatto(contatto);
 		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
 		GenericWrapperResponse<AnagraficaDto> genericResponse = GenericWrapperResponse
-				.<AnagraficaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<AnagraficaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -88,7 +88,7 @@ public class GruppoContattoController {
 		Anagrafica contatto = gruppoContattoService.readContatto(id);
 		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
 		GenericWrapperResponse<AnagraficaDto> genericResponse = GenericWrapperResponse
-				.<AnagraficaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<AnagraficaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -98,7 +98,7 @@ public class GruppoContattoController {
 		contatto = gruppoContattoService.updateContatto(contatto);
 		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
 		GenericWrapperResponse<AnagraficaDto> genericResponse = GenericWrapperResponse
-				.<AnagraficaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<AnagraficaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -108,7 +108,7 @@ public class GruppoContattoController {
 		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
 		gruppoContattoService.deleteContatto(id);
 		GenericWrapperResponse<AnagraficaDto> genericResponse = GenericWrapperResponse
-				.<AnagraficaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<AnagraficaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -117,7 +117,7 @@ public class GruppoContattoController {
 		List<Anagrafica> contatti = gruppoContattoService.readAllContatti();
 		List<AnagraficaDto> dtos = dtoEntityMapper.entityToDtoAnagraficaList(contatti);
 		GenericWrapperResponse<List<AnagraficaDto>> genericResponse = GenericWrapperResponse
-				.<List<AnagraficaDto>>builder().dataRichiesta(TSUtils.now()).risultato(dtos).build();
+				.<List<AnagraficaDto>>builder().dataRichiesta(Utils.now()).risultato(dtos).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
@@ -126,7 +126,7 @@ public class GruppoContattoController {
 		List<Anagrafica> contatti = gruppoContattoService.readAllContactsByGroupId(groupId);
 		List<AnagraficaDto> dtos = dtoEntityMapper.entityToDtoAnagraficaList(contatti);
 		GenericWrapperResponse<List<AnagraficaDto>> genericResponse = GenericWrapperResponse
-				.<List<AnagraficaDto>>builder().dataRichiesta(TSUtils.now()).risultato(dtos).build();
+				.<List<AnagraficaDto>>builder().dataRichiesta(Utils.now()).risultato(dtos).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 }

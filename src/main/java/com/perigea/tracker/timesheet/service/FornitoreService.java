@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perigea.tracker.commons.exception.ClienteException;
+import com.perigea.tracker.commons.exception.FornitoreException;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Anagrafica;
 import com.perigea.tracker.timesheet.entity.Fornitore;
-import com.perigea.tracker.timesheet.exception.ClienteException;
-import com.perigea.tracker.timesheet.exception.FornitoreException;
 import com.perigea.tracker.timesheet.repository.AnagraficaRepository;
 import com.perigea.tracker.timesheet.repository.FornitoreRepository;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @Service
 @Transactional
@@ -83,7 +83,7 @@ public class FornitoreService {
 	 */
 	public void addContatto(Fornitore fornitore, Anagrafica contatto) {
 		try {
-			contatto.setCodicePersona(TSUtils.uuid());
+			contatto.setCodicePersona(Utils.uuid());
 			fornitore.addContatto(contatto);
 			fornitoreRepository.save(fornitore);
 		} catch (Exception ex) {

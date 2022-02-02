@@ -18,15 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.perigea.tracker.commons.exception.FileDownloadException;
+import com.perigea.tracker.commons.exception.FileUploadException;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
 import com.perigea.tracker.timesheet.entity.Anagrafica;
 import com.perigea.tracker.timesheet.entity.CurriculumVitae;
 import com.perigea.tracker.timesheet.entity.Utente;
-import com.perigea.tracker.timesheet.exception.FileDownloadException;
-import com.perigea.tracker.timesheet.exception.FileUploadException;
 import com.perigea.tracker.timesheet.repository.CurriculumVitaeRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @Service
 @Transactional
@@ -100,7 +100,7 @@ public class FileService {
 
 	private String extractCurriculumFilename(String codicePersona, Anagrafica anagrafica) {
 		String filepath = anagrafica.getCognome() + "-" + anagrafica.getNome() + "-" + codicePersona;
-		return TSUtils.removeAllSpaces(filepath).trim();
+		return Utils.removeAllSpaces(filepath).trim();
 	}
 
 	public CurriculumVitae getCurriculum(String codicePersona) {

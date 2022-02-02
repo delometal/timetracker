@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.enums.StatoUtenteType;
+import com.perigea.tracker.commons.exception.EntityNotFoundException;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.dto.DatiEconomiciDipendenteDto;
 import com.perigea.tracker.timesheet.dto.DipendenteDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
@@ -25,11 +28,8 @@ import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
 import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Utente;
-import com.perigea.tracker.timesheet.enums.StatoUtenteType;
-import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
 import com.perigea.tracker.timesheet.service.DipendenteService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @RestController
 @RequestMapping("/dipendenti")
@@ -66,7 +66,7 @@ public class DipendenteController {
 		dipendenteDto.setUtente(utenteDto);
 		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
 				.<DipendenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(dipendenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
@@ -81,7 +81,7 @@ public class DipendenteController {
 		dipendenteDto.setUtente(utenteDto);
 		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
 				.<DipendenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(dipendenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
@@ -98,7 +98,7 @@ public class DipendenteController {
 		dipendenteService.deleteUtenteDipendente(codicePersona);
 		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
 				.<DipendenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(dipendenteDto)
 				.build();
 //		publishEvent(new UserCrudEvent(this, dipendenteDto, CrudType.DELETE));
@@ -121,7 +121,7 @@ public class DipendenteController {
 		anagraficaResponseDto.setUtente(utenteResponseDto);
 		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
 				.<DipendenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(anagraficaResponseDto)
 				.build();
 //		publishEvent(new UserCrudEvent(this, anagraficaResponseDto, CrudType.UPDATE));
@@ -144,7 +144,7 @@ public class DipendenteController {
 		dipendenteDto.setUtente(utenteResponseDto);
 		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
 				.<DipendenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(dipendenteDto)
 				.build();
 //		publishEvent(new UserCrudEvent(this, dipendenteDto, CrudType.UPDATE));
@@ -156,7 +156,7 @@ public class DipendenteController {
 		Utente utente = dipendenteService.updateUtenteStatus(codicePersona, status);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
 		GenericWrapperResponse<UtenteDto> genericResponse = GenericWrapperResponse.<UtenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(utenteResponseDto)
 				.build();
 //		Dipendente anagrafica = (Dipendente)utente.getAnagrafica();
@@ -175,7 +175,7 @@ public class DipendenteController {
 		utente = dipendenteService.updateUtenteDipendente(utente);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
 		GenericWrapperResponse<UtenteDto> genericResponse = GenericWrapperResponse.<UtenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(utenteResponseDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
@@ -196,7 +196,7 @@ public class DipendenteController {
 		datiEconomiciDipendenteDto = dtoEntityMapper.entityToDto(economics);
 
 		GenericWrapperResponse<DatiEconomiciDipendenteDto> genericResponse = GenericWrapperResponse.<DatiEconomiciDipendenteDto>builder()
-				.dataRichiesta(TSUtils.now())
+				.dataRichiesta(Utils.now())
 				.risultato(datiEconomiciDipendenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);

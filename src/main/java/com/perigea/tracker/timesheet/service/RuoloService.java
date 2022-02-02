@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.perigea.tracker.commons.enums.RuoloType;
+import com.perigea.tracker.commons.exception.RuoloException;
 import com.perigea.tracker.timesheet.entity.Ruolo;
-import com.perigea.tracker.timesheet.enums.RuoloType;
-import com.perigea.tracker.timesheet.exception.RuoloException;
 import com.perigea.tracker.timesheet.repository.RuoliRepository;
 
 @Service

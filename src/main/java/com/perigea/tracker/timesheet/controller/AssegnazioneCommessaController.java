@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.dto.DipendenteCommessaDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.entity.DipendenteCommessa;
 import com.perigea.tracker.timesheet.entity.keys.DipendenteCommessaKey;
 import com.perigea.tracker.timesheet.service.AssegnazioneCommessaService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @RestController
 @RequestMapping("/assegnazione-commesse")
@@ -35,7 +35,7 @@ public class AssegnazioneCommessaController {
 		dipendenteCommessa = assegnazioneCommessaService.createDipendenteCommessa(dipendenteCommessa);
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
 		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
-				.<DipendenteCommessaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<DipendenteCommessaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -44,7 +44,7 @@ public class AssegnazioneCommessaController {
 		DipendenteCommessa dipendenteCommessa = assegnazioneCommessaService.readDipendenteCommessa(new DipendenteCommessaKey(codicePersona, codiceCommessa));
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
 		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
-				.<DipendenteCommessaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<DipendenteCommessaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -54,7 +54,7 @@ public class AssegnazioneCommessaController {
 		dipendenteCommessa = assegnazioneCommessaService.updateDipendenteCommessa(dipendenteCommessa);
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
 		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
-				.<DipendenteCommessaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<DipendenteCommessaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -64,7 +64,7 @@ public class AssegnazioneCommessaController {
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
 		assegnazioneCommessaService.deleteDipendenteCommessa(dipendenteCommessa.getId());
 		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
-				.<DipendenteCommessaDto>builder().dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.<DipendenteCommessaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	

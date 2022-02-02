@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.dto.FestivitaDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.entity.Festivita;
 import com.perigea.tracker.timesheet.service.FestivitaService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @RestController
 @RequestMapping("/backoffice/festivita")
@@ -35,7 +35,7 @@ public class FestivitaController {
 		festivita = festeService.createFestivita(festivita);
 		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(dtoFestivita).build();
+				.dataRichiesta(Utils.now()).risultato(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -44,7 +44,7 @@ public class FestivitaController {
 		Festivita festivita = festeService.readFestivita(id);
 		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(dtoFestivita).build();
+				.dataRichiesta(Utils.now()).risultato(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -54,7 +54,7 @@ public class FestivitaController {
 		festivita = festeService.updateFestivita(festivita);
 		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(dtoFestivita).build();
+				.dataRichiesta(Utils.now()).risultato(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -64,7 +64,7 @@ public class FestivitaController {
 		FestivitaDto festivitaDto = dtoEntityMapper.entityToDto(festivita);
 		festeService.deleteFestivita(id);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(festivitaDto).build();
+				.dataRichiesta(Utils.now()).risultato(festivitaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	

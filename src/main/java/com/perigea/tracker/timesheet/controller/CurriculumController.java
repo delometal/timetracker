@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.entity.CurriculumVitae;
 import com.perigea.tracker.timesheet.service.FileService;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @RestController
 @RequestMapping("/curriculum")
@@ -32,12 +32,12 @@ public class CurriculumController {
 		try {
 			fileService.uploadCurriculum(codicePersona, file);
 			GenericWrapperResponse<String> genericResponse = GenericWrapperResponse.<String>builder()
-					.dataRichiesta(TSUtils.now())
+					.dataRichiesta(Utils.now())
 					.risultato("Uploaded the file successfully: " + file.getOriginalFilename()).build();
 			return ResponseEntity.ok(genericResponse);
 		} catch (Exception e) {
 			GenericWrapperResponse<String> genericResponse = GenericWrapperResponse.<String>builder()
-					.dataRichiesta(TSUtils.now()).risultato("Upload failed").build();
+					.dataRichiesta(Utils.now()).risultato("Upload failed").build();
 			return ResponseEntity.badRequest().body(genericResponse);
 		}
 	}

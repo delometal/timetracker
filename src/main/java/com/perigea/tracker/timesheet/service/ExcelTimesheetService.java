@@ -26,16 +26,16 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.perigea.tracker.commons.enums.CostoNotaSpeseType;
+import com.perigea.tracker.commons.enums.EGiorno;
+import com.perigea.tracker.commons.enums.EMese;
+import com.perigea.tracker.commons.exception.TimesheetException;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.dto.InfoAutoDto;
 import com.perigea.tracker.timesheet.dto.NotaSpeseDto;
 import com.perigea.tracker.timesheet.dto.TimesheetEntryDto;
 import com.perigea.tracker.timesheet.dto.TimesheetResponseDto;
 import com.perigea.tracker.timesheet.dto.wrapper.TimesheetExcelWrapper;
-import com.perigea.tracker.timesheet.enums.CostoNotaSpeseType;
-import com.perigea.tracker.timesheet.enums.EGiorno;
-import com.perigea.tracker.timesheet.enums.EMese;
-import com.perigea.tracker.timesheet.exception.TimesheetException;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 /**
  * TODO calcolo dei rimborsi kilometrici con i dati contenuti in InfoAutoDto,
@@ -72,7 +72,7 @@ public class ExcelTimesheetService {
 			font.setBold(true);
 			style.setFont(font);
 
-			InputStream logoStream = ExcelTimesheetService.class.getClassLoader().getResourceAsStream(TSUtils.PERIGEA_LOGO_COLOR);
+			InputStream logoStream = ExcelTimesheetService.class.getClassLoader().getResourceAsStream(Utils.PERIGEA_LOGO_COLOR);
 			byte[] logoBytes = IOUtils.toByteArray(logoStream);
 			int logoTimesheet = workbook.addPicture(logoBytes, Workbook.PICTURE_TYPE_JPEG);
 			XSSFDrawing drawing1 = (XSSFDrawing) secondSheet.createDrawingPatriarch();

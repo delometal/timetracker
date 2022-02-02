@@ -2,10 +2,10 @@ package com.perigea.tracker.timesheet.dto;
 
 import java.time.LocalDate;
 
-import com.perigea.tracker.timesheet.enums.ContrattoType;
-import com.perigea.tracker.timesheet.enums.JobTitle;
-import com.perigea.tracker.timesheet.enums.LivelloContrattoType;
-import com.perigea.tracker.timesheet.enums.SceltaTredicesimaType;
+import com.perigea.tracker.commons.enums.ContrattoType;
+import com.perigea.tracker.commons.enums.JobTitle;
+import com.perigea.tracker.commons.enums.LivelloContrattoType;
+import com.perigea.tracker.commons.enums.SceltaTredicesimaType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

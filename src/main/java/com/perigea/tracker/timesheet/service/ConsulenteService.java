@@ -5,16 +5,16 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.perigea.tracker.commons.enums.StatoUtenteType;
+import com.perigea.tracker.commons.exception.ConsulenteException;
+import com.perigea.tracker.commons.exception.EntityNotFoundException;
+import com.perigea.tracker.commons.exception.PersistenceException;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Consulente;
 import com.perigea.tracker.timesheet.entity.Utente;
-import com.perigea.tracker.timesheet.enums.StatoUtenteType;
-import com.perigea.tracker.timesheet.exception.ConsulenteException;
-import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
-import com.perigea.tracker.timesheet.exception.PersistenceException;
 import com.perigea.tracker.timesheet.repository.ApplicationDao;
 import com.perigea.tracker.timesheet.repository.ConsulenteRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @Service
 public class ConsulenteService {
@@ -41,7 +41,7 @@ public class ConsulenteService {
 	public Utente createUtenteConsulente(Utente utente, Consulente consulente) {
 		try {
 			consulente.setUtente(utente);
-			consulente.setCodicePersona(TSUtils.uuid());
+			consulente.setCodicePersona(Utils.uuid());
 			utente.setAnagrafica(consulente);
 			utenteRepository.save(utente);
 			logger.info("utente salvato");

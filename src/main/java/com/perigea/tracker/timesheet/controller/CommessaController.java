@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.dto.CommessaFatturabileDto;
 import com.perigea.tracker.timesheet.dto.CommessaNonFatturabileDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
@@ -24,7 +25,6 @@ import com.perigea.tracker.timesheet.entity.OrdineCommessa;
 import com.perigea.tracker.timesheet.service.ClienteService;
 import com.perigea.tracker.timesheet.service.CommessaService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @RestController
 @RequestMapping("/commesse")
@@ -46,7 +46,7 @@ public class CommessaController {
 
 		CommessaFatturabile commessaEntity = commessaService.createCommessaFatturabile(commessa, cliente);
 		CommessaFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
-		GenericWrapperResponse<CommessaFatturabileDto> genericDto = GenericWrapperResponse.<CommessaFatturabileDto>builder().dataRichiesta(TSUtils.now()).risultato(commessaDto).build();
+		GenericWrapperResponse<CommessaFatturabileDto> genericDto = GenericWrapperResponse.<CommessaFatturabileDto>builder().dataRichiesta(Utils.now()).risultato(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -54,11 +54,11 @@ public class CommessaController {
 	public ResponseEntity<GenericWrapperResponse<CommessaNonFatturabileDto>> createCommessaNonFatturabile(@RequestBody CommessaNonFatturabileDtoWrapper wrapper) {
 		CommessaNonFatturabile commessa = dtoEntityMapper.dtoToEntity(wrapper.getCommessaNonFatturabile());
 		commessa.setCliente(clienteService.loadClientePerigea());
-		commessa.setCodiceCommessa(TSUtils.uuid());
+		commessa.setCodiceCommessa(Utils.uuid());
 		commessa = commessaService.saveCommessaNonFatturabile(commessa);
 		CommessaNonFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessa);
 		GenericWrapperResponse<CommessaNonFatturabileDto> genericDto = GenericWrapperResponse.<CommessaNonFatturabileDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(commessaDto).build();
+				.dataRichiesta(Utils.now()).risultato(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -70,7 +70,7 @@ public class CommessaController {
 		commessa = commessaService.updateCommessaFatturabile(commessa);
 		CommessaFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessa);
 		GenericWrapperResponse<CommessaFatturabileDto> genericDto = GenericWrapperResponse.<CommessaFatturabileDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(commessaDto).build();
+				.dataRichiesta(Utils.now()).risultato(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -81,7 +81,7 @@ public class CommessaController {
 		commessa = commessaService.saveCommessaNonFatturabile(commessa);
 		CommessaNonFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessa);
 		GenericWrapperResponse<CommessaNonFatturabileDto> genericDto = GenericWrapperResponse.<CommessaNonFatturabileDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(commessaDto).build();
+				.dataRichiesta(Utils.now()).risultato(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -93,7 +93,7 @@ public class CommessaController {
 		ordineCommessa = commessaService.createOrdineCommessa(ordineCommessa, commessa, cliente);
 		OrdineCommessaDto ordineCommessaDto = dtoEntityMapper.entityToDto(ordineCommessa);
 		GenericWrapperResponse<OrdineCommessaDto> genericDto = GenericWrapperResponse.<OrdineCommessaDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(ordineCommessaDto).build();
+				.dataRichiesta(Utils.now()).risultato(ordineCommessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -103,7 +103,7 @@ public class CommessaController {
 		CommessaFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
 		commessaService.deleteCommessaFatturabile(codiceCommessa);
 		GenericWrapperResponse<CommessaFatturabileDto> genericDto = GenericWrapperResponse.<CommessaFatturabileDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(commessaDto).build();
+				.dataRichiesta(Utils.now()).risultato(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -113,7 +113,7 @@ public class CommessaController {
 		CommessaNonFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
 		commessaService.deleteCommessaNonFatturabile(codiceCommessa);
 		GenericWrapperResponse<CommessaNonFatturabileDto> genericDto = GenericWrapperResponse.<CommessaNonFatturabileDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(commessaDto).build();
+				.dataRichiesta(Utils.now()).risultato(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -122,7 +122,7 @@ public class CommessaController {
 		CommessaFatturabile commessaEntity = commessaService.readCommessaFatturabile(codiceCommessa);
 		CommessaFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
 		GenericWrapperResponse<CommessaFatturabileDto> genericDto = GenericWrapperResponse.<CommessaFatturabileDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(commessaDto).build();
+				.dataRichiesta(Utils.now()).risultato(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -131,7 +131,7 @@ public class CommessaController {
 		CommessaNonFatturabile commessaEntity = commessaService.readCommessaNonFatturabile(codiceCommessa);
 		CommessaNonFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
 		GenericWrapperResponse<CommessaNonFatturabileDto> genericDto = GenericWrapperResponse.<CommessaNonFatturabileDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(commessaDto).build();
+				.dataRichiesta(Utils.now()).risultato(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	

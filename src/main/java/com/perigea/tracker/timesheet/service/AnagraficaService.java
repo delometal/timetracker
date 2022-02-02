@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perigea.tracker.commons.exception.AnagraficaException;
 import com.perigea.tracker.timesheet.entity.Anagrafica;
-import com.perigea.tracker.timesheet.exception.AnagraficaException;
 import com.perigea.tracker.timesheet.repository.AnagraficaRepository;
 
 @Service

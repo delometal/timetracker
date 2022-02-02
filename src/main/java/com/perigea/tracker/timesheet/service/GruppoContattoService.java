@@ -9,21 +9,21 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.perigea.tracker.commons.enums.AnagraficaType;
+import com.perigea.tracker.commons.enums.RuoloType;
+import com.perigea.tracker.commons.enums.StatoUtenteType;
+import com.perigea.tracker.commons.exception.ContattoException;
+import com.perigea.tracker.commons.exception.EntityNotFoundException;
+import com.perigea.tracker.commons.exception.GruppoException;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Anagrafica;
 import com.perigea.tracker.timesheet.entity.Gruppo;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Utente;
-import com.perigea.tracker.timesheet.enums.AnagraficaType;
-import com.perigea.tracker.timesheet.enums.RuoloType;
-import com.perigea.tracker.timesheet.enums.StatoUtenteType;
-import com.perigea.tracker.timesheet.exception.ContattoException;
-import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
-import com.perigea.tracker.timesheet.exception.GruppoException;
 import com.perigea.tracker.timesheet.repository.AnagraficaRepository;
 import com.perigea.tracker.timesheet.repository.GruppoRepository;
 import com.perigea.tracker.timesheet.repository.RuoliRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @Service
 public class GruppoContattoService {
@@ -110,7 +110,7 @@ public class GruppoContattoService {
 			List<Ruolo> ruoli = new ArrayList<Ruolo>(1);
 			ruoli.add(ruoliRepository.getById(RuoloType.P));
 			Utente utente = new Utente();
-			utente.setCodicePersona(TSUtils.uuid());
+			utente.setCodicePersona(Utils.uuid());
 			utente.setAnagrafica(contatto);
 			utente.setStato(StatoUtenteType.A);
 			utente.setResponsabile(null);

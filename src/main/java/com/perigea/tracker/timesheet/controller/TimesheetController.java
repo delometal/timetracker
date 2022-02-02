@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.enums.EMese;
+import com.perigea.tracker.commons.enums.StatoRichiestaType;
+import com.perigea.tracker.commons.exception.TimesheetException;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.dto.AnagraficaDto;
 import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.dto.InfoAutoDto;
@@ -25,13 +29,9 @@ import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.Timesheet;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
-import com.perigea.tracker.timesheet.enums.EMese;
-import com.perigea.tracker.timesheet.enums.StatoRichiestaType;
-import com.perigea.tracker.timesheet.exception.TimesheetException;
 import com.perigea.tracker.timesheet.service.DipendenteService;
 import com.perigea.tracker.timesheet.service.TimesheetService;
 import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
-import com.perigea.tracker.timesheet.utility.TSUtils;
 
 @RestController
 @RequestMapping("/timesheet")
@@ -51,7 +51,7 @@ public class TimesheetController {
 		Timesheet timesheet = timesheetService.createTimesheet(wrapper.getEntries(), wrapper.getTimesheet());
 		TimesheetResponseDto dto = dtoEntityMapper.entityToDto(timesheet);
 		GenericWrapperResponse<TimesheetResponseDto> genericDto = GenericWrapperResponse.<TimesheetResponseDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -60,7 +60,7 @@ public class TimesheetController {
 		Timesheet timesheet = timesheetService.getTimesheet(id);
 		TimesheetResponseDto dto = dtoEntityMapper.entityToDto(timesheet);
 		GenericWrapperResponse<TimesheetResponseDto> genericDto = GenericWrapperResponse.<TimesheetResponseDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -69,7 +69,7 @@ public class TimesheetController {
 		Timesheet timesheet = timesheetService.getTimesheet(id);
 		TimesheetResponseDto dto = dtoEntityMapper.entityToDto(timesheet);
 		GenericWrapperResponse<TimesheetResponseDto> genericDto = GenericWrapperResponse.<TimesheetResponseDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -78,7 +78,7 @@ public class TimesheetController {
 		Timesheet timesheetEntry = timesheetService.updateTimesheet(wrapper.getEntries(), wrapper.getTimesheet());
 		TimesheetResponseDto dto = dtoEntityMapper.entityToDto(timesheetEntry);
 		GenericWrapperResponse<TimesheetResponseDto> genericDto = GenericWrapperResponse.<TimesheetResponseDto>builder()
-				.dataRichiesta(TSUtils.now()).risultato(dto).build();
+				.dataRichiesta(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -87,7 +87,7 @@ public class TimesheetController {
 		TimesheetMensileKey tsKey = new TimesheetMensileKey(timesheetDto.getAnno(), timesheetDto.getMese(), timesheetDto.getCodicePersona());
 		Boolean update = timesheetService.editTimesheetStatus(tsKey, newStatus);
 		GenericWrapperResponse<Boolean> genericDto = GenericWrapperResponse.<Boolean>builder()
-				.dataRichiesta(TSUtils.now()).risultato(update).build();
+				.dataRichiesta(Utils.now()).risultato(update).build();
 		if(update) {
 			return ResponseEntity.ok(genericDto);
 		}
@@ -108,7 +108,7 @@ public class TimesheetController {
 			throw new TimesheetException("Tipo utente non valido");
 		}
 
-		String fileName = TSUtils.removeAllSpaces(anno + mese.getMonthPart() + "_" + utente.getAnagrafica().getCognome() + TSUtils.EXCEL_EXT).trim();
+		String fileName = Utils.removeAllSpaces(anno + mese.getMonthPart() + "_" + utente.getAnagrafica().getCognome() + Utils.EXCEL_EXT).trim();
 		AnagraficaDto angraficaDto = dtoEntityMapper.entityToDto(utente.getAnagrafica());
 		byte[] excel = timesheetService.downloadExcelTimesheet(anno, mese, angraficaDto, infoAuto);
 		return ResponseEntity.ok()

@@ -1,6 +1,6 @@
 package com.perigea.tracker.timesheet.dto;
 
-import com.perigea.tracker.timesheet.enums.AnagraficaType;
+import com.perigea.tracker.commons.enums.AnagraficaType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

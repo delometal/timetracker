@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.perigea.tracker.commons.exception.EntityNotFoundException;
+import com.perigea.tracker.commons.exception.FestivitaException;
 import com.perigea.tracker.timesheet.entity.Festivita;
-import com.perigea.tracker.timesheet.exception.EntityNotFoundException;
-import com.perigea.tracker.timesheet.exception.FestivitaException;
 import com.perigea.tracker.timesheet.repository.FestivitaRepository;
 
 @Service

@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import com.perigea.tracker.timesheet.enums.RuoloType;
+import com.perigea.tracker.commons.enums.RuoloType;
 
 import lombok.Data;
 

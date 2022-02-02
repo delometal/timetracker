@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.dto.GenericWrapperResponse;
+import com.perigea.tracker.commons.dto.NotaSpeseDto;
+import com.perigea.tracker.commons.dto.NotaSpeseInputDto;
 import com.perigea.tracker.commons.utils.Utils;
-import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
-import com.perigea.tracker.timesheet.dto.NotaSpeseDto;
-import com.perigea.tracker.timesheet.dto.NotaSpeseInputDto;
 import com.perigea.tracker.timesheet.entity.NotaSpese;
 import com.perigea.tracker.timesheet.entity.keys.NotaSpeseKey;
+import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.NotaSpeseService;
-import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 @RestController
 @RequestMapping("/note-spesa")

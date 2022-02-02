@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.perigea.tracker.commons.dto.GenericWrapperResponse;
 import com.perigea.tracker.commons.exception.ClienteException;
 import com.perigea.tracker.commons.exception.CommessaException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
@@ -16,7 +17,6 @@ import com.perigea.tracker.commons.exception.RuoloException;
 import com.perigea.tracker.commons.exception.TimesheetException;
 import com.perigea.tracker.commons.exception.UtenteException;
 import com.perigea.tracker.commons.utils.Utils;
-import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 
 @ControllerAdvice
 public class ExceptionHandlerController {

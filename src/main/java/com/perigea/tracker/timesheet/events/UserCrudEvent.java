@@ -2,8 +2,8 @@ package com.perigea.tracker.timesheet.events;
 
 import org.springframework.context.ApplicationEvent;
 
+import com.perigea.tracker.commons.dto.DipendenteDto;
 import com.perigea.tracker.commons.enums.CrudType;
-import com.perigea.tracker.timesheet.dto.DipendenteDto;
 
 public class UserCrudEvent extends ApplicationEvent {
 

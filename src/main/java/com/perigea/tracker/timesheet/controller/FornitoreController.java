@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.dto.AnagraficaDto;
+import com.perigea.tracker.commons.dto.FornitoreDto;
+import com.perigea.tracker.commons.dto.GenericWrapperResponse;
 import com.perigea.tracker.commons.utils.Utils;
-import com.perigea.tracker.timesheet.dto.AnagraficaDto;
-import com.perigea.tracker.timesheet.dto.FornitoreDto;
-import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.entity.Anagrafica;
 import com.perigea.tracker.timesheet.entity.Fornitore;
+import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.FornitoreService;
-import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 @RestController
 @RequestMapping("/fornitori")

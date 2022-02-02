@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.dto.FestivitaDto;
+import com.perigea.tracker.commons.dto.GenericWrapperResponse;
 import com.perigea.tracker.commons.utils.Utils;
-import com.perigea.tracker.timesheet.dto.FestivitaDto;
-import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.entity.Festivita;
+import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.FestivitaService;
-import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 @RestController
 @RequestMapping("/backoffice/festivita")

@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.dto.GenericWrapperResponse;
+import com.perigea.tracker.commons.dto.RuoloDto;
 import com.perigea.tracker.commons.enums.RuoloType;
 import com.perigea.tracker.commons.utils.Utils;
-import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
-import com.perigea.tracker.timesheet.dto.RuoloDto;
 import com.perigea.tracker.timesheet.entity.Ruolo;
+import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.RuoloService;
-import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 @RestController
 @RequestMapping("/backoffice/ruoli")

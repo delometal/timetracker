@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.dto.AnagraficaDto;
+import com.perigea.tracker.commons.dto.ClienteDto;
+import com.perigea.tracker.commons.dto.GenericWrapperResponse;
 import com.perigea.tracker.commons.utils.Utils;
-import com.perigea.tracker.timesheet.dto.AnagraficaDto;
-import com.perigea.tracker.timesheet.dto.ClienteDto;
-import com.perigea.tracker.timesheet.dto.GenericWrapperResponse;
 import com.perigea.tracker.timesheet.entity.Anagrafica;
 import com.perigea.tracker.timesheet.entity.Cliente;
+import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.ClienteService;
-import com.perigea.tracker.timesheet.utility.DtoEntityMapper;
 
 @RestController
 @RequestMapping("/clienti")

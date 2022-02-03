@@ -35,7 +35,7 @@ public class RuoloController {
 		ruolo = roleService.createRole(ruolo);
 		RuoloDto dtoRuolo = dtoEntityMapper.entityToDto(ruolo);
 		GenericWrapperResponse<RuoloDto> genericDto = GenericWrapperResponse.<RuoloDto>builder()
-				.dataRichiesta(Utils.now()).risultato(dtoRuolo).build();
+				.timestamp(Utils.now()).risultato(dtoRuolo).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -44,7 +44,7 @@ public class RuoloController {
 		Ruolo ruolo = roleService.readRole(ruoloTipo);
 		RuoloDto dtoRuolo = dtoEntityMapper.entityToDto(ruolo);
 		GenericWrapperResponse<RuoloDto> genericDto = GenericWrapperResponse.<RuoloDto>builder()
-				.dataRichiesta(Utils.now()).risultato(dtoRuolo).build();
+				.timestamp(Utils.now()).risultato(dtoRuolo).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -54,7 +54,7 @@ public class RuoloController {
 		ruolo = roleService.updateRole(ruolo);
 		RuoloDto dtoRuolo = dtoEntityMapper.entityToDto(ruolo);
 		GenericWrapperResponse<RuoloDto> genericDto = GenericWrapperResponse.<RuoloDto>builder()
-				.dataRichiesta(Utils.now()).risultato(dtoRuolo).build();
+				.timestamp(Utils.now()).risultato(dtoRuolo).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -64,7 +64,7 @@ public class RuoloController {
 		RuoloDto dtoRuolo = dtoEntityMapper.entityToDto(ruolo);
 		roleService.deleteRole(ruoloTipo);
 		GenericWrapperResponse<RuoloDto> genericDto = GenericWrapperResponse.<RuoloDto>builder()
-				.dataRichiesta(Utils.now()).risultato(dtoRuolo).build();
+				.timestamp(Utils.now()).risultato(dtoRuolo).build();
 		return ResponseEntity.ok(genericDto);
 	}
 

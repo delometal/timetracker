@@ -35,7 +35,7 @@ public class AssegnazioneCommessaController {
 		dipendenteCommessa = assegnazioneCommessaService.createDipendenteCommessa(dipendenteCommessa);
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
 		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
-				.<DipendenteCommessaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
+				.<DipendenteCommessaDto>builder().timestamp(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -44,7 +44,7 @@ public class AssegnazioneCommessaController {
 		DipendenteCommessa dipendenteCommessa = assegnazioneCommessaService.readDipendenteCommessa(new DipendenteCommessaKey(codicePersona, codiceCommessa));
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
 		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
-				.<DipendenteCommessaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
+				.<DipendenteCommessaDto>builder().timestamp(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -54,7 +54,7 @@ public class AssegnazioneCommessaController {
 		dipendenteCommessa = assegnazioneCommessaService.updateDipendenteCommessa(dipendenteCommessa);
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
 		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
-				.<DipendenteCommessaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
+				.<DipendenteCommessaDto>builder().timestamp(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -64,7 +64,7 @@ public class AssegnazioneCommessaController {
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
 		assegnazioneCommessaService.deleteDipendenteCommessa(dipendenteCommessa.getId());
 		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
-				.<DipendenteCommessaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
+				.<DipendenteCommessaDto>builder().timestamp(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	

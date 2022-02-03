@@ -33,7 +33,7 @@ public class NotaSpeseController {
 		notaSpese = notaSpeseService.createNotaSpese(notaSpese);
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);
 		GenericWrapperResponse<NotaSpeseDto> genericDto = GenericWrapperResponse.<NotaSpeseDto>builder()
-				.dataRichiesta(Utils.now()).risultato(dtoNotaSpese).build();
+				.timestamp(Utils.now()).risultato(dtoNotaSpese).build();
 		return ResponseEntity.ok(genericDto);
 	}
 		
@@ -42,7 +42,7 @@ public class NotaSpeseController {
 		NotaSpese notaSpese = notaSpeseService.readNotaSpese(notaSpeseKey);
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);
 		GenericWrapperResponse<NotaSpeseDto> genericDto = GenericWrapperResponse.<NotaSpeseDto>builder()
-				.dataRichiesta(Utils.now()).risultato(dtoNotaSpese).build();
+				.timestamp(Utils.now()).risultato(dtoNotaSpese).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -52,7 +52,7 @@ public class NotaSpeseController {
 		notaSpese = notaSpeseService.updateNotaSpese(notaSpese);
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);
 		GenericWrapperResponse<NotaSpeseDto> genericDto = GenericWrapperResponse.<NotaSpeseDto>builder()
-				.dataRichiesta(Utils.now()).risultato(dtoNotaSpese).build();
+				.timestamp(Utils.now()).risultato(dtoNotaSpese).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -62,7 +62,7 @@ public class NotaSpeseController {
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);
 		notaSpeseService.deleteNotaSpese(notaSpeseKey);
 		GenericWrapperResponse<NotaSpeseDto> genericDto = GenericWrapperResponse.<NotaSpeseDto>builder()
-				.dataRichiesta(Utils.now()).risultato(dtoNotaSpese).build();
+				.timestamp(Utils.now()).risultato(dtoNotaSpese).build();
 		return ResponseEntity.ok(genericDto);
 	}
 }

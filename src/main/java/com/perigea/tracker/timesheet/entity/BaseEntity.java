@@ -1,7 +1,7 @@
 package com.perigea.tracker.timesheet.entity;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 
@@ -13,10 +13,10 @@ public class BaseEntity implements Serializable {
 	private static final long serialVersionUID = -2110635013142689748L;
 
 	@Column(name = "create_timestamp")
-	private LocalDate createTimestamp;
+	private LocalDateTime createTimestamp;
 
 	@Column(name = "last_update_timestamp")
-	private LocalDate lastUpdateTimestamp;
+	private LocalDateTime lastUpdateTimestamp;
 
 	@Column(name = "create_user")
 	private String createUser;

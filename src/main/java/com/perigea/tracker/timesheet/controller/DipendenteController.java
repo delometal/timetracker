@@ -66,7 +66,7 @@ public class DipendenteController {
 		dipendenteDto.setUtente(utenteDto);
 		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
 				.<DipendenteDto>builder()
-				.dataRichiesta(Utils.now())
+				.timestamp(Utils.now())
 				.risultato(dipendenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
@@ -81,7 +81,7 @@ public class DipendenteController {
 		dipendenteDto.setUtente(utenteDto);
 		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
 				.<DipendenteDto>builder()
-				.dataRichiesta(Utils.now())
+				.timestamp(Utils.now())
 				.risultato(dipendenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
@@ -98,7 +98,7 @@ public class DipendenteController {
 		dipendenteService.deleteUtenteDipendente(codicePersona);
 		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
 				.<DipendenteDto>builder()
-				.dataRichiesta(Utils.now())
+				.timestamp(Utils.now())
 				.risultato(dipendenteDto)
 				.build();
 //		publishEvent(new UserCrudEvent(this, dipendenteDto, CrudType.DELETE));
@@ -121,7 +121,7 @@ public class DipendenteController {
 		anagraficaResponseDto.setUtente(utenteResponseDto);
 		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
 				.<DipendenteDto>builder()
-				.dataRichiesta(Utils.now())
+				.timestamp(Utils.now())
 				.risultato(anagraficaResponseDto)
 				.build();
 //		publishEvent(new UserCrudEvent(this, anagraficaResponseDto, CrudType.UPDATE));
@@ -144,7 +144,7 @@ public class DipendenteController {
 		dipendenteDto.setUtente(utenteResponseDto);
 		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
 				.<DipendenteDto>builder()
-				.dataRichiesta(Utils.now())
+				.timestamp(Utils.now())
 				.risultato(dipendenteDto)
 				.build();
 //		publishEvent(new UserCrudEvent(this, dipendenteDto, CrudType.UPDATE));
@@ -156,7 +156,7 @@ public class DipendenteController {
 		Utente utente = dipendenteService.updateUtenteStatus(codicePersona, status);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
 		GenericWrapperResponse<UtenteDto> genericResponse = GenericWrapperResponse.<UtenteDto>builder()
-				.dataRichiesta(Utils.now())
+				.timestamp(Utils.now())
 				.risultato(utenteResponseDto)
 				.build();
 //		Dipendente anagrafica = (Dipendente)utente.getAnagrafica();
@@ -175,7 +175,7 @@ public class DipendenteController {
 		utente = dipendenteService.updateUtenteDipendente(utente);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
 		GenericWrapperResponse<UtenteDto> genericResponse = GenericWrapperResponse.<UtenteDto>builder()
-				.dataRichiesta(Utils.now())
+				.timestamp(Utils.now())
 				.risultato(utenteResponseDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
@@ -196,7 +196,7 @@ public class DipendenteController {
 		datiEconomiciDipendenteDto = dtoEntityMapper.entityToDto(economics);
 
 		GenericWrapperResponse<DatiEconomiciDipendenteDto> genericResponse = GenericWrapperResponse.<DatiEconomiciDipendenteDto>builder()
-				.dataRichiesta(Utils.now())
+				.timestamp(Utils.now())
 				.risultato(datiEconomiciDipendenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);

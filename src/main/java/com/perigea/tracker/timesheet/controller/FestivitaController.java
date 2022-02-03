@@ -35,7 +35,7 @@ public class FestivitaController {
 		festivita = festeService.createFestivita(festivita);
 		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(Utils.now()).risultato(dtoFestivita).build();
+				.timestamp(Utils.now()).risultato(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -44,7 +44,7 @@ public class FestivitaController {
 		Festivita festivita = festeService.readFestivita(id);
 		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(Utils.now()).risultato(dtoFestivita).build();
+				.timestamp(Utils.now()).risultato(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -54,7 +54,7 @@ public class FestivitaController {
 		festivita = festeService.updateFestivita(festivita);
 		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(Utils.now()).risultato(dtoFestivita).build();
+				.timestamp(Utils.now()).risultato(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -64,7 +64,7 @@ public class FestivitaController {
 		FestivitaDto festivitaDto = dtoEntityMapper.entityToDto(festivita);
 		festeService.deleteFestivita(id);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
-				.dataRichiesta(Utils.now()).risultato(festivitaDto).build();
+				.timestamp(Utils.now()).risultato(festivitaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	

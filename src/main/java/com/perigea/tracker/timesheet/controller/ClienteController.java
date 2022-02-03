@@ -37,7 +37,7 @@ public class ClienteController {
 		cliente = clienteService.saveCliente(cliente);
 		clienteDto = dtoEntityMapper.entityToDto(cliente);
 		GenericWrapperResponse<ClienteDto> genericResponse = GenericWrapperResponse
-				.<ClienteDto>builder().dataRichiesta(Utils.now()).risultato(clienteDto).build();
+				.<ClienteDto>builder().timestamp(Utils.now()).risultato(clienteDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -46,7 +46,7 @@ public class ClienteController {
 		Cliente cliente = clienteService.readCliente(ragioneSociale);
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);
 		GenericWrapperResponse<ClienteDto> genericResponse = GenericWrapperResponse
-				.<ClienteDto>builder().dataRichiesta(Utils.now()).risultato(clienteDto).build();
+				.<ClienteDto>builder().timestamp(Utils.now()).risultato(clienteDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -56,7 +56,7 @@ public class ClienteController {
 		cliente = clienteService.saveCliente(cliente);
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);
 		GenericWrapperResponse<ClienteDto> genericResponse = GenericWrapperResponse
-				.<ClienteDto>builder().dataRichiesta(Utils.now()).risultato(clienteDto).build();
+				.<ClienteDto>builder().timestamp(Utils.now()).risultato(clienteDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -66,7 +66,7 @@ public class ClienteController {
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);
 		clienteService.deleteCliente(id);
 		GenericWrapperResponse<ClienteDto> genericResponse = GenericWrapperResponse
-				.<ClienteDto>builder().dataRichiesta(Utils.now()).risultato(clienteDto).build();
+				.<ClienteDto>builder().timestamp(Utils.now()).risultato(clienteDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
@@ -77,7 +77,7 @@ public class ClienteController {
 		clienteService.addContatto(cliente, contatto);
 		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
 		GenericWrapperResponse<AnagraficaDto> genericResponse = GenericWrapperResponse
-				.<AnagraficaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
+				.<AnagraficaDto>builder().timestamp(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
@@ -88,7 +88,7 @@ public class ClienteController {
 		clienteService.removeContatto(cliente, contatto);
 		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
 		GenericWrapperResponse<AnagraficaDto> genericResponse = GenericWrapperResponse
-				.<AnagraficaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
+				.<AnagraficaDto>builder().timestamp(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
@@ -99,7 +99,7 @@ public class ClienteController {
 		clienteService.deleteContatto(cliente, contatto);
 		AnagraficaDto dto = dtoEntityMapper.entityToDto(contatto);
 		GenericWrapperResponse<AnagraficaDto> genericResponse = GenericWrapperResponse
-				.<AnagraficaDto>builder().dataRichiesta(Utils.now()).risultato(dto).build();
+				.<AnagraficaDto>builder().timestamp(Utils.now()).risultato(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	

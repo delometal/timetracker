@@ -32,12 +32,12 @@ public class CurriculumController {
 		try {
 			fileService.uploadCurriculum(codicePersona, file);
 			GenericWrapperResponse<String> genericResponse = GenericWrapperResponse.<String>builder()
-					.dataRichiesta(Utils.now())
+					.timestamp(Utils.now())
 					.risultato("Uploaded the file successfully: " + file.getOriginalFilename()).build();
 			return ResponseEntity.ok(genericResponse);
 		} catch (Exception e) {
 			GenericWrapperResponse<String> genericResponse = GenericWrapperResponse.<String>builder()
-					.dataRichiesta(Utils.now()).risultato("Upload failed").build();
+					.timestamp(Utils.now()).risultato("Upload failed").build();
 			return ResponseEntity.badRequest().body(genericResponse);
 		}
 	}

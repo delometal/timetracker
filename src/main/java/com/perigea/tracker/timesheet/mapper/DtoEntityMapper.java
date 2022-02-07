@@ -21,6 +21,8 @@ import com.perigea.tracker.commons.dto.GruppoContattoDto;
 import com.perigea.tracker.commons.dto.NotaSpeseDto;
 import com.perigea.tracker.commons.dto.NotaSpeseInputDto;
 import com.perigea.tracker.commons.dto.OrdineCommessaDto;
+import com.perigea.tracker.commons.dto.RichiestaDto;
+import com.perigea.tracker.commons.dto.RichiestaHistoryDto;
 import com.perigea.tracker.commons.dto.RuoloDto;
 import com.perigea.tracker.commons.dto.TimesheetEntryDto;
 import com.perigea.tracker.commons.dto.TimesheetRefDto;
@@ -41,6 +43,8 @@ import com.perigea.tracker.timesheet.entity.Fornitore;
 import com.perigea.tracker.timesheet.entity.Gruppo;
 import com.perigea.tracker.timesheet.entity.NotaSpese;
 import com.perigea.tracker.timesheet.entity.OrdineCommessa;
+import com.perigea.tracker.timesheet.entity.Richiesta;
+import com.perigea.tracker.timesheet.entity.RichiestaHistory;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Timesheet;
 import com.perigea.tracker.timesheet.entity.TimesheetEntry;
@@ -162,5 +166,20 @@ public interface DtoEntityMapper {
 	@Mapping(target= "cognome", source="utente.anagrafica.cognome")
 	@Mapping (target = "mailAziendale", source = "utente.anagrafica.mailAziendale")
 	TimesheetResponseDto entityToDto(Timesheet entity);
+	
+	@Mapping(target = "codiceOwner", source = "richiedente.codicePersona")
+	RichiestaDto entityToDto(Richiesta entity);
+	
+	@Mapping(target = "richiedente.codicePersona", source = "codiceOwner")
+	Richiesta dtoToEntity(RichiestaDto dto);
+	
+	@Mapping(target = "codiceResponsabile", source = "responsabile.codicePersona")
+	RichiestaHistoryDto entityToDto(RichiestaHistory entity);
+	
+	@Mapping(target = "responsabile.codicePersona", source = "codiceResponsabile")
+	RichiestaHistory dtoToEntity(RichiestaHistoryDto dto);
+	
+	List<RichiestaHistoryDto> entityToDtoRichiestaHistoryList(List<RichiestaHistory> entities);
+	List<RichiestaHistory> dtoToEntityRichiestaHistoryList(List<RichiestaHistoryDto> dtos);
 	
 }

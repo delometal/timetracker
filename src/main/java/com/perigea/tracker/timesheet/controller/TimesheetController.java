@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.perigea.tracker.commons.dto.AnagraficaDto;
+import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.dto.GenericWrapperResponse;
 import com.perigea.tracker.commons.dto.InfoAutoDto;
 import com.perigea.tracker.commons.dto.TimesheetRefDto;
@@ -98,19 +98,19 @@ public class TimesheetController {
 	public ResponseEntity<byte[]> downloadExcelTimesheet(@PathVariable(value = "anno") Integer anno, @PathVariable(value = "mese") EMese mese, @PathVariable(value = "codicePersona") String codicePersona) {
 		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
 		InfoAutoDto infoAuto = null;
-		if(utente.getAnagrafica().getClass().isAssignableFrom(Dipendente.class)) {
-			Dipendente dipendente = (Dipendente) utente.getAnagrafica();
+		if(utente.getPersonale().getClass().isAssignableFrom(Dipendente.class)) {
+			Dipendente dipendente = (Dipendente) utente.getPersonale();
 			DatiEconomiciDipendente economics = dipendente.getEconomics();
 			infoAuto = new InfoAutoDto(economics.getModelloAuto(), economics.getRimborsoPerKm(), economics.getKmPerGiorno());
-		} else if(utente.getAnagrafica().getClass().isAssignableFrom(Consulente.class)) {
+		} else if(utente.getPersonale().getClass().isAssignableFrom(Consulente.class)) {
 			infoAuto = new InfoAutoDto("", 0.0f, 0.0f);
 		} else {
 			throw new TimesheetException("Tipo utente non valido");
 		}
 
-		String fileName = Utils.removeAllSpaces(anno + mese.getMonthPart() + "_" + utente.getAnagrafica().getCognome() + Utils.EXCEL_EXT).trim();
-		AnagraficaDto angraficaDto = dtoEntityMapper.entityToDto(utente.getAnagrafica());
-		byte[] excel = timesheetService.downloadExcelTimesheet(anno, mese, angraficaDto, infoAuto);
+		String fileName = Utils.removeAllSpaces(anno + mese.getMonthPart() + "_" + utente.getCognome() + Utils.EXCEL_EXT).trim();
+		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
+		byte[] excel = timesheetService.downloadExcelTimesheet(anno, mese, utenteDto, infoAuto);
 		return ResponseEntity.ok()
 	            .contentType(MediaType.APPLICATION_OCTET_STREAM)
 	            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ fileName + "\"")

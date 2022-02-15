@@ -51,7 +51,7 @@ public class NotaSpeseService {
 				notaSpese.setTimesheetEntry(timesheetEntry);
 			}
 			notaSpese.setCommessa(commessa);
-			notaSpese.setUtente(utente);
+			notaSpese.setPersonale(utente.getPersonale());
 			notaSpeseRepository.save(notaSpese);
 			logger.info("Nota spese salvata");
 			return notaSpese;

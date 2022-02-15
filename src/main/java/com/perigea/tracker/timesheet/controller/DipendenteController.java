@@ -1,8 +1,6 @@
 package com.perigea.tracker.timesheet.controller;
 import java.util.List;
 
-import javax.websocket.server.PathParam;
-
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.DatiEconomiciDipendenteDto;
@@ -24,11 +21,13 @@ import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.utils.Utils;
+import com.perigea.tracker.timesheet.entity.CentroDiCosto;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
 import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
+import com.perigea.tracker.timesheet.service.CentroDiCostoService;
 import com.perigea.tracker.timesheet.service.DipendenteService;
 
 @RestController
@@ -42,26 +41,26 @@ public class DipendenteController {
 	private DipendenteService dipendenteService;
 	
 	@Autowired
+	private CentroDiCostoService centroDiCostoService;
+	
+	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
 	
-//	@Autowired
-//    private ApplicationEventPublisher applicationEventPublisher;
-
 	@PostMapping(value = "/create")
 	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> createDipendente(@RequestBody DipendenteDto dipendenteDto) {
+		Utente utente = dtoEntityMapper.dtoToEntity(dipendenteDto.getUtente());
+		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
 		Utente responsabile = null;
 		try {
 			responsabile = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodiceResponsabile());
+			dipendente.setResponsabile(responsabile.getPersonale());
 		} catch(EntityNotFoundException e) {
 			responsabile = null;
 		}
-		Utente utente = dtoEntityMapper.dtoToEntity(dipendenteDto.getUtente());
-		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
-		utente.setResponsabile(responsabile);
 		utente = dipendenteService.createUtenteDipendente(utente, dipendente);
 
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
-		Dipendente anagrafica = (Dipendente)utente.getAnagrafica();
+		Dipendente anagrafica = (Dipendente) utente.getPersonale();
 		dipendenteDto = dtoEntityMapper.entityToDto(anagrafica);
 		dipendenteDto.setUtente(utenteDto);
 		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
@@ -72,11 +71,12 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@GetMapping(value = "/read")
-	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> readDipendente(@RequestParam String codicePersona) {
+	@GetMapping(value = "/read/{codicePersona}")
+//	@PreAuthorize("hasAuthority('ROLE_MANAGEMENT')")
+	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> readDipendente(@PathVariable(name = "codicePersona") String codicePersona) {
 		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
-		Dipendente anagrafica = (Dipendente)utente.getAnagrafica();
+		Dipendente anagrafica = (Dipendente)utente.getPersonale();
 		DipendenteDto dipendenteDto = dtoEntityMapper.entityToDto(anagrafica);
 		dipendenteDto.setUtente(utenteDto);
 		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
@@ -87,10 +87,10 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@DeleteMapping(value = "/delete")
-	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> deleteDipendente(@RequestParam String codicePersona) {
+	@DeleteMapping(value = "/delete/{codicePersona}")
+	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> deleteDipendente(@PathVariable(name = "codicePersona") String codicePersona) {
 		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
-		Dipendente dipendente = (Dipendente) utente.getAnagrafica();
+		Dipendente dipendente = (Dipendente) utente.getPersonale();
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
 		DipendenteDto dipendenteDto = dtoEntityMapper.entityToDto(dipendente);
 		dipendenteDto.setUtente(utenteDto);
@@ -101,7 +101,6 @@ public class DipendenteController {
 				.timestamp(Utils.now())
 				.risultato(dipendenteDto)
 				.build();
-//		publishEvent(new UserCrudEvent(this, dipendenteDto, CrudType.DELETE));
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -111,11 +110,11 @@ public class DipendenteController {
 		Utente utente = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodicePersona());
 		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
 		dipendente.setCodicePersona(utente.getCodicePersona());
-		utente.setResponsabile(responsabile);
-		utente.setAnagrafica(dipendente);
+		dipendente.setResponsabile(responsabile.getPersonale());
+		utente.setPersonale(dipendente);
 		utente = dipendenteService.updateUtenteDipendente(utente);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
-		Dipendente anagrafica = (Dipendente)utente.getAnagrafica();
+		Dipendente anagrafica = (Dipendente)utente.getPersonale();
 
 		DipendenteDto anagraficaResponseDto = dtoEntityMapper.entityToDto(anagrafica);
 		anagraficaResponseDto.setUtente(utenteResponseDto);
@@ -124,7 +123,6 @@ public class DipendenteController {
 				.timestamp(Utils.now())
 				.risultato(anagraficaResponseDto)
 				.build();
-//		publishEvent(new UserCrudEvent(this, anagraficaResponseDto, CrudType.UPDATE));
 		return ResponseEntity.ok(genericResponse);
 	}
 	
@@ -134,11 +132,11 @@ public class DipendenteController {
 		Utente responsabile = dipendenteService.readUtenteDipendente(UtenteDto.getCodiceResponsabile());
 		
 		Dipendente dipendente = dipendenteService.readAnagraficaDipendente(UtenteDto.getCodicePersona());
-		utente.setResponsabile(responsabile);
-		utente.setAnagrafica(dipendente);
+		dipendente.setResponsabile(responsabile.getPersonale());
+		utente.setPersonale(dipendente);
 		utente = dipendenteService.updateUtenteDipendente(utente);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
-		Dipendente anagrafica = (Dipendente)utente.getAnagrafica();
+		Dipendente anagrafica = (Dipendente)utente.getPersonale();
 
 		DipendenteDto dipendenteDto = dtoEntityMapper.entityToDto(anagrafica);
 		dipendenteDto.setUtente(utenteResponseDto);
@@ -147,28 +145,22 @@ public class DipendenteController {
 				.timestamp(Utils.now())
 				.risultato(dipendenteDto)
 				.build();
-//		publishEvent(new UserCrudEvent(this, dipendenteDto, CrudType.UPDATE));
 		return ResponseEntity.ok(genericResponse);
 	}
 	
 	@PutMapping(value = "/update-status/{codicePersona}/{status}")
-	public ResponseEntity<GenericWrapperResponse<UtenteDto>> editStatusUser(@PathVariable("codicePersona") String codicePersona, @PathParam("status") StatoUtenteType status) {
+	public ResponseEntity<GenericWrapperResponse<UtenteDto>> editStatusUser(@PathVariable("codicePersona") String codicePersona, @PathVariable("status") StatoUtenteType status) {
 		Utente utente = dipendenteService.updateUtenteStatus(codicePersona, status);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
 		GenericWrapperResponse<UtenteDto> genericResponse = GenericWrapperResponse.<UtenteDto>builder()
 				.timestamp(Utils.now())
 				.risultato(utenteResponseDto)
 				.build();
-//		Dipendente anagrafica = (Dipendente)utente.getAnagrafica();
-//		DipendenteDto dipendenteDto = dtoEntityMapper.entityToDto(anagrafica);
-//		if(status == StatoUtenteType.C) {
-//			publishEvent(new UserCrudEvent(this, dipendenteDto, CrudType.UPDATE));
-//		}
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PutMapping(value = "/update-roles")
-	public ResponseEntity<GenericWrapperResponse<UtenteDto>> editRoleUser(@RequestParam String codicePersona, @RequestBody List<RuoloDto> ruoliDto) {
+	@PutMapping(value = "/update-roles/{codicePersona}")
+	public ResponseEntity<GenericWrapperResponse<UtenteDto>> editRoleUser(@PathVariable(name = "codicePersona") String codicePersona, @RequestBody List<RuoloDto> ruoliDto) {
 		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
 		List<Ruolo> ruoli = dtoEntityMapper.dtoToEntityRuoloList(ruoliDto);
 		utente.setRuoli(ruoli);
@@ -181,16 +173,18 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PutMapping(value = "/update-economics")
-	public ResponseEntity<GenericWrapperResponse<DatiEconomiciDipendenteDto>> editDatiEconomiciDipendente(@RequestParam String codicePersona, @RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
-		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
+	
+	@PostMapping(value = "/create-economics/{codicePersona}")
+	public ResponseEntity<GenericWrapperResponse<DatiEconomiciDipendenteDto>> createDatiEconomiciDipendente(@RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
+		Utente utente = dipendenteService.readUtenteDipendente(datiEconomiciDipendenteDto.getCodicePersona());
+		CentroDiCosto cdc = centroDiCostoService.readCentroDiCosto(datiEconomiciDipendenteDto.getCodiceCentroDiCosto());
 		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(datiEconomiciDipendenteDto);
-		economics.setCodicePersona(codicePersona);
 		
-		Dipendente dipendente = (Dipendente) utente.getAnagrafica();
+		Dipendente dipendente = (Dipendente) utente.getPersonale();
 		dipendente.setEconomics(economics);
-		economics.setDipendente(dipendente);
-		utente.setAnagrafica(dipendente);
+		economics.setPersonale(dipendente);
+		economics.setCentroDiCosto(cdc);
+		utente.setPersonale(dipendente);
 		
 		utente = dipendenteService.updateUtenteDipendente(utente);
 		datiEconomiciDipendenteDto = dtoEntityMapper.entityToDto(economics);
@@ -202,13 +196,27 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-//	/**
-//	 * Publish an event
-//	 * @param event
-//	 */
-//	private void publishEvent(ApplicationEvent event) {
-//		logger.info("Sending event to GruppoService {}", event);
-//		applicationEventPublisher.publishEvent(event);
-//	}
+	@PutMapping(value = "/update-economics/{codicePersona}")
+	public ResponseEntity<GenericWrapperResponse<DatiEconomiciDipendenteDto>> editDatiEconomiciDipendente(@PathVariable(name = "codicePersona") String codicePersona, @RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
+		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
+		CentroDiCosto cdc = centroDiCostoService.readCentroDiCosto(datiEconomiciDipendenteDto.getCodiceCentroDiCosto());
+		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(datiEconomiciDipendenteDto);
+		economics.setCodicePersona(codicePersona);
+		
+		Dipendente dipendente = (Dipendente) utente.getPersonale();
+		dipendente.setEconomics(economics);
+		economics.setPersonale(dipendente);
+		economics.setCentroDiCosto(cdc);
+		utente.setPersonale(dipendente);
+		
+		utente = dipendenteService.updateUtenteDipendente(utente);
+		datiEconomiciDipendenteDto = dtoEntityMapper.entityToDto(economics);
 
+		GenericWrapperResponse<DatiEconomiciDipendenteDto> genericResponse = GenericWrapperResponse.<DatiEconomiciDipendenteDto>builder()
+				.timestamp(Utils.now())
+				.risultato(datiEconomiciDipendenteDto)
+				.build();
+		return ResponseEntity.ok(genericResponse);
+	}
+	
 }

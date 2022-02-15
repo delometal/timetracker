@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.perigea.tracker.commons.exception.CommessaException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
-import com.perigea.tracker.timesheet.entity.DipendenteCommessa;
+import com.perigea.tracker.timesheet.entity.PersonaleCommessa;
 import com.perigea.tracker.timesheet.entity.keys.DipendenteCommessaKey;
 import com.perigea.tracker.timesheet.repository.AssegnazioneCommessaRepository;
 
@@ -27,7 +27,7 @@ public class AssegnazioneCommessaService {
 	 * @param dipendenteCommessaDto
 	 * @return
 	 */
-	public DipendenteCommessa createDipendenteCommessa(DipendenteCommessa dipendenteCommessa) {
+	public PersonaleCommessa createDipendenteCommessa(PersonaleCommessa dipendenteCommessa) {
 		try {
 			return assegnazioneCommessaRepository.save(dipendenteCommessa);
 		} catch (Exception ex) {
@@ -40,7 +40,7 @@ public class AssegnazioneCommessaService {
 	 * @param id
 	 * @return
 	 */
-	public DipendenteCommessa readDipendenteCommessa(DipendenteCommessaKey id) {
+	public PersonaleCommessa readDipendenteCommessa(DipendenteCommessaKey id) {
 		try {
 			return assegnazioneCommessaRepository.findById(id).get();
 		} catch (Exception ex) {
@@ -56,7 +56,7 @@ public class AssegnazioneCommessaService {
 	 * @param dipendenteCommessaDto
 	 * @return
 	 */
-	public DipendenteCommessa updateDipendenteCommessa(DipendenteCommessa dipendenteCommessa) {
+	public PersonaleCommessa updateDipendenteCommessa(PersonaleCommessa dipendenteCommessa) {
 		try {
 			return assegnazioneCommessaRepository.save(dipendenteCommessa);
 		} catch (Exception ex) {

@@ -1,11 +1,10 @@
 package com.perigea.tracker.timesheet.controller;
 
-import javax.websocket.server.PathParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,8 +39,17 @@ public class FestivitaController {
 	}
 
 	@GetMapping(value = "/read/{id}")
-	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> readFestivita(@PathParam("id") Integer id) {
+	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> readFestivita(@PathVariable("id") Integer id) {
 		Festivita festivita = festeService.readFestivita(id);
+		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
+		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
+				.timestamp(Utils.now()).risultato(dtoFestivita).build();
+		return ResponseEntity.ok(genericDto);
+	}
+
+	@GetMapping(value = "/read-by-name/{nomeFestivita}")
+	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> readFestivita(@PathVariable("nomeFestivita") String nomeFestivita) {
+		Festivita festivita = festeService.readFestivitaByName(nomeFestivita);
 		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
 		GenericWrapperResponse<FestivitaDto> genericDto = GenericWrapperResponse.<FestivitaDto>builder()
 				.timestamp(Utils.now()).risultato(dtoFestivita).build();
@@ -58,8 +66,8 @@ public class FestivitaController {
 		return ResponseEntity.ok(genericDto);
 	}
 	
-	@DeleteMapping(value = "/delete")
-	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> deleteFestivita(@PathParam("id") Integer id) {
+	@DeleteMapping(value = "/delete/{id}")
+	public ResponseEntity<GenericWrapperResponse<FestivitaDto>> deleteFestivita(@PathVariable("id") Integer id) {
 		Festivita festivita = festeService.readFestivita(id);
 		FestivitaDto festivitaDto = dtoEntityMapper.entityToDto(festivita);
 		festeService.deleteFestivita(id);

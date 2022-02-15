@@ -40,9 +40,9 @@ public class ConsulenteService {
 	 */
 	public Utente createUtenteConsulente(Utente utente, Consulente consulente) {
 		try {
+			utente.setCodicePersona(Utils.uuid());	
 			consulente.setUtente(utente);
-			consulente.setCodicePersona(Utils.uuid());
-			utente.setAnagrafica(consulente);
+			utente.setPersonale(consulente);
 			utenteRepository.save(utente);
 			logger.info("utente salvato");
 			return utente;

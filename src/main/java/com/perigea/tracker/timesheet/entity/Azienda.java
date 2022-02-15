@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import com.perigea.tracker.commons.enums.AziendaType;
 import com.perigea.tracker.commons.enums.PagamentoType;
@@ -23,6 +24,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
+@Table(name = "azienda")
 @EqualsAndHashCode(callSuper = true)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="tipo", discriminatorType = DiscriminatorType.STRING)
@@ -38,7 +40,7 @@ public class Azienda extends BaseEntity {
 	@Column(name = "tipo", nullable = false, insertable = false, updatable = false)
 	private AziendaType tipo;
 	
-	@Column(name = "partita_iva")
+	@Column(name = "partita_iva", unique = true)
 	private String partitaIva;
 	
 	@Column(name = "ragione_sociale")
@@ -82,14 +84,14 @@ public class Azienda extends BaseEntity {
 	private String notePerLaFatturazione;
 	
 	@OneToMany(mappedBy = "azienda", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
-	private List<Anagrafica> contatti = new ArrayList<>();
+	private List<Utente> contatti = new ArrayList<>();
 	
-	public void addContatto(Anagrafica contatto) {
+	public void addContatto(Utente contatto) {
 		this.contatti.add(contatto);
 		contatto.setAzienda(this);
 	}
 
-	public void removeContatto(Anagrafica contatto) {
+	public void removeContatto(Utente contatto) {
 		this.contatti.remove(contatto);
 		contatto.setAzienda(null);
 	}

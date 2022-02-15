@@ -26,7 +26,7 @@ public class NotaSpese extends BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "codice_persona", referencedColumnName = "codice_persona", nullable = false, insertable = false, updatable = false)
-	private Utente utente;
+	private Personale personale;
 
 	@ManyToOne
 	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false, insertable = false, updatable = false)

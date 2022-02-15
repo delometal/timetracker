@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.perigea.tracker.commons.dto.AnagraficaDto;
+import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.dto.InfoAutoDto;
 import com.perigea.tracker.commons.dto.TimesheetEntryDto;
 import com.perigea.tracker.commons.dto.TimesheetRefDto;
@@ -74,8 +74,8 @@ public class TimesheetService {
 			Integer oreTotali = 0;
 			Timesheet timesheet = dtoEntityMapper.dtoToEntity(timeDto);
 			Utente utente = utenteRepository.findByCodicePersona(timeDto.getCodicePersona()).get();
-			timesheet.setUtente(utente);
-			utente.addTimesheet(timesheet);
+			timesheet.setPersonale(utente.getPersonale());
+			utente.getPersonale().addTimesheet(timesheet);
 			TimesheetMensileKey tsKey = new TimesheetMensileKey(timeDto.getAnno(), timeDto.getMese(), timeDto.getCodicePersona());
 			timesheet.setId(tsKey);
 			timesheet.setStatoRichiesta(StatoRichiestaType.I);
@@ -212,7 +212,7 @@ public class TimesheetService {
 		}
 	}
 	
-	public byte[] downloadExcelTimesheet(Integer anno, EMese mese, AnagraficaDto angrafica, InfoAutoDto infoAuto) {
+	public byte[] downloadExcelTimesheet(Integer anno, EMese mese, UtenteDto angrafica, InfoAutoDto infoAuto) {
 		Timesheet timesheet = getTimesheet(anno, mese, angrafica.getCodicePersona());
 		TimesheetResponseDto timesheetResponseDto = dtoEntityMapper.entityToDto(timesheet);
 		TimesheetExcelWrapper timesheetExcelWrapper = new TimesheetExcelWrapper(timesheetResponseDto, angrafica, infoAuto);

@@ -18,12 +18,12 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@Table(name = "dipendente_commessa")
+@Table(name = "personale_commessa")
 @EqualsAndHashCode(callSuper = true)
 @AssociationOverrides({
     @AssociationOverride(name = "id", joinColumns = @JoinColumn(name = "codice_persona")),
     @AssociationOverride(name = "id", joinColumns = @JoinColumn(name = "codice_commessa")) })
-public class DipendenteCommessa extends BaseEntity {
+public class PersonaleCommessa extends BaseEntity {
 
 	private static final long serialVersionUID = -2109547859283092218L;
 
@@ -32,7 +32,7 @@ public class DipendenteCommessa extends BaseEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "codice_persona", referencedColumnName = "codice_persona", updatable = false, insertable = false)
-	private Utente utente;
+	private Personale personale;
 
 	@ManyToOne
 	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", updatable = false, insertable = false)

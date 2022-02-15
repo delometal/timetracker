@@ -22,7 +22,6 @@ import com.perigea.tracker.commons.exception.FileDownloadException;
 import com.perigea.tracker.commons.exception.FileUploadException;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
-import com.perigea.tracker.timesheet.entity.Anagrafica;
 import com.perigea.tracker.timesheet.entity.CurriculumVitae;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.repository.CurriculumVitaeRepository;
@@ -66,8 +65,7 @@ public class FileService {
 	public void uploadCurriculum(String codicePersona, MultipartFile file) {
 		try {
 			Utente utente = utenteRepository.getById(codicePersona);
-			Anagrafica anagrafica = utente.getAnagrafica();
-			String filepath = extractCurriculumFilename(codicePersona, anagrafica);
+			String filepath = extractCurriculumFilename(codicePersona, utente);
 			
 			if(applicationProperties.isCurriculumDiskPersistence()) {
 				Path archivio = loadArchivioFolder();
@@ -98,15 +96,14 @@ public class FileService {
 		}
 	}
 
-	private String extractCurriculumFilename(String codicePersona, Anagrafica anagrafica) {
-		String filepath = anagrafica.getCognome() + "-" + anagrafica.getNome() + "-" + codicePersona;
+	private String extractCurriculumFilename(String codicePersona, Utente utente) {
+		String filepath = utente.getCognome() + "-" + utente.getNome() + "-" + codicePersona;
 		return Utils.removeAllSpaces(filepath).trim();
 	}
 
 	public CurriculumVitae getCurriculum(String codicePersona) {
 		try {
-			Utente utente = utenteRepository.getById(codicePersona);
-			return utente.getAnagrafica().getCv();
+			return utenteRepository.getById(codicePersona).getCv();
 		} catch (Exception e) {
 			throw new FileDownloadException("Error: " + e.getMessage());
 		}

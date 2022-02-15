@@ -16,11 +16,9 @@ import com.perigea.tracker.commons.exception.ContattoException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.exception.GruppoException;
 import com.perigea.tracker.commons.utils.Utils;
-import com.perigea.tracker.timesheet.entity.Anagrafica;
 import com.perigea.tracker.timesheet.entity.Gruppo;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Utente;
-import com.perigea.tracker.timesheet.repository.AnagraficaRepository;
 import com.perigea.tracker.timesheet.repository.GruppoRepository;
 import com.perigea.tracker.timesheet.repository.RuoliRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
@@ -34,9 +32,6 @@ public class GruppoContattoService {
 	@Autowired
 	private GruppoRepository gruppoRepository;
 
-	@Autowired
-	private AnagraficaRepository anagraficaRepository;
-	
 	@Autowired
 	private UtenteRepository utenteRepository;
 	
@@ -105,19 +100,15 @@ public class GruppoContattoService {
 	 * @param contatto
 	 * @return
 	 */
-	public Anagrafica createContatto(Anagrafica contatto) {
+	public Utente createContatto(Utente contatto) {
 		try {
 			List<Ruolo> ruoli = new ArrayList<Ruolo>(1);
 			ruoli.add(ruoliRepository.getById(RuoloType.P));
 			Utente utente = new Utente();
 			utente.setCodicePersona(Utils.uuid());
-			utente.setAnagrafica(contatto);
 			utente.setStato(StatoUtenteType.A);
-			utente.setResponsabile(null);
 			utente.setRuoli(ruoli);
-			contatto.setUtente(utente);
-			contatto.setCodicePersona(utente.getCodicePersona());
-			contatto.setTipo(AnagraficaType.C);
+			utente.setTipo(AnagraficaType.C);
 			utenteRepository.save(utente);
 			return contatto;
 		} catch (Exception ex) {
@@ -130,9 +121,9 @@ public class GruppoContattoService {
 	 * @param id
 	 * @return
 	 */
-	public Anagrafica readContatto(final String id) {
+	public Utente readContatto(final String id) {
 		try {
-			return anagraficaRepository.findById(id).get();
+			return utenteRepository.findById(id).get();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -146,9 +137,9 @@ public class GruppoContattoService {
 	 * @param id
 	 * @return
 	 */
-	public List<Anagrafica> readAllContatti() {
+	public List<Utente> readAllContatti() {
 		try {
-			return anagraficaRepository.findAll();
+			return utenteRepository.findAll();
 		} catch (Exception ex) {
 			throw new ContattoException(ex.getMessage());
 		}
@@ -159,7 +150,7 @@ public class GruppoContattoService {
 	 * @param id
 	 * @return
 	 */
-	public List<Anagrafica> readAllContactsByGroupId(Long groupId) {
+	public List<Utente> readAllContactsByGroupId(Long groupId) {
 		try {
 			return gruppoRepository.getById(groupId).getContatti();
 		} catch (Exception ex) {
@@ -172,9 +163,9 @@ public class GruppoContattoService {
 	 * @param gruppo
 	 * @return
 	 */
-	public Anagrafica updateContatto(Anagrafica contatto) {
+	public Utente updateContatto(Utente contatto) {
 		try {
-			return anagraficaRepository.save(contatto);
+			return utenteRepository.save(contatto);
 		} catch (Exception ex) {
 			throw new ContattoException(ex.getMessage());
 		}
@@ -186,7 +177,7 @@ public class GruppoContattoService {
 	 */
 	public void deleteContatto(final String id) {
 		try {
-			anagraficaRepository.deleteById(id);
+			utenteRepository.deleteById(id);
 		} catch (Exception ex) {
 			throw new ContattoException(ex.getMessage());
 		}

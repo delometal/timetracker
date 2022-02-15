@@ -32,7 +32,7 @@ public class RichiestaService {
 		}
 	}
 
-	public Richiesta readRichiesta(Integer codiceRichiesta) {
+	public Richiesta readRichiesta(Long codiceRichiesta) {
 		try {
 			Richiesta richiesta = richiestaRepository.findById(codiceRichiesta).get();
 			richiesta.getHistory(); //load history in session
@@ -61,7 +61,7 @@ public class RichiestaService {
 		}
 	}
 	
-	public void deleteRichiesta(Integer id) {
+	public void deleteRichiesta(Long id) {
 		try {
 			richiestaRepository.deleteById(id);
 		} catch (Exception ex) {

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,8 +66,8 @@ public class CommessaController {
 	@PutMapping(value = "/update-commessa-fatturabile")
 	public ResponseEntity<GenericWrapperResponse<CommessaFatturabileDto>> updateCommessaNonFatturabile(@RequestBody CommessaFatturabileDtoWrapper wrapper) {
 		CommessaFatturabile commessa = dtoEntityMapper.dtoToEntity(wrapper.getCommessaFatturabile());
-		Cliente anagrafica = clienteService.readCliente(wrapper.getCliente().getPartitaIva());
-		commessa.setCliente(anagrafica);
+		Cliente cliente = clienteService.readClienteById(wrapper.getCliente().getCodiceAzienda());
+		commessa.setCliente(cliente);
 		commessa = commessaService.updateCommessaFatturabile(commessa);
 		CommessaFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessa);
 		GenericWrapperResponse<CommessaFatturabileDto> genericDto = GenericWrapperResponse.<CommessaFatturabileDto>builder()
@@ -89,7 +90,7 @@ public class CommessaController {
 	public ResponseEntity<GenericWrapperResponse<OrdineCommessaDto>> createOrdineCommessa(@RequestBody CommessaFatturabileDtoWrapper wrapper,  @RequestParam String idCliente) {
 		CommessaFatturabile commessa = dtoEntityMapper.dtoToEntity(wrapper.getCommessaFatturabile());
 		OrdineCommessa ordineCommessa = dtoEntityMapper.dtoToEntity(wrapper.getOrdineCommessa());
-		Cliente cliente = clienteService.readCliente(wrapper.getCliente().getPartitaIva());
+		Cliente cliente = clienteService.readClienteById(wrapper.getCliente().getCodiceAzienda());
 		ordineCommessa = commessaService.createOrdineCommessa(ordineCommessa, commessa, cliente);
 		OrdineCommessaDto ordineCommessaDto = dtoEntityMapper.entityToDto(ordineCommessa);
 		GenericWrapperResponse<OrdineCommessaDto> genericDto = GenericWrapperResponse.<OrdineCommessaDto>builder()
@@ -97,8 +98,8 @@ public class CommessaController {
 		return ResponseEntity.ok(genericDto);
 	}
 
-	@DeleteMapping(value = "/delete-commessa-fatturabile")
-	public ResponseEntity<GenericWrapperResponse<CommessaFatturabileDto>> deleteCommessaFatturabile(@RequestParam String codiceCommessa) {
+	@DeleteMapping(value = "/delete-commessa-fatturabile/{codiceCommessa}")
+	public ResponseEntity<GenericWrapperResponse<CommessaFatturabileDto>> deleteCommessaFatturabile(@PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		CommessaFatturabile commessaEntity = commessaService.readCommessaFatturabile(codiceCommessa);
 		CommessaFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
 		commessaService.deleteCommessaFatturabile(codiceCommessa);
@@ -107,8 +108,8 @@ public class CommessaController {
 		return ResponseEntity.ok(genericDto);
 	}
 	
-	@DeleteMapping(value = "/delete-commessa-non-fatturabile")
-	public ResponseEntity<GenericWrapperResponse<CommessaNonFatturabileDto>> deleteCommessaNonFatturabile(@RequestParam String codiceCommessa) {
+	@DeleteMapping(value = "/delete-commessa-non-fatturabile/{codiceCommessa}")
+	public ResponseEntity<GenericWrapperResponse<CommessaNonFatturabileDto>> deleteCommessaNonFatturabile(@PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		CommessaNonFatturabile commessaEntity = commessaService.readCommessaNonFatturabile(codiceCommessa);
 		CommessaNonFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
 		commessaService.deleteCommessaNonFatturabile(codiceCommessa);
@@ -117,8 +118,8 @@ public class CommessaController {
 		return ResponseEntity.ok(genericDto);
 	}
 	
-	@GetMapping(value = "/read-commessa-fatturabile")
-	public ResponseEntity<GenericWrapperResponse<CommessaFatturabileDto>> readCommessaFatturabile(@RequestParam String codiceCommessa) {
+	@GetMapping(value = "/read-commessa-fatturabile/{codiceCommessa}")
+	public ResponseEntity<GenericWrapperResponse<CommessaFatturabileDto>> readCommessaFatturabile(@PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		CommessaFatturabile commessaEntity = commessaService.readCommessaFatturabile(codiceCommessa);
 		CommessaFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
 		GenericWrapperResponse<CommessaFatturabileDto> genericDto = GenericWrapperResponse.<CommessaFatturabileDto>builder()
@@ -126,8 +127,8 @@ public class CommessaController {
 		return ResponseEntity.ok(genericDto);
 	}
 	
-	@GetMapping(value = "/read-commessa-non-fatturabile")
-	public ResponseEntity<GenericWrapperResponse<CommessaNonFatturabileDto>> readCommessaNonFatturabile(@RequestParam String codiceCommessa) {
+	@GetMapping(value = "/read-commessa-non-fatturabile/{codiceCommessa}")
+	public ResponseEntity<GenericWrapperResponse<CommessaNonFatturabileDto>> readCommessaNonFatturabile(@PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		CommessaNonFatturabile commessaEntity = commessaService.readCommessaNonFatturabile(codiceCommessa);
 		CommessaNonFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
 		GenericWrapperResponse<CommessaNonFatturabileDto> genericDto = GenericWrapperResponse.<CommessaNonFatturabileDto>builder()

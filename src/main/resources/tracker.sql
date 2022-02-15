@@ -835,7 +835,7 @@ ALTER TABLE tracker.time_sheet_entry OWNER TO postgres;
 
 CREATE TABLE tracker.utente (
     codice_persona character varying(50) NOT NULL,
-    password character varying(50),
+    password character varying(100),
     stato_utente character varying(50),
     create_timestamp timestamp without time zone,
     last_update_timestamp timestamp without time zone,
@@ -1711,3 +1711,30 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA tracker GRANT ALL ON TABLES
 -- PostgreSQL database dump complete
 --
 
+CREATE TABLE tracker.OAUTH_CLIENT_DETAILS (
+	CLIENT_ID VARCHAR(255) NOT NULL PRIMARY KEY,
+	CLIENT_SECRET VARCHAR(255) NOT NULL,
+	RESOURCE_IDS VARCHAR(255) DEFAULT NULL,
+	SCOPE VARCHAR(255) DEFAULT NULL,
+	AUTHORIZED_GRANT_TYPES VARCHAR(255) DEFAULT NULL,
+	WEB_SERVER_REDIRECT_URI VARCHAR(255) DEFAULT NULL,
+	AUTHORITIES VARCHAR(255) DEFAULT NULL,
+	ACCESS_TOKEN_VALIDITY INT DEFAULT NULL,
+	REFRESH_TOKEN_VALIDITY INt DEFAULT NULL,
+	ADDITIONAL_INFORMATION VARCHAR(4096) DEFAULT NULL,
+	AUTOAPPROVE VARCHAR(255) DEFAULT NULL
+);
+ 
+INSERT INTO tracker.OAUTH_CLIENT_DETAILS (
+ 	CLIENT_ID, CLIENT_SECRET, 
+ 	RESOURCE_IDS, SCOPE, 
+ 	AUTHORIZED_GRANT_TYPES, 
+ 	WEB_SERVER_REDIRECT_URI, AUTHORITIES,
+	ACCESS_TOKEN_VALIDITY, REFRESH_TOKEN_VALIDITY, ADDITIONAL_INFORMATION, AUTOAPPROVE)
+VALUES(
+	'tracker-timesheet','{bcrypt}$2a$10$EOs8VROb14e7ZnydvXECA.4LoIhPOoFHKvVF/iBZ/ker17Eocz4Vi',
+	'tracker-timesheet-resource', 'ROLE_ADMIN,ROLE_MANAGEMENT',
+	'authorization_code,password,refresh_token,implicit',
+	NULL, NULL,
+	900, 3600, '{}', NULL);
+ 

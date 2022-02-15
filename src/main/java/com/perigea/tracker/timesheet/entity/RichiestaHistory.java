@@ -30,7 +30,7 @@ public class RichiestaHistory extends BaseEntity {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer codiceRichiestaHistory;
+	private Long codiceRichiestaHistory;
 
 	@Column(name = "timestamp")
 	private LocalDateTime timestamp;

@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.GenericWrapperResponse;
@@ -39,9 +39,9 @@ public class RuoloController {
 		return ResponseEntity.ok(genericDto);
 	}
 
-	@GetMapping(value = "/read")
-	public ResponseEntity<GenericWrapperResponse<RuoloDto>> readRole(@RequestParam RuoloType ruoloTipo) {
-		Ruolo ruolo = roleService.readRole(ruoloTipo);
+	@GetMapping(value = "/read/{roleName}")
+	public ResponseEntity<GenericWrapperResponse<RuoloDto>> readRole(@PathVariable(name = "roleName") RuoloType roleName) {
+		Ruolo ruolo = roleService.readRole(roleName);
 		RuoloDto dtoRuolo = dtoEntityMapper.entityToDto(ruolo);
 		GenericWrapperResponse<RuoloDto> genericDto = GenericWrapperResponse.<RuoloDto>builder()
 				.timestamp(Utils.now()).risultato(dtoRuolo).build();
@@ -58,11 +58,11 @@ public class RuoloController {
 		return ResponseEntity.ok(genericDto);
 	}
 
-	@DeleteMapping(value = "/delete")
-	public ResponseEntity<GenericWrapperResponse<RuoloDto>> deleteRole(@RequestParam RuoloType ruoloTipo) {
-		Ruolo ruolo = roleService.readRole(ruoloTipo);
+	@DeleteMapping(value = "/delete/{roleName}")
+	public ResponseEntity<GenericWrapperResponse<RuoloDto>> deleteRole(@PathVariable(name = "roleName") RuoloType roleName) {
+		Ruolo ruolo = roleService.readRole(roleName);
 		RuoloDto dtoRuolo = dtoEntityMapper.entityToDto(ruolo);
-		roleService.deleteRole(ruoloTipo);
+		roleService.deleteRole(roleName);
 		GenericWrapperResponse<RuoloDto> genericDto = GenericWrapperResponse.<RuoloDto>builder()
 				.timestamp(Utils.now()).risultato(dtoRuolo).build();
 		return ResponseEntity.ok(genericDto);

@@ -33,7 +33,7 @@ public class Timesheet extends BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "codice_persona", referencedColumnName = "codice_persona", insertable = false, updatable = false)
-	private Utente utente;
+	private Personale personale;
 
 	@Column(name = "ore_totali")
 	private Integer oreTotali;

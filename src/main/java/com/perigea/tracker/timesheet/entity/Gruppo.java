@@ -41,6 +41,6 @@ public class Gruppo implements Serializable {
         joinColumns = { @JoinColumn(name = "codice_gruppo") }, 
         inverseJoinColumns = { @JoinColumn(name = "codice_persona") }
     )
-	private List<Anagrafica> contatti = new ArrayList<>();
+	private List<Utente> contatti = new ArrayList<>();
 
 }

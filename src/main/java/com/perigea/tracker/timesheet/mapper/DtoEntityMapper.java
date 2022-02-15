@@ -1,16 +1,16 @@
 package com.perigea.tracker.timesheet.mapper;
+
 import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.perigea.tracker.commons.dto.AnagraficaDto;
+import com.perigea.tracker.commons.dto.CentroDiCostoDto;
 import com.perigea.tracker.commons.dto.ClienteDto;
 import com.perigea.tracker.commons.dto.CommessaDto;
 import com.perigea.tracker.commons.dto.CommessaFatturabileDto;
 import com.perigea.tracker.commons.dto.CommessaNonFatturabileDto;
 import com.perigea.tracker.commons.dto.ConsulenteDto;
-import com.perigea.tracker.commons.dto.ContattoDto;
 import com.perigea.tracker.commons.dto.DatiEconomiciConsulenteDto;
 import com.perigea.tracker.commons.dto.DatiEconomiciDipendenteDto;
 import com.perigea.tracker.commons.dto.DipendenteCommessaDto;
@@ -28,7 +28,7 @@ import com.perigea.tracker.commons.dto.TimesheetEntryDto;
 import com.perigea.tracker.commons.dto.TimesheetRefDto;
 import com.perigea.tracker.commons.dto.TimesheetResponseDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
-import com.perigea.tracker.timesheet.entity.Anagrafica;
+import com.perigea.tracker.timesheet.entity.CentroDiCosto;
 import com.perigea.tracker.timesheet.entity.Cliente;
 import com.perigea.tracker.timesheet.entity.Commessa;
 import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
@@ -37,12 +37,12 @@ import com.perigea.tracker.timesheet.entity.Consulente;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciConsulente;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
 import com.perigea.tracker.timesheet.entity.Dipendente;
-import com.perigea.tracker.timesheet.entity.DipendenteCommessa;
 import com.perigea.tracker.timesheet.entity.Festivita;
 import com.perigea.tracker.timesheet.entity.Fornitore;
 import com.perigea.tracker.timesheet.entity.Gruppo;
 import com.perigea.tracker.timesheet.entity.NotaSpese;
 import com.perigea.tracker.timesheet.entity.OrdineCommessa;
+import com.perigea.tracker.timesheet.entity.PersonaleCommessa;
 import com.perigea.tracker.timesheet.entity.Richiesta;
 import com.perigea.tracker.timesheet.entity.RichiestaHistory;
 import com.perigea.tracker.timesheet.entity.Ruolo;
@@ -50,32 +50,66 @@ import com.perigea.tracker.timesheet.entity.Timesheet;
 import com.perigea.tracker.timesheet.entity.TimesheetEntry;
 import com.perigea.tracker.timesheet.entity.Utente;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface DtoEntityMapper {
 	
+	
+	/** UTENTE & RUOLI  **/
 	Utente dtoToEntity(UtenteDto dto);
 
 	@Mapping(ignore = true, target = "password")
 	UtenteDto entityToDto(Utente entity);
 		
-	List<RuoloDto> dtoToEntity(List<Ruolo> list);
+	Ruolo dtoToEntity(RuoloDto dto);
+	RuoloDto entityToDto(Ruolo entity);
+	
+	List<RuoloDto> entityToDtoRuoloList(List<Ruolo> list);
 	List<Ruolo> dtoToEntityRuoloList(List<RuoloDto> list);
 	
-	Cliente dtoToEntity(ClienteDto dto);
-	ClienteDto entityToDto(Cliente entity);
+	List<Utente> dtoToEntityUtenteList(List<UtenteDto> dto);
+	List<UtenteDto> entityToDtoUtenteList(List<Utente> entity);
+
 	
-	Fornitore dtoToEntity(FornitoreDto dto);
-	FornitoreDto entityToDto(Fornitore entity);
-	
+	/** PERSONALE - DIPENDENTI & CONSULENTI **/
 	Dipendente dtoToEntity(DipendenteDto dto);
 	DipendenteDto entityToDto(Dipendente entity);
 		
 	Consulente dtoToEntity(ConsulenteDto dto);
 	ConsulenteDto entityToDto(Consulente entity);
-		
-	Ruolo dtoToEntity(RuoloDto dto);
-	RuoloDto entityToDto(Ruolo entity);
 	
+	
+	/** CLIENTI & FORNITORI **/
+	Cliente dtoToEntity(ClienteDto dto);
+	ClienteDto entityToDto(Cliente entity);
+	List<Cliente> dtoToEntityClienteList(List<ClienteDto> dto);
+	List<ClienteDto> entityToDtoClienteList(List<Cliente> entity);
+	
+	Fornitore dtoToEntity(FornitoreDto dto);
+	FornitoreDto entityToDto(Fornitore entity);
+	List<Fornitore> dtoToEntityFornitoreList(List<FornitoreDto> dto);
+	List<FornitoreDto> entityToDtoFornitoreList(List<Fornitore> entity);
+
+	
+	/** NOTE SPESE **/
+	@Mapping(target= "id.costoNotaSpese", source="costoNotaSpese")
+	NotaSpese dtoToEntity(NotaSpeseDto dto);
+	
+	@Mapping(target= "id.anno", source="anno")
+	@Mapping(target= "id.mese", source="mese")
+	@Mapping(target= "id.costoNotaSpese", source="costoNotaSpese")
+	NotaSpese dtoToEntity(NotaSpeseInputDto dto);
+	
+	@Mapping(target= ".", source="id")
+	NotaSpeseDto entityToDto(NotaSpese entity);
+	
+	@Mapping(target= "id.giorno", source="giorno")
+	@Mapping(target= "id.codicePersona", source="codicePersona")
+	@Mapping(target= "id.codiceCommessa", source="ccodiceCommessa")
+	List<NotaSpese> dtoToEntityNotaSpeseList(List<NotaSpeseDto> dto);
+	List<NotaSpeseDto> entityToDtoNotaSpeseList(List<NotaSpese> entity);
+
+	
+	/** ORDINI & COMMESSE **/
 	Commessa dtoToEntity(CommessaDto dto);
 	CommessaDto entityToDto(Commessa entity);
 	
@@ -99,52 +133,33 @@ public interface DtoEntityMapper {
 	
 	@Mapping(target= ".", source="id")
 	OrdineCommessaDto entityToDto(OrdineCommessa entity);
-
-	@Mapping(target= "id.anno", source="anno")
-	@Mapping(target= "id.mese", source="mese")
-	@Mapping(target= "id.codicePersona", source="codicePersona")
-	Timesheet dtoToEntity(TimesheetRefDto dto);
 	
-	Festivita dtoToEntity(FestivitaDto dto);
-	FestivitaDto entityToDto(Festivita entity);
-	@Mapping(target= "id.costoNotaSpese", source="costoNotaSpese")
-	NotaSpese dtoToEntity(NotaSpeseDto dto);
-	
-	@Mapping(target= "id.anno", source="anno")
-	@Mapping(target= "id.mese", source="mese")
-	@Mapping(target= "id.costoNotaSpese", source="costoNotaSpese")
-	NotaSpese dtoToEntity(NotaSpeseInputDto dto);
-	
-	@Mapping(target= ".", source="id")
-	NotaSpeseDto entityToDto(NotaSpese entity);
-	
-	@Mapping(target= "id.giorno", source="giorno")
-	@Mapping(target= "id.codicePersona", source="codicePersona")
-	@Mapping(target= "id.codiceCommessa", source="ccodiceCommessa")
-	List<NotaSpese> dtoToEntityList(List<NotaSpeseDto> dto);
-	List<NotaSpeseDto> entityToDtoNotaSpeseList(List<NotaSpese> entity);
-
 	@Mapping(target= "id.codicePersona", source="codicePersona")
 	@Mapping(target= "id.codiceCommessa", source="codiceCommessa")
-	DipendenteCommessa dtoToEntity(DipendenteCommessaDto dto);
+	PersonaleCommessa dtoToEntity(DipendenteCommessaDto dto);
 	
 	@Mapping(target= ".", source="id")
-	DipendenteCommessaDto entityToDto(DipendenteCommessa entity);
+	DipendenteCommessaDto entityToDto(PersonaleCommessa entity);
+
 	
-	Anagrafica dtoToEntity(ContattoDto contatto);
-	Anagrafica dtoToEntity(AnagraficaDto anagrafica);
-	List<Anagrafica> dtoToEntityAnagraficaList(List<AnagraficaDto> anagrafica);
-	AnagraficaDto entityToDto(Anagrafica anagrafica);
-	List<AnagraficaDto> entityToDtoAnagraficaList(List<Anagrafica> anagrafica);
-	
+	/** GRUPPI E CONTATTI **/
 	Gruppo dtoToEntity(GruppoContattoDto gruppo);
 	GruppoContattoDto entityToDto(Gruppo gruppo);
+
 	
+	/** DATI ECONOMICI **/
 	DatiEconomiciDipendenteDto entityToDto(DatiEconomiciDipendente entity);
 	DatiEconomiciDipendente dtoToEntity(DatiEconomiciDipendenteDto dto);
 	
 	DatiEconomiciConsulenteDto entityToDto(DatiEconomiciConsulente entity);
 	DatiEconomiciConsulente dtoToEntity(DatiEconomiciConsulenteDto dto);
+	
+	
+	/** TIMESHEET **/
+	@Mapping(target= "id.anno", source="anno")
+	@Mapping(target= "id.mese", source="mese")
+	@Mapping(target= "id.codicePersona", source="codicePersona")
+	Timesheet dtoToEntity(TimesheetRefDto dto);
 	
 	@Mapping(target = "id.giorno", source = "giorno")
 	@Mapping(target = "id.codiceCommessa", source = "codiceCommessa")
@@ -162,11 +177,13 @@ public interface DtoEntityMapper {
 	List<TimesheetEntryDto> entityToDtoTimesheetEntryList(List<TimesheetEntry> entities);
 
 	@Mapping(target= ".", source="id")
-	@Mapping(target= "nome", source="utente.anagrafica.nome")
-	@Mapping(target= "cognome", source="utente.anagrafica.cognome")
-	@Mapping (target = "mailAziendale", source = "utente.anagrafica.mailAziendale")
+	@Mapping(target= "nome", source="personale.utente.nome")
+	@Mapping(target= "cognome", source="personale.utente.cognome")
+	@Mapping (target = "mailAziendale", source = "personale.utente.mailAziendale")
 	TimesheetResponseDto entityToDto(Timesheet entity);
 	
+
+	/** RICHIESTE **/
 	@Mapping(target = "codiceOwner", source = "richiedente.codicePersona")
 	RichiestaDto entityToDto(Richiesta entity);
 	
@@ -182,4 +199,16 @@ public interface DtoEntityMapper {
 	List<RichiestaHistoryDto> entityToDtoRichiestaHistoryList(List<RichiestaHistory> entities);
 	List<RichiestaHistory> dtoToEntityRichiestaHistoryList(List<RichiestaHistoryDto> dtos);
 	
+	
+	/** FESTIVITA **/
+	Festivita dtoToEntity(FestivitaDto dto);
+	FestivitaDto entityToDto(Festivita entity);
+
+	
+	/** CENTRI DI COSTO **/
+	CentroDiCosto dtoToEntity(CentroDiCostoDto dto);
+	CentroDiCostoDto entityToDto(CentroDiCosto entity);
+	List<CentroDiCosto> dtoToEntityCentroDiCostoList(List<CentroDiCostoDto> dto);
+	List<CentroDiCostoDto> entityToDtoCentroDiCostoList(List<CentroDiCosto> entity);
+
 }

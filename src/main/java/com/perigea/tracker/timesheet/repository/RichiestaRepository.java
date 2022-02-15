@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.perigea.tracker.timesheet.entity.Richiesta;
 
 @Repository
-public interface RichiestaRepository extends JpaRepository<Richiesta, Integer> {
+public interface RichiestaRepository extends JpaRepository<Richiesta, Long> {
 	
 } 

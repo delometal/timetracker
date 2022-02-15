@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.perigea.tracker.commons.dto.GenericWrapperResponse;
+import com.perigea.tracker.commons.exception.CentroDiCostoException;
 import com.perigea.tracker.commons.exception.ClienteException;
 import com.perigea.tracker.commons.exception.CommessaException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
@@ -79,6 +80,16 @@ public class ExceptionHandlerController {
 
 	@ExceptionHandler(FestivitaException.class)
 	public final ResponseEntity<?> handleFestivitaException(FestivitaException ex) {
+		GenericError eObject = new GenericError();
+		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+		eObject.setMessage(ex.getMessage());
+		GenericWrapperResponse<GenericError> errorDto = GenericWrapperResponse.<GenericError>builder()
+				.timestamp(Utils.now()).risultato(eObject).build();
+		return ResponseEntity.badRequest().body(errorDto);
+	}
+
+	@ExceptionHandler(CentroDiCostoException.class)
+	public final ResponseEntity<?> handleCentroDiCostoException(CentroDiCostoException ex) {
 		GenericError eObject = new GenericError();
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());

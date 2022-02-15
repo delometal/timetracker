@@ -1,21 +1,27 @@
 package com.perigea.tracker.timesheet.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@Table(name = "consulente")
+@DiscriminatorValue("CONSULENTE")
 @EqualsAndHashCode(callSuper = true)
-public class Consulente extends Anagrafica {
+public class Consulente extends Personale {
 
 	private static final long serialVersionUID = -548714120900727181L;
 
@@ -24,14 +30,12 @@ public class Consulente extends Anagrafica {
 	
 	@Column(name = "costo")
 	private BigDecimal costo;
-	
-	@Column(name = "data_assunzione")
-	private LocalDate dataAssunzione;
-
-	@Column(name = "data_cessazione")
-	private LocalDate dataCessazione;
-	
-	@OneToOne(mappedBy = "consulente", optional = true)
+		
+	@NotFound(action = NotFoundAction.IGNORE)
+	@OneToOne(mappedBy = "personale", optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	private DatiEconomiciConsulente economics;
-
+	
+	@OneToMany(mappedBy = "personale")
+	private List<StoricoCostoGiornaliero> storicoCostoGiornaliero = new ArrayList<>();
+	
 }

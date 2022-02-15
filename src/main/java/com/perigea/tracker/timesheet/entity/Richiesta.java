@@ -34,7 +34,7 @@ public class Richiesta extends BaseEntity {
 	@Id
 	@Column(name = "codice_richiesta")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer codiceRichiesta;
+	private Long codiceRichiesta;
 
 	@Column(name = "timestamp")
 	private LocalDateTime timestamp;

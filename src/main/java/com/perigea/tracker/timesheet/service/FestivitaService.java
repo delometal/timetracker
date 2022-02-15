@@ -50,6 +50,22 @@ public class FestivitaService {
 	}
 
 	/**
+	 * lettura dati di una festività per nome
+	 * @param id
+	 * @return
+	 */
+	public Festivita readFestivitaByName(String nomeFestivo) {
+		try {
+			return festivitaRepository.findByNomeFestivo(nomeFestivo).get();
+		} catch (Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new FestivitaException(ex.getMessage());
+		}
+	}
+
+	/**
 	 * Aggiornamento di una festività
 	 * @param festivita
 	 * @return

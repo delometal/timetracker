@@ -44,13 +44,13 @@ public class Commessa extends BaseEntity {
 	private CommessaType tipoCommessa;
 	
 	@OneToMany(mappedBy = "commessa")
-	private List<NotaSpese> notaSpese;
+	private List<NotaSpese> noteSpesa;
 
 	@OneToMany(mappedBy = "commessa")
 	private List<TimesheetEntry> timesheet = new ArrayList<>();
 
 	@OneToMany(mappedBy = "commessa")
-	private List<DipendenteCommessa> dipendente = new ArrayList<>();
+	private List<PersonaleCommessa> personale = new ArrayList<>();
 	
 	@ManyToOne
 	@JoinColumn(name = "codice_azienda", nullable = false)

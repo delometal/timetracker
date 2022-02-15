@@ -1,9 +1,10 @@
 package com.perigea.tracker.timesheet.entity;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
@@ -33,8 +34,10 @@ public class CurriculumVitae extends BaseEntity {
 	@Column(name = "filname")
 	private String filename;
 	
-	@OneToOne(mappedBy = "utente", cascade = CascadeType.ALL)
-	private Anagrafica anagrafica;
+	@MapsId
+	@OneToOne
+	@JoinColumn(name = "codice_persona")
+	private Utente utente;
 	
 	/**
 	 * this method allow the usage of the CurriculumRepository in order to directly delete the cv 
@@ -43,8 +46,8 @@ public class CurriculumVitae extends BaseEntity {
 	 */
 	@PreRemove
 	private void preRemove() {
-		if(anagrafica!=null)
-			anagrafica.setCv(null);
+		if(utente!=null)
+			utente.setCv(null);
 	}
 	
 }

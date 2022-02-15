@@ -42,9 +42,9 @@ public class DipendenteService {
 	 */
 	public Utente createUtenteDipendente(Utente utente, Dipendente dipendente) {
 		try {
+			utente.setCodicePersona(Utils.uuid());			
 			dipendente.setUtente(utente);
-			dipendente.setCodicePersona(Utils.uuid());
-			utente.setAnagrafica(dipendente);
+			utente.setPersonale(dipendente);
 			utenteRepository.save(utente);
 			logger.info("utente salvato");
 			return utente;

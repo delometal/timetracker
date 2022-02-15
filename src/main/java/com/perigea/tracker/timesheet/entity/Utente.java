@@ -1,4 +1,5 @@
 package com.perigea.tracker.timesheet.entity;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,19 +13,24 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
+import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @Entity
 @Table(name = "utente")
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"password", "avatar", "azienda", "ruoli", "cv"})
+@ToString(exclude = {"password", "avatar", "azienda", "ruoli", "cv"})
 public class Utente extends BaseEntity {
 
 	private static final long serialVersionUID = -2342088709313716005L;
@@ -36,22 +42,93 @@ public class Utente extends BaseEntity {
 	@Column(name = "password")
 	private String password;
 
+	@Column(name = "username", unique = true)
+	private String username;
+	
+	@Column(name = "avatar")
+	private String avatar;
+
 	@Column(name = "stato_utente")
 	@Enumerated(EnumType.STRING)
 	private StatoUtenteType stato;
+	
+	@Column(name = "account_locked")
+	private boolean accountNonLocked;
+	
+	@Column(name = "account_expired")
+	private boolean accountNonExpired;
 
-	@OneToMany(mappedBy = "utente")
-	private List<NotaSpese> noteSpese = new ArrayList<>();
+	@Column(name = "credentials_expired")
+	private boolean credentialsNonExpired;
 
-	@OneToOne(mappedBy = "utente", cascade = CascadeType.ALL)
-	private Anagrafica anagrafica;
+	@Column(name = "codice_fiscale")
+	private String codiceFiscale;
+	
+	@Column(name = "tipo", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private AnagraficaType tipo;
+	
+	@Column(name = "nome", nullable = false)
+	private String nome;
 
-	@OneToMany(mappedBy = "utente")
-	private List<Timesheet> timesheet = new ArrayList<>();
+	@Column(name = "cognome", nullable = false)
+	private String cognome;
 
-	@OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
-	private List<DipendenteCommessa> commesseDipendente = new ArrayList<>();
+	@Column(name = "mail_aziendale")
+	private String mailAziendale;
 
+	@Column(name = "mail_privata")
+	private String mailPrivata;
+
+	@Column(name = "cellulare")
+	private String cellulare;
+	
+	@Column(name = "iban")
+	private String iban;
+	
+	@Column(name = "luogo_di_nascita")
+	private String luogoDiNascita;
+
+	@Column(name = "data_di_nascita")
+	private LocalDate dataDiNascita;
+	
+	@Column(name = "provincia_di_domicilio")
+	private String provinciaDiDomicilio;
+
+	@Column(name = "comune_di_domicilio")
+	private String comuneDiDomicilio;
+
+	@Column(name = "indirizzo_di_domicilio")
+	private String indirizzoDiDomicilio;
+	
+	@Column(name = "provincia_di_residenza")
+	private String provinciaDiResidenza;
+
+	@Column(name = "comune_di_residenza")
+	private String comuneDiResidenza;
+
+	@Column(name = "indirizzo_di_residenza")
+	private String indirizzoDiResidenza;
+
+	@Column(name = "nome_contatto_emergenza")
+	private String nomeContattoEmergenza;
+
+	@Column(name = "cellulare_contatto_emergenza")
+	private String cellulareContattoEmergenza;
+	
+	@NotFound(action = NotFoundAction.IGNORE)
+	@OneToOne(mappedBy = "utente", cascade = CascadeType.ALL, optional = true)
+	private Personale personale;
+	
+	@ManyToOne(optional = true)
+	@NotFound(action = NotFoundAction.IGNORE)
+	@JoinColumn(name = "codice_azienda", insertable = false, updatable = false)
+	private Azienda azienda;
+	
+	@NotFound(action = NotFoundAction.IGNORE)
+	@OneToOne(mappedBy = "utente", cascade = CascadeType.ALL, optional = true)
+	private CurriculumVitae cv;
+	
 	@ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
         name = "utente_ruolo", 
@@ -60,33 +137,6 @@ public class Utente extends BaseEntity {
     )
 	private List<Ruolo> ruoli = new ArrayList<>();
 
-	@ManyToOne
-	@JoinColumn(name = "codice_responsabile")
-	private Utente responsabile;
-
-	@OneToMany(mappedBy = "responsabile")
-	private List<Utente> dipendenti = new ArrayList<>();
-
-	public void addDipendente(Utente dipendente) {
-		this.dipendenti.add(dipendente);
-		dipendente.setResponsabile(this);
-	}
-
-	public void removeDipendente(Utente dipendente) {
-		this.dipendenti.remove(dipendente);
-		dipendente.setResponsabile(null);
-	}
-
-	public void addTimesheet(Timesheet timesheet) {
-		this.timesheet.add(timesheet);
-		timesheet.setUtente(this);
-	}
-
-	public void removeTimesheet(Timesheet timesheet) {
-		this.timesheet.remove(timesheet);
-		timesheet.setUtente(null);
-	}
-	
 	public void addRuolo(Ruolo ruolo) {
 		this.ruoli.add(ruolo);
 	}

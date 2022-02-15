@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -22,18 +23,18 @@ public class DatiEconomiciConsulente extends BaseEntity {
 	private static final long serialVersionUID = -3690536458436806691L;
 
     @Id
-	@Column(name = "codice_persona")
+	@Column(name = "codice_persona", insertable = false, updatable = false)
 	private String codicePersona;
+    
+    @Column(name = "codice_centro_di_costo", insertable = false, updatable = false)
+	private String codiceCentroDiCosto;
 	
     @Column(name = "data_ingaggio")
-	private LocalDate datIngaggio;
+	private LocalDate dataIngaggio;
     
     @Column(name = "decorrenza_assegnazione_centro_di_costo")
 	private LocalDate decorrenzaAssegnazioneCentroDiCosto;
     
-    @Column(name = "codice_centro_di_costo")
-	private String codiceCentroDiCosto;
-	
 	@Column(name = "tipo_ingaggio")
 	private Float tipoIngaggio;
 	
@@ -43,6 +44,10 @@ public class DatiEconomiciConsulente extends BaseEntity {
 	@MapsId
 	@OneToOne
 	@JoinColumn(name = "codice_persona")
-	private Consulente consulente;
-		
+	private Consulente personale;
+	
+	@ManyToOne
+	@JoinColumn(name = "codice_centro_di_costo")
+	private CentroDiCosto centroDiCosto;
+	
 }

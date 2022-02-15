@@ -8,6 +8,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -29,8 +30,11 @@ public class DatiEconomiciDipendente extends BaseEntity {
 	private static final long serialVersionUID = -3690536458436806691L;
 	
 	@Id
-	@Column(name = "codice_persona")
+	@Column(name = "codice_persona", insertable = false, updatable = false)
 	private String codicePersona;
+
+    @Column(name = "codice_centro_di_costo", insertable = false, updatable = false)
+	private String codiceCentroDiCosto;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "livello_iniziale")
@@ -94,15 +98,16 @@ public class DatiEconomiciDipendente extends BaseEntity {
 	@Column(name = "data_decorrenza_costo")
 	private LocalDate dataDecorrenzaCosto;
 	
-	@Column(name = "codice_centro_di_costo")
-	private String codiceCentroDiCosto;
-	
 	@Column(name = "decorrenza_assegnazione_centro_di_costo")
 	private LocalDate decorrenzaAssegnazioneCentroDiCosto;
 	
 	@MapsId
 	@OneToOne
 	@JoinColumn(name = "codice_persona")
-	private Dipendente dipendente;
+	private Dipendente personale;
+	
+	@ManyToOne
+	@JoinColumn(name = "codice_centro_di_costo")
+	private CentroDiCosto centroDiCosto;
 		
 }

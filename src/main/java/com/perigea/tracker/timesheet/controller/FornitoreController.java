@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.FornitoreDto;
-import com.perigea.tracker.commons.dto.GenericWrapperResponse;
+import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Fornitore;
@@ -33,102 +33,102 @@ public class FornitoreController {
 	private DtoEntityMapper dtoEntityMapper;
 
 	@PostMapping(value = "/create")
-	public ResponseEntity<GenericWrapperResponse<FornitoreDto>> saveFornitore(@RequestBody FornitoreDto fornitoreDto) {
+	public ResponseEntity<ResponseDto<FornitoreDto>> saveFornitore(@RequestBody FornitoreDto fornitoreDto) {
 		Fornitore fornitore = dtoEntityMapper.dtoToEntity(fornitoreDto);
 		fornitore = fornitoreService.saveFornitore(fornitore);
 		fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
-		GenericWrapperResponse<FornitoreDto> genericResponse = GenericWrapperResponse
-				.<FornitoreDto>builder().timestamp(Utils.now()).risultato(fornitoreDto).build();
+		ResponseDto<FornitoreDto> genericResponse = ResponseDto
+				.<FornitoreDto>builder().timestamp(Utils.now()).data(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
 	@GetMapping(value = "/read-all")
-	public ResponseEntity<GenericWrapperResponse<List<FornitoreDto>>> readAll() {
+	public ResponseEntity<ResponseDto<List<FornitoreDto>>> readAll() {
 		List<Fornitore> fornitori = fornitoreService.readAll();
 		List<FornitoreDto> clientiDto = dtoEntityMapper.entityToDtoFornitoreList(fornitori);
-		GenericWrapperResponse<List<FornitoreDto>> genericResponse = GenericWrapperResponse
-				.<List<FornitoreDto>>builder().timestamp(Utils.now()).risultato(clientiDto).build();
+		ResponseDto<List<FornitoreDto>> genericResponse = ResponseDto
+				.<List<FornitoreDto>>builder().timestamp(Utils.now()).data(clientiDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@GetMapping(value = "/read-by-partita-iva/{partitaIva}")
-	public ResponseEntity<GenericWrapperResponse<FornitoreDto>> readFornitoreByPartitaIva(@PathVariable(name = "partitaIva") String partitaIva) {
+	public ResponseEntity<ResponseDto<FornitoreDto>> readFornitoreByPartitaIva(@PathVariable(name = "partitaIva") String partitaIva) {
 		Fornitore fornitore = fornitoreService.readFornitoreByPartitaIva(partitaIva);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
-		GenericWrapperResponse<FornitoreDto> genericResponse = GenericWrapperResponse
-				.<FornitoreDto>builder().timestamp(Utils.now()).risultato(fornitoreDto).build();
+		ResponseDto<FornitoreDto> genericResponse = ResponseDto
+				.<FornitoreDto>builder().timestamp(Utils.now()).data(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@GetMapping(value = "/read-by-id/{id}")
-	public ResponseEntity<GenericWrapperResponse<FornitoreDto>> readFornitoreById(@PathVariable(name = "id") String id) {
+	public ResponseEntity<ResponseDto<FornitoreDto>> readFornitoreById(@PathVariable(name = "id") String id) {
 		Fornitore fornitore = fornitoreService.readFornitoreById(id);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
-		GenericWrapperResponse<FornitoreDto> genericResponse = GenericWrapperResponse
-				.<FornitoreDto>builder().timestamp(Utils.now()).risultato(fornitoreDto).build();
+		ResponseDto<FornitoreDto> genericResponse = ResponseDto
+				.<FornitoreDto>builder().timestamp(Utils.now()).data(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
 	@PutMapping(value = "/update")
-	public ResponseEntity<GenericWrapperResponse<FornitoreDto>> updateFornitore(@RequestBody FornitoreDto anaFornitoreDto) {
+	public ResponseEntity<ResponseDto<FornitoreDto>> updateFornitore(@RequestBody FornitoreDto anaFornitoreDto) {
 		Fornitore fornitore = dtoEntityMapper.dtoToEntity(anaFornitoreDto);
 		fornitore = fornitoreService.saveFornitore(fornitore);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
-		GenericWrapperResponse<FornitoreDto> genericResponse = GenericWrapperResponse
-				.<FornitoreDto>builder().timestamp(Utils.now()).risultato(fornitoreDto).build();
+		ResponseDto<FornitoreDto> genericResponse = ResponseDto
+				.<FornitoreDto>builder().timestamp(Utils.now()).data(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@DeleteMapping(value = "/delete-by-partita-iva/{partitaIva}")
-	public ResponseEntity<GenericWrapperResponse<FornitoreDto>> deleteFornitoreByPartitaIva(@PathVariable(name = "partitaIva") String partitaIva) {
+	public ResponseEntity<ResponseDto<FornitoreDto>> deleteFornitoreByPartitaIva(@PathVariable(name = "partitaIva") String partitaIva) {
 		Fornitore fornitore = fornitoreService.readFornitoreByPartitaIva(partitaIva);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
 		fornitoreService.deleteFornitoreById(fornitore.getCodiceAzienda());
-		GenericWrapperResponse<FornitoreDto> genericResponse = GenericWrapperResponse
-				.<FornitoreDto>builder().timestamp(Utils.now()).risultato(fornitoreDto).build();
+		ResponseDto<FornitoreDto> genericResponse = ResponseDto
+				.<FornitoreDto>builder().timestamp(Utils.now()).data(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@DeleteMapping(value = "/delete-id/{id}")
-	public ResponseEntity<GenericWrapperResponse<FornitoreDto>> deleteFornitoreById(@PathVariable(name = "id") String id) {
+	public ResponseEntity<ResponseDto<FornitoreDto>> deleteFornitoreById(@PathVariable(name = "id") String id) {
 		Fornitore fornitore = fornitoreService.readFornitoreById(id);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
 		fornitoreService.deleteFornitoreById(id);
-		GenericWrapperResponse<FornitoreDto> genericResponse = GenericWrapperResponse
-				.<FornitoreDto>builder().timestamp(Utils.now()).risultato(fornitoreDto).build();
+		ResponseDto<FornitoreDto> genericResponse = ResponseDto
+				.<FornitoreDto>builder().timestamp(Utils.now()).data(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
 	@PostMapping(value = "/{id}/contatti/add-contatto")
-	public ResponseEntity<GenericWrapperResponse<UtenteDto>> createContatto(@PathVariable(name = "id") String id, @RequestBody UtenteDto contattoDto) {
+	public ResponseEntity<ResponseDto<UtenteDto>> createContatto(@PathVariable(name = "id") String id, @RequestBody UtenteDto contattoDto) {
 		Fornitore fornitore = fornitoreService.readFornitoreById(id);
 		Utente contatto = fornitoreService.findContatto(contattoDto.getCodicePersona());
 		fornitoreService.addContatto(fornitore, contatto);
 		UtenteDto dto = dtoEntityMapper.entityToDto(contatto);
-		GenericWrapperResponse<UtenteDto> genericResponse = GenericWrapperResponse
-				.<UtenteDto>builder().timestamp(Utils.now()).risultato(dto).build();
+		ResponseDto<UtenteDto> genericResponse = ResponseDto
+				.<UtenteDto>builder().timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
 	@PostMapping(value = "/{id}/contatti/remove-contatto")
-	public ResponseEntity<GenericWrapperResponse<UtenteDto>> removeContatto(@PathVariable(name = "id") String id, @RequestBody UtenteDto contattoDto) {
+	public ResponseEntity<ResponseDto<UtenteDto>> removeContatto(@PathVariable(name = "id") String id, @RequestBody UtenteDto contattoDto) {
 		Fornitore fornitore = fornitoreService.readFornitoreById(id);
 		Utente contatto = fornitoreService.findContatto(contattoDto.getCodicePersona());
 		fornitoreService.removeContatto(fornitore, contatto);
 		UtenteDto dto = dtoEntityMapper.entityToDto(contatto);
-		GenericWrapperResponse<UtenteDto> genericResponse = GenericWrapperResponse
-				.<UtenteDto>builder().timestamp(Utils.now()).risultato(dto).build();
+		ResponseDto<UtenteDto> genericResponse = ResponseDto
+				.<UtenteDto>builder().timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
 	@DeleteMapping(value = "/{id}/contatti/delete-contatto")
-	public ResponseEntity<GenericWrapperResponse<UtenteDto>> deleteContatto(@PathVariable(name = "id") String id, @RequestBody UtenteDto contattoDto) {
+	public ResponseEntity<ResponseDto<UtenteDto>> deleteContatto(@PathVariable(name = "id") String id, @RequestBody UtenteDto contattoDto) {
 		Fornitore fornitore = fornitoreService.readFornitoreById(id);
 		Utente contatto = fornitoreService.findContatto(contattoDto.getCodicePersona());
 		fornitoreService.deleteContatto(fornitore, contatto);
 		UtenteDto dto = dtoEntityMapper.entityToDto(contatto);
-		GenericWrapperResponse<UtenteDto> genericResponse = GenericWrapperResponse
-				.<UtenteDto>builder().timestamp(Utils.now()).risultato(dto).build();
+		ResponseDto<UtenteDto> genericResponse = ResponseDto
+				.<UtenteDto>builder().timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	

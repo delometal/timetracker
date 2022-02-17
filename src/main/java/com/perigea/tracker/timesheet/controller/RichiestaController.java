@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.perigea.tracker.commons.dto.GenericWrapperResponse;
+import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.RichiestaDto;
 import com.perigea.tracker.commons.dto.RichiestaHistoryDto;
 import com.perigea.tracker.commons.utils.Utils;
@@ -31,61 +31,61 @@ public class RichiestaController {
 	private DtoEntityMapper dtoEntityMapper;
 
 	@PostMapping(value = "/create")
-	public ResponseEntity<GenericWrapperResponse<RichiestaDto>> createRole(@RequestBody RichiestaDto richiestaDto) {
+	public ResponseEntity<ResponseDto<RichiestaDto>> createRole(@RequestBody RichiestaDto richiestaDto) {
 		Richiesta richiesta = dtoEntityMapper.dtoToEntity(richiestaDto);
 		richiesta = richiestaService.createRichiesta(richiesta);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
-		GenericWrapperResponse<RichiestaDto> genericDto = GenericWrapperResponse.<RichiestaDto>builder()
-				.timestamp(Utils.now()).risultato(dto).build();
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder()
+				.timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
 	@GetMapping(value = "/read/{id}")
-	public ResponseEntity<GenericWrapperResponse<RichiestaDto>> readRole(@PathVariable(name = "id") Long id) {
+	public ResponseEntity<ResponseDto<RichiestaDto>> readRole(@PathVariable(name = "id") Long id) {
 		Richiesta richiesta = richiestaService.readRichiesta(id);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
-		GenericWrapperResponse<RichiestaDto> genericDto = GenericWrapperResponse.<RichiestaDto>builder()
-				.timestamp(Utils.now()).risultato(dto).build();
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder()
+				.timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
 	@PutMapping(value = "/update")
-	public ResponseEntity<GenericWrapperResponse<RichiestaDto>> updateRichiesta(@RequestBody RichiestaDto richiestaDto) {
+	public ResponseEntity<ResponseDto<RichiestaDto>> updateRichiesta(@RequestBody RichiestaDto richiestaDto) {
 		Richiesta richiesta = dtoEntityMapper.dtoToEntity(richiestaDto);
 		richiesta = richiestaService.updateRichiesta(richiesta);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
-		GenericWrapperResponse<RichiestaDto> genericDto = GenericWrapperResponse.<RichiestaDto>builder()
-				.timestamp(Utils.now()).risultato(dto).build();
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder()
+				.timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
 	@DeleteMapping(value = "/delete/{id}")
-	public ResponseEntity<GenericWrapperResponse<RichiestaDto>> deleteRichiesta(@PathVariable(name = "id") Long id) {
+	public ResponseEntity<ResponseDto<RichiestaDto>> deleteRichiesta(@PathVariable(name = "id") Long id) {
 		Richiesta richiesta = richiestaService.readRichiesta(id);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
 		richiestaService.deleteRichiesta(id);
-		GenericWrapperResponse<RichiestaDto> genericDto = GenericWrapperResponse.<RichiestaDto>builder()
-				.timestamp(Utils.now()).risultato(dto).build();
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder()
+				.timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
 	@PutMapping(value = "/update-history-element")
-	public ResponseEntity<GenericWrapperResponse<RichiestaDto>> updateRichiestaHistory(@RequestBody RichiestaHistoryDto richiestaHistoryDto) {
+	public ResponseEntity<ResponseDto<RichiestaDto>> updateRichiestaHistory(@RequestBody RichiestaHistoryDto richiestaHistoryDto) {
 		RichiestaHistory richiestaHistory = dtoEntityMapper.dtoToEntity(richiestaHistoryDto);
 		Richiesta richiesta = richiestaService.updateRichiestaHistory(richiestaHistory);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
-		GenericWrapperResponse<RichiestaDto> genericDto = GenericWrapperResponse.<RichiestaDto>builder()
-				.timestamp(Utils.now()).risultato(dto).build();
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder()
+				.timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
 	@DeleteMapping(value = "/delete-history-element")
-	public ResponseEntity<GenericWrapperResponse<RichiestaDto>> deleteRichiestaHistory(@RequestBody RichiestaHistoryDto richiestaHistoryDto) {
+	public ResponseEntity<ResponseDto<RichiestaDto>> deleteRichiestaHistory(@RequestBody RichiestaHistoryDto richiestaHistoryDto) {
 		RichiestaHistory richiestaHistory = dtoEntityMapper.dtoToEntity(richiestaHistoryDto);
 		Richiesta richiesta = richiestaService.deleteRichiestaHistory(richiestaHistory);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
-		GenericWrapperResponse<RichiestaDto> genericDto = GenericWrapperResponse.<RichiestaDto>builder()
-				.timestamp(Utils.now()).risultato(dto).build();
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder()
+				.timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	

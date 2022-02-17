@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.CentroDiCostoDto;
-import com.perigea.tracker.commons.dto.GenericWrapperResponse;
+import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.CentroDiCosto;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
@@ -32,50 +32,50 @@ public class CentroDiCostoController {
 	private DtoEntityMapper dtoEntityMapper;
 
 	@PostMapping(value = "/create")
-	public ResponseEntity<GenericWrapperResponse<CentroDiCostoDto>> createCentroDiCosto(@RequestBody CentroDiCostoDto centroDiCostoDto) {
+	public ResponseEntity<ResponseDto<CentroDiCostoDto>> createCentroDiCosto(@RequestBody CentroDiCostoDto centroDiCostoDto) {
 		CentroDiCosto centroDiCosto = dtoEntityMapper.dtoToEntity(centroDiCostoDto);
 		centroDiCosto = centroDiCostoService.createCentroDiCosto(centroDiCosto);
 		CentroDiCostoDto dtoCentroDiCosto = dtoEntityMapper.entityToDto(centroDiCosto);
-		GenericWrapperResponse<CentroDiCostoDto> genericDto = GenericWrapperResponse.<CentroDiCostoDto>builder()
-				.timestamp(Utils.now()).risultato(dtoCentroDiCosto).build();
+		ResponseDto<CentroDiCostoDto> genericDto = ResponseDto.<CentroDiCostoDto>builder()
+				.timestamp(Utils.now()).data(dtoCentroDiCosto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
 	@GetMapping(value = "/read/{id}")
-	public ResponseEntity<GenericWrapperResponse<CentroDiCostoDto>> readCentroDiCosto(@PathVariable("id") String id) {
+	public ResponseEntity<ResponseDto<CentroDiCostoDto>> readCentroDiCosto(@PathVariable("id") String id) {
 		CentroDiCosto centroDiCosto = centroDiCostoService.readCentroDiCosto(id);
 		CentroDiCostoDto dtoCentroDiCosto = dtoEntityMapper.entityToDto(centroDiCosto);
-		GenericWrapperResponse<CentroDiCostoDto> genericDto = GenericWrapperResponse.<CentroDiCostoDto>builder()
-				.timestamp(Utils.now()).risultato(dtoCentroDiCosto).build();
+		ResponseDto<CentroDiCostoDto> genericDto = ResponseDto.<CentroDiCostoDto>builder()
+				.timestamp(Utils.now()).data(dtoCentroDiCosto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
 	@GetMapping(value = "/search")
-	public ResponseEntity<GenericWrapperResponse<List<CentroDiCostoDto>>> searchCentroDiCosto(@RequestParam("searchKey") String searchKey) {
+	public ResponseEntity<ResponseDto<List<CentroDiCostoDto>>> searchCentroDiCosto(@RequestParam("searchKey") String searchKey) {
 		List<CentroDiCosto> centroDiCosto = centroDiCostoService.searchCentroDiCosto(searchKey);
 		List<CentroDiCostoDto> dtoCentroDiCosto = dtoEntityMapper.entityToDtoCentroDiCostoList(centroDiCosto);
-		GenericWrapperResponse<List<CentroDiCostoDto>> genericDto = GenericWrapperResponse.<List<CentroDiCostoDto>>builder()
-				.timestamp(Utils.now()).risultato(dtoCentroDiCosto).build();
+		ResponseDto<List<CentroDiCostoDto>> genericDto = ResponseDto.<List<CentroDiCostoDto>>builder()
+				.timestamp(Utils.now()).data(dtoCentroDiCosto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
 	@PutMapping(value = "/update")
-	public ResponseEntity<GenericWrapperResponse<CentroDiCostoDto>> updateCentroDiCosto(@RequestBody CentroDiCostoDto centroDiCostoDto) {
+	public ResponseEntity<ResponseDto<CentroDiCostoDto>> updateCentroDiCosto(@RequestBody CentroDiCostoDto centroDiCostoDto) {
 		CentroDiCosto centroDiCosto = dtoEntityMapper.dtoToEntity(centroDiCostoDto);
 		centroDiCosto = centroDiCostoService.updateCentroDiCosto(centroDiCosto);
 		CentroDiCostoDto dtoCentroDiCosto = dtoEntityMapper.entityToDto(centroDiCosto);
-		GenericWrapperResponse<CentroDiCostoDto> genericDto = GenericWrapperResponse.<CentroDiCostoDto>builder()
-				.timestamp(Utils.now()).risultato(dtoCentroDiCosto).build();
+		ResponseDto<CentroDiCostoDto> genericDto = ResponseDto.<CentroDiCostoDto>builder()
+				.timestamp(Utils.now()).data(dtoCentroDiCosto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
 	@DeleteMapping(value = "/delete/{id}")
-	public ResponseEntity<GenericWrapperResponse<CentroDiCostoDto>> deleteCentroDiCosto(@PathVariable("id") String id) {
+	public ResponseEntity<ResponseDto<CentroDiCostoDto>> deleteCentroDiCosto(@PathVariable("id") String id) {
 		CentroDiCosto centroDiCosto = centroDiCostoService.readCentroDiCosto(id);
 		CentroDiCostoDto centroDiCostoDto = dtoEntityMapper.entityToDto(centroDiCosto);
 		centroDiCostoService.deleteCentroDiCosto(id);
-		GenericWrapperResponse<CentroDiCostoDto> genericDto = GenericWrapperResponse.<CentroDiCostoDto>builder()
-				.timestamp(Utils.now()).risultato(centroDiCostoDto).build();
+		ResponseDto<CentroDiCostoDto> genericDto = ResponseDto.<CentroDiCostoDto>builder()
+				.timestamp(Utils.now()).data(centroDiCostoDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	

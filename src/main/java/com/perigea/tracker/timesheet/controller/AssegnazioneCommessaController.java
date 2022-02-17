@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.DipendenteCommessaDto;
-import com.perigea.tracker.commons.dto.GenericWrapperResponse;
+import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.PersonaleCommessa;
 import com.perigea.tracker.timesheet.entity.keys.DipendenteCommessaKey;
@@ -30,41 +30,41 @@ public class AssegnazioneCommessaController {
 	private DtoEntityMapper dtoEntityMapper;
 	
 	@PostMapping(value = "/create")
-	public ResponseEntity<GenericWrapperResponse<DipendenteCommessaDto>> createDipendenteCommessa(@RequestBody DipendenteCommessaDto dipendenteCommessaDto) {
+	public ResponseEntity<ResponseDto<DipendenteCommessaDto>> createDipendenteCommessa(@RequestBody DipendenteCommessaDto dipendenteCommessaDto) {
 		PersonaleCommessa dipendenteCommessa = dtoEntityMapper.dtoToEntity(dipendenteCommessaDto);
 		dipendenteCommessa = assegnazioneCommessaService.createDipendenteCommessa(dipendenteCommessa);
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
-		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
-				.<DipendenteCommessaDto>builder().timestamp(Utils.now()).risultato(dto).build();
+		ResponseDto<DipendenteCommessaDto> genericResponse = ResponseDto
+				.<DipendenteCommessaDto>builder().timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@GetMapping(value = "/read/commessa/{codiceCommessa}/dipendente/{codicePersona}")
-	public ResponseEntity<GenericWrapperResponse<DipendenteCommessaDto>> readDipendenteCommessa(@PathVariable(name = "codicePersona") String codicePersona, @PathVariable(name = "codiceCommessa") String codiceCommessa) {
+	public ResponseEntity<ResponseDto<DipendenteCommessaDto>> readDipendenteCommessa(@PathVariable(name = "codicePersona") String codicePersona, @PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		PersonaleCommessa dipendenteCommessa = assegnazioneCommessaService.readDipendenteCommessa(new DipendenteCommessaKey(codicePersona, codiceCommessa));
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
-		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
-				.<DipendenteCommessaDto>builder().timestamp(Utils.now()).risultato(dto).build();
+		ResponseDto<DipendenteCommessaDto> genericResponse = ResponseDto
+				.<DipendenteCommessaDto>builder().timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@PutMapping(value = "/update")
-	public ResponseEntity<GenericWrapperResponse<DipendenteCommessaDto>> updateDipendenteCommessa(@RequestBody DipendenteCommessaDto dipendenteCommessaDto) {
+	public ResponseEntity<ResponseDto<DipendenteCommessaDto>> updateDipendenteCommessa(@RequestBody DipendenteCommessaDto dipendenteCommessaDto) {
 		PersonaleCommessa dipendenteCommessa = dtoEntityMapper.dtoToEntity(dipendenteCommessaDto);
 		dipendenteCommessa = assegnazioneCommessaService.updateDipendenteCommessa(dipendenteCommessa);
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
-		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
-				.<DipendenteCommessaDto>builder().timestamp(Utils.now()).risultato(dto).build();
+		ResponseDto<DipendenteCommessaDto> genericResponse = ResponseDto
+				.<DipendenteCommessaDto>builder().timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@DeleteMapping(value = "/delete/commessa/{codiceCommessa}/dipendente/{codicePersona}")
-	ResponseEntity<GenericWrapperResponse<DipendenteCommessaDto>> deleteDipendenteCommessa(@PathVariable(name = "codicePersona") String codicePersona, @PathVariable(name = "codiceCommessa") String codiceCommessa) {
+	ResponseEntity<ResponseDto<DipendenteCommessaDto>> deleteDipendenteCommessa(@PathVariable(name = "codicePersona") String codicePersona, @PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		PersonaleCommessa dipendenteCommessa = assegnazioneCommessaService.readDipendenteCommessa(new DipendenteCommessaKey(codicePersona, codiceCommessa));
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
 		assegnazioneCommessaService.deleteDipendenteCommessa(dipendenteCommessa.getId());
-		GenericWrapperResponse<DipendenteCommessaDto> genericResponse = GenericWrapperResponse
-				.<DipendenteCommessaDto>builder().timestamp(Utils.now()).risultato(dto).build();
+		ResponseDto<DipendenteCommessaDto> genericResponse = ResponseDto
+				.<DipendenteCommessaDto>builder().timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	

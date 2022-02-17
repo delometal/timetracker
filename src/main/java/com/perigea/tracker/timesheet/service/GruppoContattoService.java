@@ -183,43 +183,4 @@ public class GruppoContattoService {
 		}
 	}
 	
-//	@EventListener
-//	public void handleUserCrudEvent(UserCrudEvent event) {
-//		try {
-//			logger.info("UserCrudEvent handling request");
-//			DipendenteDto persona = event.getDipendente();
-//			String email = persona.getMailAziendale();
-//			Anagrafica contatto = anagraficaRepository.findByMailAziendale(email).get();
-//			if(contatto != null) {
-//				switch (event.getCrudType()) {
-//					case UPDATE:
-//						contatto.setNome(persona.getNome());
-//						contatto.setCognome(persona.getCognome());
-//						contatto.setCodiceFiscale(persona.getCodiceFiscale());
-//						contatto.setMailPrivata(persona.getMailPrivata());
-//						contatto.setMailAziendale(email);
-//						contatto.setCellulare(persona.getCellulare());
-//						contatto.setComuneDiDomicilio(persona.getComuneDiDomicilio());
-//						contatto.setIndirizzoDiDomicilio(persona.getIndirizzoDiDomicilio());
-//						contatto.setProvinciaDiDomicilio(persona.getProvinciaDiDomicilio());
-//						anagraficaRepository.save(contatto);
-//						logger.info(String.format("Contatto con email aziendale %s è stato aggiornato", email));
-//						break;
-//					case DELETE:
-//						anagraficaRepository.delete(contatto);
-//						logger.info(String.format("Contatto con email aziendale %s è stato rimosso", email));
-//						break;
-//					case CREATE:
-//					case READ:
-//					default:
-//					break;
-//				}
-//			} else {
-//				logger.info(String.format("Contatto con email aziendale %s non è tra i contatti", email));
-//			}
-//		} catch(Exception ex) {
-//			logger.error(ex.getMessage());
-//		}
-//	}
-	
 }

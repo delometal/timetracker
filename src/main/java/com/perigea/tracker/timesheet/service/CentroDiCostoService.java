@@ -3,8 +3,6 @@ package com.perigea.tracker.timesheet.service;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import javax.persistence.criteria.Predicate;
-
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,6 +13,9 @@ import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.CentroDiCosto;
 import com.perigea.tracker.timesheet.repository.CentroDiCostoRepository;
+import com.perigea.tracker.timesheet.search.Condition;
+import com.perigea.tracker.timesheet.search.FilterFactory;
+import com.perigea.tracker.timesheet.search.Operator;
 
 @Service
 public class CentroDiCostoService {
@@ -24,6 +25,9 @@ public class CentroDiCostoService {
 
 	@Autowired
 	private CentroDiCostoRepository centroDiCostoRepository;
+	
+	@Autowired
+	private FilterFactory<CentroDiCosto> filter;
 
 	/**
 	 * creazione centro di costo
@@ -101,13 +105,20 @@ public class CentroDiCostoService {
 		}
 	}
 	
-	private static Specification<CentroDiCosto> centroDiCostoByIdOrDescriptionSearch(final String searchKey) {
-		return (root, query, builder) -> {
-			Predicate[] predicates = new Predicate[2];
-			predicates[0] = builder.like(builder.upper(root.<String>get("codiceCentroDiCosto")), Utils.QUERY_LIKE_BOUNDARY+searchKey.toUpperCase()+Utils.QUERY_LIKE_BOUNDARY);
-			predicates[1] = builder.like(builder.upper(root.<String>get("descrizione")), Utils.QUERY_LIKE_BOUNDARY+searchKey.toUpperCase()+Utils.QUERY_LIKE_BOUNDARY);
-			return builder.or(predicates);
-	    };
+	private Specification<CentroDiCosto> centroDiCostoByIdOrDescriptionSearch(final String searchKey) {
+		Condition co1 = Condition.builder().field("codiceCentroDiCosto").value(searchKey).valueType(String.class).operator(Operator.like).build();
+		Condition co2 = Condition.builder().field("descrizione").value(searchKey).valueType(String.class).operator(Operator.like).build();
+		filter.setIsOrPredicates(true);
+		filter.addCondition(co1);
+		filter.addCondition(co2);
+		return filter.buildSpecification();
+		
+//		return (root, query, builder) -> {
+//			Predicate[] predicates = new Predicate[2];
+//			predicates[0] = builder.like(builder.upper(root.<String>get("codiceCentroDiCosto")), Utils.QUERY_LIKE_BOUNDARY+searchKey.toUpperCase()+Utils.QUERY_LIKE_BOUNDARY);
+//			predicates[1] = builder.like(builder.upper(root.<String>get("descrizione")), Utils.QUERY_LIKE_BOUNDARY+searchKey.toUpperCase()+Utils.QUERY_LIKE_BOUNDARY);
+//			return builder.or(predicates);
+//	    };
 	}
 
 }

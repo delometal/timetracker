@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.perigea.tracker.commons.dto.GenericWrapperResponse;
+import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.NotaSpeseDto;
 import com.perigea.tracker.commons.dto.NotaSpeseInputDto;
 import com.perigea.tracker.commons.utils.Utils;
@@ -28,41 +28,41 @@ public class NotaSpeseController {
 	private DtoEntityMapper dtoEntityMapper;
 
 	@PostMapping(value = "/create")
-	public ResponseEntity<GenericWrapperResponse<NotaSpeseDto>> createNotaSpese(@RequestBody NotaSpeseInputDto notaSpeseInputDto) {
+	public ResponseEntity<ResponseDto<NotaSpeseDto>> createNotaSpese(@RequestBody NotaSpeseInputDto notaSpeseInputDto) {
 		NotaSpese notaSpese = dtoEntityMapper.dtoToEntity(notaSpeseInputDto);
 		notaSpese = notaSpeseService.createNotaSpese(notaSpese);
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);
-		GenericWrapperResponse<NotaSpeseDto> genericDto = GenericWrapperResponse.<NotaSpeseDto>builder()
-				.timestamp(Utils.now()).risultato(dtoNotaSpese).build();
+		ResponseDto<NotaSpeseDto> genericDto = ResponseDto.<NotaSpeseDto>builder()
+				.timestamp(Utils.now()).data(dtoNotaSpese).build();
 		return ResponseEntity.ok(genericDto);
 	}
 		
 	@GetMapping(value = "/read")
-	public ResponseEntity<GenericWrapperResponse<NotaSpeseDto>> readNotaSpese(@RequestBody NotaSpeseKey notaSpeseKey) {
+	public ResponseEntity<ResponseDto<NotaSpeseDto>> readNotaSpese(@RequestBody NotaSpeseKey notaSpeseKey) {
 		NotaSpese notaSpese = notaSpeseService.readNotaSpese(notaSpeseKey);
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);
-		GenericWrapperResponse<NotaSpeseDto> genericDto = GenericWrapperResponse.<NotaSpeseDto>builder()
-				.timestamp(Utils.now()).risultato(dtoNotaSpese).build();
+		ResponseDto<NotaSpeseDto> genericDto = ResponseDto.<NotaSpeseDto>builder()
+				.timestamp(Utils.now()).data(dtoNotaSpese).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
 	@PostMapping(value = "/update")
-	public ResponseEntity<GenericWrapperResponse<NotaSpeseDto>> updateNotaSpese(@RequestBody NotaSpeseInputDto notaSpeseInputDto) {
+	public ResponseEntity<ResponseDto<NotaSpeseDto>> updateNotaSpese(@RequestBody NotaSpeseInputDto notaSpeseInputDto) {
 		NotaSpese notaSpese = dtoEntityMapper.dtoToEntity(notaSpeseInputDto);
 		notaSpese = notaSpeseService.updateNotaSpese(notaSpese);
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);
-		GenericWrapperResponse<NotaSpeseDto> genericDto = GenericWrapperResponse.<NotaSpeseDto>builder()
-				.timestamp(Utils.now()).risultato(dtoNotaSpese).build();
+		ResponseDto<NotaSpeseDto> genericDto = ResponseDto.<NotaSpeseDto>builder()
+				.timestamp(Utils.now()).data(dtoNotaSpese).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
 	@GetMapping(value = "/delete")
-	public ResponseEntity<GenericWrapperResponse<NotaSpeseDto>> deleteNotaSpese(@RequestBody NotaSpeseKey notaSpeseKey) {
+	public ResponseEntity<ResponseDto<NotaSpeseDto>> deleteNotaSpese(@RequestBody NotaSpeseKey notaSpeseKey) {
 		NotaSpese notaSpese = notaSpeseService.readNotaSpese(notaSpeseKey);
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);
 		notaSpeseService.deleteNotaSpese(notaSpeseKey);
-		GenericWrapperResponse<NotaSpeseDto> genericDto = GenericWrapperResponse.<NotaSpeseDto>builder()
-				.timestamp(Utils.now()).risultato(dtoNotaSpese).build();
+		ResponseDto<NotaSpeseDto> genericDto = ResponseDto.<NotaSpeseDto>builder()
+				.timestamp(Utils.now()).data(dtoNotaSpese).build();
 		return ResponseEntity.ok(genericDto);
 	}
 }

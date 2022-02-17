@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.perigea.tracker.commons.dto.GenericWrapperResponse;
+import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.CurriculumVitae;
 import com.perigea.tracker.timesheet.service.FileService;
@@ -28,16 +28,16 @@ public class CurriculumController {
 	private FileService fileService;
 
 	@PostMapping("/{codicePersona}")
-	public ResponseEntity<GenericWrapperResponse<String>> uploadCurriculum(@PathVariable(name = "codicePersona") String codicePersona, @RequestParam("file") MultipartFile file) {
+	public ResponseEntity<ResponseDto<String>> uploadCurriculum(@PathVariable(name = "codicePersona") String codicePersona, @RequestParam("file") MultipartFile file) {
 		try {
 			fileService.uploadCurriculum(codicePersona, file);
-			GenericWrapperResponse<String> genericResponse = GenericWrapperResponse.<String>builder()
+			ResponseDto<String> genericResponse = ResponseDto.<String>builder()
 					.timestamp(Utils.now())
-					.risultato("Uploaded the file successfully: " + file.getOriginalFilename()).build();
+					.data("Uploaded the file successfully: " + file.getOriginalFilename()).build();
 			return ResponseEntity.ok(genericResponse);
 		} catch (Exception e) {
-			GenericWrapperResponse<String> genericResponse = GenericWrapperResponse.<String>builder()
-					.timestamp(Utils.now()).risultato("Upload failed").build();
+			ResponseDto<String> genericResponse = ResponseDto.<String>builder()
+					.timestamp(Utils.now()).data("Upload failed").build();
 			return ResponseEntity.badRequest().body(genericResponse);
 		}
 	}

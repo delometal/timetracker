@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.DatiEconomiciDipendenteDto;
 import com.perigea.tracker.commons.dto.DipendenteDto;
-import com.perigea.tracker.commons.dto.GenericWrapperResponse;
+import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.RuoloDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
@@ -47,7 +47,7 @@ public class DipendenteController {
 	private DtoEntityMapper dtoEntityMapper;
 	
 	@PostMapping(value = "/create")
-	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> createDipendente(@RequestBody DipendenteDto dipendenteDto) {
+	public ResponseEntity<ResponseDto<DipendenteDto>> createDipendente(@RequestBody DipendenteDto dipendenteDto) {
 		Utente utente = dtoEntityMapper.dtoToEntity(dipendenteDto.getUtente());
 		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
 		Utente responsabile = null;
@@ -63,32 +63,32 @@ public class DipendenteController {
 		Dipendente anagrafica = (Dipendente) utente.getPersonale();
 		dipendenteDto = dtoEntityMapper.entityToDto(anagrafica);
 		dipendenteDto.setUtente(utenteDto);
-		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
+		ResponseDto<DipendenteDto> genericResponse = ResponseDto
 				.<DipendenteDto>builder()
 				.timestamp(Utils.now())
-				.risultato(dipendenteDto)
+				.data(dipendenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@GetMapping(value = "/read/{codicePersona}")
 //	@PreAuthorize("hasAuthority('ROLE_MANAGEMENT')")
-	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> readDipendente(@PathVariable(name = "codicePersona") String codicePersona) {
+	public ResponseEntity<ResponseDto<DipendenteDto>> readDipendente(@PathVariable(name = "codicePersona") String codicePersona) {
 		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
 		Dipendente anagrafica = (Dipendente)utente.getPersonale();
 		DipendenteDto dipendenteDto = dtoEntityMapper.entityToDto(anagrafica);
 		dipendenteDto.setUtente(utenteDto);
-		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
+		ResponseDto<DipendenteDto> genericResponse = ResponseDto
 				.<DipendenteDto>builder()
 				.timestamp(Utils.now())
-				.risultato(dipendenteDto)
+				.data(dipendenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@DeleteMapping(value = "/delete/{codicePersona}")
-	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> deleteDipendente(@PathVariable(name = "codicePersona") String codicePersona) {
+	public ResponseEntity<ResponseDto<DipendenteDto>> deleteDipendente(@PathVariable(name = "codicePersona") String codicePersona) {
 		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
 		Dipendente dipendente = (Dipendente) utente.getPersonale();
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
@@ -96,16 +96,16 @@ public class DipendenteController {
 		dipendenteDto.setUtente(utenteDto);
 
 		dipendenteService.deleteUtenteDipendente(codicePersona);
-		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
+		ResponseDto<DipendenteDto> genericResponse = ResponseDto
 				.<DipendenteDto>builder()
 				.timestamp(Utils.now())
-				.risultato(dipendenteDto)
+				.data(dipendenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@PutMapping(value = "/update")
-	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> updateUser(@RequestBody DipendenteDto dipendenteDto) {
+	public ResponseEntity<ResponseDto<DipendenteDto>> updateUser(@RequestBody DipendenteDto dipendenteDto) {
 		Utente responsabile = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodiceResponsabile());
 		Utente utente = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodicePersona());
 		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
@@ -118,16 +118,16 @@ public class DipendenteController {
 
 		DipendenteDto anagraficaResponseDto = dtoEntityMapper.entityToDto(anagrafica);
 		anagraficaResponseDto.setUtente(utenteResponseDto);
-		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
+		ResponseDto<DipendenteDto> genericResponse = ResponseDto
 				.<DipendenteDto>builder()
 				.timestamp(Utils.now())
-				.risultato(anagraficaResponseDto)
+				.data(anagraficaResponseDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
 	@PutMapping(value = "/update-user")
-	public ResponseEntity<GenericWrapperResponse<DipendenteDto>> updateUser(@RequestBody UtenteDto UtenteDto) {
+	public ResponseEntity<ResponseDto<DipendenteDto>> updateUser(@RequestBody UtenteDto UtenteDto) {
 		Utente utente = dtoEntityMapper.dtoToEntity(UtenteDto);
 		Utente responsabile = dipendenteService.readUtenteDipendente(UtenteDto.getCodiceResponsabile());
 		
@@ -140,42 +140,42 @@ public class DipendenteController {
 
 		DipendenteDto dipendenteDto = dtoEntityMapper.entityToDto(anagrafica);
 		dipendenteDto.setUtente(utenteResponseDto);
-		GenericWrapperResponse<DipendenteDto> genericResponse = GenericWrapperResponse
+		ResponseDto<DipendenteDto> genericResponse = ResponseDto
 				.<DipendenteDto>builder()
 				.timestamp(Utils.now())
-				.risultato(dipendenteDto)
+				.data(dipendenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
 	@PutMapping(value = "/update-status/{codicePersona}/{status}")
-	public ResponseEntity<GenericWrapperResponse<UtenteDto>> editStatusUser(@PathVariable("codicePersona") String codicePersona, @PathVariable("status") StatoUtenteType status) {
+	public ResponseEntity<ResponseDto<UtenteDto>> editStatusUser(@PathVariable("codicePersona") String codicePersona, @PathVariable("status") StatoUtenteType status) {
 		Utente utente = dipendenteService.updateUtenteStatus(codicePersona, status);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
-		GenericWrapperResponse<UtenteDto> genericResponse = GenericWrapperResponse.<UtenteDto>builder()
+		ResponseDto<UtenteDto> genericResponse = ResponseDto.<UtenteDto>builder()
 				.timestamp(Utils.now())
-				.risultato(utenteResponseDto)
+				.data(utenteResponseDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
 	@PutMapping(value = "/update-roles/{codicePersona}")
-	public ResponseEntity<GenericWrapperResponse<UtenteDto>> editRoleUser(@PathVariable(name = "codicePersona") String codicePersona, @RequestBody List<RuoloDto> ruoliDto) {
+	public ResponseEntity<ResponseDto<UtenteDto>> editRoleUser(@PathVariable(name = "codicePersona") String codicePersona, @RequestBody List<RuoloDto> ruoliDto) {
 		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
 		List<Ruolo> ruoli = dtoEntityMapper.dtoToEntityRuoloList(ruoliDto);
 		utente.setRuoli(ruoli);
 		utente = dipendenteService.updateUtenteDipendente(utente);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
-		GenericWrapperResponse<UtenteDto> genericResponse = GenericWrapperResponse.<UtenteDto>builder()
+		ResponseDto<UtenteDto> genericResponse = ResponseDto.<UtenteDto>builder()
 				.timestamp(Utils.now())
-				.risultato(utenteResponseDto)
+				.data(utenteResponseDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
 	
 	@PostMapping(value = "/create-economics/{codicePersona}")
-	public ResponseEntity<GenericWrapperResponse<DatiEconomiciDipendenteDto>> createDatiEconomiciDipendente(@RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
+	public ResponseEntity<ResponseDto<DatiEconomiciDipendenteDto>> createDatiEconomiciDipendente(@RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
 		Utente utente = dipendenteService.readUtenteDipendente(datiEconomiciDipendenteDto.getCodicePersona());
 		CentroDiCosto cdc = centroDiCostoService.readCentroDiCosto(datiEconomiciDipendenteDto.getCodiceCentroDiCosto());
 		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(datiEconomiciDipendenteDto);
@@ -189,15 +189,15 @@ public class DipendenteController {
 		utente = dipendenteService.updateUtenteDipendente(utente);
 		datiEconomiciDipendenteDto = dtoEntityMapper.entityToDto(economics);
 
-		GenericWrapperResponse<DatiEconomiciDipendenteDto> genericResponse = GenericWrapperResponse.<DatiEconomiciDipendenteDto>builder()
+		ResponseDto<DatiEconomiciDipendenteDto> genericResponse = ResponseDto.<DatiEconomiciDipendenteDto>builder()
 				.timestamp(Utils.now())
-				.risultato(datiEconomiciDipendenteDto)
+				.data(datiEconomiciDipendenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
 	@PutMapping(value = "/update-economics/{codicePersona}")
-	public ResponseEntity<GenericWrapperResponse<DatiEconomiciDipendenteDto>> editDatiEconomiciDipendente(@PathVariable(name = "codicePersona") String codicePersona, @RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
+	public ResponseEntity<ResponseDto<DatiEconomiciDipendenteDto>> editDatiEconomiciDipendente(@PathVariable(name = "codicePersona") String codicePersona, @RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
 		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
 		CentroDiCosto cdc = centroDiCostoService.readCentroDiCosto(datiEconomiciDipendenteDto.getCodiceCentroDiCosto());
 		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(datiEconomiciDipendenteDto);
@@ -212,9 +212,9 @@ public class DipendenteController {
 		utente = dipendenteService.updateUtenteDipendente(utente);
 		datiEconomiciDipendenteDto = dtoEntityMapper.entityToDto(economics);
 
-		GenericWrapperResponse<DatiEconomiciDipendenteDto> genericResponse = GenericWrapperResponse.<DatiEconomiciDipendenteDto>builder()
+		ResponseDto<DatiEconomiciDipendenteDto> genericResponse = ResponseDto.<DatiEconomiciDipendenteDto>builder()
 				.timestamp(Utils.now())
-				.risultato(datiEconomiciDipendenteDto)
+				.data(datiEconomiciDipendenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
 	}

@@ -35,7 +35,7 @@ public class Gruppo implements Serializable {
 	@Column(name = "descrizione")
 	private String descrizione;
 	
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+	@ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
         name = "gruppo_contatto", 
         joinColumns = { @JoinColumn(name = "codice_gruppo") }, 

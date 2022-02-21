@@ -1,6 +1,5 @@
 package com.perigea.tracker.timesheet.service;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -34,12 +33,13 @@ public class GruppoContattoService {
 
 	@Autowired
 	private UtenteRepository utenteRepository;
-	
+
 	@Autowired
 	private RuoliRepository ruoliRepository;
-	
+
 	/**
 	 * Creazione gruppo
+	 * 
 	 * @param gruppo
 	 * @return
 	 */
@@ -53,6 +53,7 @@ public class GruppoContattoService {
 
 	/**
 	 * Lettura gruppo
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -60,15 +61,15 @@ public class GruppoContattoService {
 		try {
 			return gruppoRepository.findById(id).get();
 		} catch (Exception ex) {
-			if(ex instanceof NoSuchElementException) {
+			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
 			}
 			throw new GruppoException(ex.getMessage());
 		}
 	}
-	
+
 	/**
-	 * 	
+	 * 
 	 * @param gruppo
 	 * @return
 	 */
@@ -79,7 +80,7 @@ public class GruppoContattoService {
 			throw new GruppoException(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param id
@@ -94,9 +95,10 @@ public class GruppoContattoService {
 			throw new GruppoException(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Creazione contatto
+	 * 
 	 * @param contatto
 	 * @return
 	 */
@@ -118,14 +120,33 @@ public class GruppoContattoService {
 
 	/**
 	 * Lettura contatto
+	 * 
 	 * @param id
 	 * @return
 	 */
-	public Utente readContatto(final String id) {
+	public Utente readContatto(final String codicePersona) {
 		try {
-			return utenteRepository.findById(id).get();
+			return utenteRepository.findByCodicePersonaAndTipo(codicePersona, AnagraficaType.C).get();
 		} catch (Exception ex) {
-			if(ex instanceof NoSuchElementException) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new ContattoException(ex.getMessage());
+		}
+	}
+
+	/**
+	 * lettura contatto attraverso nome e cognome
+	 * 
+	 * @param nome
+	 * @param cognome
+	 * @return
+	 */
+	public Utente readContatto(String nome, String cognome) {
+		try {
+			return utenteRepository.findByNomeAndCognome(nome, cognome).get();
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
 			}
 			throw new ContattoException(ex.getMessage());
@@ -134,19 +155,21 @@ public class GruppoContattoService {
 
 	/**
 	 * Lettura tutti i contatti
+	 * 
 	 * @param id
 	 * @return
 	 */
 	public List<Utente> readAllContatti() {
 		try {
-			return utenteRepository.findAll();
+			return utenteRepository.findAllOfType(AnagraficaType.C);
 		} catch (Exception ex) {
 			throw new ContattoException(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Lettura tutti i contatti di un gruppo
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -157,20 +180,24 @@ public class GruppoContattoService {
 			throw new ContattoException(ex.getMessage());
 		}
 	}
-	
+
 	/**
-	 * 	
+	 * 
 	 * @param gruppo
 	 * @return
 	 */
-	public Utente updateContatto(Utente contatto) {
+	public Utente updateContatto(Utente contattoAggiornato) {
 		try {
-			return utenteRepository.save(contatto);
+			utenteRepository.findByCodicePersonaAndTipo(contattoAggiornato.getCodicePersona(), AnagraficaType.C).get();
+			return utenteRepository.save(contattoAggiornato);
 		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
 			throw new ContattoException(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param id
@@ -182,5 +209,5 @@ public class GruppoContattoService {
 			throw new ContattoException(ex.getMessage());
 		}
 	}
-	
+
 }

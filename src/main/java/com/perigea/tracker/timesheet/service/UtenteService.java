@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perigea.tracker.commons.exception.ContattoException;
 import com.perigea.tracker.commons.exception.UtenteException;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
@@ -22,6 +23,8 @@ public class UtenteService {
 
 	@Autowired
 	private UtenteRepository utenteRepository;
+	
+	
 
 	/**
 	 * creazione utente
@@ -35,6 +38,7 @@ public class UtenteService {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
+	
 
 	/**
 	 * lettura utente
@@ -49,6 +53,24 @@ public class UtenteService {
 				throw new EntityNotFoundException(ex.getMessage());
 			}
 			throw new UtenteException(ex.getMessage());
+		}
+	}
+	
+	/**
+	 * lettura utente attraverso nome e cognome
+	 * 
+	 * @param nome
+	 * @param cognome
+	 * @return
+	 */
+	public Utente readUtente(String nome, String cognome) {
+		try {
+			return utenteRepository.findByNomeAndCognome(nome, cognome).get();
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new ContattoException(ex.getMessage());
 		}
 	}
 

@@ -20,11 +20,13 @@ import javax.persistence.Table;
 
 import com.perigea.tracker.commons.enums.RichiestaType;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
+@Builder
 @Table(name = "richiesta")
 @EqualsAndHashCode(callSuper = true)
 public class Richiesta extends BaseEntity {
@@ -46,8 +48,13 @@ public class Richiesta extends BaseEntity {
 	@OneToOne
 	@JoinColumn(name = "codice_persona")
 	private Utente richiedente;
+	
+	@Builder.Default
+	@OneToMany(mappedBy = "richiesta")
+	private List<Timesheet> timesheetRequests = new ArrayList<>();
 
-	@OrderBy("timestamp")
+	@Builder.Default
+	@OrderBy("timestamp DESC")
 	@OneToMany(mappedBy = "richiesta", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<RichiestaHistory> history = new ArrayList<>();
 	
@@ -57,6 +64,14 @@ public class Richiesta extends BaseEntity {
 	
 	public void removeRichiestaHistory(RichiestaHistory richiestaHistory) {
 		this.history.remove(richiestaHistory);
+	}
+	
+	public void addTimesheet(Timesheet timesheet) {
+		this.timesheetRequests.add(timesheet);
+	}
+	
+	public void removeTimesheet(Timesheet timesheet) {
+		this.timesheetRequests.remove(timesheet);
 	}
 	
 }

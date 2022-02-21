@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.perigea.tracker.commons.dto.UtenteDto;
-import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.InfoAutoDto;
+import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.TimesheetRefDto;
 import com.perigea.tracker.commons.dto.TimesheetResponseDto;
+import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.dto.wrapper.TimesheetWrapper;
+import com.perigea.tracker.commons.enums.ApprovalStatus;
 import com.perigea.tracker.commons.enums.EMese;
-import com.perigea.tracker.commons.enums.StatoRichiestaType;
 import com.perigea.tracker.commons.exception.TimesheetException;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Consulente;
@@ -50,8 +50,7 @@ public class TimesheetController {
 	public ResponseEntity<ResponseDto<TimesheetResponseDto>> createTimesheet(@RequestBody TimesheetWrapper wrapper) {
 		Timesheet timesheet = timesheetService.createTimesheet(wrapper.getEntries(), wrapper.getTimesheet());
 		TimesheetResponseDto dto = dtoEntityMapper.entityToDto(timesheet);
-		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder()
-				.timestamp(Utils.now()).data(dto).build();
+		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder().timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -59,8 +58,7 @@ public class TimesheetController {
 	public ResponseEntity<ResponseDto<TimesheetResponseDto>> readTimesheet(@RequestBody TimesheetMensileKey id) {
 		Timesheet timesheet = timesheetService.getTimesheet(id);
 		TimesheetResponseDto dto = dtoEntityMapper.entityToDto(timesheet);
-		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder()
-				.timestamp(Utils.now()).data(dto).build();
+		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder().timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -68,8 +66,7 @@ public class TimesheetController {
 	public ResponseEntity<ResponseDto<TimesheetResponseDto>> deleteTimesheet(@RequestBody TimesheetMensileKey id) {
 		Timesheet timesheet = timesheetService.getTimesheet(id);
 		TimesheetResponseDto dto = dtoEntityMapper.entityToDto(timesheet);
-		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder()
-				.timestamp(Utils.now()).data(dto).build();
+		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder().timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -77,17 +74,15 @@ public class TimesheetController {
 	public ResponseEntity<ResponseDto<TimesheetResponseDto>> updateTimesheet(@RequestBody TimesheetWrapper wrapper) {
 		Timesheet timesheetEntry = timesheetService.updateTimesheet(wrapper.getEntries(), wrapper.getTimesheet());
 		TimesheetResponseDto dto = dtoEntityMapper.entityToDto(timesheetEntry);
-		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder()
-				.timestamp(Utils.now()).data(dto).build();
+		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder().timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
 	@PutMapping(value = "/update-status/{status}")
-	public ResponseEntity<ResponseDto<Boolean>> updateTimesheetStatus(@RequestBody TimesheetRefDto timesheetDto, @PathVariable(value = "status") StatoRichiestaType newStatus) {
+	public ResponseEntity<ResponseDto<Boolean>> updateTimesheetStatus(@RequestBody TimesheetRefDto timesheetDto, @PathVariable(value = "status") ApprovalStatus newStatus) {
 		TimesheetMensileKey tsKey = new TimesheetMensileKey(timesheetDto.getAnno(), timesheetDto.getMese(), timesheetDto.getCodicePersona());
 		Boolean update = timesheetService.editTimesheetStatus(tsKey, newStatus);
-		ResponseDto<Boolean> genericDto = ResponseDto.<Boolean>builder()
-				.timestamp(Utils.now()).data(update).build();
+		ResponseDto<Boolean> genericDto = ResponseDto.<Boolean>builder().timestamp(Utils.now()).data(update).build();
 		if(update) {
 			return ResponseEntity.ok(genericDto);
 		}

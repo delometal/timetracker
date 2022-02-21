@@ -16,11 +16,13 @@ import javax.persistence.Table;
 
 import com.perigea.tracker.commons.enums.ApprovalStatus;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
+@Builder
 @Table(name = "richiesta_history")
 @EqualsAndHashCode(callSuper = true)
 public class RichiestaHistory extends BaseEntity {
@@ -32,8 +34,9 @@ public class RichiestaHistory extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long codiceRichiestaHistory;
 
+	@Builder.Default
 	@Column(name = "timestamp")
-	private LocalDateTime timestamp;
+	private LocalDateTime timestamp = LocalDateTime.now();
 
 	@Column(name = "stato")
 	@Enumerated(EnumType.STRING)
@@ -41,7 +44,7 @@ public class RichiestaHistory extends BaseEntity {
 	
 	@OneToOne
 	@JoinColumn(name = "codice_persona")
-	private Utente responsabile;
+	private Personale responsabile;
 
 	@ManyToOne
 	@JoinColumn(name = "codice_richiesta")

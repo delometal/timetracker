@@ -11,6 +11,7 @@ import com.perigea.tracker.commons.exception.DipendenteException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.exception.PersistenceException;
 import com.perigea.tracker.commons.utils.Utils;
+import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
 import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.repository.ApplicationDao;
@@ -37,14 +38,21 @@ public class DipendenteService {
 	 * Creazione anagrafica dipendente e utente
 	 * @param utente
 	 * @param dipendente
+	 * @param economics 
 	 * @param codiceResponsabile
 	 * @return
 	 */
-	public Utente createUtenteDipendente(Utente utente, Dipendente dipendente) {
+	public Utente createUtenteDipendente(Utente utente, Dipendente dipendente, DatiEconomiciDipendente economics) {
 		try {
-			utente.setCodicePersona(Utils.uuid());			
+			utente.setCodicePersona(null);
+			dipendente.setCodicePersona(null);
+			economics.setCodicePersona(null);
+			String codicePersona = Utils.uuid();
+			utente.setCodicePersona(codicePersona);			
 			dipendente.setUtente(utente);
 			utente.setPersonale(dipendente);
+			economics.setPersonale(dipendente);
+			dipendente.setEconomics(economics);
 			utenteRepository.save(utente);
 			logger.info("utente salvato");
 			return utente;

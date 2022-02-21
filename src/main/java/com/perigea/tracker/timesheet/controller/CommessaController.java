@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.CommessaFatturabileDto;
 import com.perigea.tracker.commons.dto.CommessaNonFatturabileDto;
-import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.OrdineCommessaDto;
+import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.wrapper.CommessaFatturabileDtoWrapper;
 import com.perigea.tracker.commons.dto.wrapper.CommessaNonFatturabileDtoWrapper;
 import com.perigea.tracker.commons.utils.Utils;
@@ -87,7 +86,7 @@ public class CommessaController {
 	}
 	
 	@PostMapping(value = "/create-ordine-commessa")
-	public ResponseEntity<ResponseDto<OrdineCommessaDto>> createOrdineCommessa(@RequestBody CommessaFatturabileDtoWrapper wrapper,  @RequestParam String idCliente) {
+	public ResponseEntity<ResponseDto<OrdineCommessaDto>> createOrdineCommessa(@RequestBody CommessaFatturabileDtoWrapper wrapper) {
 		CommessaFatturabile commessa = dtoEntityMapper.dtoToEntity(wrapper.getCommessaFatturabile());
 		OrdineCommessa ordineCommessa = dtoEntityMapper.dtoToEntity(wrapper.getOrdineCommessa());
 		Cliente cliente = clienteService.readClienteById(wrapper.getCliente().getCodiceAzienda());

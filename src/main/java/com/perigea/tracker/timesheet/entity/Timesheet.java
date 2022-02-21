@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.perigea.tracker.commons.enums.StatoRichiestaType;
+import com.perigea.tracker.commons.enums.ApprovalStatus;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
 
 import lombok.Data;
@@ -22,7 +22,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@Table(name = "time_sheet")
+@Table(name = "timesheet")
 @EqualsAndHashCode(callSuper = true)
 public class Timesheet extends BaseEntity {
 
@@ -40,7 +40,14 @@ public class Timesheet extends BaseEntity {
 
 	@Column(name = "stato_time_sheet")
 	@Enumerated(EnumType.STRING)
-	private StatoRichiestaType statoRichiesta;
+	private ApprovalStatus statoRichiesta;
+	
+	@Column(name = "codice_richiesta", insertable = false, updatable = false, unique = true)
+	private Long codiceRichiesta;
+	
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+	@JoinColumn(name = "codice_richiesta", referencedColumnName = "codice_richiesta", insertable = true, updatable = true, nullable = false)
+	private Richiesta richiesta;
 
 	@OneToMany(mappedBy = "timesheet", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<TimesheetEntry> entries = new ArrayList<TimesheetEntry>();

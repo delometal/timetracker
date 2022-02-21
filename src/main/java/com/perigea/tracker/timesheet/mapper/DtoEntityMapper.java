@@ -11,6 +11,7 @@ import com.perigea.tracker.commons.dto.CommessaDto;
 import com.perigea.tracker.commons.dto.CommessaFatturabileDto;
 import com.perigea.tracker.commons.dto.CommessaNonFatturabileDto;
 import com.perigea.tracker.commons.dto.ConsulenteDto;
+import com.perigea.tracker.commons.dto.ContactDto;
 import com.perigea.tracker.commons.dto.DatiEconomiciConsulenteDto;
 import com.perigea.tracker.commons.dto.DatiEconomiciDipendenteDto;
 import com.perigea.tracker.commons.dto.DipendenteCommessaDto;
@@ -68,6 +69,8 @@ public interface DtoEntityMapper {
 	
 	List<Utente> dtoToEntityUtenteList(List<UtenteDto> dto);
 	List<UtenteDto> entityToDtoUtenteList(List<Utente> entity);
+	
+	
 
 	
 	/** PERSONALE - DIPENDENTI & CONSULENTI **/
@@ -146,6 +149,9 @@ public interface DtoEntityMapper {
 	Gruppo dtoToEntity(GruppoContattoDto gruppo);
 	GruppoContattoDto entityToDto(Gruppo gruppo);
 
+	ContactDto entityToContactDto(Utente entity);
+	List<ContactDto> entityToContactDtoList(List<Utente> entity);
+	
 	
 	/** DATI ECONOMICI **/
 	DatiEconomiciDipendenteDto entityToDto(DatiEconomiciDipendente entity);

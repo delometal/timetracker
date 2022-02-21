@@ -33,5 +33,5 @@ build/
 .vscode/
 
 ## Local properties ##
-*local.properties
-*.gitignore
+/src/main/resources/application-local.properties
+#*.gitignore

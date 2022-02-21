@@ -39,7 +39,7 @@ public class ContactDetailsController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@GetMapping(value = "/contact-details/read/nome/{nome}/cognome/{cognome}")
+	@GetMapping(value = "/contact-details/read/{nome}/{cognome}")
 	public ResponseEntity<ResponseDto<ContactDto>> readUserContactDetails(@PathVariable(name = "nome") String nome,
 			@PathVariable(name = "cognome") String cognome) {
 		Utente utente = utenteService.readUtente(nome, cognome);

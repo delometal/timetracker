@@ -90,6 +90,15 @@ public class GruppoContattoController {
 				.<UtenteDto>builder().timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
+	
+	@GetMapping(value = "/contatti/read/{nome}/{cognome}")
+	public ResponseEntity<ResponseDto<UtenteDto>> readContatto(@PathVariable(name="nome") String nome, @PathVariable (name = "cognome") String cognome) {
+		Utente contatto = gruppoContattoService.readContatto(nome, cognome);
+		UtenteDto dto = dtoEntityMapper.entityToDto(contatto);
+		ResponseDto<UtenteDto> genericResponse = ResponseDto
+				.<UtenteDto>builder().timestamp(Utils.now()).data(dto).build();
+		return ResponseEntity.ok(genericResponse);
+	}
 
 	@PutMapping(value = "/contatti/update")
 	public ResponseEntity<ResponseDto<UtenteDto>> updateContatto(@RequestBody ContactDto contattoDto) {

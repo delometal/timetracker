@@ -59,7 +59,7 @@ public class ExcelTimesheetService {
 			InfoAutoDto infoAuto = timesheetExcelWrapper.getInfoAuto();
 			Integer anno = timesheet.getAnno();
 			Integer mese = timesheet.getMese();
-			String statoTimesheet = timesheet.getStatoRichiesta().getDescrizione();
+			String statoTimesheet = timesheet.getStatoRichiesta().name();
 			EMese eMese = EMese.getByMonthId(mese);
 			
 			XSSFSheet sheet = workbook.createSheet("Timesheet");

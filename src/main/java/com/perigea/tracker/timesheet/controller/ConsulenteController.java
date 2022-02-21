@@ -19,6 +19,7 @@ import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.RuoloDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
+import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.CentroDiCosto;
 import com.perigea.tracker.timesheet.entity.Consulente;
@@ -28,10 +29,14 @@ import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.CentroDiCostoService;
 import com.perigea.tracker.timesheet.service.ConsulenteService;
+import com.perigea.tracker.timesheet.service.UtenteService;
 
 @RestController
 @RequestMapping("/consulenti")
 public class ConsulenteController {
+	
+	@Autowired
+	private UtenteService utenteService;
 
 	@Autowired
 	protected Logger logger;
@@ -47,10 +52,16 @@ public class ConsulenteController {
 
 	@PostMapping(value = "/create")
 	public ResponseEntity<ResponseDto<ConsulenteDto>> createConsulente(@RequestBody ConsulenteDto consulenteDto) {
-		Utente responsabile = consulenteService.readUtenteConsulente(consulenteDto.getUtente().getCodiceResponsabile());
 		Utente utente = dtoEntityMapper.dtoToEntity(consulenteDto.getUtente());
 		Consulente consulente = dtoEntityMapper.dtoToEntity(consulenteDto);
-		consulente.setResponsabile(responsabile.getPersonale());
+		Utente responsabile = null;
+		try {
+			responsabile = consulenteService.readUtenteConsulente(consulenteDto.getUtente().getCodiceResponsabile());			
+			consulente.setResponsabile(responsabile.getPersonale());
+		} catch(EntityNotFoundException e) {
+			responsabile = null;
+		}
+		consulente.setEconomics(null);
 		utente = consulenteService.createUtenteConsulente(utente, consulente);
 
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
@@ -166,7 +177,7 @@ public class ConsulenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PostMapping(value = "/create-economics/{codicePersona}")
+	@PostMapping(value = "/create-economics")
 	public ResponseEntity<ResponseDto<DatiEconomiciConsulenteDto>> createDatiEconomiciConsulente(@RequestBody DatiEconomiciConsulenteDto datiEconomiciConsulenteDto) {
 		Utente utente = consulenteService.readUtenteConsulente(datiEconomiciConsulenteDto.getCodicePersona());
 		CentroDiCosto cdc = centroDiCostoService.readCentroDiCosto(datiEconomiciConsulenteDto.getCodiceCentroDiCosto());

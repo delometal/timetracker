@@ -46,13 +46,15 @@ public class DipendenteService {
 		try {
 			utente.setCodicePersona(null);
 			dipendente.setCodicePersona(null);
-			economics.setCodicePersona(null);
 			String codicePersona = Utils.uuid();
 			utente.setCodicePersona(codicePersona);			
 			dipendente.setUtente(utente);
 			utente.setPersonale(dipendente);
-			economics.setPersonale(dipendente);
 			dipendente.setEconomics(economics);
+			if(economics != null) {
+				economics.setCodicePersona(null);
+				economics.setPersonale(dipendente);
+			}
 			utenteRepository.save(utente);
 			logger.info("utente salvato");
 			return utente;

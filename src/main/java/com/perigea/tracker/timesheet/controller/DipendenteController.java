@@ -108,11 +108,19 @@ public class DipendenteController {
 
 	@PutMapping(value = "/update")
 	public ResponseEntity<ResponseDto<DipendenteDto>> updateUser(@RequestBody DipendenteDto dipendenteDto) {
-		Utente responsabile = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodiceResponsabile());
-		Utente utente = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodicePersona());
+		
 		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
+		Utente utente = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodicePersona());
+
+		Utente responsabile = null;
+		try {
+			responsabile = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodiceResponsabile());
+			dipendente.setResponsabile(responsabile.getPersonale());
+		} catch(EntityNotFoundException e) {
+			responsabile = null;
+		}
+		
 		dipendente.setCodicePersona(utente.getCodicePersona());
-		dipendente.setResponsabile(responsabile.getPersonale());
 		utente.setPersonale(dipendente);
 		utente = dipendenteService.updateUtenteDipendente(utente);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);

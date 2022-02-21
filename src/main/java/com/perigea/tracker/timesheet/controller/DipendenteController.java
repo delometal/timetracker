@@ -48,8 +48,9 @@ public class DipendenteController {
 	
 	@PostMapping(value = "/create")
 	public ResponseEntity<ResponseDto<DipendenteDto>> createDipendente(@RequestBody DipendenteDto dipendenteDto) {
-		Utente utente = dtoEntityMapper.dtoToEntity(dipendenteDto.getUtente());
-		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
+ 		Utente utente = dtoEntityMapper.dtoToEntity(dipendenteDto.getUtente());
+ 		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
+ 		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(dipendenteDto.getEconomics());
 		Utente responsabile = null;
 		try {
 			responsabile = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodiceResponsabile());
@@ -57,7 +58,8 @@ public class DipendenteController {
 		} catch(EntityNotFoundException e) {
 			responsabile = null;
 		}
-		utente = dipendenteService.createUtenteDipendente(utente, dipendente);
+		
+		utente = dipendenteService.createUtenteDipendente(utente, dipendente, economics);
 
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
 		Dipendente anagrafica = (Dipendente) utente.getPersonale();

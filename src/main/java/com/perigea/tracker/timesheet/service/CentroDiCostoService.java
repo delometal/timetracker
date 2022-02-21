@@ -1,5 +1,6 @@
 package com.perigea.tracker.timesheet.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -106,19 +107,10 @@ public class CentroDiCostoService {
 	}
 	
 	private Specification<CentroDiCosto> centroDiCostoByIdOrDescriptionSearch(final String searchKey) {
-		Condition co1 = Condition.builder().field("codiceCentroDiCosto").value(searchKey).valueType(String.class).operator(Operator.like).build();
-		Condition co2 = Condition.builder().field("descrizione").value(searchKey).valueType(String.class).operator(Operator.like).build();
-		filter.setIsOrPredicates(true);
-		filter.addCondition(co1);
-		filter.addCondition(co2);
-		return filter.buildSpecification();
-		
-//		return (root, query, builder) -> {
-//			Predicate[] predicates = new Predicate[2];
-//			predicates[0] = builder.like(builder.upper(root.<String>get("codiceCentroDiCosto")), Utils.QUERY_LIKE_BOUNDARY+searchKey.toUpperCase()+Utils.QUERY_LIKE_BOUNDARY);
-//			predicates[1] = builder.like(builder.upper(root.<String>get("descrizione")), Utils.QUERY_LIKE_BOUNDARY+searchKey.toUpperCase()+Utils.QUERY_LIKE_BOUNDARY);
-//			return builder.or(predicates);
-//	    };
+		List<Condition> conditions = new ArrayList<>();
+		conditions.add(Condition.builder().field("codiceCentroDiCosto").value(searchKey).valueType(String.class).operator(Operator.like).build());
+		conditions.add(Condition.builder().field("descrizione").value(searchKey).valueType(String.class).operator(Operator.like).build());
+		return filter.buildSpecification(conditions, true);
 	}
 
 }

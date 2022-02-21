@@ -21,6 +21,8 @@ public enum Operator {
     notIn,
     // like
     like,
+    //contains is alias for like
+    contains,
     //between
     between,
     //startsWith

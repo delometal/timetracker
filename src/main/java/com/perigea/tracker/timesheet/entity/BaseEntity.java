@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import lombok.Data;
 
@@ -23,5 +25,15 @@ public class BaseEntity implements Serializable {
 
 	@Column(name = "last_update_user")
 	private String lastUpdateUser;
+	
+	@PrePersist
+	public void prePersist() {
+		createTimestamp = LocalDateTime.now();
+	}
+	
+	@PreUpdate
+	public void preUpdate() {
+		lastUpdateTimestamp = LocalDateTime.now();
+	}
 
 }

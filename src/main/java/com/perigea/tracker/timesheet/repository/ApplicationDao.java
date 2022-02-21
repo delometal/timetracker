@@ -10,7 +10,7 @@ import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.perigea.tracker.commons.enums.StatoRichiestaType;
+import com.perigea.tracker.commons.enums.ApprovalStatus;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.exception.PersistenceException;
 import com.perigea.tracker.timesheet.entity.Timesheet;
@@ -24,7 +24,7 @@ public class ApplicationDao {
 	private EntityManager entityManager;
 
 	@Transactional
-	public Integer updateTimesheetStatus(TimesheetMensileKey key, StatoRichiestaType newStatus) {
+	public Integer updateTimesheetStatus(TimesheetMensileKey key, ApprovalStatus newStatus) {
 		try {
 			Predicate[] predicates = new Predicate[3];
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

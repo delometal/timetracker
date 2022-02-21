@@ -9,14 +9,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import com.perigea.tracker.commons.utils.Utils;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Da utilizzare per filtri semplici e non innestati.
@@ -28,31 +25,20 @@ import lombok.Setter;
  *
  * @param <T>
  */
-@Getter
-@Setter
 @Component
 public class FilterFactory<T> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(Utils.class);
+	@Autowired
+	private Logger logger;
 	
-	private List<Condition> conditions = new ArrayList<>();
-	private Boolean isOrPredicates = false;
-
-	public void addCondition(Condition condition) {
-        this.conditions.add(condition);
-    }
-	
-	public void setIsOrPredicates(boolean isOrPredicates) {
-        this.isOrPredicates = isOrPredicates;
-    }
-	
-	public Specification<T> buildSpecification(){
+	public Specification<T> buildSpecification(final List<Condition> conditions, boolean isOrPredicates){
 		Specification<T> specification = new Specification<T>() {
 			private static final long serialVersionUID = -7325784609028963910L;
 
 			@Override
 			public Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicates = buildPredicates(root, criteriaQuery, criteriaBuilder);
+				List<Predicate> predicates = new ArrayList<>();
+		        conditions.forEach(condition -> predicates.add(buildPredicate(condition, root, criteriaQuery, criteriaBuilder)));
 		        return predicates.size() > 1
 		                ? ((isOrPredicates)
 		        			? (criteriaBuilder.or(predicates.toArray(new Predicate[predicates.size()]))) 
@@ -63,12 +49,10 @@ public class FilterFactory<T> {
 		};
 		return specification;
 	}
-
-    private List<Predicate> buildPredicates(Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-        List<Predicate> predicates = new ArrayList<>();
-        conditions.forEach(condition -> predicates.add(buildPredicate(condition, root, criteriaQuery, criteriaBuilder)));
-        return predicates;
-    }
+	
+	public Specification<T> buildSpecification(final List<Condition> conditions){
+		return buildSpecification(conditions, false);
+	}
 
     private Predicate buildPredicate(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
         switch (condition.operator) {
@@ -93,7 +77,8 @@ public class FilterFactory<T> {
 			case ne: 
 				return buildNotEqualsPredicateToCriteria(condition, root, criteriaQuery, criteriaBuilder);
 			case like: 
-				return buildLikePredicateToCriteria(condition, root, criteriaQuery, criteriaBuilder);
+			case contains: 
+					return buildLikePredicateToCriteria(condition, root, criteriaQuery, criteriaBuilder);
 			case startsWith: 
 				return buildStartsPredicateToCriteria(condition, root, criteriaQuery, criteriaBuilder);
 			case endsWith: 
@@ -131,7 +116,7 @@ public class FilterFactory<T> {
     }
 
     private Predicate buildNotInPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder){
-        return builder.not(root.get(condition.field).in(conditions));
+    	return builder.not(buildInPredicateToCriteria(condition, root, criteriaQuery, builder));
     }
     
     private Predicate buildNotEqualsPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder){

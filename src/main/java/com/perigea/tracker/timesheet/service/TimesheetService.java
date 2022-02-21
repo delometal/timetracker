@@ -13,20 +13,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.dto.InfoAutoDto;
 import com.perigea.tracker.commons.dto.TimesheetEntryDto;
 import com.perigea.tracker.commons.dto.TimesheetRefDto;
 import com.perigea.tracker.commons.dto.TimesheetResponseDto;
+import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.dto.wrapper.TimesheetExcelWrapper;
+import com.perigea.tracker.commons.enums.ApprovalStatus;
 import com.perigea.tracker.commons.enums.EMese;
-import com.perigea.tracker.commons.enums.StatoRichiestaType;
+import com.perigea.tracker.commons.enums.RichiestaType;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.exception.FestivitaException;
 import com.perigea.tracker.commons.exception.TimesheetException;
+import com.perigea.tracker.timesheet.approval.flow.TimesheetApprovalWorkflow;
 import com.perigea.tracker.timesheet.entity.Commessa;
 import com.perigea.tracker.timesheet.entity.Festivita;
 import com.perigea.tracker.timesheet.entity.NotaSpese;
+import com.perigea.tracker.timesheet.entity.Richiesta;
+import com.perigea.tracker.timesheet.entity.RichiestaHistory;
 import com.perigea.tracker.timesheet.entity.Timesheet;
 import com.perigea.tracker.timesheet.entity.TimesheetEntry;
 import com.perigea.tracker.timesheet.entity.Utente;
@@ -68,6 +72,14 @@ public class TimesheetService {
 	@Autowired 
 	private ExcelTimesheetService excelTimesheetService;
 	
+	@Autowired 
+	private TimesheetApprovalWorkflow timesheetApprovalWorkflow;
+	
+	/**
+	 * @param timesheetDataList
+	 * @param timeDto
+	 * @return
+	 */
 	public Timesheet createTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetRefDto timeDto) {
 		try {
 			assertTimesheetIsValid(timesheetDataList, timeDto);
@@ -78,7 +90,7 @@ public class TimesheetService {
 			utente.getPersonale().addTimesheet(timesheet);
 			TimesheetMensileKey tsKey = new TimesheetMensileKey(timeDto.getAnno(), timeDto.getMese(), timeDto.getCodicePersona());
 			timesheet.setId(tsKey);
-			timesheet.setStatoRichiesta(StatoRichiestaType.I);
+			timesheet.setStatoRichiesta(ApprovalStatus.DRAFT);
 			
 			Map<TimesheetEntryKey, List<NotaSpese>> map = new HashMap<>();
 			timesheetDataList.forEach(entry-> {
@@ -109,8 +121,16 @@ public class TimesheetService {
 				timesheet.setOreTotali(oreTotali);
 				entry.setNoteSpesa(map.get(entryKey));	
 			}
+			
+			Richiesta approvalRequest = Richiesta.builder().richiedente(utente).tipo(RichiestaType.TIMESHEET).build();
+			RichiestaHistory history = RichiestaHistory.builder().responsabile(utente.getPersonale().getResponsabile()).stato(ApprovalStatus.DRAFT).richiesta(approvalRequest).build();
+			history.setRichiesta(approvalRequest);
+			approvalRequest.addRichiestaHistory(history);
+			approvalRequest.addTimesheet(timesheet);
+			timesheet.setRichiesta(approvalRequest);
 			timesheetRepository.save(timesheet);
-			logger.info("TImesheet salvato");
+			
+			logger.info("Timesheet salvato");
 			return timesheet;
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
@@ -157,19 +177,76 @@ public class TimesheetService {
 		}
 	}
 	
+//	public Timesheet updateTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetRefDto timeDto) {
+//		try {
+//			deleteTimesheet(timeDto.getAnno(), EMese.getByMonthId(timeDto.getMese()), timeDto.getCodicePersona());
+//			return createTimesheet(timesheetDataList, timeDto);
+//		} catch (Exception ex) {
+//			throw new TimesheetException(ex.getMessage());
+//		}
+//	}
+	
 	public Timesheet updateTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetRefDto timeDto) {
 		try {
-			deleteTimesheet(timeDto.getAnno(), EMese.getByMonthId(timeDto.getMese()), timeDto.getCodicePersona());
-			return createTimesheet(timesheetDataList, timeDto);
+			assertTimesheetIsValid(timesheetDataList, timeDto);
+			Integer oreTotali = 0;
+			Timesheet timesheet = dtoEntityMapper.dtoToEntity(timeDto);
+			Utente utente = utenteRepository.findByCodicePersona(timeDto.getCodicePersona()).get();
+			timesheet.setPersonale(utente.getPersonale());
+			utente.getPersonale().addTimesheet(timesheet);
+			TimesheetMensileKey tsKey = new TimesheetMensileKey(timeDto.getAnno(), timeDto.getMese(), timeDto.getCodicePersona());
+			timesheet.setId(tsKey);
+			
+			Map<TimesheetEntryKey, List<NotaSpese>> map = new HashMap<>();
+			timesheetDataList.forEach(entry-> {
+				entry.getNoteSpesa().forEach(r-> {
+					TimesheetEntryKey entryKey = new TimesheetEntryKey(timesheet.getId().getAnno(), timesheet.getId().getMese(), entry.getGiorno(), timesheet.getId().getCodicePersona(), entry.getCodiceCommessa());
+					NotaSpeseKey notaSpeseKey=new NotaSpeseKey(entryKey.getAnno(),entryKey.getMese(),entryKey.getGiorno(),entryKey.getCodicePersona(),entryKey.getCodiceCommessa(),r.getCostoNotaSpese());
+					NotaSpese notaSpese = new NotaSpese();
+					notaSpese.setId(notaSpeseKey);
+					notaSpese.setImporto(r.getImporto());
+					if(map.containsKey(entryKey)) {
+						map.get(entryKey).add(notaSpese);
+					} else {
+						map.put(entryKey, new ArrayList<>());
+						map.get(entryKey).add(notaSpese);
+					}
+				});
+			});
+			for (TimesheetEntryDto dataDto : timesheetDataList) {
+				oreTotali += dataDto.getOre();
+				Commessa commessa = commessaRepository.findByCodiceCommessa(dataDto.getCodiceCommessa()).get();
+				TimesheetEntry entry = dtoEntityMapper.dtoToEntity(dataDto);
+				TimesheetEntryKey entryKey = new TimesheetEntryKey(timesheet.getId().getAnno(), timesheet.getId().getMese(), dataDto.getGiorno(), timesheet.getId().getCodicePersona(), dataDto.getCodiceCommessa());
+				entry.setId(entryKey);
+				entry.setCommessa(commessa);
+				entry.setTimesheet(timesheet);
+				entry.setTipoCommessa(commessa.getTipoCommessa());
+				timesheet.addTimesheet(entry);
+				timesheet.setOreTotali(oreTotali);
+				entry.setNoteSpesa(map.get(entryKey));	
+			}
+			
+			timesheetRepository.save(timesheet);
+			
+			logger.info("Timesheet aggiornato");
+			return timesheet;
 		} catch (Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
 	
-	
-	public Boolean editTimesheetStatus(TimesheetMensileKey key, StatoRichiestaType newStatus) {
+	public Boolean editTimesheetStatus(TimesheetMensileKey key, ApprovalStatus newStatus) {
 		try {
 			if(applicationDao.updateTimesheetStatus(key, newStatus) == 1) {
+				Timesheet timesheet = getTimesheet(key);
+				Richiesta richiesta = timesheet.getRichiesta();
+				RichiestaHistory history = RichiestaHistory.builder().responsabile(timesheet.getPersonale().getResponsabile())
+						.stato(newStatus).richiesta(richiesta).build();
+				timesheetApprovalWorkflow.nextStep(richiesta, history);
 				return true;
 			}
 			return false;

@@ -34,4 +34,4 @@ build/
 
 ## Local properties ##
 /src/main/resources/application-local.properties
-#*.gitignore
+*.gitignore

@@ -111,7 +111,6 @@ public class DipendenteController {
 		
 		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
 		Utente utente = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodicePersona());
-
 		Utente responsabile = null;
 		try {
 			responsabile = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodiceResponsabile());

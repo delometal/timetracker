@@ -11,6 +11,7 @@ import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.exception.PersistenceException;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Consulente;
+import com.perigea.tracker.timesheet.entity.DatiEconomiciConsulente;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.repository.ApplicationDao;
 import com.perigea.tracker.timesheet.repository.ConsulenteRepository;
@@ -38,11 +39,19 @@ public class ConsulenteService {
 	 * @param codiceResponsabile
 	 * @return
 	 */
-	public Utente createUtenteConsulente(Utente utente, Consulente consulente) {
+	public Utente createUtenteConsulente(Utente utente, Consulente consulente, DatiEconomiciConsulente economics) {
 		try {
-			utente.setCodicePersona(Utils.uuid());	
+			utente.setCodicePersona(null);
+			consulente.setCodicePersona(null);
+			String codicePersona = Utils.uuid();
+			utente.setCodicePersona(codicePersona);	
 			consulente.setUtente(utente);
 			utente.setPersonale(consulente);
+			consulente.setEconomics(economics);
+			if(economics != null) {
+				economics.setCodicePersona(null);
+				economics.setPersonale(consulente);
+			}
 			utenteRepository.save(utente);
 			logger.info("utente salvato");
 			return utente;
@@ -104,6 +113,7 @@ public class ConsulenteService {
 	 */
 	public void deleteUtenteConsulente(String id) {
 		try {
+			utenteRepository.getById(id).setRuoli(null);
 			utenteRepository.deleteById(id);
 		} catch (Exception ex) {
 			throw new ConsulenteException(ex.getMessage());

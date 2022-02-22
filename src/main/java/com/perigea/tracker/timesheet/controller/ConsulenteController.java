@@ -54,6 +54,7 @@ public class ConsulenteController {
 	public ResponseEntity<ResponseDto<ConsulenteDto>> createConsulente(@RequestBody ConsulenteDto consulenteDto) {
 		Utente utente = dtoEntityMapper.dtoToEntity(consulenteDto.getUtente());
 		Consulente consulente = dtoEntityMapper.dtoToEntity(consulenteDto);
+		DatiEconomiciConsulente economics = dtoEntityMapper.dtoToEntity(consulenteDto.getEconomics());
 		Utente responsabile = null;
 		try {
 			responsabile = consulenteService.readUtenteConsulente(consulenteDto.getUtente().getCodiceResponsabile());			
@@ -61,8 +62,8 @@ public class ConsulenteController {
 		} catch(EntityNotFoundException e) {
 			responsabile = null;
 		}
-		consulente.setEconomics(null);
-		utente = consulenteService.createUtenteConsulente(utente, consulente);
+		
+		utente = consulenteService.createUtenteConsulente(utente, consulente, economics);
 
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
 		Consulente anagrafica = (Consulente) utente.getPersonale();
@@ -98,6 +99,7 @@ public class ConsulenteController {
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
 		ConsulenteDto consulenteDto = dtoEntityMapper.entityToDto(consulente);
 		consulenteDto.setUtente(utenteDto);
+		
 
 		consulenteService.deleteUtenteConsulente(codicePersona);
 		ResponseDto<ConsulenteDto> genericResponse = ResponseDto
@@ -110,11 +112,16 @@ public class ConsulenteController {
 
 	@PutMapping(value = "/update")
 	public ResponseEntity<ResponseDto<ConsulenteDto>> updateUser(@RequestBody ConsulenteDto consulenteDto) {
-		Utente responsabile = consulenteService.readUtenteConsulente(consulenteDto.getUtente().getCodiceResponsabile());
-		Utente utente = consulenteService.readUtenteConsulente(consulenteDto.getUtente().getCodicePersona());
 		Consulente consulente = dtoEntityMapper.dtoToEntity(consulenteDto);
+		Utente utente = consulenteService.readUtenteConsulente(consulenteDto.getUtente().getCodicePersona());
+		Utente responsabile = null;
+		try {
+			responsabile = consulenteService.readUtenteConsulente(consulenteDto.getUtente().getCodiceResponsabile());			
+			consulente.setResponsabile(responsabile.getPersonale());
+		} catch(EntityNotFoundException e) {
+			responsabile = null;
+		}
 		consulente.setCodicePersona(utente.getCodicePersona());
-		consulente.setResponsabile(responsabile.getPersonale());
 		utente.setPersonale(consulente);
 		utente = consulenteService.updateUtenteConsulente(utente);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
@@ -131,12 +138,20 @@ public class ConsulenteController {
 	}
 	
 	@PutMapping(value = "/update-user")
-	public ResponseEntity<ResponseDto<ConsulenteDto>> updateUser(@RequestBody UtenteDto UtenteDto) {
-		Utente utente = dtoEntityMapper.dtoToEntity(UtenteDto);
-		Utente responsabile = consulenteService.readUtenteConsulente(UtenteDto.getCodiceResponsabile());
+	public ResponseEntity<ResponseDto<ConsulenteDto>> updateUser(@RequestBody UtenteDto utenteDto) {
+		Utente utente = dtoEntityMapper.dtoToEntity(utenteDto);
 		
-		Consulente consulente = consulenteService.readAnagraficaConsulente(UtenteDto.getCodicePersona());
-		consulente.setResponsabile(responsabile.getPersonale());
+		Consulente consulente = consulenteService.readAnagraficaConsulente(utenteDto.getCodicePersona());
+
+		Utente responsabile = null;
+		
+		try {
+			responsabile = consulenteService.readUtenteConsulente(utenteDto.getCodiceResponsabile());			
+			consulente.setResponsabile(responsabile.getPersonale());
+		} catch(EntityNotFoundException e) {
+			responsabile = null;
+		}
+		
 		utente.setPersonale(consulente);
 		utente = consulenteService.updateUtenteConsulente(utente);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
@@ -201,7 +216,7 @@ public class ConsulenteController {
 
 	
 	
-	@PutMapping(value = "/update-economics/{codicePersona}")
+	@PutMapping(value = "/update-economics")
 	public ResponseEntity<ResponseDto<DatiEconomiciConsulenteDto>> editDatiEconomiciConsulente(@RequestBody DatiEconomiciConsulenteDto datiEconomiciConsulenteDto) {
 		Utente utente = consulenteService.readUtenteConsulente(datiEconomiciConsulenteDto.getCodicePersona());
 		CentroDiCosto cdc = centroDiCostoService.readCentroDiCosto(datiEconomiciConsulenteDto.getCodiceCentroDiCosto());

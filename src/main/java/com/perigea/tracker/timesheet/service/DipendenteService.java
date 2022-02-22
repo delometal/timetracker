@@ -116,6 +116,7 @@ public class DipendenteService {
 	 */
 	public void deleteUtenteDipendente(String id) {
 		try {
+			utenteRepository.getById(id).setRuoli(null);
 			utenteRepository.deleteById(id);
 		} catch (Exception ex) {
 			throw new DipendenteException(ex.getMessage());

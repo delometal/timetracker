@@ -136,12 +136,20 @@ public class DipendenteController {
 	}
 	
 	@PutMapping(value = "/update-user")
-	public ResponseEntity<ResponseDto<DipendenteDto>> updateUser(@RequestBody UtenteDto UtenteDto) {
-		Utente utente = dtoEntityMapper.dtoToEntity(UtenteDto);
-		Utente responsabile = dipendenteService.readUtenteDipendente(UtenteDto.getCodiceResponsabile());
+	public ResponseEntity<ResponseDto<DipendenteDto>> updateUser(@RequestBody UtenteDto utenteDto) {
+		Utente utente = dtoEntityMapper.dtoToEntity(utenteDto);
 		
-		Dipendente dipendente = dipendenteService.readAnagraficaDipendente(UtenteDto.getCodicePersona());
-		dipendente.setResponsabile(responsabile.getPersonale());
+		Dipendente dipendente = dipendenteService.readAnagraficaDipendente(utenteDto.getCodicePersona());
+
+		Utente responsabile = null;
+		try {
+			responsabile = dipendenteService.readUtenteDipendente(utenteDto.getCodiceResponsabile());			
+			dipendente.setResponsabile(responsabile.getPersonale());
+		} catch(EntityNotFoundException e) {
+			responsabile = null;
+		}
+		
+		
 		utente.setPersonale(dipendente);
 		utente = dipendenteService.updateUtenteDipendente(utente);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
@@ -183,7 +191,7 @@ public class DipendenteController {
 	}
 	
 	
-	@PostMapping(value = "/create-economics/{codicePersona}")
+	@PostMapping(value = "/create-economics")
 	public ResponseEntity<ResponseDto<DatiEconomiciDipendenteDto>> createDatiEconomiciDipendente(@RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
 		Utente utente = dipendenteService.readUtenteDipendente(datiEconomiciDipendenteDto.getCodicePersona());
 		CentroDiCosto cdc = centroDiCostoService.readCentroDiCosto(datiEconomiciDipendenteDto.getCodiceCentroDiCosto());
@@ -205,12 +213,12 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PutMapping(value = "/update-economics/{codicePersona}")
-	public ResponseEntity<ResponseDto<DatiEconomiciDipendenteDto>> editDatiEconomiciDipendente(@PathVariable(name = "codicePersona") String codicePersona, @RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
-		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
+	@PutMapping(value = "/update-economics")
+	public ResponseEntity<ResponseDto<DatiEconomiciDipendenteDto>> editDatiEconomiciDipendente( @RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
+		Utente utente = dipendenteService.readUtenteDipendente(datiEconomiciDipendenteDto.getCodicePersona());
 		CentroDiCosto cdc = centroDiCostoService.readCentroDiCosto(datiEconomiciDipendenteDto.getCodiceCentroDiCosto());
 		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(datiEconomiciDipendenteDto);
-		economics.setCodicePersona(codicePersona);
+		economics.setCodicePersona(utente.getCodicePersona());
 		
 		Dipendente dipendente = (Dipendente) utente.getPersonale();
 		dipendente.setEconomics(economics);

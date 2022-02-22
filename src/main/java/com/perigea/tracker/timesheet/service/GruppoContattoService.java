@@ -106,12 +106,11 @@ public class GruppoContattoService {
 		try {
 			List<Ruolo> ruoli = new ArrayList<Ruolo>(1);
 			ruoli.add(ruoliRepository.getById(RuoloType.P));
-			Utente utente = new Utente();
-			utente.setCodicePersona(Utils.uuid());
-			utente.setStato(StatoUtenteType.A);
-			utente.setRuoli(ruoli);
-			utente.setTipo(AnagraficaType.C);
-			utenteRepository.save(utente);
+			contatto.setCodicePersona(Utils.uuid());
+			contatto.setStato(StatoUtenteType.A);
+			contatto.setRuoli(ruoli);
+			contatto.setTipo(AnagraficaType.C);
+			utenteRepository.save(contatto);
 			return contatto;
 		} catch (Exception ex) {
 			throw new GruppoException(ex.getMessage());

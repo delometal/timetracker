@@ -12,5 +12,7 @@ import com.perigea.tracker.timesheet.entity.Cliente;
 public interface ClienteRepository extends JpaRepository<Cliente, String>, JpaSpecificationExecutor<Cliente> {
 
 	public Optional<Cliente> findByPartitaIva(String partitaIva);
-	
+
+	public Optional<Cliente> findByCodiceAzienda(String codiceAzienda);
+
 }

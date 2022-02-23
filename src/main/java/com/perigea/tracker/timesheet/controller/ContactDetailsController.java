@@ -39,16 +39,6 @@ public class ContactDetailsController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@GetMapping(value = "/contact-details/read/{nome}/{cognome}")
-	public ResponseEntity<ResponseDto<List<ContactDto>>> readUserContactDetails(@PathVariable(name = "nome") String nome,
-			@PathVariable(name = "cognome") String cognome) {
-		List<Utente> utenti = utenteService.readUtente(nome, cognome);
-		List<ContactDto> contactDetails = dtoEntityMapper.entityToContactDtoList(utenti);
-		ResponseDto<List<ContactDto>> genericResponse = ResponseDto.<List<ContactDto>>builder().timestamp(Utils.now())
-				.data(contactDetails).build();
-		return ResponseEntity.ok(genericResponse);
-	}
-
 	@GetMapping(value = "/contact-details/read-all-group-contact-details/{groupId}")
 	public ResponseEntity<ResponseDto<List<ContactDto>>> readAllContactDetails(
 			@PathVariable(name = "groupId") Long groupId) {

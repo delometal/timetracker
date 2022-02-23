@@ -18,11 +18,11 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "dati_economici_consulente")
 @EqualsAndHashCode(callSuper = true)
-public class DatiEconomiciConsulente extends BaseEntity {
+public class DatiEconomiciConsulente extends BaseEntity{
 
 	private static final long serialVersionUID = -3690536458436806691L;
-
-    @Id
+   	
+	@Id
 	@Column(name = "codice_persona", insertable = false, updatable = false)
 	private String codicePersona;
     

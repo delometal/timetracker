@@ -25,14 +25,14 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "dati_economici_dipendente")
 @EqualsAndHashCode(callSuper = true)
-public class DatiEconomiciDipendente extends BaseEntity {
+public class DatiEconomiciDipendente extends BaseEntity{
 
 	private static final long serialVersionUID = -3690536458436806691L;
 	
 	@Id
 	@Column(name = "codice_persona", insertable = false, updatable = false)
 	private String codicePersona;
-
+    
     @Column(name = "codice_centro_di_costo", insertable = false, updatable = false)
 	private String codiceCentroDiCosto;
 	

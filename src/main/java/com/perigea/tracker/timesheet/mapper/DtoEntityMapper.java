@@ -126,7 +126,14 @@ public interface DtoEntityMapper {
 	@Mapping(target= "commessa.descrizioneCommessa", source= "descrizioneCommessa")
 	CommessaFatturabileDto entityToDto(CommessaFatturabile entity);
 	
+	@Mapping(target= "codiceCommessa", source= "commessa.codiceCommessa")
+	@Mapping(target= "tipoCommessa", source= "commessa.tipoCommessa")
+	@Mapping(target= "descrizioneCommessa", source= "commessa.descrizioneCommessa")
 	CommessaNonFatturabile dtoToEntity(CommessaNonFatturabileDto dto);
+	
+	@Mapping(target= "commessa.codiceCommessa", source="codiceCommessa")
+	@Mapping(target= "commessa.tipoCommessa", source="tipoCommessa")
+	@Mapping(target= "commessa.descrizioneCommessa", source= "descrizioneCommessa")
 	CommessaNonFatturabileDto entityToDto(CommessaNonFatturabile entity);
 	
 	@Mapping(target= "id.codiceCommessa", source="codiceCommessa")

@@ -2,6 +2,7 @@ package com.perigea.tracker.timesheet.entity;
 
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -26,7 +27,7 @@ public class OrdineCommessa extends BaseEntity {
 	@EmbeddedId
 	private OrdineCommessaKey id;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "codice_commessa", nullable = false, insertable = false, updatable = false)
 	private CommessaFatturabile commessaFatturabile;
 	

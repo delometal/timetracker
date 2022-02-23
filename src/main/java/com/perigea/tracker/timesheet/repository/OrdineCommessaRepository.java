@@ -9,5 +9,6 @@ import com.perigea.tracker.timesheet.entity.keys.OrdineCommessaKey;
 
 @Repository
 public interface OrdineCommessaRepository extends JpaRepository<OrdineCommessa, OrdineCommessaKey>, JpaSpecificationExecutor<OrdineCommessa> {
-
+	
+	
 } 

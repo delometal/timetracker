@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@DiscriminatorValue("NF")
+@DiscriminatorValue("S")
 @EqualsAndHashCode(callSuper = true)
 public class CommessaNonFatturabile extends Commessa {
 

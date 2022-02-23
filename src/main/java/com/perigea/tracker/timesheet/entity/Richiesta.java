@@ -20,13 +20,17 @@ import javax.persistence.Table;
 
 import com.perigea.tracker.commons.enums.RichiestaType;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "richiesta")
 @EqualsAndHashCode(callSuper = true)
 public class Richiesta extends BaseEntity {

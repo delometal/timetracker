@@ -64,7 +64,8 @@ public class TimesheetController {
 	
 	@DeleteMapping(value = "/delete")
 	public ResponseEntity<ResponseDto<TimesheetResponseDto>> deleteTimesheet(@RequestBody TimesheetMensileKey id) {
-		Timesheet timesheet = timesheetService.getTimesheet(id);
+		EMese mese = EMese.getByMonthId(id.getMese());
+		Timesheet timesheet = timesheetService.deleteTimesheet(id.getAnno(), mese, id.getCodicePersona());
 		TimesheetResponseDto dto = dtoEntityMapper.entityToDto(timesheet);
 		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder().timestamp(Utils.now()).data(dto).build();
 		return ResponseEntity.ok(genericDto);

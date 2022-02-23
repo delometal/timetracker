@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.exception.DipendenteException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
@@ -47,7 +48,8 @@ public class DipendenteService {
 			utente.setCodicePersona(null);
 			dipendente.setCodicePersona(null);
 			String codicePersona = Utils.uuid();
-			utente.setCodicePersona(codicePersona);			
+			utente.setCodicePersona(codicePersona);	
+			utente.setTipo(AnagraficaType.I);
 			dipendente.setUtente(utente);
 			utente.setPersonale(dipendente);
 			dipendente.setEconomics(economics);

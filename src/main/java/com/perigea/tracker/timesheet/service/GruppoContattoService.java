@@ -128,6 +128,7 @@ public class GruppoContattoService {
 			return utenteRepository.findByCodicePersonaAndTipo(codicePersona, AnagraficaType.C).get();
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
+				logger.info("l'utente ricercato non è presente o potrebbe non essere un contatto");
 				throw new EntityNotFoundException(ex.getMessage());
 			}
 			throw new ContattoException(ex.getMessage());

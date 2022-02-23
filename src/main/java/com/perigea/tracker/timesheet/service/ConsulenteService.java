@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.exception.ConsulenteException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
@@ -45,6 +46,7 @@ public class ConsulenteService {
 			consulente.setCodicePersona(null);
 			String codicePersona = Utils.uuid();
 			utente.setCodicePersona(codicePersona);	
+			utente.setTipo(AnagraficaType.E);
 			consulente.setUtente(utente);
 			utente.setPersonale(consulente);
 			consulente.setEconomics(economics);

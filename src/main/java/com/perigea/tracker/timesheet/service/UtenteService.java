@@ -1,5 +1,6 @@
 package com.perigea.tracker.timesheet.service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.persistence.EntityNotFoundException;
@@ -63,9 +64,9 @@ public class UtenteService {
 	 * @param cognome
 	 * @return
 	 */
-	public Utente readUtente(String nome, String cognome) {
+	public List<Utente> readUtente(String nome, String cognome) {
 		try {
-			return utenteRepository.findByNomeAndCognome(nome, cognome).get();
+			return utenteRepository.findAllByNomeAndCognome(nome, cognome);
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

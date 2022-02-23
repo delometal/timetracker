@@ -40,11 +40,11 @@ public class ContactDetailsController {
 	}
 
 	@GetMapping(value = "/contact-details/read/{nome}/{cognome}")
-	public ResponseEntity<ResponseDto<ContactDto>> readUserContactDetails(@PathVariable(name = "nome") String nome,
+	public ResponseEntity<ResponseDto<List<ContactDto>>> readUserContactDetails(@PathVariable(name = "nome") String nome,
 			@PathVariable(name = "cognome") String cognome) {
-		Utente utente = utenteService.readUtente(nome, cognome);
-		ContactDto contactDetails = dtoEntityMapper.entityToContactDto(utente);
-		ResponseDto<ContactDto> genericResponse = ResponseDto.<ContactDto>builder().timestamp(Utils.now())
+		List<Utente> utenti = utenteService.readUtente(nome, cognome);
+		List<ContactDto> contactDetails = dtoEntityMapper.entityToContactDtoList(utenti);
+		ResponseDto<List<ContactDto>> genericResponse = ResponseDto.<List<ContactDto>>builder().timestamp(Utils.now())
 				.data(contactDetails).build();
 		return ResponseEntity.ok(genericResponse);
 	}

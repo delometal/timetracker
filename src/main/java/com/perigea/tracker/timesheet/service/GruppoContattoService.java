@@ -141,9 +141,9 @@ public class GruppoContattoService {
 	 * @param cognome
 	 * @return
 	 */
-	public Utente readContatto(String nome, String cognome) {
+	public List<Utente> readContatto(String nome, String cognome) {
 		try {
-			return utenteRepository.findByNomeAndCognome(nome, cognome).get();
+			return utenteRepository.findAllByNomeAndCognome(nome, cognome);
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

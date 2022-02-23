@@ -17,7 +17,7 @@ public interface UtenteRepository extends JpaRepository<Utente, String>, JpaSpec
 
 	public Optional<Utente> findByCodicePersona(String codicePersona);
 	public Optional<Utente> findByCodicePersonaAndTipo(String codicePersona, AnagraficaType tipo);
-	public Optional<Utente> findByNomeAndCognome(String nome, String cognome);
+	public List<Utente> findAllByNomeAndCognome(String nome, String cognome);
 	
 
 	@Query(value = "SELECT u FROM Utente u WHERE u.tipo = :tipo")

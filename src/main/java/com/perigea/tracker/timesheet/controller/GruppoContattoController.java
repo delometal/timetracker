@@ -92,11 +92,11 @@ public class GruppoContattoController {
 	}
 	
 	@GetMapping(value = "/contatti/read/{nome}/{cognome}")
-	public ResponseEntity<ResponseDto<UtenteDto>> readContatto(@PathVariable(name="nome") String nome, @PathVariable (name = "cognome") String cognome) {
-		Utente contatto = gruppoContattoService.readContatto(nome, cognome);
-		UtenteDto dto = dtoEntityMapper.entityToDto(contatto);
-		ResponseDto<UtenteDto> genericResponse = ResponseDto
-				.<UtenteDto>builder().timestamp(Utils.now()).data(dto).build();
+	public ResponseEntity<ResponseDto<List<UtenteDto>>> readContatto(@PathVariable(name="nome") String nome, @PathVariable (name = "cognome") String cognome) {
+		List <Utente> contatti = gruppoContattoService.readContatto(nome, cognome);
+		List<UtenteDto> listaDto = dtoEntityMapper.entityToDtoUtenteList(contatti);
+		ResponseDto<List<UtenteDto>> genericResponse = ResponseDto
+				.<List<UtenteDto>>builder().timestamp(Utils.now()).data(listaDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 

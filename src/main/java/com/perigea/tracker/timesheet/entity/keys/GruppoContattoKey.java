@@ -7,8 +7,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.perigea.tracker.timesheet.entity.Personale;
 import com.perigea.tracker.timesheet.entity.Gruppo;
+import com.perigea.tracker.timesheet.entity.Personale;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

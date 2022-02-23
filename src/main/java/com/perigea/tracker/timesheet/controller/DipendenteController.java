@@ -53,7 +53,7 @@ public class DipendenteController {
  		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(dipendenteDto.getEconomics());
 		Utente responsabile = null;
 		try {
-			responsabile = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodiceResponsabile());
+			responsabile = dipendenteService.readUtente(dipendenteDto.getUtente().getCodiceResponsabile());
 			dipendente.setResponsabile(responsabile.getPersonale());
 		} catch(EntityNotFoundException e) {
 			responsabile = null;
@@ -76,7 +76,7 @@ public class DipendenteController {
 	@GetMapping(value = "/read/{codicePersona}")
 //	@PreAuthorize("hasAuthority('ROLE_MANAGEMENT')")
 	public ResponseEntity<ResponseDto<DipendenteDto>> readDipendente(@PathVariable(name = "codicePersona") String codicePersona) {
-		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
+		Utente utente = dipendenteService.readUtente(codicePersona);
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
 		Dipendente anagrafica = (Dipendente)utente.getPersonale();
 		DipendenteDto dipendenteDto = dtoEntityMapper.entityToDto(anagrafica);
@@ -91,13 +91,13 @@ public class DipendenteController {
 
 	@DeleteMapping(value = "/delete/{codicePersona}")
 	public ResponseEntity<ResponseDto<DipendenteDto>> deleteDipendente(@PathVariable(name = "codicePersona") String codicePersona) {
-		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
+		Utente utente = dipendenteService.readUtente(codicePersona);
 		Dipendente dipendente = (Dipendente) utente.getPersonale();
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
 		DipendenteDto dipendenteDto = dtoEntityMapper.entityToDto(dipendente);
 		dipendenteDto.setUtente(utenteDto);
 
-		dipendenteService.deleteUtenteDipendente(codicePersona);
+		dipendenteService.deleteUtente(codicePersona);
 		ResponseDto<DipendenteDto> genericResponse = ResponseDto
 				.<DipendenteDto>builder()
 				.timestamp(Utils.now())
@@ -110,10 +110,10 @@ public class DipendenteController {
 	public ResponseEntity<ResponseDto<DipendenteDto>> updateUser(@RequestBody DipendenteDto dipendenteDto) {
 		
 		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
-		Utente utente = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodicePersona());
+		Utente utente = dipendenteService.readUtente(dipendenteDto.getUtente().getCodicePersona());
 		Utente responsabile = null;
 		try {
-			responsabile = dipendenteService.readUtenteDipendente(dipendenteDto.getUtente().getCodiceResponsabile());
+			responsabile = dipendenteService.readUtente(dipendenteDto.getUtente().getCodiceResponsabile());
 			dipendente.setResponsabile(responsabile.getPersonale());
 		} catch(EntityNotFoundException e) {
 			responsabile = null;
@@ -121,7 +121,7 @@ public class DipendenteController {
 		
 		dipendente.setCodicePersona(utente.getCodicePersona());
 		utente.setPersonale(dipendente);
-		utente = dipendenteService.updateUtenteDipendente(utente);
+		utente = dipendenteService.updateUtente(utente);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
 		Dipendente anagrafica = (Dipendente)utente.getPersonale();
 
@@ -143,7 +143,7 @@ public class DipendenteController {
 
 		Utente responsabile = null;
 		try {
-			responsabile = dipendenteService.readUtenteDipendente(utenteDto.getCodiceResponsabile());			
+			responsabile = dipendenteService.readUtente(utenteDto.getCodiceResponsabile());			
 			dipendente.setResponsabile(responsabile.getPersonale());
 		} catch(EntityNotFoundException e) {
 			responsabile = null;
@@ -151,7 +151,7 @@ public class DipendenteController {
 		
 		
 		utente.setPersonale(dipendente);
-		utente = dipendenteService.updateUtenteDipendente(utente);
+		utente = dipendenteService.updateUtente(utente);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
 		Dipendente anagrafica = (Dipendente)utente.getPersonale();
 
@@ -178,10 +178,10 @@ public class DipendenteController {
 	
 	@PutMapping(value = "/update-roles/{codicePersona}")
 	public ResponseEntity<ResponseDto<UtenteDto>> editRoleUser(@PathVariable(name = "codicePersona") String codicePersona, @RequestBody List<RuoloDto> ruoliDto) {
-		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
+		Utente utente = dipendenteService.readUtente(codicePersona);
 		List<Ruolo> ruoli = dtoEntityMapper.dtoToEntityRuoloList(ruoliDto);
 		utente.setRuoli(ruoli);
-		utente = dipendenteService.updateUtenteDipendente(utente);
+		utente = dipendenteService.updateUtente(utente);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
 		ResponseDto<UtenteDto> genericResponse = ResponseDto.<UtenteDto>builder()
 				.timestamp(Utils.now())
@@ -193,7 +193,7 @@ public class DipendenteController {
 	
 	@PostMapping(value = "/create-economics")
 	public ResponseEntity<ResponseDto<DatiEconomiciDipendenteDto>> createDatiEconomiciDipendente(@RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
-		Utente utente = dipendenteService.readUtenteDipendente(datiEconomiciDipendenteDto.getCodicePersona());
+		Utente utente = dipendenteService.readUtente(datiEconomiciDipendenteDto.getCodicePersona());
 		CentroDiCosto cdc = centroDiCostoService.readCentroDiCosto(datiEconomiciDipendenteDto.getCodiceCentroDiCosto());
 		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(datiEconomiciDipendenteDto);
 		
@@ -203,7 +203,7 @@ public class DipendenteController {
 		economics.setCentroDiCosto(cdc);
 		utente.setPersonale(dipendente);
 		
-		utente = dipendenteService.updateUtenteDipendente(utente);
+		utente = dipendenteService.updateUtente(utente);
 		datiEconomiciDipendenteDto = dtoEntityMapper.entityToDto(economics);
 
 		ResponseDto<DatiEconomiciDipendenteDto> genericResponse = ResponseDto.<DatiEconomiciDipendenteDto>builder()
@@ -215,7 +215,7 @@ public class DipendenteController {
 	
 	@PutMapping(value = "/update-economics")
 	public ResponseEntity<ResponseDto<DatiEconomiciDipendenteDto>> editDatiEconomiciDipendente( @RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
-		Utente utente = dipendenteService.readUtenteDipendente(datiEconomiciDipendenteDto.getCodicePersona());
+		Utente utente = dipendenteService.readUtente(datiEconomiciDipendenteDto.getCodicePersona());
 		CentroDiCosto cdc = centroDiCostoService.readCentroDiCosto(datiEconomiciDipendenteDto.getCodiceCentroDiCosto());
 		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(datiEconomiciDipendenteDto);
 		economics.setCodicePersona(utente.getCodicePersona());
@@ -226,7 +226,7 @@ public class DipendenteController {
 		economics.setCentroDiCosto(cdc);
 		utente.setPersonale(dipendente);
 		
-		utente = dipendenteService.updateUtenteDipendente(utente);
+		utente = dipendenteService.updateUtente(utente);
 		datiEconomiciDipendenteDto = dtoEntityMapper.entityToDto(economics);
 
 		ResponseDto<DatiEconomiciDipendenteDto> genericResponse = ResponseDto.<DatiEconomiciDipendenteDto>builder()

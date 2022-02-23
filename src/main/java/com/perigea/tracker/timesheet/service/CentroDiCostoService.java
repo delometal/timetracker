@@ -7,7 +7,6 @@ import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
-
 import org.springframework.stereotype.Service;
 
 import com.perigea.tracker.commons.exception.CentroDiCostoException;

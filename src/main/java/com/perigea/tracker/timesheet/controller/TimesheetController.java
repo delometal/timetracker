@@ -91,7 +91,7 @@ public class TimesheetController {
 	
 	@GetMapping(value = "/download-report/{anno}/{mese}/{codicePersona}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public ResponseEntity<byte[]> downloadExcelTimesheet(@PathVariable(value = "anno") Integer anno, @PathVariable(value = "mese") EMese mese, @PathVariable(value = "codicePersona") String codicePersona) {
-		Utente utente = dipendenteService.readUtenteDipendente(codicePersona);
+		Utente utente = dipendenteService.readUtente(codicePersona);
 		InfoAutoDto infoAuto = null;
 		if(utente.getPersonale().getClass().isAssignableFrom(Dipendente.class)) {
 			Dipendente dipendente = (Dipendente) utente.getPersonale();

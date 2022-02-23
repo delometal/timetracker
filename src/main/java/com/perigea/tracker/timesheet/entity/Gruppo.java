@@ -1,6 +1,5 @@
 package com.perigea.tracker.timesheet.entity;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,11 +15,13 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
 @Table(name = "gruppo")
-public class Gruppo implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class Gruppo extends BaseEntity {
 
 	private static final long serialVersionUID = -6564545853025079938L;
 

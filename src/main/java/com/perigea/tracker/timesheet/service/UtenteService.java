@@ -57,6 +57,18 @@ public class UtenteService {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
+	public Utente loadUtente(String id) {
+		try {
+			return utenteRepository.getOne(id);
+		} catch (Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new UtenteException(ex.getMessage());
+		}
+	}
+	
 	/**
 	 * lettura utente attraverso nome e cognome
 	 * 

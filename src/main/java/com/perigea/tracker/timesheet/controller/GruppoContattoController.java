@@ -1,6 +1,7 @@
 package com.perigea.tracker.timesheet.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,15 +14,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.perigea.tracker.commons.dto.ContactDto;
-import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.GruppoContattoDto;
-import com.perigea.tracker.commons.dto.UtenteDto;
+import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Gruppo;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.GruppoContattoService;
+import com.perigea.tracker.timesheet.service.UtenteService;
 
 @RestController
 @RequestMapping("/contatti-e-gruppi")
@@ -32,14 +32,22 @@ public class GruppoContattoController {
 	
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
+	
+	@Autowired
+	private UtenteService utenteService;
 
 	@PostMapping(value = "/create")
 	public ResponseEntity<ResponseDto<GruppoContattoDto>> createGruppo(@RequestBody GruppoContattoDto gruppoContattoDto) {
 		Gruppo gruppo = dtoEntityMapper.dtoToEntity(gruppoContattoDto);
+		List<Utente> contatti= gruppoContattoDto.getContatti().stream()
+				.map(c -> utenteService.loadUtente(c.getCodicePersona()))
+				.collect(Collectors.toList());
+		gruppo.setContatti(contatti);
+		
 		gruppo = gruppoContattoService.createGruppo(gruppo);
-		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppo);
+		gruppoContattoDto.setId(gruppo.getId());
 		ResponseDto<GruppoContattoDto> genericResponse = ResponseDto
-				.<GruppoContattoDto>builder().timestamp(Utils.now()).data(dto).build();
+				.<GruppoContattoDto>builder().timestamp(Utils.now()).data(gruppoContattoDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -54,11 +62,17 @@ public class GruppoContattoController {
 
 	@PutMapping(value = "/update")
 	public ResponseEntity<ResponseDto<GruppoContattoDto>> updateGruppo(@RequestBody GruppoContattoDto gruppoContattoDto) {
+		gruppoContattoService.deleteGruppo(gruppoContattoDto.getId());
 		Gruppo gruppo = dtoEntityMapper.dtoToEntity(gruppoContattoDto);
-		gruppo = gruppoContattoService.updateGruppo(gruppo);
-		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppo);
+		List<Utente> contatti= gruppoContattoDto.getContatti().stream()
+				.map(c -> utenteService.loadUtente(c.getCodicePersona()))
+				.collect(Collectors.toList());
+		gruppo.setContatti(contatti);
+		
+		gruppo = gruppoContattoService.createGruppo(gruppo);
+		gruppoContattoDto.setId(gruppo.getId());
 		ResponseDto<GruppoContattoDto> genericResponse = ResponseDto
-				.<GruppoContattoDto>builder().timestamp(Utils.now()).data(dto).build();
+				.<GruppoContattoDto>builder().timestamp(Utils.now()).data(gruppoContattoDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -72,69 +86,4 @@ public class GruppoContattoController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PostMapping(value = "/contatti/create")
-	public ResponseEntity<ResponseDto<UtenteDto>> createContatto(@RequestBody UtenteDto contattoDto) {
-		Utente contatto = dtoEntityMapper.dtoToEntity(contattoDto);
-		contatto = gruppoContattoService.createContatto(contatto);
-		UtenteDto dto = dtoEntityMapper.entityToDto(contatto);
-		ResponseDto<UtenteDto> genericResponse = ResponseDto
-				.<UtenteDto>builder().timestamp(Utils.now()).data(dto).build();
-		return ResponseEntity.ok(genericResponse);
-	}
-
-	@GetMapping(value = "/contatti/read/{contattoId}")
-	public ResponseEntity<ResponseDto<UtenteDto>> readContatto(@PathVariable(name="contattoId") String contattoId) {
-		Utente contatto = gruppoContattoService.readContatto(contattoId);
-		UtenteDto dto = dtoEntityMapper.entityToDto(contatto);
-		ResponseDto<UtenteDto> genericResponse = ResponseDto
-				.<UtenteDto>builder().timestamp(Utils.now()).data(dto).build();
-		return ResponseEntity.ok(genericResponse);
-	}
-	
-	@GetMapping(value = "/contatti/read/{nome}/{cognome}")
-	public ResponseEntity<ResponseDto<List<UtenteDto>>> readContatto(@PathVariable(name="nome") String nome, @PathVariable (name = "cognome") String cognome) {
-		List <Utente> contatti = gruppoContattoService.readContatto(nome, cognome);
-		List<UtenteDto> listaDto = dtoEntityMapper.entityToDtoUtenteList(contatti);
-		ResponseDto<List<UtenteDto>> genericResponse = ResponseDto
-				.<List<UtenteDto>>builder().timestamp(Utils.now()).data(listaDto).build();
-		return ResponseEntity.ok(genericResponse);
-	}
-
-	@PutMapping(value = "/contatti/update")
-	public ResponseEntity<ResponseDto<UtenteDto>> updateContatto(@RequestBody ContactDto contattoDto) {
-		Utente contatto = gruppoContattoService.readContatto(contattoDto.getCodicePersona());
-		contatto = gruppoContattoService.updateContatto(contatto);
-		UtenteDto dto = dtoEntityMapper.entityToDto(contatto);
-		ResponseDto<UtenteDto> genericResponse = ResponseDto
-				.<UtenteDto>builder().timestamp(Utils.now()).data(dto).build();
-		return ResponseEntity.ok(genericResponse);
-	}
-
-	@DeleteMapping(value = "/contatti/delete/{contattoId}")
-	public ResponseEntity<ResponseDto<UtenteDto>> deleteContatto(@PathVariable(name="contattoId") String contattoId) {
-		Utente contatto = gruppoContattoService.readContatto(contattoId);
-		UtenteDto dto = dtoEntityMapper.entityToDto(contatto);
-		gruppoContattoService.deleteContatto(contattoId);
-		ResponseDto<UtenteDto> genericResponse = ResponseDto
-				.<UtenteDto>builder().timestamp(Utils.now()).data(dto).build();
-		return ResponseEntity.ok(genericResponse);
-	}
-
-	@GetMapping(value = "/read-all-contatti")
-	public ResponseEntity<ResponseDto<List<UtenteDto>>> readAllContatti() {
-		List<Utente> contatti = gruppoContattoService.readAllContatti();
-		List<UtenteDto> dtos = dtoEntityMapper.entityToDtoUtenteList(contatti);
-		ResponseDto<List<UtenteDto>> genericResponse = ResponseDto
-				.<List<UtenteDto>>builder().timestamp(Utils.now()).data(dtos).build();
-		return ResponseEntity.ok(genericResponse);
-	}
-	
-	@GetMapping(value = "/read-all-contatti/{groupId}")
-	public ResponseEntity<ResponseDto<List<UtenteDto>>> readAllContatti(@PathVariable(name = "groupId") Long groupId) {
-		List<Utente> contatti = gruppoContattoService.readAllContactsByGroupId(groupId);
-		List<UtenteDto> dtos = dtoEntityMapper.entityToDtoUtenteList(contatti);
-		ResponseDto<List<UtenteDto>> genericResponse = ResponseDto
-				.<List<UtenteDto>>builder().timestamp(Utils.now()).data(dtos).build();
-		return ResponseEntity.ok(genericResponse);
-	}
 }

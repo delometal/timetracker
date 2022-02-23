@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.perigea.tracker.commons.dto.ResponseDto;
+import com.perigea.tracker.commons.enums.ResponseType;
 import com.perigea.tracker.commons.exception.CentroDiCostoException;
 import com.perigea.tracker.commons.exception.ClienteException;
 import com.perigea.tracker.commons.exception.CommessaException;
@@ -28,7 +29,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		ResponseDto<GenericError> errorDto = ResponseDto.<GenericError>builder()
-				.timestamp(Utils.now()).data(eObject).build();
+				.code(400).type(ResponseType.ERROR).timestamp(Utils.now()).data(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 
@@ -38,7 +39,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		ResponseDto<GenericError> errorDto = ResponseDto.<GenericError>builder()
-				.timestamp(Utils.now()).data(eObject).build();
+				.code(400).type(ResponseType.ERROR).timestamp(Utils.now()).data(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 
@@ -48,7 +49,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		ResponseDto<GenericError> errorDto = ResponseDto.<GenericError>builder()
-				.timestamp(Utils.now()).data(eObject).build();
+				.code(400).type(ResponseType.ERROR).timestamp(Utils.now()).data(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 
@@ -58,7 +59,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		ResponseDto<GenericError> errorDto = ResponseDto.<GenericError>builder()
-				.timestamp(Utils.now()).data(eObject).build();
+				.code(400).type(ResponseType.ERROR).timestamp(Utils.now()).data(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 
@@ -68,7 +69,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		ResponseDto<GenericError> errorDto = ResponseDto.<GenericError>builder()
-				.timestamp(Utils.now()).data(eObject).build();
+				.code(400).type(ResponseType.ERROR).timestamp(Utils.now()).data(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 
 	}
@@ -84,7 +85,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		ResponseDto<GenericError> errorDto = ResponseDto.<GenericError>builder()
-				.timestamp(Utils.now()).data(eObject).build();
+				.code(400).type(ResponseType.ERROR).timestamp(Utils.now()).data(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 
@@ -94,7 +95,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		ResponseDto<GenericError> errorDto = ResponseDto.<GenericError>builder()
-				.timestamp(Utils.now()).data(eObject).build();
+				.code(400).type(ResponseType.ERROR).timestamp(Utils.now()).data(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 
@@ -104,7 +105,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		ResponseDto<GenericError> errorDto = ResponseDto.<GenericError>builder()
-				.timestamp(Utils.now()).data(eObject).build();
+				.code(400).type(ResponseType.ERROR).timestamp(Utils.now()).data(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 
@@ -114,7 +115,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		ResponseDto<GenericError> errorDto = ResponseDto.<GenericError>builder()
-				.timestamp(Utils.now()).data(eObject).build();
+				.code(400).type(ResponseType.ERROR).timestamp(Utils.now()).data(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 
@@ -124,7 +125,7 @@ public class ExceptionHandlerController {
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());
 		ResponseDto<GenericError> errorDto = ResponseDto.<GenericError>builder()
-				.timestamp(Utils.now()).data(eObject).build();
+				.code(400).type(ResponseType.ERROR).timestamp(Utils.now()).data(eObject).build();
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 

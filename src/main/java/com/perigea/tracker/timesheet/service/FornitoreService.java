@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.perigea.tracker.commons.exception.ClienteException;
 import com.perigea.tracker.commons.exception.FornitoreException;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Fornitore;
@@ -38,7 +37,9 @@ public class FornitoreService {
 	 */
 	public Fornitore saveFornitore(Fornitore fornitore) {
 		try {
-			fornitore.setCodiceAzienda(Utils.uuid());
+			if(Utils.isEmpty(fornitore.getCodiceAzienda())) {
+				fornitore.setCodiceAzienda(Utils.uuid());
+			}
 			return fornitoreRepository.save(fornitore);
 		} catch (Exception ex) {
 			throw new FornitoreException(ex.getMessage());
@@ -112,49 +113,7 @@ public class FornitoreService {
 			throw new FornitoreException(ex.getMessage());
 		}
 	}
-
-	/**
-	 * add contatto
-	 * @param cliente
-	 * @param contatto
-	 */
-	public void addContatto(Fornitore fornitore, Utente contatto) {
-		try {
-			fornitore.addContatto(contatto);
-			fornitoreRepository.save(fornitore);
-		} catch (Exception ex) {
-			throw new ClienteException(ex.getMessage());
-		}
-	}
 	
-	/**
-	 * remove contatto
-	 * @param fornitore
-	 * @param contatto
-	 */
-	public void removeContatto(Fornitore fornitore, Utente contatto) {
-		try {
-			fornitore.removeContatto(contatto);
-			fornitoreRepository.save(fornitore);
-		} catch (Exception ex) {
-			throw new ClienteException(ex.getMessage());
-		}
-	}
-
-	/**
-	 * delete contatto
-	 * @param fornitore
-	 * @param contatto
-	 */
-	public void deleteContatto(Fornitore fornitore, Utente contatto) {
-		try {
-			fornitore.removeContatto(contatto);
-			fornitoreRepository.save(fornitore);
-		} catch (Exception ex) {
-			throw new ClienteException(ex.getMessage());
-		}
-	}
-
 	/**
 	 * @param codicePersona
 	 * @return
@@ -170,7 +129,6 @@ public class FornitoreService {
 		}
 	}
 	
-
 	/**
 	 * Legge tutti i fornitori
 	 * @return

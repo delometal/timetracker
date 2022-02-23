@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.ClienteDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
-import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Cliente;
-import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.ClienteService;
 
@@ -51,9 +49,9 @@ public class ClienteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@GetMapping(value = "/read-by-id/{id}")
-	public ResponseEntity<ResponseDto<ClienteDto>> readClienteById(@PathVariable(name = "id") String id) {
-		Cliente cliente = clienteService.readClienteById(id);
+	@GetMapping(value = "/read-by-id/{codiceAzienda}")
+	public ResponseEntity<ResponseDto<ClienteDto>> readClienteById(@PathVariable(name = "codiceAzienda") String codiceAzienda) {
+		Cliente cliente = clienteService.readClienteById(codiceAzienda);
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);
 		ResponseDto<ClienteDto> genericResponse = ResponseDto
 				.<ClienteDto>builder().timestamp(Utils.now()).data(clienteDto).build();
@@ -79,11 +77,11 @@ public class ClienteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
-	@DeleteMapping(value = "/delete-by-id/{id}")
-	public ResponseEntity<ResponseDto<ClienteDto>> deleteClienteById(@PathVariable(name = "id") String id) {
-		Cliente cliente = clienteService.readClienteById(id);
+	@DeleteMapping(value = "/delete-by-id/{codiceAzienda}")
+	public ResponseEntity<ResponseDto<ClienteDto>> deleteClienteById(@PathVariable(name = "codiceAzienda") String codiceAzienda) {
+		Cliente cliente = clienteService.readClienteById(codiceAzienda);
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);
-		clienteService.deleteClienteById(id);
+		clienteService.deleteClienteById(codiceAzienda);
 		ResponseDto<ClienteDto> genericResponse = ResponseDto
 				.<ClienteDto>builder().timestamp(Utils.now()).data(clienteDto).build();
 		return ResponseEntity.ok(genericResponse);
@@ -98,38 +96,5 @@ public class ClienteController {
 				.<ClienteDto>builder().timestamp(Utils.now()).data(clienteDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
-	
-	@PostMapping(value = "/{id}/contatti/create-contatto")
-	public ResponseEntity<ResponseDto<UtenteDto>> createContatto(@PathVariable(name = "id") String id, @RequestBody UtenteDto contattoDto) {
-		Cliente cliente = clienteService.readClienteById(id);
-		Utente contatto = clienteService.findContatto(contattoDto.getCodicePersona());
-		clienteService.addContatto(cliente, contatto);
-		UtenteDto dto = dtoEntityMapper.entityToDto(contatto);
-		ResponseDto<UtenteDto> genericResponse = ResponseDto
-				.<UtenteDto>builder().timestamp(Utils.now()).data(dto).build();
-		return ResponseEntity.ok(genericResponse);
-	}
-	
-	@PostMapping(value = "/{id}/contatti/remove-contatto")
-	public ResponseEntity<ResponseDto<UtenteDto>> removeContatto(@PathVariable(name = "id") String id, @RequestBody UtenteDto contattoDto) {
-		Cliente cliente = clienteService.readClienteById(id);
-		Utente contatto = clienteService.findContatto(contattoDto.getCodicePersona());
-		clienteService.removeContatto(cliente, contatto);
-		UtenteDto dto = dtoEntityMapper.entityToDto(contatto);
-		ResponseDto<UtenteDto> genericResponse = ResponseDto
-				.<UtenteDto>builder().timestamp(Utils.now()).data(dto).build();
-		return ResponseEntity.ok(genericResponse);
-	}
-	
-	@DeleteMapping(value = "/{id}/contatti/delete-contatto")
-	public ResponseEntity<ResponseDto<UtenteDto>> deleteContatto(@PathVariable(name = "id") String id, @RequestBody UtenteDto contattoDto) {
-		Cliente cliente = clienteService.readClienteById(id);
-		Utente contatto = clienteService.findContatto(contattoDto.getCodicePersona());
-		clienteService.deleteContatto(cliente, contatto);
-		UtenteDto dto = dtoEntityMapper.entityToDto(contatto);
-		ResponseDto<UtenteDto> genericResponse = ResponseDto
-				.<UtenteDto>builder().timestamp(Utils.now()).data(dto).build();
-		return ResponseEntity.ok(genericResponse);
-	}
-	
+
 }

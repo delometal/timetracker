@@ -29,15 +29,11 @@ import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.CentroDiCostoService;
 import com.perigea.tracker.timesheet.service.ConsulenteService;
-import com.perigea.tracker.timesheet.service.UtenteService;
 
 @RestController
 @RequestMapping("/consulenti")
 public class ConsulenteController {
 	
-	@Autowired
-	private UtenteService utenteService;
-
 	@Autowired
 	protected Logger logger;
 	

@@ -3,7 +3,6 @@ package com.perigea.tracker.timesheet.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -83,7 +82,7 @@ public class Azienda extends BaseEntity {
 	@Column(name = "note_per_la_fatturazione")
 	private String notePerLaFatturazione;
 	
-	@OneToMany(mappedBy = "azienda", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+	@OneToMany(mappedBy = "azienda")
 	private List<Utente> contatti = new ArrayList<>();
 	
 	public void addContatto(Utente contatto) {

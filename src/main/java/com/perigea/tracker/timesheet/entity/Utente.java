@@ -116,13 +116,16 @@ public class Utente extends BaseEntity {
 	@Column(name = "cellulare_contatto_emergenza")
 	private String cellulareContattoEmergenza;
 	
+	@Column(name = "codice_azienda", nullable = true, insertable=false, updatable=false)
+	private String codiceAzienda;
+	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@OneToOne(mappedBy = "utente", cascade = CascadeType.ALL, optional = true)
 	private Personale personale;
 	
-	@ManyToOne(optional = true)
+	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
 	@NotFound(action = NotFoundAction.IGNORE)
-	@JoinColumn(name = "codice_azienda", insertable = false, updatable = false)
+	@JoinColumn(name = "codice_azienda")
 	private Azienda azienda;
 	
 	@NotFound(action = NotFoundAction.IGNORE)

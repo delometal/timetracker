@@ -51,13 +51,8 @@ public class DipendenteController {
  		Utente utente = dtoEntityMapper.dtoToEntity(dipendenteDto.getUtente());
  		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
  		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(dipendenteDto.getEconomics());
-		Utente responsabile = null;
-		try {
-			responsabile = dipendenteService.readUtente(dipendenteDto.getUtente().getCodiceResponsabile());
-			dipendente.setResponsabile(responsabile.getPersonale());
-		} catch(EntityNotFoundException e) {
-			responsabile = null;
-		}
+		
+		loadResponsabile(dipendenteDto, dipendente);
 		
 		utente = dipendenteService.createUtenteDipendente(utente, dipendente, economics);
 
@@ -71,6 +66,16 @@ public class DipendenteController {
 				.data(dipendenteDto)
 				.build();
 		return ResponseEntity.ok(genericResponse);
+	}
+
+	private void loadResponsabile(DipendenteDto dipendenteDto, Dipendente dipendente) {
+		try {
+			Utente responsabile = dipendenteService.readUtente(dipendenteDto.getCodiceResponsabile());
+			dipendente.setResponsabile(responsabile.getPersonale());
+		} catch(Exception e) {
+			dipendente.setResponsabile(null);
+			logger.warn("Responsabile non presente");
+		}
 	}
 
 	@GetMapping(value = "/read/{codicePersona}")
@@ -111,13 +116,8 @@ public class DipendenteController {
 		
 		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
 		Utente utente = dipendenteService.readUtente(dipendenteDto.getUtente().getCodicePersona());
-		Utente responsabile = null;
-		try {
-			responsabile = dipendenteService.readUtente(dipendenteDto.getUtente().getCodiceResponsabile());
-			dipendente.setResponsabile(responsabile.getPersonale());
-		} catch(EntityNotFoundException e) {
-			responsabile = null;
-		}
+		
+		loadResponsabile(dipendenteDto, dipendente);
 		
 		dipendente.setCodicePersona(utente.getCodicePersona());
 		utente.setPersonale(dipendente);
@@ -135,35 +135,6 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PutMapping(value = "/update-user")
-	public ResponseEntity<ResponseDto<DipendenteDto>> updateUser(@RequestBody UtenteDto utenteDto) {
-		Utente utente = dtoEntityMapper.dtoToEntity(utenteDto);
-		
-		Dipendente dipendente = dipendenteService.readAnagraficaDipendente(utenteDto.getCodicePersona());
-
-		Utente responsabile = null;
-		try {
-			responsabile = dipendenteService.readUtente(utenteDto.getCodiceResponsabile());			
-			dipendente.setResponsabile(responsabile.getPersonale());
-		} catch(EntityNotFoundException e) {
-			responsabile = null;
-		}
-		
-		
-		utente.setPersonale(dipendente);
-		utente = dipendenteService.updateUtente(utente);
-		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
-		Dipendente anagrafica = (Dipendente)utente.getPersonale();
-
-		DipendenteDto dipendenteDto = dtoEntityMapper.entityToDto(anagrafica);
-		dipendenteDto.setUtente(utenteResponseDto);
-		ResponseDto<DipendenteDto> genericResponse = ResponseDto
-				.<DipendenteDto>builder()
-				.timestamp(Utils.now())
-				.data(dipendenteDto)
-				.build();
-		return ResponseEntity.ok(genericResponse);
-	}
 	
 	@PutMapping(value = "/update-status/{codicePersona}/{status}")
 	public ResponseEntity<ResponseDto<UtenteDto>> editStatusUser(@PathVariable("codicePersona") String codicePersona, @PathVariable("status") StatoUtenteType status) {

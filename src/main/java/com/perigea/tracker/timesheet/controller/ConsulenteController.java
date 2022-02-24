@@ -50,30 +50,34 @@ public class ConsulenteController {
 
 	@PostMapping(value = "/create")
 	public ResponseEntity<ResponseDto<ConsulenteDto>> createConsulente(@RequestBody ConsulenteDto consulenteDto) {
-		throw new GruppoException(null);
+		Utente utente = dtoEntityMapper.dtoToEntity(consulenteDto.getUtente());
+		Consulente consulente = dtoEntityMapper.dtoToEntity(consulenteDto);
+		DatiEconomiciConsulente economics = dtoEntityMapper.dtoToEntity(consulenteDto.getEconomics());
+		
+		loadResponsabile(consulenteDto, consulente);
+		
+		utente = consulenteService.createUtenteConsulente(utente, consulente, economics);
+		
+		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
+		Consulente anagrafica = (Consulente) utente.getPersonale();
+		consulenteDto = dtoEntityMapper.entityToDto(anagrafica);
+		consulenteDto.setUtente(utenteDto);
+		ResponseDto<ConsulenteDto> genericResponse = ResponseDto
+				.<ConsulenteDto>builder()
+				.timestamp(Utils.now())
+				.data(consulenteDto)
+				.build();
+		return ResponseEntity.ok(genericResponse);
+	}
 
-//		Utente utente = dtoEntityMapper.dtoToEntity(consulenteDto.getUtente());
-//		Consulente consulente = dtoEntityMapper.dtoToEntity(consulenteDto);
-//		DatiEconomiciConsulente economics = dtoEntityMapper.dtoToEntity(consulenteDto.getEconomics());
-//		Utente responsabile = null;
-//		try {
-//			responsabile = consulenteService.readUtente(consulenteDto.getUtente().getCodiceResponsabile());			
-//			consulente.setResponsabile(responsabile.getPersonale());
-//		} catch(javax.persistence.EntityNotFoundException e) {
-//			responsabile = null;
-//		}
-//		
-		//utente = consulenteService.createUtenteConsulente(utente, consulente, economics);
-//		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
-//		Consulente anagrafica = (Consulente) utente.getPersonale();
-//		consulenteDto = dtoEntityMapper.entityToDto(anagrafica);
-//		consulenteDto.setUtente(utenteDto);
-//		ResponseDto<ConsulenteDto> genericResponse = ResponseDto
-//				.<ConsulenteDto>builder()
-//				.timestamp(Utils.now())
-//				.data(consulenteDto)
-//				.build();
-		//return ResponseEntity.ok(null);
+	private void loadResponsabile(ConsulenteDto consulenteDto, Consulente consulente) {
+		try {
+			Utente responsabile= consulenteService.readUtente(consulenteDto.getCodiceResponsabile());			
+			consulente.setResponsabile(responsabile.getPersonale());
+		} catch(Exception e) {
+			consulente.setResponsabile(null);
+			logger.warn("Responsabile non presente");
+		}
 	}
 
 	@GetMapping(value = "/read/{codicePersona}")
@@ -113,13 +117,9 @@ public class ConsulenteController {
 	public ResponseEntity<ResponseDto<ConsulenteDto>> updateUser(@RequestBody ConsulenteDto consulenteDto) {
 		Consulente consulente = dtoEntityMapper.dtoToEntity(consulenteDto);
 		Utente utente = consulenteService.readUtente(consulenteDto.getUtente().getCodicePersona());
-		Utente responsabile = null;
-		try {
-			responsabile = consulenteService.readUtente(consulenteDto.getUtente().getCodiceResponsabile());			
-			consulente.setResponsabile(responsabile.getPersonale());
-		} catch(EntityNotFoundException e) {
-			responsabile = null;
-		}
+		
+		loadResponsabile(consulenteDto, consulente);
+		
 		consulente.setCodicePersona(utente.getCodicePersona());
 		utente.setPersonale(consulente);
 		utente = consulenteService.updateUtente(utente);
@@ -136,35 +136,7 @@ public class ConsulenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PutMapping(value = "/update-user")
-	public ResponseEntity<ResponseDto<ConsulenteDto>> updateUser(@RequestBody UtenteDto utenteDto) {
-		Utente utente = dtoEntityMapper.dtoToEntity(utenteDto);
-		
-		Consulente consulente = consulenteService.readAnagraficaConsulente(utenteDto.getCodicePersona());
-
-		Utente responsabile = null;
-		
-		try {
-			responsabile = consulenteService.readUtente(utenteDto.getCodiceResponsabile());			
-			consulente.setResponsabile(responsabile.getPersonale());
-		} catch(EntityNotFoundException e) {
-			responsabile = null;
-		}
-		
-		utente.setPersonale(consulente);
-		utente = consulenteService.updateUtente(utente);
-		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
-		Consulente anagrafica = (Consulente)utente.getPersonale();
-
-		ConsulenteDto consulenteDto = dtoEntityMapper.entityToDto(anagrafica);
-		consulenteDto.setUtente(utenteResponseDto);
-		ResponseDto<ConsulenteDto> genericResponse = ResponseDto
-				.<ConsulenteDto>builder()
-				.timestamp(Utils.now())
-				.data(consulenteDto)
-				.build();
-		return ResponseEntity.ok(genericResponse);
-	}
+	
 	
 	@PutMapping(value = "/update-status/{codicePersona}/{status}")
 	public ResponseEntity<ResponseDto<UtenteDto>> editStatusUser(@PathVariable("codicePersona") String codicePersona, @PathVariable("status") StatoUtenteType status) {

@@ -1,6 +1,5 @@
 package com.perigea.tracker.timesheet.service;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.persistence.EntityNotFoundException;
@@ -10,23 +9,44 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.perigea.tracker.commons.exception.ContattoException;
+import com.perigea.tracker.commons.enums.StatoUtenteType;
+import com.perigea.tracker.commons.exception.ConsulenteException;
+import com.perigea.tracker.commons.exception.PersistenceException;
 import com.perigea.tracker.commons.exception.UtenteException;
+import com.perigea.tracker.commons.utils.Utils;
+import com.perigea.tracker.timesheet.entity.Personale;
 import com.perigea.tracker.timesheet.entity.Utente;
+import com.perigea.tracker.timesheet.repository.ApplicationDao;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
 
 @Service
 @Transactional
 public class UtenteService {
-	
+		
 	@Autowired
 	private Logger logger;
 
 	@Autowired
-	private UtenteRepository utenteRepository;
+	private ApplicationDao applicationDao;
 	
+	@Autowired
+	protected UtenteRepository utenteRepository;
 	
-
+	public <T extends Personale> Utente createUtente(Utente utente, T personale) {
+		try {	
+			utente.setCodicePersona(null);
+			personale.setCodicePersona(null);
+			String codicePersona = Utils.uuid();
+			utente.setCodicePersona(codicePersona);
+			personale.setUtente(utente);
+			logger.info("utente salvato");
+			return utenteRepository.save(utente);
+		} catch (Exception ex) {
+			logger.error(ex.getMessage());
+			throw new ConsulenteException(ex.getMessage());
+		}
+	}
+	
 	/**
 	 * creazione utente
 	 * @param utente
@@ -68,24 +88,6 @@ public class UtenteService {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
-	
-	/**
-	 * lettura utente attraverso nome e cognome
-	 * 
-	 * @param nome
-	 * @param cognome
-	 * @return
-	 */
-	public List<Utente> readUtente(String nome, String cognome) {
-		try {
-			return utenteRepository.findAllByNomeAndCognome(nome, cognome);
-		} catch (Exception ex) {
-			if (ex instanceof NoSuchElementException) {
-				throw new EntityNotFoundException(ex.getMessage());
-			}
-			throw new ContattoException(ex.getMessage());
-		}
-	}
 
 	/**
 	 * cancellazione utente
@@ -94,6 +96,7 @@ public class UtenteService {
 	 */
 	public void deleteUtente(String id) {
 		try {
+			utenteRepository.getById(id).getRuoli().clear();
 			utenteRepository.deleteById(id);
 			logger.info("Utente cancellato");
 		} catch (Exception ex) {
@@ -115,5 +118,38 @@ public class UtenteService {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
+
+	public Utente updateUtente(Utente utente) {
+		try {
+			return utenteRepository.save(utente);
+		} catch (Exception ex) {
+			throw new ConsulenteException(ex.getMessage());
+		}
+	}
+	
+	// Metodo per aggiornare lo stato (attivo/cessato) di un utente
+	public Utente updateUtenteStatus(String codicePersona, StatoUtenteType newStatus) {
+		try {
+			Integer edits = applicationDao.updateUserStatus(codicePersona, newStatus);
+			if (edits != null && edits == 1) {
+				return utenteRepository.findByCodicePersona(codicePersona).get();
+			} else {
+				throw new PersistenceException(String.format("Si è verificato un errore durante l'aggiornamento per l'utente %s con il nuovo stato %s", codicePersona, newStatus.name()));
+			}
+		} catch (Exception ex) {
+			throw ex;
+		}
+	}
+	
+//	public Personale readAnagraficaPersonale(String codicePersona) {
+//		try {
+//			return utenteRepository.getById(codicePersona).getPersonale();
+//		} catch (Exception ex) {
+//			if(ex instanceof NoSuchElementException) {
+//				throw new EntityNotFoundException(ex.getMessage());
+//			}
+//			throw new ConsulenteException(ex.getMessage());
+//		}
+//	}
 
 }

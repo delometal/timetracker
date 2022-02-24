@@ -35,3 +35,5 @@ build/
 ## Local properties ##
 /src/main/resources/application-local.properties
 *.gitignore
+
+LOG_PATH_IS_UNDEFINED/*

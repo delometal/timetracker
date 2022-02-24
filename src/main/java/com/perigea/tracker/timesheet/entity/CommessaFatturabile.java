@@ -2,6 +2,7 @@ package com.perigea.tracker.timesheet.entity;
 
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -30,7 +31,7 @@ public class CommessaFatturabile extends Commessa {
 
 	@Column(name = "tipo_commessa_fatturabile")
 	@Enumerated(EnumType.STRING)
-	private CommessaFatturabileType tipoCommessaFatturabileType;
+	private CommessaFatturabileType tipoCommessaFatturabile;
 
 	@Column(name = "data_fine_commessa")
 	private LocalDate dataFineCommessa;

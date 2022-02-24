@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.RuoloDto;
 import com.perigea.tracker.commons.enums.RuoloType;
-import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.RuoloService;
@@ -34,8 +33,7 @@ public class RuoloController {
 		Ruolo ruolo = dtoEntityMapper.dtoToEntity(ruoloDto);
 		ruolo = roleService.createRole(ruolo);
 		RuoloDto dtoRuolo = dtoEntityMapper.entityToDto(ruolo);
-		ResponseDto<RuoloDto> genericDto = ResponseDto.<RuoloDto>builder()
-				.timestamp(Utils.now()).data(dtoRuolo).build();
+		ResponseDto<RuoloDto> genericDto = ResponseDto.<RuoloDto>builder().data(dtoRuolo).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -43,8 +41,7 @@ public class RuoloController {
 	public ResponseEntity<ResponseDto<RuoloDto>> readRole(@PathVariable(name = "roleName") RuoloType roleName) {
 		Ruolo ruolo = roleService.readRole(roleName);
 		RuoloDto dtoRuolo = dtoEntityMapper.entityToDto(ruolo);
-		ResponseDto<RuoloDto> genericDto = ResponseDto.<RuoloDto>builder()
-				.timestamp(Utils.now()).data(dtoRuolo).build();
+		ResponseDto<RuoloDto> genericDto = ResponseDto.<RuoloDto>builder().data(dtoRuolo).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -53,8 +50,7 @@ public class RuoloController {
 		Ruolo ruolo = dtoEntityMapper.dtoToEntity(ruoloDto);
 		ruolo = roleService.updateRole(ruolo);
 		RuoloDto dtoRuolo = dtoEntityMapper.entityToDto(ruolo);
-		ResponseDto<RuoloDto> genericDto = ResponseDto.<RuoloDto>builder()
-				.timestamp(Utils.now()).data(dtoRuolo).build();
+		ResponseDto<RuoloDto> genericDto = ResponseDto.<RuoloDto>builder().data(dtoRuolo).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -63,8 +59,7 @@ public class RuoloController {
 		Ruolo ruolo = roleService.readRole(roleName);
 		RuoloDto dtoRuolo = dtoEntityMapper.entityToDto(ruolo);
 		roleService.deleteRole(roleName);
-		ResponseDto<RuoloDto> genericDto = ResponseDto.<RuoloDto>builder()
-				.timestamp(Utils.now()).data(dtoRuolo).build();
+		ResponseDto<RuoloDto> genericDto = ResponseDto.<RuoloDto>builder().data(dtoRuolo).build();
 		return ResponseEntity.ok(genericDto);
 	}
 

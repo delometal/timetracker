@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.RichiestaDto;
 import com.perigea.tracker.commons.dto.RichiestaHistoryDto;
-import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Richiesta;
 import com.perigea.tracker.timesheet.entity.RichiestaHistory;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
@@ -35,8 +34,7 @@ public class RichiestaController {
 		Richiesta richiesta = dtoEntityMapper.dtoToEntity(richiestaDto);
 		richiesta = richiestaService.createRichiesta(richiesta);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
-		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder()
-				.timestamp(Utils.now()).data(dto).build();
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -44,8 +42,7 @@ public class RichiestaController {
 	public ResponseEntity<ResponseDto<RichiestaDto>> readRole(@PathVariable(name = "id") Long id) {
 		Richiesta richiesta = richiestaService.readRichiesta(id);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
-		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder()
-				.timestamp(Utils.now()).data(dto).build();
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -54,8 +51,7 @@ public class RichiestaController {
 		Richiesta richiesta = dtoEntityMapper.dtoToEntity(richiestaDto);
 		richiesta = richiestaService.updateRichiesta(richiesta);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
-		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder()
-				.timestamp(Utils.now()).data(dto).build();
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -64,8 +60,7 @@ public class RichiestaController {
 		Richiesta richiesta = richiestaService.readRichiesta(id);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
 		richiestaService.deleteRichiesta(id);
-		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder()
-				.timestamp(Utils.now()).data(dto).build();
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -74,8 +69,7 @@ public class RichiestaController {
 		RichiestaHistory richiestaHistory = dtoEntityMapper.dtoToEntity(richiestaHistoryDto);
 		Richiesta richiesta = richiestaService.updateRichiestaHistory(richiestaHistory);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
-		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder()
-				.timestamp(Utils.now()).data(dto).build();
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -84,8 +78,7 @@ public class RichiestaController {
 		RichiestaHistory richiestaHistory = dtoEntityMapper.dtoToEntity(richiestaHistoryDto);
 		Richiesta richiesta = richiestaService.deleteRichiestaHistory(richiestaHistory);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
-		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder()
-				.timestamp(Utils.now()).data(dto).build();
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	

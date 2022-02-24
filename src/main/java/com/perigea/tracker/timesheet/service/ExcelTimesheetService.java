@@ -24,6 +24,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import com.perigea.tracker.commons.dto.InfoAutoDto;
@@ -47,7 +48,10 @@ public class ExcelTimesheetService {
 
 	@Autowired
 	private Logger logger;
-
+	
+	
+	
+	
 	public byte[] createExcelTimesheet(TimesheetExcelWrapper timesheetExcelWrapper) {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		XSSFWorkbook workbook = new XSSFWorkbook();
@@ -72,7 +76,8 @@ public class ExcelTimesheetService {
 			font.setBold(true);
 			style.setFont(font);
 
-			InputStream logoStream = ExcelTimesheetService.class.getClassLoader().getResourceAsStream(Utils.PERIGEA_LOGO_COLOR);
+			InputStream logoStream = getClass().getClassLoader().getResourceAsStream("perigea_logo_color.png");
+			
 			byte[] logoBytes = IOUtils.toByteArray(logoStream);
 			int logoTimesheet = workbook.addPicture(logoBytes, Workbook.PICTURE_TYPE_JPEG);
 			XSSFDrawing drawing1 = (XSSFDrawing) secondSheet.createDrawingPatriarch();

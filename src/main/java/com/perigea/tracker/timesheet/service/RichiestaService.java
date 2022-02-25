@@ -1,4 +1,6 @@
 package com.perigea.tracker.timesheet.service;
+
+import java.util.Date;
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
@@ -6,10 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perigea.tracker.commons.dto.ContactDto;
+import com.perigea.tracker.commons.dto.TimesheetEventDto;
+import com.perigea.tracker.commons.dto.TimesheetRefDto;
+import com.perigea.tracker.commons.enums.ApprovalStatus;
+import com.perigea.tracker.commons.enums.CalendarEventType;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.exception.RichiestaException;
+import com.perigea.tracker.commons.utils.Utils;
+import com.perigea.tracker.timesheet.approval.flow.TimesheetApprovalWorkflow;
 import com.perigea.tracker.timesheet.entity.Richiesta;
 import com.perigea.tracker.timesheet.entity.RichiestaHistory;
+import com.perigea.tracker.timesheet.entity.Timesheet;
+import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
 import com.perigea.tracker.timesheet.repository.RichiestaRepository;
 
 @Service
@@ -21,7 +32,16 @@ public class RichiestaService {
 
 	@Autowired
 	private RichiestaRepository richiestaRepository;
-	
+
+	@Autowired
+	private TimesheetService timesheetService;
+
+	@Autowired
+	private TimesheetApprovalWorkflow timesheetApprovalWorkflow;
+
+	@Autowired
+	private ContactDetailsService contactDetailsService;
+
 	public Richiesta createRichiesta(Richiesta richiesta) {
 		try {
 			richiestaRepository.save(richiesta);
@@ -35,10 +55,10 @@ public class RichiestaService {
 	public Richiesta readRichiesta(Long codiceRichiesta) {
 		try {
 			Richiesta richiesta = richiestaRepository.findById(codiceRichiesta).get();
-			richiesta.getHistory(); //load history in session
+			richiesta.getHistory(); // load history in session
 			return richiesta;
 		} catch (Exception ex) {
-			if(ex instanceof NoSuchElementException) {
+			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
 			}
 			throw new RichiestaException(ex.getMessage());
@@ -60,7 +80,7 @@ public class RichiestaService {
 			throw new RichiestaException(ex.getMessage());
 		}
 	}
-	
+
 	public void deleteRichiesta(Long id) {
 		try {
 			richiestaRepository.deleteById(id);
@@ -73,13 +93,13 @@ public class RichiestaService {
 		try {
 			Richiesta richiesta = richiestaRepository.findById(history.getRichiesta().getCodiceRichiesta()).get();
 			RichiestaHistory historyOld = null;
-			for(RichiestaHistory h : richiesta.getHistory()) {
-				if(h.getCodiceRichiestaHistory() == history.getCodiceRichiestaHistory()) {
+			for (RichiestaHistory h : richiesta.getHistory()) {
+				if (h.getCodiceRichiestaHistory() == history.getCodiceRichiestaHistory()) {
 					historyOld = h;
 					break;
 				}
 			}
-			if(historyOld != null) {
+			if (historyOld != null) {
 				richiesta.getHistory().remove(historyOld);
 			}
 			richiesta.addRichiestaHistory(history);
@@ -93,17 +113,44 @@ public class RichiestaService {
 		try {
 			Richiesta richiesta = richiestaRepository.findById(history.getRichiesta().getCodiceRichiesta()).get();
 			RichiestaHistory historyOld = null;
-			for(RichiestaHistory h : richiesta.getHistory()) {
-				if(h.getCodiceRichiestaHistory() == history.getCodiceRichiestaHistory()) {
+			for (RichiestaHistory h : richiesta.getHistory()) {
+				if (h.getCodiceRichiestaHistory() == history.getCodiceRichiestaHistory()) {
 					historyOld = h;
 					break;
 				}
 			}
-			if(historyOld != null) {
+			if (historyOld != null) {
 				richiesta.getHistory().remove(historyOld);
 			}
 			return richiestaRepository.save(richiesta);
 		} catch (Exception ex) {
+			throw new RichiestaException(ex.getMessage());
+		}
+	}
+
+	public Richiesta sendRichiestaTimesheet(TimesheetRefDto timesheetReferences) {
+		try {
+			TimesheetMensileKey key = new TimesheetMensileKey(timesheetReferences.getAnno(),
+					timesheetReferences.getMese(), timesheetReferences.getCodicePersona());
+			Timesheet timesheet = timesheetService.getTimesheet(key);
+			Richiesta richiesta = timesheet.getRichiesta();
+			RichiestaHistory history = RichiestaHistory.builder()
+					.responsabile(timesheet.getPersonale().getResponsabile()).stato(ApprovalStatus.PENDING)
+					.richiesta(richiesta).build();
+			ContactDto richiestaCreator = contactDetailsService
+					.readUserContactDetails(richiesta.getRichiedente().getCodicePersona());
+			ContactDto responsabile = contactDetailsService
+					.readUserContactDetails(history.getResponsabile().getCodicePersona());
+			TimesheetEventDto timesheetEvent = TimesheetEventDto.builder().Id(Utils.uuid())
+					.eventCreator(richiestaCreator).responsabile(responsabile)
+					.approvalStatus(timesheet.getStatoRichiesta()).type(CalendarEventType.Timesheet)
+					.timesheet(timesheetReferences).startDate(new Date()).endDate(new Date()).build();
+			timesheetApprovalWorkflow.richiestaTimesheet(timesheetEvent, richiesta, history);
+			return richiesta;
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
 			throw new RichiestaException(ex.getMessage());
 		}
 	}

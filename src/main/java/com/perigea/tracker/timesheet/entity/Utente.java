@@ -22,12 +22,18 @@ import org.hibernate.annotations.NotFoundAction;
 import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "utente")
 @EqualsAndHashCode(callSuper = true, exclude = {"password", "avatar", "azienda", "ruoli", "cv"})
 @ToString(exclude = {"password", "avatar", "azienda", "ruoli", "cv"})

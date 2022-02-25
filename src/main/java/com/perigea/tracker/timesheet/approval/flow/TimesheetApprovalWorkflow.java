@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.commons.dto.TimesheetEventDto;
-import com.perigea.tracker.commons.enums.CalendarEventType;
 import com.perigea.tracker.timesheet.entity.Richiesta;
 import com.perigea.tracker.timesheet.entity.RichiestaHistory;
 import com.perigea.tracker.timesheet.entity.Timesheet;
@@ -19,32 +18,32 @@ public class TimesheetApprovalWorkflow implements IApprovalFlow {
 
 	@Autowired
 	private TimesheetRepository timesheetRepository;
-	
+
 	@Autowired
 	private CalendarRestClient restClient;
 
 //	@Autowired
 //	private RichiestaRepository richiestaRepository;
-	
-	
+
 	/**
 	 * TODO notification
+	 * 
 	 * @param timesheet
 	 * @param approvalRequest
 	 * @param history
 	 */
-	public void approveTimesheet(Timesheet timesheet, Richiesta approvalRequest, RichiestaHistory history) {
+	public void approveTimesheet(Timesheet timesheet, Richiesta approvalRequest, RichiestaHistory history,
+			TimesheetEventDto event) {
 		nextStep(approvalRequest, history);
-		timesheet.setRichiesta(approvalRequest);		
+		timesheet.setRichiesta(approvalRequest);
 		timesheetRepository.save(timesheet);
-		
-		//notification service
+		restClient.sendNotifica(event, "timesheet/approve");
 
 	}
-	
+
 	public void richiestaTimesheet(TimesheetEventDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
-		restClient.sendRichiesta(event, "timesheet/create");
+		restClient.sendNotifica(event, "timesheet/create");
 	}
 
 	@Override

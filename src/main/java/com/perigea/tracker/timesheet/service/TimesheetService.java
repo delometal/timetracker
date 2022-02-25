@@ -3,6 +3,7 @@ package com.perigea.tracker.timesheet.service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,18 +14,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perigea.tracker.commons.dto.ContactDto;
 import com.perigea.tracker.commons.dto.InfoAutoDto;
 import com.perigea.tracker.commons.dto.TimesheetEntryDto;
+import com.perigea.tracker.commons.dto.TimesheetEventDto;
 import com.perigea.tracker.commons.dto.TimesheetRefDto;
 import com.perigea.tracker.commons.dto.TimesheetResponseDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.dto.wrapper.TimesheetExcelWrapper;
 import com.perigea.tracker.commons.enums.ApprovalStatus;
+import com.perigea.tracker.commons.enums.CalendarEventType;
 import com.perigea.tracker.commons.enums.EMese;
 import com.perigea.tracker.commons.enums.RichiestaType;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.exception.FestivitaException;
 import com.perigea.tracker.commons.exception.TimesheetException;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.approval.flow.TimesheetApprovalWorkflow;
 import com.perigea.tracker.timesheet.entity.Commessa;
 import com.perigea.tracker.timesheet.entity.Festivita;
@@ -74,6 +79,9 @@ public class TimesheetService {
 
 	@Autowired
 	private TimesheetApprovalWorkflow timesheetApprovalWorkflow;
+	
+	@Autowired
+	private ContactDetailsService contactDetailsService;
 
 	/**
 	 * @param timesheetDataList
@@ -256,7 +264,16 @@ public class TimesheetService {
 				RichiestaHistory history = RichiestaHistory.builder()
 						.responsabile(timesheet.getPersonale().getResponsabile()).stato(newStatus).richiesta(richiesta)
 						.build();
-				timesheetApprovalWorkflow.nextStep(richiesta, history);
+				TimesheetRefDto timesheetReferences = new TimesheetRefDto(key.getCodicePersona(), key.getAnno(), key.getMese());
+				ContactDto richiestaCreator = contactDetailsService
+						.readUserContactDetails(richiesta.getRichiedente().getCodicePersona());
+				ContactDto responsabile = contactDetailsService
+						.readUserContactDetails(history.getResponsabile().getCodicePersona());
+				TimesheetEventDto timesheetEvent = TimesheetEventDto.builder().Id(Utils.uuid())
+						.eventCreator(richiestaCreator).responsabile(responsabile)
+						.approvalStatus(timesheet.getStatoRichiesta()).type(CalendarEventType.Timesheet)
+						.timesheet(timesheetReferences).startDate(new Date()).endDate(new Date()).build();
+				timesheetApprovalWorkflow.approveTimesheet(timesheet, richiesta, history, timesheetEvent);
 				return true;
 			}
 			return false;

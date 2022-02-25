@@ -1,5 +1,6 @@
 package com.perigea.tracker.timesheet.service;
 
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 import javax.persistence.EntityNotFoundException;
@@ -9,12 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perigea.tracker.commons.dto.ContactDto;
+import com.perigea.tracker.commons.enums.AnagraficaType;
+import com.perigea.tracker.commons.enums.RuoloType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.exception.ConsulenteException;
 import com.perigea.tracker.commons.exception.PersistenceException;
 import com.perigea.tracker.commons.exception.UtenteException;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Personale;
+import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.repository.ApplicationDao;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
@@ -139,6 +144,42 @@ public class UtenteService {
 		} catch (Exception ex) {
 			throw ex;
 		}
+	}
+	
+	public Utente saveContatto(ContactDto dto) {
+		try {
+			Utente u = Utente.builder().username(dto.getUsername())
+					.codicePersona(Utils.uuid())
+					.nome(dto.getNome())
+					.cognome(dto.getCognome())
+					.mailAziendale(dto.getMailAziendale())
+					.mailPrivata(dto.getMailPrivata())
+					.cellulare(dto.getCellulare())
+					.tipo(AnagraficaType.C)
+					.ruoli(Arrays.asList(Ruolo.builder()
+							.id(RuoloType.P).build()))
+					.build();
+			utenteRepository.save(u);
+			return u;
+		} catch (Exception ex) {
+			throw ex;
+		}
+	}
+		
+		public Utente updateContatto(ContactDto dto) {
+			try {
+				Utente u = utenteRepository.findByCodicePersona(dto.getCodicePersona()).get();
+				 u.setUsername(dto.getUsername());
+				 u.setNome(dto.getNome());
+				 u.setCognome(dto.getCognome());
+				 u.setMailAziendale(dto.getMailAziendale());
+				 u.setMailPrivata(dto.getMailPrivata());
+				 u.setCellulare(dto.getCellulare());
+				utenteRepository.save(u);
+				return u;
+			} catch (Exception ex) {
+				throw ex;
+			}
 	}
 	
 //	public Personale readAnagraficaPersonale(String codicePersona) {

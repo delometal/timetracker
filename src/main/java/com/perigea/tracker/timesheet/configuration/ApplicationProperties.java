@@ -25,4 +25,7 @@ public class ApplicationProperties {
 	@Value("${perigea.system.curriculum.disk.persistence:false}")
 	private boolean curriculumDiskPersistence;
 	
+	@Value("${calendar.connection}")
+	private String calendarConnectionString;
+	
 }

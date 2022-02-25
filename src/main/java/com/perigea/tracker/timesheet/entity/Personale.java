@@ -21,9 +21,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
 import com.perigea.tracker.commons.enums.PersonaleType;
 
 import lombok.Data;
@@ -43,13 +40,12 @@ public class Personale extends BaseEntity {
 	@Column(name = "codice_persona")
 	private String codicePersona;
 	
-//	@NotFound(action = NotFoundAction.IGNORE)
-//	@OneToOne(mappedBy = "personale", optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-//	private DatiEconomici economics;
-	
 	@Column(name = "tipo", nullable = false, insertable = false, updatable = false)
 	@Enumerated(EnumType.STRING)
 	private PersonaleType tipo;
+	
+	@Column(name = "codice_responsabile", insertable = false, updatable = false)
+	private String codiceResponsabile;
 	
 	@Column(name = "data_assunzione")
 	private LocalDate dataAssunzione;

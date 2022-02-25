@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.FornitoreDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
-import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Fornitore;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.FornitoreService;
@@ -35,8 +34,7 @@ public class FornitoreController {
 		Fornitore fornitore = dtoEntityMapper.dtoToEntity(fornitoreDto);
 		fornitore = fornitoreService.saveFornitore(fornitore);
 		fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
-		ResponseDto<FornitoreDto> genericResponse = ResponseDto
-				.<FornitoreDto>builder().timestamp(Utils.now()).data(fornitoreDto).build();
+		ResponseDto<FornitoreDto> genericResponse = ResponseDto.<FornitoreDto>builder().data(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
@@ -44,8 +42,7 @@ public class FornitoreController {
 	public ResponseEntity<ResponseDto<List<FornitoreDto>>> readAll() {
 		List<Fornitore> fornitori = fornitoreService.readAll();
 		List<FornitoreDto> clientiDto = dtoEntityMapper.entityToDtoFornitoreList(fornitori);
-		ResponseDto<List<FornitoreDto>> genericResponse = ResponseDto
-				.<List<FornitoreDto>>builder().timestamp(Utils.now()).data(clientiDto).build();
+		ResponseDto<List<FornitoreDto>> genericResponse = ResponseDto.<List<FornitoreDto>>builder().data(clientiDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -53,8 +50,7 @@ public class FornitoreController {
 	public ResponseEntity<ResponseDto<FornitoreDto>> readFornitoreByPartitaIva(@PathVariable(name = "partitaIva") String partitaIva) {
 		Fornitore fornitore = fornitoreService.readFornitoreByPartitaIva(partitaIva);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
-		ResponseDto<FornitoreDto> genericResponse = ResponseDto
-				.<FornitoreDto>builder().timestamp(Utils.now()).data(fornitoreDto).build();
+		ResponseDto<FornitoreDto> genericResponse = ResponseDto.<FornitoreDto>builder().data(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -62,8 +58,7 @@ public class FornitoreController {
 	public ResponseEntity<ResponseDto<FornitoreDto>> readFornitoreById(@PathVariable(name = "codiceAzienda") String codiceAzienda) {
 		Fornitore fornitore = fornitoreService.readFornitoreById(codiceAzienda);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
-		ResponseDto<FornitoreDto> genericResponse = ResponseDto
-				.<FornitoreDto>builder().timestamp(Utils.now()).data(fornitoreDto).build();
+		ResponseDto<FornitoreDto> genericResponse = ResponseDto.<FornitoreDto>builder().data(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
@@ -72,8 +67,7 @@ public class FornitoreController {
 		Fornitore fornitore = dtoEntityMapper.dtoToEntity(fornitoreDto);
 		fornitore = fornitoreService.saveFornitore(fornitore);
 		fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
-		ResponseDto<FornitoreDto> genericResponse = ResponseDto
-				.<FornitoreDto>builder().timestamp(Utils.now()).data(fornitoreDto).build();
+		ResponseDto<FornitoreDto> genericResponse = ResponseDto.<FornitoreDto>builder().data(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -82,8 +76,7 @@ public class FornitoreController {
 		Fornitore fornitore = fornitoreService.readFornitoreByPartitaIva(partitaIva);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
 		fornitoreService.deleteFornitoreById(fornitore.getCodiceAzienda());
-		ResponseDto<FornitoreDto> genericResponse = ResponseDto
-				.<FornitoreDto>builder().timestamp(Utils.now()).data(fornitoreDto).build();
+		ResponseDto<FornitoreDto> genericResponse = ResponseDto.<FornitoreDto>builder().data(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -92,8 +85,7 @@ public class FornitoreController {
 		Fornitore fornitore = fornitoreService.readFornitoreById(codiceAzienda);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
 		fornitoreService.deleteFornitoreById(codiceAzienda);
-		ResponseDto<FornitoreDto> genericResponse = ResponseDto
-				.<FornitoreDto>builder().timestamp(Utils.now()).data(fornitoreDto).build();
+		ResponseDto<FornitoreDto> genericResponse = ResponseDto.<FornitoreDto>builder().data(fornitoreDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	

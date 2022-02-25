@@ -50,7 +50,7 @@ public class TimesheetController {
 	public ResponseEntity<ResponseDto<TimesheetResponseDto>> createTimesheet(@RequestBody TimesheetWrapper wrapper) {
 		Timesheet timesheet = timesheetService.createTimesheet(wrapper.getEntries(), wrapper.getTimesheet());
 		TimesheetResponseDto dto = dtoEntityMapper.entityToDto(timesheet);
-		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder().timestamp(Utils.now()).data(dto).build();
+		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -58,7 +58,7 @@ public class TimesheetController {
 	public ResponseEntity<ResponseDto<TimesheetResponseDto>> readTimesheet(@RequestBody TimesheetMensileKey id) {
 		Timesheet timesheet = timesheetService.getTimesheet(id);
 		TimesheetResponseDto dto = dtoEntityMapper.entityToDto(timesheet);
-		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder().timestamp(Utils.now()).data(dto).build();
+		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -67,7 +67,7 @@ public class TimesheetController {
 		EMese mese = EMese.getByMonthId(id.getMese());
 		Timesheet timesheet = timesheetService.deleteTimesheet(id.getAnno(), mese, id.getCodicePersona());
 		TimesheetResponseDto dto = dtoEntityMapper.entityToDto(timesheet);
-		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder().timestamp(Utils.now()).data(dto).build();
+		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -75,7 +75,7 @@ public class TimesheetController {
 	public ResponseEntity<ResponseDto<TimesheetResponseDto>> updateTimesheet(@RequestBody TimesheetWrapper wrapper) {
 		Timesheet timesheetEntry = timesheetService.updateTimesheet(wrapper.getEntries(), wrapper.getTimesheet());
 		TimesheetResponseDto dto = dtoEntityMapper.entityToDto(timesheetEntry);
-		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder().timestamp(Utils.now()).data(dto).build();
+		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -83,7 +83,7 @@ public class TimesheetController {
 	public ResponseEntity<ResponseDto<Boolean>> updateTimesheetStatus(@RequestBody TimesheetRefDto timesheetDto, @PathVariable(value = "status") ApprovalStatus newStatus) {
 		TimesheetMensileKey tsKey = new TimesheetMensileKey(timesheetDto.getAnno(), timesheetDto.getMese(), timesheetDto.getCodicePersona());
 		Boolean update = timesheetService.editTimesheetStatus(tsKey, newStatus);
-		ResponseDto<Boolean> genericDto = ResponseDto.<Boolean>builder().timestamp(Utils.now()).data(update).build();
+		ResponseDto<Boolean> genericDto = ResponseDto.<Boolean>builder().data(update).build();
 		if(update) {
 			return ResponseEntity.ok(genericDto);
 		}

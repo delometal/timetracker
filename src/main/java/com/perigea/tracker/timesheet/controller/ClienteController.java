@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.ClienteDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
-import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Cliente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.ClienteService;
@@ -35,8 +34,7 @@ public class ClienteController {
 		Cliente cliente = dtoEntityMapper.dtoToEntity(clienteDto);
 		cliente = clienteService.saveCliente(cliente);
 		clienteDto = dtoEntityMapper.entityToDto(cliente);
-		ResponseDto<ClienteDto> genericResponse = ResponseDto
-				.<ClienteDto>builder().timestamp(Utils.now()).data(clienteDto).build();
+		ResponseDto<ClienteDto> genericResponse = ResponseDto.<ClienteDto>builder().data(clienteDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -44,8 +42,7 @@ public class ClienteController {
 	public ResponseEntity<ResponseDto<List<ClienteDto>>> readAll() {
 		List<Cliente> clienti = clienteService.readAll();
 		List<ClienteDto> clientiDto = dtoEntityMapper.entityToDtoClienteList(clienti);
-		ResponseDto<List<ClienteDto>> genericResponse = ResponseDto
-				.<List<ClienteDto>>builder().timestamp(Utils.now()).data(clientiDto).build();
+		ResponseDto<List<ClienteDto>> genericResponse = ResponseDto.<List<ClienteDto>>builder().data(clientiDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -53,8 +50,7 @@ public class ClienteController {
 	public ResponseEntity<ResponseDto<ClienteDto>> readClienteById(@PathVariable(name = "codiceAzienda") String codiceAzienda) {
 		Cliente cliente = clienteService.readClienteById(codiceAzienda);
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);
-		ResponseDto<ClienteDto> genericResponse = ResponseDto
-				.<ClienteDto>builder().timestamp(Utils.now()).data(clienteDto).build();
+		ResponseDto<ClienteDto> genericResponse = ResponseDto.<ClienteDto>builder().data(clienteDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -62,8 +58,7 @@ public class ClienteController {
 	public ResponseEntity<ResponseDto<ClienteDto>> readCliente(@PathVariable(name = "partitaIva") String partitaIva) {
 		Cliente cliente = clienteService.readClienteByPartitaIva(partitaIva);
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);
-		ResponseDto<ClienteDto> genericResponse = ResponseDto
-				.<ClienteDto>builder().timestamp(Utils.now()).data(clienteDto).build();
+		ResponseDto<ClienteDto> genericResponse = ResponseDto.<ClienteDto>builder().data(clienteDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -72,8 +67,7 @@ public class ClienteController {
 		Cliente cliente = dtoEntityMapper.dtoToEntity(clienteDto);
 		cliente = clienteService.saveCliente(cliente);
 		clienteDto = dtoEntityMapper.entityToDto(cliente);
-		ResponseDto<ClienteDto> genericResponse = ResponseDto
-				.<ClienteDto>builder().timestamp(Utils.now()).data(clienteDto).build();
+		ResponseDto<ClienteDto> genericResponse = ResponseDto.<ClienteDto>builder().data(clienteDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -82,8 +76,7 @@ public class ClienteController {
 		Cliente cliente = clienteService.readClienteById(codiceAzienda);
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);
 		clienteService.deleteClienteById(codiceAzienda);
-		ResponseDto<ClienteDto> genericResponse = ResponseDto
-				.<ClienteDto>builder().timestamp(Utils.now()).data(clienteDto).build();
+		ResponseDto<ClienteDto> genericResponse = ResponseDto.<ClienteDto>builder().data(clienteDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	
@@ -92,8 +85,7 @@ public class ClienteController {
 		Cliente cliente = clienteService.readClienteByPartitaIva(partitaIva);
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);
 		clienteService.deleteClienteById(cliente.getCodiceAzienda());
-		ResponseDto<ClienteDto> genericResponse = ResponseDto
-				.<ClienteDto>builder().timestamp(Utils.now()).data(clienteDto).build();
+		ResponseDto<ClienteDto> genericResponse = ResponseDto.<ClienteDto>builder().data(clienteDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 

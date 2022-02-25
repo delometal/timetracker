@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.ContactDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
-import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.GruppoContattoService;
@@ -30,21 +29,19 @@ public class ContactDetailsController {
 	private GruppoContattoService gruppoContattoService;
 
 	@GetMapping(value = "/contact-details/read-by-id/{contattoId}")
-	public ResponseEntity<ResponseDto<ContactDto>> readUserContactDetails(
-			@PathVariable(name = "userId") String userId) {
+	public ResponseEntity<ResponseDto<ContactDto>> readUserContactDetails(@PathVariable(name = "userId") String userId) {
 		Utente utente = utenteService.readUtente(userId);
 		ContactDto contactDetails = dtoEntityMapper.entityToContactDto(utente);
-		ResponseDto<ContactDto> genericResponse = ResponseDto.<ContactDto>builder().timestamp(Utils.now())
+		ResponseDto<ContactDto> genericResponse = ResponseDto.<ContactDto>builder()
 				.data(contactDetails).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
 	@GetMapping(value = "/contact-details/read-all-group-contact-details/{groupId}")
-	public ResponseEntity<ResponseDto<List<ContactDto>>> readAllContactDetails(
-			@PathVariable(name = "groupId") Long groupId) {
+	public ResponseEntity<ResponseDto<List<ContactDto>>> readAllContactDetails(@PathVariable(name = "groupId") Long groupId) {
 		List<Utente> utenti = gruppoContattoService.readAllContactsByGroupId(groupId);
 		List<ContactDto> dtos = dtoEntityMapper.entityToContactDtoList(utenti);
-		ResponseDto<List<ContactDto>> genericResponse = ResponseDto.<List<ContactDto>>builder().timestamp(Utils.now())
+		ResponseDto<List<ContactDto>> genericResponse = ResponseDto.<List<ContactDto>>builder()
 				.data(dtos).build();
 		return ResponseEntity.ok(genericResponse);
 	}

@@ -74,7 +74,9 @@ public interface DtoEntityMapper {
 
 	
 	/** PERSONALE - DIPENDENTI & CONSULENTI **/
+	@Mapping(source = "codiceResponsabile", target = "responsabile.codicePersona")
 	Dipendente dtoToEntity(DipendenteDto dto);
+	@Mapping(source = "responsabile.codicePersona", target = "codiceResponsabile")
 	DipendenteDto entityToDto(Dipendente entity);
 		
 	Consulente dtoToEntity(ConsulenteDto dto);

@@ -24,7 +24,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import com.perigea.tracker.commons.dto.InfoAutoDto;
@@ -36,7 +35,6 @@ import com.perigea.tracker.commons.enums.CostoNotaSpeseType;
 import com.perigea.tracker.commons.enums.EGiorno;
 import com.perigea.tracker.commons.enums.EMese;
 import com.perigea.tracker.commons.exception.TimesheetException;
-import com.perigea.tracker.commons.utils.Utils;
 
 /**
  * TODO calcolo dei rimborsi kilometrici con i dati contenuti in InfoAutoDto,

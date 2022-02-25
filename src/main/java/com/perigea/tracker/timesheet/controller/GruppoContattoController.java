@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.GruppoContattoDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
-import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Gruppo;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
@@ -43,11 +42,9 @@ public class GruppoContattoController {
 				.map(c -> utenteService.loadUtente(c.getCodicePersona()))
 				.collect(Collectors.toList());
 		gruppo.setContatti(contatti);
-		
 		gruppo = gruppoContattoService.createGruppo(gruppo);
 		gruppoContattoDto.setId(gruppo.getId());
-		ResponseDto<GruppoContattoDto> genericResponse = ResponseDto
-				.<GruppoContattoDto>builder().timestamp(Utils.now()).data(gruppoContattoDto).build();
+		ResponseDto<GruppoContattoDto> genericResponse = ResponseDto.<GruppoContattoDto>builder().data(gruppoContattoDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -55,8 +52,7 @@ public class GruppoContattoController {
 	public ResponseEntity<ResponseDto<GruppoContattoDto>> readGruppo(@PathVariable(name="id") Long id) {
 		Gruppo gruppoContatto = gruppoContattoService.readGruppo(id);
 		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppoContatto);
-		ResponseDto<GruppoContattoDto> genericResponse = ResponseDto
-				.<GruppoContattoDto>builder().timestamp(Utils.now()).data(dto).build();
+		ResponseDto<GruppoContattoDto> genericResponse = ResponseDto.<GruppoContattoDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -68,11 +64,9 @@ public class GruppoContattoController {
 				.map(c -> utenteService.loadUtente(c.getCodicePersona()))
 				.collect(Collectors.toList());
 		gruppo.setContatti(contatti);
-		
 		gruppo = gruppoContattoService.createGruppo(gruppo);
 		gruppoContattoDto.setId(gruppo.getId());
-		ResponseDto<GruppoContattoDto> genericResponse = ResponseDto
-				.<GruppoContattoDto>builder().timestamp(Utils.now()).data(gruppoContattoDto).build();
+		ResponseDto<GruppoContattoDto> genericResponse = ResponseDto.<GruppoContattoDto>builder().data(gruppoContattoDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 
@@ -81,8 +75,7 @@ public class GruppoContattoController {
 		Gruppo gruppoContatto = gruppoContattoService.readGruppo(id);
 		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppoContatto);
 		gruppoContattoService.deleteGruppo(id);
-		ResponseDto<GruppoContattoDto> genericResponse = ResponseDto
-				.<GruppoContattoDto>builder().timestamp(Utils.now()).data(dto).build();
+		ResponseDto<GruppoContattoDto> genericResponse = ResponseDto.<GruppoContattoDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
 	

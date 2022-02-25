@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.perigea.tracker.commons.dto.NotaSpeseDto;
 import com.perigea.tracker.commons.dto.NotaSpeseInputDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
-import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.NotaSpese;
 import com.perigea.tracker.timesheet.entity.keys.NotaSpeseKey;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
@@ -32,8 +31,7 @@ public class NotaSpeseController {
 		NotaSpese notaSpese = dtoEntityMapper.dtoToEntity(notaSpeseInputDto);
 		notaSpese = notaSpeseService.createNotaSpese(notaSpese);
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);
-		ResponseDto<NotaSpeseDto> genericDto = ResponseDto.<NotaSpeseDto>builder()
-				.timestamp(Utils.now()).data(dtoNotaSpese).build();
+		ResponseDto<NotaSpeseDto> genericDto = ResponseDto.<NotaSpeseDto>builder().data(dtoNotaSpese).build();
 		return ResponseEntity.ok(genericDto);
 	}
 		
@@ -41,8 +39,7 @@ public class NotaSpeseController {
 	public ResponseEntity<ResponseDto<NotaSpeseDto>> readNotaSpese(@RequestBody NotaSpeseKey notaSpeseKey) {
 		NotaSpese notaSpese = notaSpeseService.readNotaSpese(notaSpeseKey);
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);
-		ResponseDto<NotaSpeseDto> genericDto = ResponseDto.<NotaSpeseDto>builder()
-				.timestamp(Utils.now()).data(dtoNotaSpese).build();
+		ResponseDto<NotaSpeseDto> genericDto = ResponseDto.<NotaSpeseDto>builder().data(dtoNotaSpese).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -51,8 +48,7 @@ public class NotaSpeseController {
 		NotaSpese notaSpese = dtoEntityMapper.dtoToEntity(notaSpeseInputDto);
 		notaSpese = notaSpeseService.updateNotaSpese(notaSpese);
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);
-		ResponseDto<NotaSpeseDto> genericDto = ResponseDto.<NotaSpeseDto>builder()
-				.timestamp(Utils.now()).data(dtoNotaSpese).build();
+		ResponseDto<NotaSpeseDto> genericDto = ResponseDto.<NotaSpeseDto>builder().data(dtoNotaSpese).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -61,8 +57,7 @@ public class NotaSpeseController {
 		NotaSpese notaSpese = notaSpeseService.readNotaSpese(notaSpeseKey);
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);
 		notaSpeseService.deleteNotaSpese(notaSpeseKey);
-		ResponseDto<NotaSpeseDto> genericDto = ResponseDto.<NotaSpeseDto>builder()
-				.timestamp(Utils.now()).data(dtoNotaSpese).build();
+		ResponseDto<NotaSpeseDto> genericDto = ResponseDto.<NotaSpeseDto>builder().data(dtoNotaSpese).build();
 		return ResponseEntity.ok(genericDto);
 	}
 }

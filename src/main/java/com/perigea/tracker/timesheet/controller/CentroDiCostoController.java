@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.CentroDiCostoDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
-import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.CentroDiCosto;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.CentroDiCostoService;
@@ -36,8 +35,7 @@ public class CentroDiCostoController {
 		CentroDiCosto centroDiCosto = dtoEntityMapper.dtoToEntity(centroDiCostoDto);
 		centroDiCosto = centroDiCostoService.createCentroDiCosto(centroDiCosto);
 		CentroDiCostoDto dtoCentroDiCosto = dtoEntityMapper.entityToDto(centroDiCosto);
-		ResponseDto<CentroDiCostoDto> genericDto = ResponseDto.<CentroDiCostoDto>builder()
-				.timestamp(Utils.now()).data(dtoCentroDiCosto).build();
+		ResponseDto<CentroDiCostoDto> genericDto = ResponseDto.<CentroDiCostoDto>builder().data(dtoCentroDiCosto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -45,8 +43,7 @@ public class CentroDiCostoController {
 	public ResponseEntity<ResponseDto<CentroDiCostoDto>> readCentroDiCosto(@PathVariable("id") String id) {
 		CentroDiCosto centroDiCosto = centroDiCostoService.readCentroDiCosto(id);
 		CentroDiCostoDto dtoCentroDiCosto = dtoEntityMapper.entityToDto(centroDiCosto);
-		ResponseDto<CentroDiCostoDto> genericDto = ResponseDto.<CentroDiCostoDto>builder()
-				.timestamp(Utils.now()).data(dtoCentroDiCosto).build();
+		ResponseDto<CentroDiCostoDto> genericDto = ResponseDto.<CentroDiCostoDto>builder().data(dtoCentroDiCosto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -54,8 +51,7 @@ public class CentroDiCostoController {
 	public ResponseEntity<ResponseDto<List<CentroDiCostoDto>>> searchCentroDiCosto(@RequestParam("searchKey") String searchKey) {
 		List<CentroDiCosto> centroDiCosto = centroDiCostoService.searchCentroDiCosto(searchKey);
 		List<CentroDiCostoDto> dtoCentroDiCosto = dtoEntityMapper.entityToDtoCentroDiCostoList(centroDiCosto);
-		ResponseDto<List<CentroDiCostoDto>> genericDto = ResponseDto.<List<CentroDiCostoDto>>builder()
-				.timestamp(Utils.now()).data(dtoCentroDiCosto).build();
+		ResponseDto<List<CentroDiCostoDto>> genericDto = ResponseDto.<List<CentroDiCostoDto>>builder().data(dtoCentroDiCosto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -64,8 +60,7 @@ public class CentroDiCostoController {
 		CentroDiCosto centroDiCosto = dtoEntityMapper.dtoToEntity(centroDiCostoDto);
 		centroDiCosto = centroDiCostoService.updateCentroDiCosto(centroDiCosto);
 		CentroDiCostoDto dtoCentroDiCosto = dtoEntityMapper.entityToDto(centroDiCosto);
-		ResponseDto<CentroDiCostoDto> genericDto = ResponseDto.<CentroDiCostoDto>builder()
-				.timestamp(Utils.now()).data(dtoCentroDiCosto).build();
+		ResponseDto<CentroDiCostoDto> genericDto = ResponseDto.<CentroDiCostoDto>builder().data(dtoCentroDiCosto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -74,8 +69,7 @@ public class CentroDiCostoController {
 		CentroDiCosto centroDiCosto = centroDiCostoService.readCentroDiCosto(id);
 		CentroDiCostoDto centroDiCostoDto = dtoEntityMapper.entityToDto(centroDiCosto);
 		centroDiCostoService.deleteCentroDiCosto(id);
-		ResponseDto<CentroDiCostoDto> genericDto = ResponseDto.<CentroDiCostoDto>builder()
-				.timestamp(Utils.now()).data(centroDiCostoDto).build();
+		ResponseDto<CentroDiCostoDto> genericDto = ResponseDto.<CentroDiCostoDto>builder().data(centroDiCostoDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	

@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.perigea.tracker.commons.enums.FestivitaType;
-import com.perigea.tracker.commons.enums.RuoloType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -47,8 +47,7 @@ public class CommessaController {
 
 		CommessaFatturabile commessaEntity = commessaService.createCommessaFatturabile(commessa, cliente);
 		CommessaFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
-		ResponseDto<CommessaFatturabileDto> genericDto = ResponseDto.<CommessaFatturabileDto>builder()
-				.timestamp(Utils.now()).data(commessaDto).build();
+		ResponseDto<CommessaFatturabileDto> genericDto = ResponseDto.<CommessaFatturabileDto>builder().data(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -60,8 +59,7 @@ public class CommessaController {
 		commessa.setCodiceCommessa(Utils.uuid());
 		commessa = commessaService.saveCommessaNonFatturabile(commessa);
 		CommessaNonFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessa);
-		ResponseDto<CommessaNonFatturabileDto> genericDto = ResponseDto.<CommessaNonFatturabileDto>builder()
-				.timestamp(Utils.now()).data(commessaDto).build();
+		ResponseDto<CommessaNonFatturabileDto> genericDto = ResponseDto.<CommessaNonFatturabileDto>builder().data(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -73,8 +71,7 @@ public class CommessaController {
 		commessa.setCliente(cliente);
 		commessa = commessaService.updateCommessaFatturabile(commessa);
 		CommessaFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessa);
-		ResponseDto<CommessaFatturabileDto> genericDto = ResponseDto.<CommessaFatturabileDto>builder()
-				.timestamp(Utils.now()).data(commessaDto).build();
+		ResponseDto<CommessaFatturabileDto> genericDto = ResponseDto.<CommessaFatturabileDto>builder().data(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -85,8 +82,7 @@ public class CommessaController {
 		commessa.setCliente(clienteService.loadClientePerigea());
 		commessa = commessaService.saveCommessaNonFatturabile(commessa);
 		CommessaNonFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessa);
-		ResponseDto<CommessaNonFatturabileDto> genericDto = ResponseDto.<CommessaNonFatturabileDto>builder()
-				.timestamp(Utils.now()).data(commessaDto).build();
+		ResponseDto<CommessaNonFatturabileDto> genericDto = ResponseDto.<CommessaNonFatturabileDto>builder().data(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -98,8 +94,7 @@ public class CommessaController {
 		Cliente cliente = clienteService.readClienteById(wrapper.getCliente().getCodiceAzienda());
 		ordineCommessa = commessaService.createOrdineCommessa(ordineCommessa, commessa, cliente);
 		OrdineCommessaDto ordineCommessaDto = dtoEntityMapper.entityToDto(ordineCommessa);
-		ResponseDto<OrdineCommessaDto> genericDto = ResponseDto.<OrdineCommessaDto>builder().timestamp(Utils.now())
-				.data(ordineCommessaDto).build();
+		ResponseDto<OrdineCommessaDto> genericDto = ResponseDto.<OrdineCommessaDto>builder().data(ordineCommessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -109,8 +104,7 @@ public class CommessaController {
 		CommessaFatturabile commessaEntity = commessaService.readCommessaFatturabile(codiceCommessa);
 		CommessaFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
 		commessaService.deleteCommessaFatturabile(codiceCommessa);
-		ResponseDto<CommessaFatturabileDto> genericDto = ResponseDto.<CommessaFatturabileDto>builder()
-				.timestamp(Utils.now()).data(commessaDto).build();
+		ResponseDto<CommessaFatturabileDto> genericDto = ResponseDto.<CommessaFatturabileDto>builder().data(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -120,8 +114,7 @@ public class CommessaController {
 		CommessaNonFatturabile commessaEntity = commessaService.readCommessaNonFatturabile(codiceCommessa);
 		CommessaNonFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
 		commessaService.deleteCommessaNonFatturabile(codiceCommessa);
-		ResponseDto<CommessaNonFatturabileDto> genericDto = ResponseDto.<CommessaNonFatturabileDto>builder()
-				.timestamp(Utils.now()).data(commessaDto).build();
+		ResponseDto<CommessaNonFatturabileDto> genericDto = ResponseDto.<CommessaNonFatturabileDto>builder().data(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -130,8 +123,7 @@ public class CommessaController {
 			@PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		CommessaFatturabile commessaEntity = commessaService.readCommessaFatturabile(codiceCommessa);
 		CommessaFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
-		ResponseDto<CommessaFatturabileDto> genericDto = ResponseDto.<CommessaFatturabileDto>builder()
-				.timestamp(Utils.now()).data(commessaDto).build();
+		ResponseDto<CommessaFatturabileDto> genericDto = ResponseDto.<CommessaFatturabileDto>builder().data(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -140,8 +132,7 @@ public class CommessaController {
 			@PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		CommessaNonFatturabile commessaEntity = commessaService.readCommessaNonFatturabile(codiceCommessa);
 		CommessaNonFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
-		ResponseDto<CommessaNonFatturabileDto> genericDto = ResponseDto.<CommessaNonFatturabileDto>builder()
-				.timestamp(Utils.now()).data(commessaDto).build();
+		ResponseDto<CommessaNonFatturabileDto> genericDto = ResponseDto.<CommessaNonFatturabileDto>builder().data(commessaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 

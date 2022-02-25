@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.FestivitaDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
-import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Festivita;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.FestivitaService;
@@ -33,8 +32,7 @@ public class FestivitaController {
 		Festivita festivita = dtoEntityMapper.dtoToEntity(festivitaDto);
 		festivita = festeService.createFestivita(festivita);
 		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
-		ResponseDto<FestivitaDto> genericDto = ResponseDto.<FestivitaDto>builder()
-				.timestamp(Utils.now()).data(dtoFestivita).build();
+		ResponseDto<FestivitaDto> genericDto = ResponseDto.<FestivitaDto>builder().data(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -42,8 +40,7 @@ public class FestivitaController {
 	public ResponseEntity<ResponseDto<FestivitaDto>> readFestivita(@PathVariable("id") Integer id) {
 		Festivita festivita = festeService.readFestivita(id);
 		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
-		ResponseDto<FestivitaDto> genericDto = ResponseDto.<FestivitaDto>builder()
-				.timestamp(Utils.now()).data(dtoFestivita).build();
+		ResponseDto<FestivitaDto> genericDto = ResponseDto.<FestivitaDto>builder().data(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 
@@ -52,7 +49,7 @@ public class FestivitaController {
 		Festivita festivita = festeService.readFestivitaByName(nomeFestivita);
 		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
 		ResponseDto<FestivitaDto> genericDto = ResponseDto.<FestivitaDto>builder()
-				.timestamp(Utils.now()).data(dtoFestivita).build();
+				.data(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -62,7 +59,7 @@ public class FestivitaController {
 		festivita = festeService.updateFestivita(festivita);
 		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
 		ResponseDto<FestivitaDto> genericDto = ResponseDto.<FestivitaDto>builder()
-				.timestamp(Utils.now()).data(dtoFestivita).build();
+				.data(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	
@@ -72,7 +69,7 @@ public class FestivitaController {
 		FestivitaDto festivitaDto = dtoEntityMapper.entityToDto(festivita);
 		festeService.deleteFestivita(id);
 		ResponseDto<FestivitaDto> genericDto = ResponseDto.<FestivitaDto>builder()
-				.timestamp(Utils.now()).data(festivitaDto).build();
+				.data(festivitaDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	

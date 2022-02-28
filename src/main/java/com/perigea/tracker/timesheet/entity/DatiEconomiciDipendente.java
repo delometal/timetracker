@@ -36,13 +36,37 @@ public class DatiEconomiciDipendente extends BaseEntity{
     @Column(name = "codice_centro_di_costo", insertable = false, updatable = false)
 	private String codiceCentroDiCosto;
 	
+    // Genera StoricoCentroDiCosto
+	@Column(name = "decorrenza_assegnazione_centro_di_costo")
+	private LocalDate decorrenzaAssegnazioneCentroDiCosto;
+    
+    // 40 e 49 generano StoricoLivello
+	@Column(name = "decorrenza_livello")
+	private LocalDate decorrenzaLivello;
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "livello_iniziale")
 	private LivelloContrattoType livelloIniziale;
 	
 	@Enumerated(EnumType.STRING)
+	@Column(name = "livello_attuale")
+	private LivelloContrattoType livelloAttuale;
+	
+	// 52 e 60 generano StoricoContrattoType
+	@Column(name = "decorrenza_tipo_contratto")
+	private LocalDate decorrenzaTipoContratto;	
+	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "tipo_contratto_iniziale")
 	private ContrattoType tipoContrattoIniziale;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "tipo_contratto_attuale")
+	private ContrattoType tipoContrattoAttuale;
+
+	// 63 e 70 generano StoricoRal
+	@Column(name = "decorrenza_ral_attuale")
+	private LocalDate decorrenzaRalAttuale;
 	
 	@Column(name = "ral_iniziale")
 	private Float ralIniziale;
@@ -50,56 +74,43 @@ public class DatiEconomiciDipendente extends BaseEntity{
 	@Column(name = "ral_attuale")
 	private Float ralAttuale;
 	
-	@Column(name = "decorrenza_ral_attuale")
-	private LocalDate decorrenzaRalAttuale;
-	
-	@Column(name = "data_assegnazione_ticket")
-	private LocalDate dataAssegnazioneTicket;
-	
-	@Column(name = "rimbors_giornaliero")
-	private Float rimborsGiornaliero;
+	@Column(name = "rimborso_giornaliero")
+	private Float rimborsoGiornaliero;
 	
 	@Column(name = "decorrenza_rimborso")
 	private LocalDate decorrenzaRimborso;
 	
-	@Column(name = "livello_attuale")
-	private LivelloContrattoType livelloAttuale;
-
-	@Column(name = "decorrenza_livello")
-	private LocalDate decorrenzaLivello;
-	
-	@Column(name = "tipo_contratto_attuale")
-	private ContrattoType tipoContrattoAttuale;
-	
-	@Column(name = "job_title")
-	private JobTitle jobTitle;
-	
-	@Column(name = "scelta_tredicesima")
-	private SceltaTredicesimaType sceltaTredicesima;
-	
+	// 83 87 generano StoricoPremio
 	@Column(name = "ultimo_premio")
 	private Float ultimoPremio;
 	
 	@Column(name = "data_ultimo_premio")
-	private LocalDate dataUltimoBonus;
+	private LocalDate dataUltimoPremio;
 	
+	// 90  e 93 generano StoricoRimborsiKm
 	@Column(name = "modello_auto")
 	private String modelloAuto;
 	
 	@Column(name = "rimborso_per_km")
 	private Float rimborsoPerKm;
 	
+	// storico Km Rimborsabili
 	@Column(name = "kmPerGiorno")
 	private Float kmPerGiorno;
 	
-	@Column(name = "costo_giornaliero")
-	private Float costoGiornaliero;
+//	@Column(name = "data_decorrenza_costo")
+//	private LocalDate dataDecorrenzaCosto;
 	
-	@Column(name = "data_decorrenza_costo")
-	private LocalDate dataDecorrenzaCosto;
+	@Column(name = "data_assegnazione_ticket")
+	private LocalDate dataAssegnazioneTicket;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "scelta_tredicesima")
+	private SceltaTredicesimaType sceltaTredicesima;
 	
-	@Column(name = "decorrenza_assegnazione_centro_di_costo")
-	private LocalDate decorrenzaAssegnazioneCentroDiCosto;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "job_title")
+	private JobTitle jobTitle;
 	
 	@MapsId
 	@OneToOne

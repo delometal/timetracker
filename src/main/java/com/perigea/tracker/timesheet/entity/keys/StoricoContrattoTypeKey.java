@@ -10,24 +10,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * The primary key class for the livello_contrattuale_storico database table.
- * 
- */
 @Data
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class StoricoLivelloContrattualeKey implements Serializable {
+public class StoricoContrattoTypeKey implements Serializable{
 
-	private static final long serialVersionUID = -482627216164497325L;
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5173086455798037732L;
 	@Column(name="codice_persona")
 	private String codicePersona;
 
 	@Column(name="decorrenza")
 	private LocalDate decorrenza;
-
+	
 	@Column(name="scadenza")
 	private LocalDate scadenza;
 

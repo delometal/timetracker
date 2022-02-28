@@ -18,6 +18,8 @@ public class DipendenteService extends UtenteService {
 
 	@Autowired
 	private DipendenteRepository dipendenteRepository;
+	
+	
 
 	/**
 	 * Creazione anagrafica dipendente e utente

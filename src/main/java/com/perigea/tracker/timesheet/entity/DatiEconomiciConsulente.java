@@ -29,25 +29,35 @@ public class DatiEconomiciConsulente extends BaseEntity{
     @Column(name = "codice_centro_di_costo", insertable = false, updatable = false)
 	private String codiceCentroDiCosto;
 	
-    @Column(name = "data_ingaggio")
-	private LocalDate dataIngaggio;
+    // centroDiCosto e decorrenza generano storicoAssegnazioneCentroDiCosto
+	@ManyToOne
+	@JoinColumn(name = "codice_centro_di_costo")
+	private CentroDiCosto centroDiCosto;
     
     @Column(name = "decorrenza_assegnazione_centro_di_costo")
 	private LocalDate decorrenzaAssegnazioneCentroDiCosto;
+
+	
+    @Column(name = "data_ingaggio")
+	private LocalDate dataIngaggio;
+
     
+    // TODO ??? (dovrebbe essere IngaggioType?
+    // 			 Storico?)
 	@Column(name = "tipo_ingaggio")
 	private Float tipoIngaggio;
 	
+	// costoGiornaliero e dataDecorrenza generano storicoCostoGiornaliero
 	@Column(name = "costo_giornaliero")
 	private Float costoGiornaliero;
+	
+	@Column(name = "data_decorrenza_costo")
+	private LocalDate dataDecorrenzaCosto;
 	
 	@MapsId
 	@OneToOne
 	@JoinColumn(name = "codice_persona")
 	private Consulente personale;
-	
-	@ManyToOne
-	@JoinColumn(name = "codice_centro_di_costo")
-	private CentroDiCosto centroDiCosto;
+  
 	
 }

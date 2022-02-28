@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.commons.dto.ContactDto;
+import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.RuoloType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
@@ -151,30 +152,21 @@ public class UtenteService {
 		}
 	}
 
-	public Utente saveContatto(ContactDto dto) {
+	public Utente saveContattoEsterno(Utente utente) {
 		try {
-			Utente u = Utente.builder().username(dto.getUsername()).codicePersona(Utils.uuid()).nome(dto.getNome())
-					.cognome(dto.getCognome()).mailAziendale(dto.getMailAziendale()).mailPrivata(dto.getMailPrivata())
-					.cellulare(dto.getCellulare()).tipo(AnagraficaType.C)
-					.ruoli(Arrays.asList(Ruolo.builder().id(RuoloType.P).build())).build();
-			utenteRepository.save(u);
-			return u;
+			utente.setTipo(AnagraficaType.C);
+			utente.setRuoli(Arrays.asList(Ruolo.builder().id(RuoloType.P).build()));
+			utente = utenteRepository.save(utente);
+			return utente;
 		} catch (Exception ex) {
 			throw ex;
 		}
 	}
 
-	public Utente updateContatto(ContactDto dto) {
+	public Utente updateContattoEsterno(Utente utente) {
 		try {
-			Utente u = utenteRepository.findByCodicePersona(dto.getCodicePersona()).get();
-			u.setUsername(dto.getUsername());
-			u.setNome(dto.getNome());
-			u.setCognome(dto.getCognome());
-			u.setMailAziendale(dto.getMailAziendale());
-			u.setMailPrivata(dto.getMailPrivata());
-			u.setCellulare(dto.getCellulare());
-			utenteRepository.save(u);
-			return u;
+			utente = utenteRepository.save(utente);
+			return utente;
 		} catch (Exception ex) {
 			throw ex;
 		}

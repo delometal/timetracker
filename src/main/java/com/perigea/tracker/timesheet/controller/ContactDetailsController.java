@@ -19,16 +19,15 @@ import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.ContactDetailsService;
-import com.perigea.tracker.timesheet.service.GruppoContattoService;
 import com.perigea.tracker.timesheet.service.UtenteService;
 
 @RestController
 @RequestMapping("/utenti")
 public class ContactDetailsController {
-
+	
 	@Autowired
 	private UtenteService utenteService;
-
+	
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
 

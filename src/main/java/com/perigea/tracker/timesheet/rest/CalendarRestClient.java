@@ -15,7 +15,7 @@ public class CalendarRestClient {
 	@Autowired
 	private ApplicationProperties applicationProperties;
 
-	public void sendRichiesta(Object obj, String endpoint) {
+	public void sendNotifica(Object obj, String endpoint) {
 		restTemplate.postForObject(applicationProperties.getCalendarConnectionString() + endpoint, obj, getClass());
 	}
 }

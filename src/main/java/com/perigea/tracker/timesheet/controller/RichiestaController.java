@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.dto.HolidayEventDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.RichiestaDto;
 import com.perigea.tracker.commons.dto.RichiestaHistoryDto;
 import com.perigea.tracker.commons.dto.TimesheetRefDto;
+import com.perigea.tracker.commons.enums.ApprovalStatus;
 import com.perigea.tracker.timesheet.entity.Richiesta;
 import com.perigea.tracker.timesheet.entity.RichiestaHistory;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
@@ -84,11 +86,30 @@ public class RichiestaController {
 		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
-	
-	@PostMapping(value ="/send-timesheet-request")
+
+	@PostMapping(value = "/send-timesheet-request")
 	public ResponseEntity<ResponseDto<RichiestaDto>> sendRichiestaTimesheet(
 			@RequestBody TimesheetRefDto timesheetReferences) {
 		Richiesta richiesta = richiestaService.sendRichiestaTimesheet(timesheetReferences);
+		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder().data(dto).build();
+		return ResponseEntity.ok(genericDto);
+
+	}
+
+	@PostMapping(value = "/send-holidays-request")
+	public ResponseEntity<ResponseDto<RichiestaDto>> sendHolidaysRequest(@RequestBody HolidayEventDto event) {
+		Richiesta richiesta = richiestaService.sendHolidaysRequest(event);
+		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder().data(dto).build();
+		return ResponseEntity.ok(genericDto);
+
+	}
+
+	@PostMapping(value = "/approve-holydays-request")
+	public ResponseEntity<ResponseDto<RichiestaDto>> approveHolidaysRequest(@RequestBody HolidayEventDto event,
+			@PathVariable(name = "historyId") Long historyId, @PathVariable(name = "status") ApprovalStatus status) {
+		Richiesta richiesta = richiestaService.approveHolidaysRequest(event, historyId, status);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
 		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericDto);

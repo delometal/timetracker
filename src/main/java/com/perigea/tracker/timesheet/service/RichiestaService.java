@@ -9,18 +9,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.commons.dto.ContactDto;
+import com.perigea.tracker.commons.dto.HolidayEventDto;
 import com.perigea.tracker.commons.dto.TimesheetEventDto;
 import com.perigea.tracker.commons.dto.TimesheetRefDto;
 import com.perigea.tracker.commons.enums.ApprovalStatus;
 import com.perigea.tracker.commons.enums.CalendarEventType;
+import com.perigea.tracker.commons.enums.RichiestaType;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.exception.RichiestaException;
 import com.perigea.tracker.commons.utils.Utils;
+import com.perigea.tracker.timesheet.approval.flow.HolidaysApprovalWorkflow;
 import com.perigea.tracker.timesheet.approval.flow.TimesheetApprovalWorkflow;
 import com.perigea.tracker.timesheet.entity.Richiesta;
 import com.perigea.tracker.timesheet.entity.RichiestaHistory;
 import com.perigea.tracker.timesheet.entity.Timesheet;
+import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
+import com.perigea.tracker.timesheet.repository.RichiestaHistoryRepository;
 import com.perigea.tracker.timesheet.repository.RichiestaRepository;
 
 @Service
@@ -32,15 +37,24 @@ public class RichiestaService {
 
 	@Autowired
 	private RichiestaRepository richiestaRepository;
+	
+	@Autowired
+	private RichiestaHistoryRepository richiestaHistoryRepository;
 
 	@Autowired
 	private TimesheetService timesheetService;
 
 	@Autowired
 	private TimesheetApprovalWorkflow timesheetApprovalWorkflow;
+	
+	@Autowired
+	private HolidaysApprovalWorkflow holidaysApprovalWorkflow;
 
 	@Autowired
 	private ContactDetailsService contactDetailsService;
+
+	@Autowired
+	private UtenteService utenteService;
 
 	public Richiesta createRichiesta(Richiesta richiesta) {
 		try {
@@ -153,6 +167,35 @@ public class RichiestaService {
 			}
 			throw new RichiestaException(ex.getMessage());
 		}
+	}
+
+	public Richiesta sendHolidaysRequest(HolidayEventDto event) {
+		try {
+			Utente eventCreator = utenteService.readUtente(event.getEventCreator().getCodicePersona());
+			Utente responsabile = utenteService.readUtente(event.getResponsabile().getCodicePersona());
+			Richiesta richiesta = Richiesta.builder().richiedente(eventCreator).tipo(RichiestaType.FERIE_PERMESSI)
+					.build();
+			RichiestaHistory history = RichiestaHistory.builder().responsabile(responsabile.getPersonale())
+					.stato(ApprovalStatus.PENDING).richiesta(richiesta).build();
+			history.setRichiesta(richiesta);
+			richiesta.addRichiestaHistory(history);
+			createRichiesta(richiesta);
+			holidaysApprovalWorkflow.holidaysRequest(event, richiesta, history);
+			return richiesta;
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new RichiestaException(ex.getMessage());
+		}
+	}
+	
+	public Richiesta approveHolidaysRequest(HolidayEventDto event, Long historyId, ApprovalStatus newStatus) {
+		RichiestaHistory history = richiestaHistoryRepository.findById(historyId).get();
+		history.setStato(newStatus);
+		Richiesta richiesta = updateRichiestaHistory(history);
+		holidaysApprovalWorkflow.approveHolidaysRequest(event, richiesta, history);
+		return richiesta;
 	}
 
 }

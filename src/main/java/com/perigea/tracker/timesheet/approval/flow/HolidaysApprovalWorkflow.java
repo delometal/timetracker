@@ -13,18 +13,21 @@ import com.perigea.tracker.timesheet.rest.CalendarRestClient;
 @Component
 @Transactional(propagation = Propagation.REQUIRED)
 public class HolidaysApprovalWorkflow implements IApprovalFlow {
-	
+
 	@Autowired
 	private CalendarRestClient restClient;
-	
+
+	public static final String HOLIDAYS_REQUEST_ENDPOINT = "holiday/add";
+	public static final String HOLIDAYS_APPROVE_ENDPOINT = "holiday/approve";
+
 	public void holidaysRequest(HolidayEventDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
-		restClient.sendNotifica(event, "holiday/add");
+		restClient.sendNotifica(event, HOLIDAYS_REQUEST_ENDPOINT);
 	}
-	
+
 	public void approveHolidaysRequest(HolidayEventDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
-		restClient.sendNotifica(event, "holiday/approve");
+		restClient.sendNotifica(event, HOLIDAYS_APPROVE_ENDPOINT);
 	}
 
 	@Override

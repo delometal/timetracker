@@ -155,7 +155,7 @@ public class RichiestaService {
 					.readUserContactDetails(richiesta.getRichiedente().getCodicePersona());
 			ContactDto responsabile = contactDetailsService
 					.readUserContactDetails(history.getResponsabile().getCodicePersona());
-			TimesheetEventDto timesheetEvent = TimesheetEventDto.builder().Id(Utils.uuid())
+			TimesheetEventDto timesheetEvent = TimesheetEventDto.builder().id(Utils.uuid())
 					.eventCreator(richiestaCreator).responsabile(responsabile)
 					.approvalStatus(timesheet.getStatoRichiesta()).type(CalendarEventType.Timesheet)
 					.timesheet(timesheetReferences).startDate(new Date()).endDate(new Date()).build();

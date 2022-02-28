@@ -28,4 +28,5 @@ public class ApplicationProperties {
 	@Value("${calendar.connection}")
 	private String calendarConnectionString;
 	
+		
 }

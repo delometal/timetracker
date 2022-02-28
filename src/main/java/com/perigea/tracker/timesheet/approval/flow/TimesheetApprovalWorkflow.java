@@ -22,28 +22,21 @@ public class TimesheetApprovalWorkflow implements IApprovalFlow {
 	@Autowired
 	private CalendarRestClient restClient;
 
-//	@Autowired
-//	private RichiestaRepository richiestaRepository;
+	public static final String TIMESHEET_REQUEST_ENDPOINT = "timesheet/create";
+	public static final String APPROVE_TIMESHEET_ENDPOINT = "timesheet/approve";
 
-	/**
-	 * TODO notification
-	 * 
-	 * @param timesheet
-	 * @param approvalRequest
-	 * @param history
-	 */
 	public void approveTimesheet(Timesheet timesheet, Richiesta approvalRequest, RichiestaHistory history,
 			TimesheetEventDto event) {
 		nextStep(approvalRequest, history);
 		timesheet.setRichiesta(approvalRequest);
 		timesheetRepository.save(timesheet);
-		restClient.sendNotifica(event, "timesheet/approve");
+		restClient.sendNotifica(event, APPROVE_TIMESHEET_ENDPOINT);
 
 	}
 
 	public void richiestaTimesheet(TimesheetEventDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
-		restClient.sendNotifica(event, "timesheet/create");
+		restClient.sendNotifica(event, TIMESHEET_REQUEST_ENDPOINT);
 	}
 
 	@Override

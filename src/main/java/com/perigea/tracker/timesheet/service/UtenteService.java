@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.perigea.tracker.commons.dto.ContactDto;
-import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.RuoloType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;

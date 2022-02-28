@@ -38,18 +38,16 @@ import com.perigea.tracker.commons.exception.TimesheetException;
 
 /**
  * TODO calcolo dei rimborsi kilometrici con i dati contenuti in InfoAutoDto,
- * capire la differenza tra CostoNotaSpeseType.KILOMETRI e CostoNotaSpeseType.RIMBORSO_KILOMETRICO 
- * e come legarli ai valori del modello degli economics
+ * capire la differenza tra CostoNotaSpeseType.KILOMETRI e
+ * CostoNotaSpeseType.RIMBORSO_KILOMETRICO e come legarli ai valori del modello
+ * degli economics
  */
 @Service
 public class ExcelTimesheetService {
 
 	@Autowired
 	private Logger logger;
-	
-	
-	
-	
+
 	public byte[] createExcelTimesheet(TimesheetExcelWrapper timesheetExcelWrapper) {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		XSSFWorkbook workbook = new XSSFWorkbook();
@@ -63,11 +61,11 @@ public class ExcelTimesheetService {
 			Integer mese = timesheet.getMese();
 			String statoTimesheet = timesheet.getStatoRichiesta().name();
 			EMese eMese = EMese.getByMonthId(mese);
-			
+
 			XSSFSheet sheet = workbook.createSheet("Timesheet");
 			XSSFSheet secondSheet = workbook.createSheet("NoteSpesa");
 			XSSFCellStyle style = workbook.createCellStyle();
-			
+
 			XSSFFont defaultFont = workbook.createFont();
 			defaultFont.setBold(true);
 			XSSFFont font = workbook.createFont();
@@ -75,7 +73,7 @@ public class ExcelTimesheetService {
 			style.setFont(font);
 
 			InputStream logoStream = getClass().getClassLoader().getResourceAsStream("perigea_logo_color.png");
-			
+
 			byte[] logoBytes = IOUtils.toByteArray(logoStream);
 			int logoTimesheet = workbook.addPicture(logoBytes, Workbook.PICTURE_TYPE_JPEG);
 			XSSFDrawing drawing1 = (XSSFDrawing) secondSheet.createDrawingPatriarch();
@@ -103,16 +101,16 @@ public class ExcelTimesheetService {
 			XSSFRow Row1 = secondSheet.createRow(1);
 			Row1.createCell(1).setCellValue("Periodo");
 			Row1.getCell(1).setCellStyle(style);
-			
+
 			Row1.createCell(3).setCellValue(eMese + "-" + anno);
 			Row1.getCell(3).setCellStyle(style);
 			XSSFRow Row2 = secondSheet.createRow(2);
 			Row2.createCell(1).setCellValue("Rimborso Km in €");
-			Row2.createCell(3).setCellValue((infoAuto.getRimborsoPerKm()==null)? 0.0f : infoAuto.getRimborsoPerKm());
+			Row2.createCell(3).setCellValue((infoAuto.getRimborsoPerKm() == null) ? 0.0f : infoAuto.getRimborsoPerKm());
 			Row2.getCell(1).setCellStyle(style);
 			XSSFRow Row3 = secondSheet.createRow(3);
 			Row3.createCell(1).setCellValue("Auto");
-			Row3.createCell(3).setCellValue((infoAuto.getModelloAuto()==null)? "" : infoAuto.getModelloAuto());
+			Row3.createCell(3).setCellValue((infoAuto.getModelloAuto() == null) ? "" : infoAuto.getModelloAuto());
 			Row3.getCell(1).setCellStyle(style);
 			XSSFRow Row4 = secondSheet.createRow(4);
 			Row4.createCell(1).setCellValue("Totale");
@@ -348,6 +346,7 @@ public class ExcelTimesheetService {
 				Integer oreTotaliPerRiga = 0;
 				Integer giorniTotaliPerRiga = 0;
 				// commesse singole, ore singole
+				int cont = 0;
 				for (int j = 0; j < EMese.getDays(timesheet.getMese(), timesheet.getAnno()); j++) {
 					Double giorno = rowDaysOfWeek.getCell(5 + j).getNumericCellValue();
 					if (giornoDiRiferimento == giorno.intValue()) {
@@ -369,53 +368,22 @@ public class ExcelTimesheetService {
 								}
 							}
 
+							
 							for (var entry : mapCodiceCommessa.entrySet()) {
 								if (entry.getValue().equals(t.getCodiceCommessa())) {
 									row = sheet.getRow(entry.getKey());
 									row.getCell(5 + j).setCellValue(ore);
-									if (EMese.getDays(timesheet.getMese(),
-											timesheet.getAnno()) == 28) {
-										formulaCell = sheet.getRow(entry.getKey())
-												.getCell(EMese.getDays(timesheet.getMese(),
-														timesheet.getAnno()) + 1 + 4);
-										formulaCell.setCellValue(oreTotaliPerRiga);
-										cellGiorniTotaliPerRiga = sheet.getRow(entry.getKey())
-												.getCell(EMese.getDays(timesheet.getMese(),
-														timesheet.getAnno()) + 1 + 4 + 1);
-										cellGiorniTotaliPerRiga.setCellValue(giorniTotaliPerRiga);
-									}
-									if (EMese.getDays(timesheet.getMese(),
-											timesheet.getAnno()) == 29) {
-										formulaCell = sheet.getRow(entry.getKey())
-												.getCell(EMese.getDays(timesheet.getMese(),
-														timesheet.getAnno()) + 1 + 4);
-										formulaCell.setCellValue(oreTotaliPerRiga);
-										cellGiorniTotaliPerRiga = sheet.getRow(entry.getKey())
-												.getCell(EMese.getDays(timesheet.getMese(),
-														timesheet.getAnno()) + 1 + 4 + 1);
-										cellGiorniTotaliPerRiga.setCellValue(giorniTotaliPerRiga);
-									} else if (EMese.getDays(timesheet.getMese(),
-											timesheet.getAnno()) == 30) {
-										formulaCell = sheet.getRow(entry.getKey())
-												.getCell(EMese.getDays(timesheet.getMese(),
-														timesheet.getAnno()) + 1 + 4);
-										formulaCell.setCellValue(oreTotaliPerRiga);
-										cellGiorniTotaliPerRiga = sheet.getRow(entry.getKey())
-												.getCell(EMese.getDays(timesheet.getMese(),
-														timesheet.getAnno()) + 1 + 4 + 1);
-										cellGiorniTotaliPerRiga.setCellValue(giorniTotaliPerRiga);
-									} else {
-										formulaCell = sheet.getRow(entry.getKey())
-												.getCell(EMese.getDays(timesheet.getMese(),
-														timesheet.getAnno()) + 1 + 4);
-										formulaCell.setCellValue(oreTotaliPerRiga);
-										cellGiorniTotaliPerRiga = sheet.getRow(entry.getKey())
-												.getCell(EMese.getDays(timesheet.getMese(),
-														timesheet.getAnno()) + 1 + 4 + 1);
-										cellGiorniTotaliPerRiga.setCellValue(giorniTotaliPerRiga);
-									}
+									formulaCell = sheet.getRow(entry.getKey())
+											.getCell(EMese.getDays(timesheet.getMese(), timesheet.getAnno()) + 1 + 4);
+									formulaCell.setCellFormula("SUM(F"+(10+cont)+":AJ"+(10+cont)+")");
+									cellGiorniTotaliPerRiga = sheet.getRow(entry.getKey()).getCell(
+											EMese.getDays(timesheet.getMese(), timesheet.getAnno()) + 1 + 4 + 1);
+									cellGiorniTotaliPerRiga.setCellValue(giorniTotaliPerRiga);
+									cont++;
+
 								}
 							}
+
 							oreTotaliPerMese = oreTotaliPerMese + t.getOre();
 							giorniTotaliPerMese++;
 						} else {
@@ -434,12 +402,10 @@ public class ExcelTimesheetService {
 							row.createCell(5 + j).setCellValue(ore);
 							oreTotaliPerRiga = oreTotaliPerRiga + t.getOre();
 							XSSFCell formulaCell2 = row
-									.createCell(EMese.getDays(timesheet.getMese(),
-											timesheet.getAnno()) + 4 + 1);
+									.createCell(EMese.getDays(timesheet.getMese(), timesheet.getAnno()) + 4 + 1);
 							formulaCell2.setCellValue(oreTotaliPerRiga);
 							XSSFCell cellGiorniTotaliPerRiga2 = row
-									.createCell(EMese.getDays(timesheet.getMese(),
-											timesheet.getAnno()) + 4 + 1 + 1);
+									.createCell(EMese.getDays(timesheet.getMese(), timesheet.getAnno()) + 4 + 1 + 1);
 							cellGiorniTotaliPerRiga2.setCellValue(giorniTotaliPerRiga);
 							if (index % 2 == 0) {
 								XSSFCellStyle style2 = workbook.createCellStyle();
@@ -449,8 +415,7 @@ public class ExcelTimesheetService {
 								font2.setColor(IndexedColors.WHITE.getIndex());
 								style2.setFont(font2);
 								int indexStyleCell = 0;
-								while (indexStyleCell < EMese.getDays(timesheet.getMese(),
-										timesheet.getAnno()) + 7) {
+								while (indexStyleCell < EMese.getDays(timesheet.getMese(), timesheet.getAnno()) + 7) {
 									if (row.getCell(indexStyleCell) == null) {
 										row.createCell(indexStyleCell).setCellStyle(style2);
 									} else {

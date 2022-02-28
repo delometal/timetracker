@@ -19,16 +19,15 @@ import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.ContactDetailsService;
-import com.perigea.tracker.timesheet.service.GruppoContattoService;
 import com.perigea.tracker.timesheet.service.UtenteService;
 
 @RestController
 @RequestMapping("/utenti")
 public class ContactDetailsController {
-
+	
 	@Autowired
 	private UtenteService utenteService;
-
+	
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
 
@@ -53,20 +52,24 @@ public class ContactDetailsController {
 
 	// CRUD per creazione contatto semplice
 	@PostMapping(value = "/contatto/create")
-	public ResponseEntity<ResponseDto<UtenteDto>> createContatto(@RequestBody ContactDto contactDto) {
-		Utente utente = utenteService.saveContatto(contactDto);
-		UtenteDto contatto = dtoEntityMapper.entityToDto(utente);
+	public ResponseEntity<ResponseDto<UtenteDto>> createContatto(@RequestBody UtenteDto esternoDto) {
+		
+		Utente utente = dtoEntityMapper.dtoToEntity(esternoDto);
+		utente = utenteService.saveContattoEsterno(utente);
+		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
 
-		ResponseDto<UtenteDto> response = ResponseDto.<UtenteDto>builder().data(contatto).build();
+		ResponseDto<UtenteDto> response = ResponseDto.<UtenteDto>builder().data(utenteDto).build();
 		return ResponseEntity.ok(response);
 	}
 
 	@PutMapping(value = "/contatto/update")
-	public ResponseEntity<ResponseDto<UtenteDto>> updateContatto(@RequestBody ContactDto contactDto) {
-		Utente utente = utenteService.updateContatto(contactDto);
-		UtenteDto contatto = dtoEntityMapper.entityToDto(utente);
-
-		ResponseDto<UtenteDto> response = ResponseDto.<UtenteDto>builder().data(contatto).build();
+	public ResponseEntity<ResponseDto<UtenteDto>> updateContatto(@RequestBody UtenteDto esternoDto) {
+		
+		Utente utente = dtoEntityMapper.dtoToEntity(esternoDto);
+		utente = utenteService.updateContattoEsterno(utente);
+		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
+		
+		ResponseDto<UtenteDto> response = ResponseDto.<UtenteDto>builder().data(utenteDto).build();
 		return ResponseEntity.ok(response);
 	}
 

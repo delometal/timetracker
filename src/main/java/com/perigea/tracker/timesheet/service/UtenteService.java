@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.commons.dto.ContactDto;
+import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.RuoloType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
@@ -27,18 +28,18 @@ import com.perigea.tracker.timesheet.repository.UtenteRepository;
 @Service
 @Transactional
 public class UtenteService {
-		
+
 	@Autowired
 	private Logger logger;
 
 	@Autowired
 	private ApplicationDao applicationDao;
-	
+
 	@Autowired
 	protected UtenteRepository utenteRepository;
-	
+
 	public <T extends Personale> Utente createUtente(Utente utente, T personale) {
-		try {	
+		try {
 			utente.setCodicePersona(null);
 			personale.setCodicePersona(null);
 			String codicePersona = Utils.uuid();
@@ -51,9 +52,10 @@ public class UtenteService {
 			throw new ConsulenteException(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * creazione utente
+	 * 
 	 * @param utente
 	 * @return
 	 */
@@ -64,10 +66,10 @@ public class UtenteService {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
-	
 
 	/**
 	 * lettura utente
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -75,19 +77,19 @@ public class UtenteService {
 		try {
 			return utenteRepository.findById(id).get();
 		} catch (Exception ex) {
-			if(ex instanceof NoSuchElementException) {
+			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
 			}
 			throw new UtenteException(ex.getMessage());
 		}
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public Utente loadUtente(String id) {
 		try {
 			return utenteRepository.getOne(id);
 		} catch (Exception ex) {
-			if(ex instanceof NoSuchElementException) {
+			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
 			}
 			throw new UtenteException(ex.getMessage());
@@ -96,6 +98,7 @@ public class UtenteService {
 
 	/**
 	 * cancellazione utente
+	 * 
 	 * @param partitaIva
 	 * @return
 	 */
@@ -105,15 +108,16 @@ public class UtenteService {
 			utenteRepository.deleteById(id);
 			logger.info("Utente cancellato");
 		} catch (Exception ex) {
-			if(ex instanceof NoSuchElementException) {
+			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
 			}
 			throw new UtenteException(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * delete contatto
+	 * 
 	 * @param contatto
 	 */
 	public void deleteUtente(Utente contatto) {
@@ -131,7 +135,7 @@ public class UtenteService {
 			throw new ConsulenteException(ex.getMessage());
 		}
 	}
-	
+
 	// Metodo per aggiornare lo stato (attivo/cessato) di un utente
 	public Utente updateUtenteStatus(String codicePersona, StatoUtenteType newStatus) {
 		try {
@@ -139,49 +143,35 @@ public class UtenteService {
 			if (edits != null && edits == 1) {
 				return utenteRepository.findByCodicePersona(codicePersona).get();
 			} else {
-				throw new PersistenceException(String.format("Si è verificato un errore durante l'aggiornamento per l'utente %s con il nuovo stato %s", codicePersona, newStatus.name()));
+				throw new PersistenceException(String.format(
+						"Si è verificato un errore durante l'aggiornamento per l'utente %s con il nuovo stato %s",
+						codicePersona, newStatus.name()));
 			}
 		} catch (Exception ex) {
 			throw ex;
 		}
 	}
-	
-	public Utente saveContatto(ContactDto dto) {
+
+	public Utente saveContattoEsterno(Utente utente) {
 		try {
-			Utente u = Utente.builder().username(dto.getUsername())
-					.codicePersona(Utils.uuid())
-					.nome(dto.getNome())
-					.cognome(dto.getCognome())
-					.mailAziendale(dto.getMailAziendale())
-					.mailPrivata(dto.getMailPrivata())
-					.cellulare(dto.getCellulare())
-					.tipo(AnagraficaType.C)
-					.ruoli(Arrays.asList(Ruolo.builder()
-							.id(RuoloType.P).build()))
-					.build();
-			utenteRepository.save(u);
-			return u;
+			utente.setTipo(AnagraficaType.C);
+			utente.setRuoli(Arrays.asList(Ruolo.builder().id(RuoloType.P).build()));
+			utente = utenteRepository.save(utente);
+			return utente;
 		} catch (Exception ex) {
 			throw ex;
 		}
 	}
-		
-		public Utente updateContatto(ContactDto dto) {
-			try {
-				Utente u = utenteRepository.findByCodicePersona(dto.getCodicePersona()).get();
-				 u.setUsername(dto.getUsername());
-				 u.setNome(dto.getNome());
-				 u.setCognome(dto.getCognome());
-				 u.setMailAziendale(dto.getMailAziendale());
-				 u.setMailPrivata(dto.getMailPrivata());
-				 u.setCellulare(dto.getCellulare());
-				utenteRepository.save(u);
-				return u;
-			} catch (Exception ex) {
-				throw ex;
-			}
+
+	public Utente updateContattoEsterno(Utente utente) {
+		try {
+			utente = utenteRepository.save(utente);
+			return utente;
+		} catch (Exception ex) {
+			throw ex;
+		}
 	}
-	
+
 //	public Personale readAnagraficaPersonale(String codicePersona) {
 //		try {
 //			return utenteRepository.getById(codicePersona).getPersonale();

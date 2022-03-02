@@ -59,7 +59,8 @@ public class ApplicationDao {
 			throw new PersistenceException(e.getMessage());
 		}
 	}
-
+	
+	@Transactional
 	public Integer updateUserPassword(String codicePersona, String password) {
 		try {
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

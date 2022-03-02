@@ -28,24 +28,24 @@ public class UtenzeEmailBuilderService {
 	
 	private static final String PATTERN = "dd-MM-yyyy HH:mm";
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(PATTERN);
-	private static final String PASSWORD_UPDATE_ENDPOINT = "";
+	private static final String PASSWORD_UPDATE_ENDPOINT = "https://localhost:9094/timesheet/api/check-token";
 	
 	
-	public Email build(PasswordToken token, Utente utente) throws URISyntaxException {
+	public Email build(PasswordToken token, Utente utente, String password) throws URISyntaxException {
 		DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("ECT"));
 		List<String> recipients = new ArrayList<>();
 		Map<String, Object> templateData = new HashMap<>();
 
-		if (!NotNullValidator.validate(token))
-			throw new NullFieldException(String.format("%s must not be null!", NotNullValidator.getDetails(token)));
-		if (!NotNullValidator.validate(utente))
-			throw new NullFieldException(String.format("%s must not be null!", NotNullValidator.getDetails(utente)));
+//		if (!NotNullValidator.validate(token))
+//			throw new NullFieldException(String.format("%s must not be null!", NotNullValidator.getDetails(token)));
+//		if (!NotNullValidator.validate(utente))
+//			throw new NullFieldException(String.format("%s must not be null!", NotNullValidator.getDetails(utente)));
 	
 		recipients.add(utente.getMailAziendale());
 		
 		templateData.put("utente", utente.getNome());
 		templateData.put("username", utente.getUsername());
-		templateData.put("password", utente.getPassword());
+		templateData.put("password", password);
 		templateData.put("token", token.getToken());
 		templateData.put("scadenza", token.getDataScadenza());
 		templateData.put("link", createTokenLink(token.getToken()));

@@ -45,7 +45,7 @@ public class Utente extends BaseEntity {
 	@Column(name = "codice_persona", nullable = false)
 	private String codicePersona;
 
-	@Column(name = "password", insertable = false, updatable = false)
+	@Column(name = "password", updatable = false)
 	private String password;
 
 	@Column(name = "username", unique = true)

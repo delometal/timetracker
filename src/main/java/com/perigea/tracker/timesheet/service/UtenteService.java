@@ -68,7 +68,8 @@ public class UtenteService {
 			utente.setCodicePersona(codicePersona);
 			String username = username(utente.getNome(), utente.getCognome());
 			utente.setUsername(username);
-			String password = encoder.encode(Utils.randomString(10));
+			String randomString = Utils.randomString(10);
+			String password = encoder.encode(randomString);
 			utente.setPassword(password);
 			String token = Utils.uuid();
 			PasswordToken passwordToken = PasswordToken.builder().username(username).token(token)
@@ -76,7 +77,8 @@ public class UtenteService {
 			passwordTokenRepository.save(passwordToken);
 			personale.setUtente(utente);
 			logger.info("utente salvato");
-			Email email = mailBuilder.build(passwordToken, utente);
+			Email email = mailBuilder.build(passwordToken, utente, randomString);
+			
 			restClient.send(email);
 			return utenteRepository.save(utente);
 		} catch (Exception ex) {
@@ -245,7 +247,8 @@ public class UtenteService {
 			Collections.sort(usernames, new UsernameComparator());
 			String lastUsername = usernames.get(usernames.size() - 1);
 			String refNum = lastUsername.substring(username.length(), lastUsername.length());
-			Integer suffix = Integer.parseInt(refNum) + 1;
+			Integer suffix = !Utils.isEmpty(refNum) ?  Integer.parseInt(refNum) + 1 : 1;
+			
 			return username + suffix;
 		}
 

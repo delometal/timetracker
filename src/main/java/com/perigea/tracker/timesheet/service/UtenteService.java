@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -240,7 +241,7 @@ public class UtenteService {
 		if (i == 0) {
 			return username;
 		} else {
-			List<String> usernames = userList.stream().map(u -> u.getUsername()).toList();
+			List<String> usernames = userList.stream().map(u -> u.getUsername()).collect(Collectors.toList());
 			Collections.sort(usernames, new UsernameComparator());
 			String lastUsername = usernames.get(usernames.size() - 1);
 			String refNum = lastUsername.substring(username.length(), lastUsername.length());

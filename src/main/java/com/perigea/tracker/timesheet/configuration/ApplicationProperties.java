@@ -28,5 +28,10 @@ public class ApplicationProperties {
 	@Value("${calendar.connection}")
 	private String calendarConnectionString;
 	
+	@Value("${spring.mail.username}")
+	private String sender;
+	
+	@Value("${notificator.endpoint}")
+	private String notificatorEndpoint;
 		
 }

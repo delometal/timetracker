@@ -16,9 +16,12 @@ import com.perigea.tracker.timesheet.entity.Utente;
 public interface UtenteRepository extends JpaRepository<Utente, String>, JpaSpecificationExecutor<Utente> {
 
 	public Optional<Utente> findByCodicePersona(String codicePersona);
+
 	public Optional<Utente> findByCodicePersonaAndTipo(String codicePersona, AnagraficaType tipo);
+
+	public Optional<Utente> findByUsername(String username);
+
 	public List<Utente> findAllByNomeAndCognome(String nome, String cognome);
-	
 
 	@Query(value = "SELECT u FROM Utente u WHERE u.tipo = :tipo")
 	public List<Utente> findAllOfType(@Param("tipo") AnagraficaType tipo);

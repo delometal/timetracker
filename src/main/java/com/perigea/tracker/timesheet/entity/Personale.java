@@ -31,37 +31,37 @@ import lombok.EqualsAndHashCode;
 @Table(name = "personale")
 @EqualsAndHashCode(callSuper = true)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="tipo", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "tipo", discriminatorType = DiscriminatorType.STRING)
 public class Personale extends BaseEntity {
 
 	private static final long serialVersionUID = -1364490410610646111L;
-	
+
 	@Id
 	@Column(name = "codice_persona")
 	private String codicePersona;
-	
+
 	@Column(name = "tipo", nullable = false, insertable = false, updatable = false)
 	@Enumerated(EnumType.STRING)
 	private PersonaleType tipo;
-	
+
 	@Column(name = "codice_responsabile", insertable = false, updatable = false)
 	private String codiceResponsabile;
-	
+
 	@Column(name = "data_assunzione")
 	private LocalDate dataAssunzione;
 
 	@Column(name = "data_cessazione")
 	private LocalDate dataCessazione;
-	
+
 	@MapsId
 	@OneToOne
 	@JoinColumn(name = "codice_persona")
 	private Utente utente;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "codice_responsabile")
 	private Personale responsabile;
-	
+
 	@OneToMany(mappedBy = "personale")
 	private List<NotaSpese> noteSpese = new ArrayList<>();
 
@@ -70,13 +70,13 @@ public class Personale extends BaseEntity {
 
 	@OneToMany(mappedBy = "personale", cascade = CascadeType.ALL)
 	private List<PersonaleCommessa> commessePersonale = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "personale")
 	private List<StoricoAssegnazioneCentroCosto> storicoAssegnazioneCentroCosto = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "responsabile")
 	private List<Personale> sottoposti = new ArrayList<>();
-	
+
 	public void addSottoposto(Personale dipendente) {
 		this.sottoposti.add(dipendente);
 		dipendente.setResponsabile(this);

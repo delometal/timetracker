@@ -41,11 +41,11 @@ public class Timesheet extends BaseEntity {
 	@Column(name = "stato_time_sheet")
 	@Enumerated(EnumType.STRING)
 	private ApprovalStatus statoRichiesta;
-	
+
 	@Column(name = "codice_richiesta", insertable = false, updatable = false, unique = true)
 	private Long codiceRichiesta;
-	
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH,CascadeType.MERGE})
+
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE })
 	@JoinColumn(name = "codice_richiesta", referencedColumnName = "codice_richiesta", insertable = true, updatable = true, nullable = false)
 	private Richiesta richiesta;
 

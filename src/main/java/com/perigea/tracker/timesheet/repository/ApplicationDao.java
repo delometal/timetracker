@@ -32,7 +32,8 @@ public class ApplicationDao {
 			Root<Timesheet> timesheet = criteriaUpdate.from(Timesheet.class);
 			predicates[0] = criteriaBuilder.equal(timesheet.get("id").<String>get("anno"), key.getAnno());
 			predicates[1] = criteriaBuilder.equal(timesheet.get("id").<String>get("mese"), key.getMese());
-			predicates[2] = criteriaBuilder.equal(timesheet.get("id").<String>get("codicePersona"), key.getCodicePersona());
+			predicates[2] = criteriaBuilder.equal(timesheet.get("id").<String>get("codicePersona"),
+					key.getCodicePersona());
 
 			criteriaUpdate.set("statoRichiesta", newStatus);
 			criteriaUpdate.where(predicates);
@@ -51,6 +52,21 @@ public class ApplicationDao {
 			Root<Utente> user = criteriaUpdate.from(Utente.class);
 
 			criteriaUpdate.set("stato", status);
+			criteriaUpdate.where(criteriaBuilder.equal(user.<String>get("codicePersona"), codicePersona));
+
+			return entityManager.createQuery(criteriaUpdate).executeUpdate();
+		} catch (Exception e) {
+			throw new PersistenceException(e.getMessage());
+		}
+	}
+
+	public Integer updateUserPassword(String codicePersona, String password) {
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			CriteriaUpdate<Utente> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(Utente.class);
+			Root<Utente> user = criteriaUpdate.from(Utente.class);
+
+			criteriaUpdate.set("password", password);
 			criteriaUpdate.where(criteriaBuilder.equal(user.<String>get("codicePersona"), codicePersona));
 
 			return entityManager.createQuery(criteriaUpdate).executeUpdate();

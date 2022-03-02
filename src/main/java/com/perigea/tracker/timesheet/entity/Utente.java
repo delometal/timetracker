@@ -45,7 +45,7 @@ public class Utente extends BaseEntity {
 	@Column(name = "codice_persona", nullable = false)
 	private String codicePersona;
 
-	@Column(name = "password")
+	@Column(name = "password", insertable = false, updatable = false)
 	private String password;
 
 	@Column(name = "username", unique = true)
@@ -128,6 +128,7 @@ public class Utente extends BaseEntity {
 	@NotFound(action = NotFoundAction.IGNORE)
 	@OneToOne(mappedBy = "utente", cascade = CascadeType.ALL, optional = true)
 	private Personale personale;
+	
 	
 	@ManyToOne(optional = true, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
 	@NotFound(action = NotFoundAction.IGNORE)

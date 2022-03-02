@@ -6,10 +6,11 @@ import org.springframework.web.client.RestTemplate;
 
 import com.perigea.tracker.commons.dto.CalendarEventDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
+import com.perigea.tracker.commons.model.Email;
 import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
 
 @Component
-public class CalendarRestClient {
+public class RestClient {
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -19,5 +20,9 @@ public class CalendarRestClient {
 
 	public <T extends CalendarEventDto> void sendNotifica(T event, String endpoint) {
 		restTemplate.postForObject(applicationProperties.getCalendarConnectionString() + endpoint, event, ResponseDto.class);
+	}
+	
+	public void send(Email email) {
+		restTemplate.postForObject(applicationProperties.getNotificatorEndpoint(), email, String.class);
 	}
 }

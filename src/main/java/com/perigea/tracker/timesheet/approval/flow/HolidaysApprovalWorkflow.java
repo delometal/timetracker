@@ -8,14 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.perigea.tracker.commons.dto.HolidayEventDto;
 import com.perigea.tracker.timesheet.entity.Richiesta;
 import com.perigea.tracker.timesheet.entity.RichiestaHistory;
-import com.perigea.tracker.timesheet.rest.CalendarRestClient;
+import com.perigea.tracker.timesheet.rest.RestClient;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED)
 public class HolidaysApprovalWorkflow implements IApprovalFlow {
 
 	@Autowired
-	private CalendarRestClient restClient;
+	private RestClient restClient;
 
 	public static final String HOLIDAYS_REQUEST_ENDPOINT = "holiday/add";
 	public static final String HOLIDAYS_APPROVE_ENDPOINT = "holiday/approve";

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.DatiEconomiciDipendenteDto;
@@ -47,13 +46,12 @@ public class DipendenteController {
 	private DtoEntityMapper dtoEntityMapper;
 
 	@PostMapping(value = "/create")
-	public ResponseEntity<ResponseDto<DipendenteDto>> createDipendente(@RequestBody DipendenteDto dipendenteDto,
-			@RequestParam Integer oreCredentialReminder) {
+	public ResponseEntity<ResponseDto<DipendenteDto>> createDipendente(@RequestBody DipendenteDto dipendenteDto) {
 		Utente utente = dtoEntityMapper.dtoToEntity(dipendenteDto.getUtente());
 		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
 		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(dipendenteDto.getEconomics());
 		loadResponsabile(dipendenteDto, dipendente);
-		utente = dipendenteService.createUtenteDipendente(utente, dipendente, economics, oreCredentialReminder);
+		utente = dipendenteService.createUtenteDipendente(utente, dipendente, economics);
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
 		Dipendente anagrafica = (Dipendente) utente.getPersonale();
 		dipendenteDto = dtoEntityMapper.entityToDto(anagrafica);

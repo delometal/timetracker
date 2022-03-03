@@ -91,6 +91,7 @@ public class ExcelTimesheetService {
 		XSSFSheet secondSheet = workbook.createSheet(NOTE_SPESE_NAME);
 		buildHeader(timesheetDataWrapper,secondSheet,style, timesheetDataWrapper.getRefNamesNoteSpese());
 		
+		//Creazione row valori statici 
 		XSSFRow eightRow = secondSheet.createRow(10);
 		eightRow.createCell(0).setCellValue("Data");
 		eightRow.getCell(0).setCellStyle(style);
@@ -119,6 +120,7 @@ public class ExcelTimesheetService {
 		eightRow.createCell(12).setCellValue("Importo €");
 		eightRow.getCell(12).setCellStyle(style);
 		
+		//Creazione Rows per inserimento delle note (1 Row per Nota)
 		Map<String, List<TimesheetEntryDto>> entries = timesheetDataWrapper.getEntries();
 		Counter counter = new Counter();
 		counter.i = 11;
@@ -136,6 +138,7 @@ public class ExcelTimesheetService {
 					styleRowNote.setBorderTop(BorderStyle.MEDIUM);
 					styleRowNote.setBorderRight(BorderStyle.MEDIUM);
 					
+					//Per ogni riga viene assegnato uno style diverso
 					if (rowNote.getRowNum() % 2 == 0) {
 						styleRowNote.setFillForegroundColor(IndexedColors.VIOLET.getIndex());
 						font2.setColor(IndexedColors.WHITE.getIndex());
@@ -144,6 +147,7 @@ public class ExcelTimesheetService {
 						styleRowNote.setFillForegroundColor(IndexedColors.LAVENDER.getIndex());
 						styleRowNote.setFont(font2);
 					}
+					//Setting dello stile in ogni cella della Row (Attenzione, fare la getCell successivamente perche altrimenti si perde lo style)
 					for(int i = 0 ; i < 13; i++) {
 						rowNote.createCell(i).setCellStyle(styleRowNote);
 					}
@@ -157,7 +161,8 @@ public class ExcelTimesheetService {
 							rowNote.getCell(i).setCellValue(n.getImporto());
 						}
 					}
-
+					
+					//Formule totali parziali
 					rowNote.getCell(9).setCellFormula("I"+(rowNote.getRowNum()+1)+"*"+"H7");
 					rowNote.getCell(12).setCellFormula("SUM(D"+(rowNote.getRowNum()+1)+":H"+(rowNote.getRowNum()+1)+")"+"+J"+(rowNote.getRowNum()+1)+"+K"+(rowNote.getRowNum()+1));
 					counter.i++;
@@ -166,6 +171,7 @@ public class ExcelTimesheetService {
 		});
 		int lastRowNum =secondSheet.getLastRowNum();
 		
+		//Style per la Row dei totali globali
 		XSSFCellStyle styleRowTot = workbook.createCellStyle();
 		styleRowTot.setAlignment(HorizontalAlignment.CENTER);
 		styleRowTot.setFillForegroundColor(IndexedColors.GOLD.getIndex());
@@ -180,6 +186,7 @@ public class ExcelTimesheetService {
 //		rowAnticipi.createCell(10).setCellValue("Anticipi");
 //		rowAnticipi.getCell(10).setCellStyle(style);
 		
+		//Creazione formula totale globale
 		XSSFRow rowTotali = secondSheet.createRow(lastRowNum+2);
 		rowTotali.createCell(11).setCellValue("Totale:");
 		rowTotali.getCell(11).setCellStyle(styleRowTot);
@@ -187,7 +194,7 @@ public class ExcelTimesheetService {
 		rowTotali.createCell(12).setCellFormula("SUM(M12:M"+(lastRowNum+1)+")"/*+"-M"+(rowAnticipi.getRowNum()+1)*/);
 		rowTotali.getCell(12).setCellStyle(styleRowTot);
 		
-
+		//Autosize(OBBLIGATORIO per tutte le Row altrimenti su singole non funziona)
 		for (int columnIndex = 0; columnIndex < 50; columnIndex++) {
 			secondSheet.autoSizeColumn(columnIndex);
 		}

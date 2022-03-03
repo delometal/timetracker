@@ -13,15 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.perigea.tracker.commons.enums.EmailType;
-import com.perigea.tracker.commons.exception.NullFieldException;
 import com.perigea.tracker.commons.model.Email;
-import com.perigea.tracker.commons.utils.NotNullValidator;
 import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
 import com.perigea.tracker.timesheet.entity.PasswordToken;
 import com.perigea.tracker.timesheet.entity.Utente;
 
 @Service
-public class UtenzeEmailBuilderService {
+public class UtenteEmailBuilderService {
 	
 	@Autowired
 	private ApplicationProperties applicationProperties;

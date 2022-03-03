@@ -11,7 +11,6 @@ import javax.persistence.EntityNotFoundException;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +24,6 @@ import com.perigea.tracker.commons.exception.UtenteException;
 import com.perigea.tracker.commons.model.Email;
 import com.perigea.tracker.commons.utils.UsernameComparator;
 import com.perigea.tracker.commons.utils.Utils;
-import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
 import com.perigea.tracker.timesheet.entity.PasswordToken;
 import com.perigea.tracker.timesheet.entity.Personale;
 import com.perigea.tracker.timesheet.entity.Ruolo;
@@ -49,13 +47,13 @@ public class UtenteService {
 	protected UtenteRepository utenteRepository;
 
 	@Autowired
-	private PasswordEncoder encoder;
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private PasswordTokenRepository passwordTokenRepository;
 
 	@Autowired
-	private UtenzeEmailBuilderService mailBuilder;
+	private UtenteEmailBuilderService mailBuilder;
 
 	@Autowired
 	private RestClient restClient;
@@ -69,7 +67,7 @@ public class UtenteService {
 			String username = username(utente.getNome(), utente.getCognome());
 			utente.setUsername(username);
 			String randomString = Utils.randomString(10);
-			String password = encoder.encode(randomString);
+			String password = passwordEncoder.encode(randomString);
 			utente.setPassword(password);
 			String token = Utils.uuid();
 			PasswordToken passwordToken = PasswordToken.builder().username(username).token(token)
@@ -188,7 +186,7 @@ public class UtenteService {
 
 	public Utente updateUtentePassword(String codicePersona, String newPassword) {
 		try {
-			String cryptedPassword = encoder.encode(newPassword);
+			String cryptedPassword = passwordEncoder.encode(newPassword);
 			Integer edits = applicationDao.updateUserPassword(codicePersona, cryptedPassword);
 			if (edits != null && edits == 1) {
 				return utenteRepository.findByCodicePersona(codicePersona).get();
@@ -219,7 +217,7 @@ public class UtenteService {
 			utente.setTipo(AnagraficaType.C);
 			utente.setRuoli(Arrays.asList(Ruolo.builder().id(RuoloType.P).build()));
 			utente.setUsername(username(utente.getNome(), utente.getCognome()));
-			utente.setPassword(encoder.encode(Utils.randomString(10)));
+			utente.setPassword(passwordEncoder.encode(Utils.randomString(10)));
 			utente = utenteRepository.save(utente);
 			return utente;
 		} catch (Exception ex) {

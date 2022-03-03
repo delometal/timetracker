@@ -15,8 +15,8 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.perigea.tracker.commons.dto.ScheduleDto;
-import com.perigea.tracker.commons.dto.ScheduleDto.Tipo;
+
+import com.perigea.tracker.commons.enums.TipoScheduleEvent;
 import com.perigea.tracker.commons.exception.NotificationSchedulerException;
 import com.perigea.tracker.commons.model.Email;
 import com.perigea.tracker.timesheet.job.UserNotificationJob;
@@ -30,8 +30,8 @@ public class SchedulerService {
 	@Autowired
 	Logger logger;
 
-	public ScheduleDto scheduleNotifica(Date dataEsecuzione, Email email) {
-		JobDetail detail = buildJobDetail(email, Tipo.ISTANTANEA.toString());
+	public void scheduleNotifica(Date dataEsecuzione, Email email) {
+		JobDetail detail = buildJobDetail(email, TipoScheduleEvent.ISTANTANEA.toString());
 		Trigger trigger = buildJobTrigger(detail, dataEsecuzione);
 		try {
 			Date nextFire = scheduler.scheduleJob(detail, trigger);
@@ -39,14 +39,11 @@ public class SchedulerService {
 		} catch (Exception e) {
 			throw new NotificationSchedulerException(e.getMessage());
 		}
-
-		ScheduleDto info = ScheduleDto.builder().email(email).nextFireTime(dataEsecuzione).tipo(Tipo.ISTANTANEA.name())
-				.build();
-		return info;
+		
 	}
 
-	public ScheduleDto scheduleNotificaPeriodica(String cron, Email email) {
-		JobDetail detail = buildJobDetail(email, Tipo.PERIODICO.toString());
+	public void scheduleNotificaPeriodica(String cron, Email email) {
+		JobDetail detail = buildJobDetail(email, TipoScheduleEvent.PERIODICO.toString());
 		Trigger trigger = buildCronJobTrigger(detail, cron);
 		try {
 			Date nextFire = scheduler.scheduleJob(detail, trigger);
@@ -55,9 +52,6 @@ public class SchedulerService {
 			throw new NotificationSchedulerException(e.getMessage());
 		}
 
-		ScheduleDto info = ScheduleDto.builder().email(email).nextFireTime(trigger.getNextFireTime()).cron(cron)
-				.tipo(Tipo.PERIODICO.name()).build();
-		return info;
 	}
 
 	public boolean disactiveNotification(String id) {
@@ -73,9 +67,11 @@ public class SchedulerService {
 		JobDataMap dataMap = new JobDataMap();
 		dataMap.put("email", email);
 		dataMap.put("type", type);
-		return JobBuilder.newJob(UserNotificationJob.class).withIdentity(email.getEventID(), "calendar")
+		return JobBuilder.newJob(UserNotificationJob.class).withIdentity(email.getEventID(), "tracker")
 				.usingJobData(dataMap).withDescription("Job scheduler for notification").build();
 	}
+	
+
 
 	private Trigger buildJobTrigger(JobDetail detail, Date dataEsecuzione) {
 		return buildJobTrigger(detail, dataEsecuzione, detail.getKey().getName());

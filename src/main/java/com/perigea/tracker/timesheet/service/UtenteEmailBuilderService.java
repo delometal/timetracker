@@ -12,6 +12,7 @@ import java.util.TimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.perigea.tracker.commons.enums.EmailTemplates;
 import com.perigea.tracker.commons.enums.EmailType;
 import com.perigea.tracker.commons.model.Email;
 import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
@@ -48,7 +49,7 @@ public class UtenteEmailBuilderService {
 		templateData.put("link", createTokenLink(token.getToken()));
 
 		return Email.builder().eventID("creazione nuovo utente").from(applicationProperties.getSender())
-				.templateName("utenzeTemplate.ftlh").templateModel(templateData).subject("Attivazione credenziali")
+				.templateName(EmailTemplates.CREATE_CREDENTIAL_TEMPLATE.getDescrizione()).templateModel(templateData).subject("Attivazione credenziali")
 				.emailType(EmailType.HTML_TEMPLATE_MAIL).to(recipients).build();
 	}
 
@@ -74,7 +75,7 @@ public class UtenteEmailBuilderService {
 		}
 
 		return Email.builder().eventID("reminder attivazione credenziali").from(applicationProperties.getSender())
-				.templateName("reminderCredentialTemplate.ftlh").templateModel(templateData)
+				.templateName(EmailTemplates.REMINDER_CREDENTIAL_TEMPLATE.getDescrizione()).templateModel(templateData)
 				.subject("Attivazione credenziali").emailType(EmailType.HTML_TEMPLATE_MAIL).to(recipients).build();
 	}
 

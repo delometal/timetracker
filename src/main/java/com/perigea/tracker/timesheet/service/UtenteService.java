@@ -61,7 +61,7 @@ public class UtenteService {
 	@Autowired
 	private SchedulerService scheduler;
 
-	public <T extends Personale> Utente createUtente(Utente utente, T personale, Integer ore) {
+	public <T extends Personale> Utente createUtente(Utente utente, T personale) {
 		try {
 			utente.setCodicePersona(null);
 			personale.setCodicePersona(null);
@@ -81,8 +81,8 @@ public class UtenteService {
 			Email email = mailBuilder.buildCredential(passwordToken, utente, randomString);
 			restClient.send(email);
 
-			scheduler.scheduleNotifica(Utils.shifTimeByHour(passwordToken.getDataScadenza(), ore),
-					mailBuilder.buildCredentialReminder(passwordToken, utente, ore));
+			scheduler.scheduleNotifica(Utils.shifTimeByHour(passwordToken.getDataScadenza(), Utils.CREDENTIAL_REMINDER),
+					mailBuilder.buildCredentialReminder(passwordToken, utente, Utils.CREDENTIAL_REMINDER));
 
 			return utenteRepository.save(utente);
 		} catch (Exception ex) {

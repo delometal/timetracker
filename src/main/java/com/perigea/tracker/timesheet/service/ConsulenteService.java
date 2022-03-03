@@ -24,14 +24,14 @@ public class ConsulenteService extends UtenteService {
 	 * @param codiceResponsabile
 	 * @return
 	 */
-	public Utente createUtenteConsulente(Utente utente, Consulente consulente, DatiEconomiciConsulente economics, Integer ore) {
+	public Utente createUtenteConsulente(Utente utente, Consulente consulente, DatiEconomiciConsulente economics) {
 		consulente.setEconomics(economics);
 		if(economics != null) {
 			economics.setCodicePersona(null);
 			economics.setPersonale(consulente);
 		}
 		utente.setPersonale(consulente);
-		return super.createUtente(utente, consulente, ore);		
+		return super.createUtente(utente, consulente);		
 	}
 	
 	/**

@@ -11,8 +11,10 @@ import javax.persistence.Table;
 
 import com.perigea.tracker.timesheet.entity.keys.StoricoRimborsiKmKey;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 
 /**
@@ -21,6 +23,8 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="storico_rimborsi_km")
 @EqualsAndHashCode(callSuper = true)
 public class StoricoRimborsiKm extends BaseEntity {

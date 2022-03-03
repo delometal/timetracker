@@ -10,9 +10,12 @@ import javax.persistence.Table;
 
 import com.perigea.tracker.timesheet.entity.keys.StoricoPremioKey;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
@@ -22,6 +25,9 @@ import lombok.Setter;
  */
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name="storico_premio")
 @EqualsAndHashCode(callSuper = true)
 public class StoricoPremio extends BaseEntity {

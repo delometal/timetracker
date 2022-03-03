@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import com.perigea.tracker.commons.enums.TipoScheduleEvent;
 import com.perigea.tracker.commons.exception.NotificationSchedulerException;
 import com.perigea.tracker.commons.model.Email;
@@ -67,7 +66,7 @@ public class SchedulerService {
 		JobDataMap dataMap = new JobDataMap();
 		dataMap.put("email", email);
 		dataMap.put("type", type);
-		return JobBuilder.newJob(UserNotificationJob.class).withIdentity(email.getEventID(), "tracker")
+		return JobBuilder.newJob(UserNotificationJob.class).withIdentity(email.getEventId(), "tracker")
 				.usingJobData(dataMap).withDescription("Job scheduler for notification").build();
 	}
 	

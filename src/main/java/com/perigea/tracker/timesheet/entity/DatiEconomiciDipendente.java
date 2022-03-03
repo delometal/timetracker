@@ -1,6 +1,7 @@
 package com.perigea.tracker.timesheet.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -80,6 +81,12 @@ public class DatiEconomiciDipendente extends BaseEntity{
 	@Column(name = "decorrenza_rimborso")
 	private LocalDate decorrenzaRimborso;
 	
+	@Column(name = "costo_giornaliero")
+	private Float costoGiornaliero;
+	
+	@Column(name = "data_decorrenza_costo")
+	private LocalDateTime dataDecorrenzaCosto;
+	
 	// 83 87 generano StoricoPremio
 	@Column(name = "ultimo_premio")
 	private Float ultimoPremio;
@@ -87,19 +94,16 @@ public class DatiEconomiciDipendente extends BaseEntity{
 	@Column(name = "data_ultimo_premio")
 	private LocalDate dataUltimoPremio;
 	
-	// 90  e 93 generano StoricoRimborsiKm
+	// 90  e 93 generano StoricoRimborsiKm (verificare entrambi)
 	@Column(name = "modello_auto")
 	private String modelloAuto;
 	
 	@Column(name = "rimborso_per_km")
 	private Float rimborsoPerKm;
 	
-	// storico Km Rimborsabili
+	// storico Km Rimborsabili (tetto massimo rimborsabile)
 	@Column(name = "kmPerGiorno")
 	private Float kmPerGiorno;
-	
-//	@Column(name = "data_decorrenza_costo")
-//	private LocalDate dataDecorrenzaCosto;
 	
 	@Column(name = "data_assegnazione_ticket")
 	private LocalDate dataAssegnazioneTicket;

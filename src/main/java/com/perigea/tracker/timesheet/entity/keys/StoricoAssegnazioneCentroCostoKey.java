@@ -1,7 +1,7 @@
 package com.perigea.tracker.timesheet.entity.keys;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -26,9 +26,9 @@ public class StoricoAssegnazioneCentroCostoKey implements Serializable {
 	private String codicePersona;
 
 	@Column(name="decorrenza_assegnazione_centro_di_costo")
-	private LocalDateTime decorrenzaAssegnazioneCentroDiCosto;
+	private LocalDate decorrenzaAssegnazioneCentroDiCosto;
 
 	@Column(name="data_scadenza_assegnazione_centro_costo")
-	private LocalDateTime dataScadenzaAssegnazioneCentroCosto;
+	private LocalDate dataScadenzaAssegnazioneCentroCosto;
 
 }

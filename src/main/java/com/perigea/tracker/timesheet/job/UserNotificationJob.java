@@ -27,7 +27,7 @@ public class UserNotificationJob implements Job {
 		
 		String tipo = (String)context.getJobDetail().getJobDataMap().get("type");
 		if (tipo.equals(TipoScheduleEvent.ISTANTANEA.toString())) {
-			schedulerService.disactiveNotification(email.getEventID());
+			schedulerService.disactiveNotification(email.getEventId());
 		}
 		
 	}

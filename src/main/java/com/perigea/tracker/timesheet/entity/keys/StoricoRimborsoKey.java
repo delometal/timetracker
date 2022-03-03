@@ -14,16 +14,16 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class StoricoContrattoTypeKey implements Serializable{
+public class StoricoRimborsoKey implements Serializable{
+	
+	private static final long serialVersionUID = 7669835962239582371L;
 
-	private static final long serialVersionUID = 5173086455798037732L;
 	@Column(name="codice_persona")
 	private String codicePersona;
 
-	@Column(name="decorrenza")
-	private LocalDate decorrenza;
-	
-	@Column(name="scadenza")
-	private LocalDate scadenza;
+	@Column(name="decorrenza_rimborso")
+	private LocalDate decorrenzaRimborso;
 
+	@Column(name="data_scadenza_rimborso")
+	private LocalDate dataScadenzaRimborso;
 }

@@ -26,6 +26,9 @@ import com.perigea.tracker.timesheet.service.UtenteService;
 @RequestMapping("/contatti-e-gruppi")
 public class GruppoContattoController {
 
+	// TODO ricerca per filtri (nome/username/...) 
+	// rename GruppoController
+	
 	@Autowired
 	private GruppoContattoService gruppoContattoService;
 	

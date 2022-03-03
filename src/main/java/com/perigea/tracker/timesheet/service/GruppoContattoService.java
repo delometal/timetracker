@@ -102,6 +102,7 @@ public class GruppoContattoService {
 	 * @param contatto
 	 * @return
 	 */
+	// TODO in invio mail ad utenza creata se Type == P non inviare
 	public Utente createContatto(Utente contatto) {
 		try {
 			List<Ruolo> ruoli = new ArrayList<Ruolo>(1);

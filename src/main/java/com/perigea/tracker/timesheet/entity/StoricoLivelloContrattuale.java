@@ -12,8 +12,10 @@ import javax.persistence.Table;
 import com.perigea.tracker.commons.enums.LivelloContrattoType;
 import com.perigea.tracker.timesheet.entity.keys.StoricoLivelloContrattualeKey;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 
 /**
@@ -22,6 +24,8 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name="storico_livello_contrattuale")
 public class StoricoLivelloContrattuale extends BaseEntity {
@@ -32,7 +36,7 @@ public class StoricoLivelloContrattuale extends BaseEntity {
 	private StoricoLivelloContrattualeKey id;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "livelllo")
+	@Column(name = "livello")
 	private LivelloContrattoType livello;
 
 	@ManyToOne

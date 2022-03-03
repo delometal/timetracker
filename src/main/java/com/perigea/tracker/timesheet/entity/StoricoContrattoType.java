@@ -10,21 +10,26 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.perigea.tracker.commons.enums.ContrattoType;
-import com.perigea.tracker.timesheet.entity.keys.StoricoLivelloContrattualeKey;
+import com.perigea.tracker.timesheet.entity.keys.StoricoContrattoTypeKey;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name="storico_tipo_contratto")
 public class StoricoContrattoType extends BaseEntity {
 
 	private static final long serialVersionUID = 5385049400595527969L;
 
+	// NON dovrebbe essere storicoContrattoTypeKey ?
 	@EmbeddedId
-	private StoricoLivelloContrattualeKey id;
+	private StoricoContrattoTypeKey id;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "tipo_contratto")

@@ -17,7 +17,6 @@ import com.perigea.tracker.commons.enums.ResponseType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
-import com.perigea.tracker.timesheet.service.SchedulerService;
 import com.perigea.tracker.timesheet.service.UtenteService;
 
 @RestController

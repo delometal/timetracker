@@ -78,13 +78,13 @@ public class UtenteService {
 			passwordTokenRepository.save(passwordToken);
 			personale.setUtente(utente);
 			logger.info("utente salvato");
-			Email email = mailBuilder.buildCredential(passwordToken, utente, randomString);
-			restClient.send(email);
+//			Email email = mailBuilder.buildCredential(passwordToken, utente, randomString);
+//			restClient.send(email);
+			Utente user = utenteRepository.save(utente);
+//			scheduler.scheduleNotifica(Utils.shifTimeByHour(passwordToken.getDataScadenza(), Utils.CREDENTIAL_REMINDER),
+//					mailBuilder.buildCredentialReminder(passwordToken, utente, Utils.CREDENTIAL_REMINDER));
 
-			scheduler.scheduleNotifica(Utils.shifTimeByHour(passwordToken.getDataScadenza(), Utils.CREDENTIAL_REMINDER),
-					mailBuilder.buildCredentialReminder(passwordToken, utente, Utils.CREDENTIAL_REMINDER));
-
-			return utenteRepository.save(utente);
+			return user;
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 			throw new ConsulenteException(ex.getMessage());
@@ -113,7 +113,8 @@ public class UtenteService {
 	 */
 	public Utente readUtente(String id) {
 		try {
-			return utenteRepository.findById(id).get();
+			Utente u =  utenteRepository.findByCodicePersona(id).get();
+			return u;
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

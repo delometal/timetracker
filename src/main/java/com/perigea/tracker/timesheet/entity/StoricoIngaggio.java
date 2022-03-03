@@ -9,36 +9,31 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.perigea.tracker.timesheet.entity.keys.StoricoGiornalieroKey;
+import com.perigea.tracker.timesheet.entity.keys.StoricoIngaggioKey;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-
-/**
- * The persistent class for the costo_giornaliero_storico database table.
- * 
- */
 @Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Table(name="storico_costo_giornaliero")
-public class StoricoCostoGiornaliero extends BaseEntity {
+@Table(name="storico_ingaggio")
+public class StoricoIngaggio extends BaseEntity{
 
-	private static final long serialVersionUID = -5503790109946009969L;
+	private static final long serialVersionUID = 4716569365008934404L;
 
 	@EmbeddedId
-	private StoricoGiornalieroKey id;
-
-	@Column(name="costo_giornaliero")
+	private StoricoIngaggioKey id;
+	
+	@Column(name = "costo_giornaliero")
 	private BigDecimal costoGiornaliero;
 	
 	@ManyToOne
 	@JoinColumn(name = "codice_persona", referencedColumnName = "codice_persona", insertable=false, updatable=false)
-	private Dipendente personale;
-
+	private Consulente personale;
+	
 }

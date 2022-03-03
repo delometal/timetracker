@@ -27,6 +27,8 @@ public class UtenteEmailBuilderService {
 
 	private static final String PATTERN = "dd-MM-yyyy HH:mm";
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(PATTERN);
+
+	// FIXME non hardocded
 	private static final String PASSWORD_UPDATE_ENDPOINT = "https://localhost:9094/timesheet/api/check-token";
 
 	public Email buildCredential(PasswordToken token, Utente utente, String password) throws URISyntaxException {
@@ -48,7 +50,7 @@ public class UtenteEmailBuilderService {
 		templateData.put("scadenza", token.getDataScadenza());
 		templateData.put("link", createTokenLink(token.getToken()));
 
-		return Email.builder().eventID("creazione nuovo utente").from(applicationProperties.getSender())
+		return Email.builder().eventId("creazione nuovo utente").from(applicationProperties.getSender())
 				.templateName(EmailTemplates.CREATE_CREDENTIAL_TEMPLATE.getDescrizione()).templateModel(templateData).subject("Attivazione credenziali")
 				.emailType(EmailType.HTML_TEMPLATE_MAIL).to(recipients).build();
 	}
@@ -74,7 +76,7 @@ public class UtenteEmailBuilderService {
 			e.printStackTrace();
 		}
 
-		return Email.builder().eventID("reminder attivazione credenziali").from(applicationProperties.getSender())
+		return Email.builder().eventId("reminder attivazione credenziali").from(applicationProperties.getSender())
 				.templateName(EmailTemplates.REMINDER_CREDENTIAL_TEMPLATE.getDescrizione()).templateModel(templateData)
 				.subject("Attivazione credenziali").emailType(EmailType.HTML_TEMPLATE_MAIL).to(recipients).build();
 	}

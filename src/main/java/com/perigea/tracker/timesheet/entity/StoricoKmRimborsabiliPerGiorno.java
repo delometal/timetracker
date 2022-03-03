@@ -11,11 +11,16 @@ import javax.persistence.Table;
 
 import com.perigea.tracker.timesheet.entity.keys.StoricoKmRimborsabiliPerGiornoKey;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 
 /**
  * The persistent class for the km_rimborsabili_per_giorno_storico database table.
  * 
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name="storico_km_rimborsabili_per_giorno")
 public class StoricoKmRimborsabiliPerGiorno extends BaseEntity {

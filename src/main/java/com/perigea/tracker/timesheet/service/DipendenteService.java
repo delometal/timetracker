@@ -29,14 +29,14 @@ public class DipendenteService extends UtenteService {
 	 * @param codiceResponsabile
 	 * @return
 	 */
-	public Utente createUtenteDipendente(Utente utente, Dipendente dipendente, DatiEconomiciDipendente economics) {
+	public Utente createUtenteDipendente(Utente utente, Dipendente dipendente, DatiEconomiciDipendente economics, Integer ore) {
 		dipendente.setEconomics(economics);
 		if(economics != null) {
 			economics.setCodicePersona(null);
 			economics.setPersonale(dipendente);
 		}
 		utente.setPersonale(dipendente);
-		return super.createUtente(utente, dipendente);
+		return super.createUtente(utente, dipendente, ore);
 	}
 	
 	/**

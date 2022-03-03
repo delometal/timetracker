@@ -1,17 +1,13 @@
 package com.perigea.tracker.timesheet.entity;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import com.perigea.tracker.commons.enums.PasswordTokenStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,7 +38,7 @@ public class PasswordToken extends BaseEntity {
 	private String token;
 
 	@Column(name = "data_scadenza")
-	private LocalDateTime dataScadenza;
+	private Date dataScadenza;
 
 //	@Column(name = "token_status")
 //	@Enumerated(EnumType.STRING)

@@ -3,6 +3,7 @@ package com.perigea.tracker.timesheet.service;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -58,7 +59,10 @@ public class UtenteService {
 	@Autowired
 	private RestClient restClient;
 
-	public <T extends Personale> Utente createUtente(Utente utente, T personale) {
+	@Autowired
+	private SchedulerService scheduler;
+
+	public <T extends Personale> Utente createUtente(Utente utente, T personale, Integer ore) {
 		try {
 			utente.setCodicePersona(null);
 			personale.setCodicePersona(null);
@@ -71,13 +75,16 @@ public class UtenteService {
 			utente.setPassword(password);
 			String token = Utils.uuid();
 			PasswordToken passwordToken = PasswordToken.builder().username(username).token(token)
-					.dataScadenza(LocalDateTime.now().plusHours(48)).build();
+					.dataScadenza(Utils.shifTimeByHour(new Date(), Utils.CREDENTIAL_EXPIRATION_SHIFT_AMOUNT)).build();
 			passwordTokenRepository.save(passwordToken);
 			personale.setUtente(utente);
 			logger.info("utente salvato");
-			Email email = mailBuilder.build(passwordToken, utente, randomString);
-			
+			Email email = mailBuilder.buildCredential(passwordToken, utente, randomString);
 			restClient.send(email);
+
+			scheduler.scheduleNotifica(Utils.shifTimeByHour(passwordToken.getDataScadenza(), ore),
+					mailBuilder.buildCredentialReminder(passwordToken, utente, ore));
+
 			return utenteRepository.save(utente);
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
@@ -204,7 +211,7 @@ public class UtenteService {
 	public boolean checkToken(String token) {
 		try {
 			PasswordToken passwordToken = passwordTokenRepository.findByToken(token).get();
-			return (passwordToken.getDataScadenza().isAfter(LocalDateTime.now()));
+			return (passwordToken.getDataScadenza().after(new Date()));
 
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
@@ -245,8 +252,8 @@ public class UtenteService {
 			Collections.sort(usernames, new UsernameComparator());
 			String lastUsername = usernames.get(usernames.size() - 1);
 			String refNum = lastUsername.substring(username.length(), lastUsername.length());
-			Integer suffix = !Utils.isEmpty(refNum) ?  Integer.parseInt(refNum) + 1 : 1;
-			
+			Integer suffix = !Utils.isEmpty(refNum) ? Integer.parseInt(refNum) + 1 : 1;
+
 			return username + suffix;
 		}
 

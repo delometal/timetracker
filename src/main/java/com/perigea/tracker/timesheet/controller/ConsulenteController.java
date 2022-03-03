@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.ConsulenteDto;
@@ -45,12 +46,12 @@ public class ConsulenteController {
 	private DtoEntityMapper dtoEntityMapper;
 
 	@PostMapping(value = "/create")
-	public ResponseEntity<ResponseDto<ConsulenteDto>> createConsulente(@RequestBody ConsulenteDto consulenteDto) {
+	public ResponseEntity<ResponseDto<ConsulenteDto>> createConsulente(@RequestBody ConsulenteDto consulenteDto, @RequestParam Integer oreCredentialReminder) {
 		Utente utente = dtoEntityMapper.dtoToEntity(consulenteDto.getUtente());
 		Consulente consulente = dtoEntityMapper.dtoToEntity(consulenteDto);
 		DatiEconomiciConsulente economics = dtoEntityMapper.dtoToEntity(consulenteDto.getEconomics());
 		loadResponsabile(consulenteDto, consulente);
-		utente = consulenteService.createUtenteConsulente(utente, consulente, economics);
+		utente = consulenteService.createUtenteConsulente(utente, consulente, economics, oreCredentialReminder);
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
 		Consulente anagrafica = (Consulente) utente.getPersonale();
 		consulenteDto = dtoEntityMapper.entityToDto(anagrafica);

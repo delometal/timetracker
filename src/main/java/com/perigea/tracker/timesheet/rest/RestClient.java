@@ -19,10 +19,15 @@ public class RestClient {
 	private ApplicationProperties applicationProperties;
 
 	public <T extends CalendarEventDto> void sendNotifica(T event, String endpoint) {
-		restTemplate.postForObject(applicationProperties.getCalendarConnectionString() + endpoint, event, ResponseDto.class);
+		restTemplate.postForObject(applicationProperties.getCalendarConnectionString() + endpoint, event,
+				ResponseDto.class);
 	}
-	
+
 	public void send(Email email) {
 		restTemplate.postForObject(applicationProperties.getNotificatorEndpoint(), email, String.class);
+	}
+
+	public void credentialReminder(Email email) {
+		restTemplate.postForObject(applicationProperties.getSchedulerEndpoint(), email, ResponseDto.class);
 	}
 }

@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import com.perigea.tracker.commons.enums.EmailTemplates;
 import com.perigea.tracker.commons.enums.EmailType;
+import com.perigea.tracker.commons.exception.URIException;
 import com.perigea.tracker.commons.model.Email;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
 import com.perigea.tracker.timesheet.entity.PasswordToken;
 import com.perigea.tracker.timesheet.entity.Utente;
@@ -48,12 +50,13 @@ public class UtenteEmailBuilderService {
 		templateData.put("scadenza", token.getDataScadenza());
 		templateData.put("link", createTokenLink(token.getToken()));
 
-		return Email.builder().eventID("creazione nuovo utente").from(applicationProperties.getSender())
-				.templateName(EmailTemplates.CREATE_CREDENTIAL_TEMPLATE.getDescrizione()).templateModel(templateData).subject("Attivazione credenziali")
-				.emailType(EmailType.HTML_TEMPLATE_MAIL).to(recipients).build();
+		return Email.builder().eventId("creazione nuovo utente").from(applicationProperties.getSender())
+				.templateName(EmailTemplates.CREATE_CREDENTIAL_TEMPLATE.getDescrizione()).templateModel(templateData)
+				.subject("Attivazione credenziali").emailType(EmailType.HTML_TEMPLATE_MAIL).to(recipients).build();
 	}
-
 	
+	
+
 	public Email buildCredentialReminder(PasswordToken token, Utente utente, Integer ore) {
 		List<String> recipients = new ArrayList<>();
 		Map<String, Object> templateData = new HashMap<>();
@@ -67,19 +70,20 @@ public class UtenteEmailBuilderService {
 
 		templateData.put("username", utente.getUsername());
 		templateData.put("ore", ore);
-		try {
-			templateData.put("link", createTokenLink(token.getToken()));
-		} catch (URISyntaxException e) {
 
-			e.printStackTrace();
-		}
+		templateData.put("link", createTokenLink(token.getToken()));
 
-		return Email.builder().eventID("reminder attivazione credenziali").from(applicationProperties.getSender())
+		return Email.builder().eventId("reminder attivazione credenziali").from(applicationProperties.getSender())
+				.reminderDate(Utils.shifTimeByHour(token.getDataScadenza(), Utils.CREDENTIAL_REMINDER))
 				.templateName(EmailTemplates.REMINDER_CREDENTIAL_TEMPLATE.getDescrizione()).templateModel(templateData)
 				.subject("Attivazione credenziali").emailType(EmailType.HTML_TEMPLATE_MAIL).to(recipients).build();
 	}
 
-	public URI createTokenLink(String token) throws URISyntaxException {
-		return new URI(PASSWORD_UPDATE_ENDPOINT + "/" + token);
+	public URI createTokenLink(String token) {
+		try {
+			return new URI(PASSWORD_UPDATE_ENDPOINT + "/" + token);
+		} catch (Exception ex) {
+			throw new URIException(ex.getMessage());
+		}
 	}
 }

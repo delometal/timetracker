@@ -33,5 +33,8 @@ public class ApplicationProperties {
 	
 	@Value("${notificator.endpoint}")
 	private String notificatorEndpoint;
+	
+	@Value("${scheduler.notifica.endpoint}")
+	private String schedulerEndpoint;
 		
 }

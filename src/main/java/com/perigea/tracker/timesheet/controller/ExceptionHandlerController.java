@@ -17,6 +17,7 @@ import com.perigea.tracker.commons.exception.GenericError;
 import com.perigea.tracker.commons.exception.GruppoException;
 import com.perigea.tracker.commons.exception.RuoloException;
 import com.perigea.tracker.commons.exception.TimesheetException;
+import com.perigea.tracker.commons.exception.URIException;
 import com.perigea.tracker.commons.exception.UtenteException;
 
 @ControllerAdvice
@@ -24,6 +25,15 @@ public class ExceptionHandlerController {
 
 	@ExceptionHandler(ClienteException.class)
 	public final ResponseEntity<?> handleClientException(ClienteException ex) {
+		GenericError eObject = new GenericError();
+		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+		eObject.setMessage(ex.getMessage());
+		ResponseDto<GenericError> errorDto = ResponseDto.<GenericError>builder().code(HttpStatus.BAD_REQUEST.value()).type(ResponseType.ERROR).data(eObject).build();
+		return ResponseEntity.badRequest().body(errorDto);
+	}
+	
+	@ExceptionHandler(ClienteException.class)
+	public final ResponseEntity<?> handleClientException(URIException ex) {
 		GenericError eObject = new GenericError();
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());

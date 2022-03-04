@@ -36,5 +36,8 @@ public class ApplicationProperties {
 	
 	@Value("${scheduler.notifica.endpoint}")
 	private String schedulerEndpoint;
+	
+	@Value("${password.endpoint}")
+	private String passwordUpdateEndpoint;
 		
 }

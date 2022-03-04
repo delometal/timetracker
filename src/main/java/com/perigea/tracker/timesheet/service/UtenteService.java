@@ -82,7 +82,7 @@ public class UtenteService {
 			Email emailReminder = mailBuilder.buildCredentialReminder(passwordToken, utente, Utils.CREDENTIAL_REMINDER);
 			restClient.credentialReminder(emailReminder);
 
-			return user;
+			return utente;
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 			throw new ConsulenteException(ex.getMessage());

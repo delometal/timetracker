@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.perigea.tracker.commons.enums.EmailTemplates;
@@ -28,9 +27,6 @@ public class UtenteEmailBuilderService {
 
 	@Autowired
 	private ApplicationProperties applicationProperties;
-
-	@Value("${password.endpoint}")
-	private static String passwordUpdateEndpoint;
 
 	public Email buildCredential(PasswordToken token, Utente utente, String password) throws URISyntaxException {
 		Utils.DATE_FORMATTER.setTimeZone(TimeZone.getTimeZone("ECT"));
@@ -55,8 +51,6 @@ public class UtenteEmailBuilderService {
 				.templateName(EmailTemplates.CREATE_CREDENTIAL_TEMPLATE.getDescrizione()).templateModel(templateData)
 				.subject("Attivazione credenziali").emailType(EmailType.HTML_TEMPLATE_MAIL).to(recipients).build();
 	}
-	
-	
 
 	public Email buildCredentialReminder(PasswordToken token, Utente utente, Integer ore) {
 		List<String> recipients = new ArrayList<>();
@@ -82,7 +76,7 @@ public class UtenteEmailBuilderService {
 
 	public URI createTokenLink(String token) {
 		try {
-			return new URI(PASSWORD_UPDATE_ENDPOINT + "/" + token);
+			return new URI(applicationProperties.getPasswordUpdateEndpoint() + "/" + token);
 		} catch (Exception ex) {
 			throw new URIException(ex.getMessage());
 		}

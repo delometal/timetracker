@@ -72,7 +72,7 @@ public class ConsulenteService extends UtenteService {
 		DatiEconomiciConsulente oldDatiEconomici = consulenteRepository.findById(codicePersona).get().getEconomics();
 		
 		// Storico CentroDiCosto 
-		if (oldDatiEconomici.getDecorrenzaAssegnazioneCentroDiCosto() != newDatiEconomici.getDecorrenzaAssegnazioneCentroDiCosto()) {
+		if (oldDatiEconomici.getCodiceCentroDiCosto() != newDatiEconomici.getCodiceCentroDiCosto()) {
 			StoricoAssegnazioneCentroCostoKey k = new StoricoAssegnazioneCentroCostoKey(codicePersona, oldDatiEconomici.getDecorrenzaAssegnazioneCentroDiCosto(), LocalDate.now());
 			StoricoAssegnazioneCentroCosto st = new StoricoAssegnazioneCentroCosto(k, oldDatiEconomici.getCodiceCentroDiCosto(), personale);
 			storico.createStoricoAssegnazioneCentroCosto(st);

@@ -33,15 +33,15 @@ public class DatiEconomiciDipendente extends BaseEntity{
 	@Id
 	@Column(name = "codice_persona", insertable = false, updatable = false)
 	private String codicePersona;
+
+    // DecorrenzaAssegnazioneCentroDiCosto, CodiceCentroDiCosto -> StoricoCentroDiCosto
+	@Column(name = "decorrenza_assegnazione_centro_di_costo", nullable = false)
+	private LocalDate decorrenzaAssegnazioneCentroDiCosto;
     
     @Column(name = "codice_centro_di_costo", insertable = false, updatable = false)
 	private String codiceCentroDiCosto;
 	
-    // Genera StoricoCentroDiCosto
-	@Column(name = "decorrenza_assegnazione_centro_di_costo", nullable = false)
-	private LocalDate decorrenzaAssegnazioneCentroDiCosto;
-    
-    // 40 e 49 generano StoricoLivello
+    // DecorrenzaLivello, LivelloAttuale -> StoricoLivello
 	@Column(name = "decorrenza_livello", nullable = false)
 	private LocalDate decorrenzaLivello;
 	
@@ -53,7 +53,7 @@ public class DatiEconomiciDipendente extends BaseEntity{
 	@Column(name = "livello_attuale")
 	private LivelloContrattoType livelloAttuale;
 	
-	// 52 e 60 generano StoricoContrattoType
+	// DecorrenzaContratto, TipoContrattoAttuale -> StoricoContrattoType
 	@Column(name = "decorrenza_tipo_contratto", nullable = false)
 	private LocalDate decorrenzaTipoContratto;	
 	
@@ -65,7 +65,7 @@ public class DatiEconomiciDipendente extends BaseEntity{
 	@Column(name = "tipo_contratto_attuale")
 	private ContrattoType tipoContrattoAttuale;
 
-	// 63 e 70 generano StoricoRal
+	// RalAttuale, decorrenzaRal -> StoricoRal
 	@Column(name = "decorrenza_ral_attuale", nullable = false)
 	private LocalDate decorrenzaRalAttuale;
 	
@@ -75,35 +75,42 @@ public class DatiEconomiciDipendente extends BaseEntity{
 	@Column(name = "ral_attuale")
 	private Float ralAttuale;
 	
+	// RimborsoGiornaliero, decorrenzaRimborso -> StoricoRimborso
 	@Column(name = "rimborso_giornaliero")
 	private Float rimborsoGiornaliero;
 	
 	@Column(name = "decorrenza_rimborso", nullable = false)
 	private LocalDate decorrenzaRimborso;
 	
+	// CostoGiornaliero, dataDecorrenzaCostoGiornaliero -> StoricoCostoGiornaliero
 	@Column(name = "costo_giornaliero")
 	private Float costoGiornaliero;
 	
 	@Column(name = "data_decorrenza_costo", nullable = false)
 	private LocalDateTime dataDecorrenzaCosto;
 	
-	// 83 87 generano StoricoPremio
+	// UltimoPremio, dataUltimoPremio -> StoricoPremio
 	@Column(name = "ultimo_premio")
 	private Float ultimoPremio;
 	
-	@Column(name = "data_ultimo_premio")
+	@Column(name = "data_ultimo_premio", nullable = false)
 	private LocalDate dataUltimoPremio;
 	
-	// 90  e 93 generano StoricoRimborsiKm (verificare entrambi)
+	// ModelloAuto, RimborsoPerKm, DecorrenzaRimborsiKm -> StoricoRimborsiKm
 	@Column(name = "modello_auto")
 	private String modelloAuto;
 	
 	@Column(name = "rimborso_per_km")
 	private Float rimborsoPerKm;
 	
-	// storico Km Rimborsabili (tetto massimo rimborsabile)
+	@Column(name = "decorrenza_rimborsi_km", nullable = false)
+	private LocalDate decorrenzaRimborsiKm;
+	
 	@Column(name = "kmPerGiorno")
 	private Float kmPerGiorno;
+	
+	@Column(name = "decorrenza_km_rimborsabili", nullable = false)
+	private LocalDate decorrenzaKmRimborsabili;
 	
 	@Column(name = "data_assegnazione_ticket")
 	private LocalDate dataAssegnazioneTicket;

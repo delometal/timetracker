@@ -115,30 +115,28 @@ public class DipendenteService extends UtenteService {
 			storico.createStoricoPremio(st);
 		}
 		
-		//FIXME ?? per la chiave, NON ho data decorrenza nei datiEconomici
 		// Storico rimborsiKm
 		if (oldDatiEconomici.getModelloAuto() != newDatiEconomici.getModelloAuto() || oldDatiEconomici.getRimborsoPerKm() != newDatiEconomici.getRimborsoPerKm()) {
-			StoricoRimborsiKmKey k = new StoricoRimborsiKmKey(codicePersona, oldDatiEconomici.getDecorrenzaRimborso(), LocalDate.now());
+			StoricoRimborsiKmKey k = new StoricoRimborsiKmKey(codicePersona, oldDatiEconomici.getDecorrenzaRimborsiKm(), LocalDate.now());
 			StoricoRimborsiKm st = new StoricoRimborsiKm(k, codicePersona, new BigDecimal(oldDatiEconomici.getRimborsoPerKm()), personale);
 			storico.createStoricoRimborsiKm(st);
 		}
 		
-		//FIXME ?? Come sopra, NON ho date decorrenza rimborsi km nei datiEconomici
 		// Storico KmRimborsabili
 		if (oldDatiEconomici.getKmPerGiorno() != newDatiEconomici.getKmPerGiorno()) {
-			StoricoKmRimborsabiliPerGiornoKey k = new StoricoKmRimborsabiliPerGiornoKey(codicePersona, oldDatiEconomici.getDecorrenzaRimborso(), LocalDate.now());
+			StoricoKmRimborsabiliPerGiornoKey k = new StoricoKmRimborsabiliPerGiornoKey(codicePersona, oldDatiEconomici.getDecorrenzaKmRimborsabili(), LocalDate.now());
 			StoricoKmRimborsabiliPerGiorno st = new StoricoKmRimborsabiliPerGiorno(k, new BigDecimal(oldDatiEconomici.getKmPerGiorno()), personale);
 			storico.createStoricoKmRimborsabiliPerGiorno(st);
 		}
 		
 		// Storico assegnazioneCentroDiCosto
-		if (oldDatiEconomici.getDecorrenzaAssegnazioneCentroDiCosto() != newDatiEconomici.getDecorrenzaAssegnazioneCentroDiCosto()) {
+		if (oldDatiEconomici.getCodiceCentroDiCosto() != newDatiEconomici.getCodiceCentroDiCosto()) {
 			StoricoAssegnazioneCentroCostoKey k = new StoricoAssegnazioneCentroCostoKey(codicePersona, oldDatiEconomici.getDecorrenzaAssegnazioneCentroDiCosto(), LocalDate.now());
 			StoricoAssegnazioneCentroCosto st = new StoricoAssegnazioneCentroCosto(k, oldDatiEconomici.getCodiceCentroDiCosto(), personale);
 			storico.createStoricoAssegnazioneCentroCosto(st);
 		}
 		
-//		// Storico costo giornaliero
+		// Storico costo giornaliero
 		if (oldDatiEconomici.getCostoGiornaliero() != newDatiEconomici.getCostoGiornaliero()) {
 			StoricoGiornalieroKey k = new StoricoGiornalieroKey(codicePersona, oldDatiEconomici.getDataDecorrenzaCosto(), LocalDateTime.now());
 			StoricoCostoGiornaliero st = new StoricoCostoGiornaliero(k, new BigDecimal(oldDatiEconomici.getCostoGiornaliero()) , personale);

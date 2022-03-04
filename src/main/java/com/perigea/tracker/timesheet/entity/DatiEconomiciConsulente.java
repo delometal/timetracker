@@ -33,7 +33,7 @@ public class DatiEconomiciConsulente extends BaseEntity{
     @Column(name = "codice_centro_di_costo", insertable = false, updatable = false)
 	private String codiceCentroDiCosto;
 	
-    // centroDiCosto e decorrenza generano storicoAssegnazioneCentroDiCosto
+    // centroDiCosto e decorrenzaAssegnazioneCentroDiCosto -> storicoAssegnazioneCentroDiCosto
 	@ManyToOne
 	@JoinColumn(name = "codice_centro_di_costo")
 	private CentroDiCosto centroDiCosto;
@@ -49,7 +49,7 @@ public class DatiEconomiciConsulente extends BaseEntity{
 	@Column(name = "tipo_ingaggio")
 	private IngaggioType tipoIngaggio;
 	
-	// costoGiornaliero e dataDecorrenza generano storicoCostoGiornaliero
+	// costoGiornaliero e dataDecorrenza -> storicoCostoGiornaliero
 	@Column(name = "costo_giornaliero")
 	private Float costoGiornaliero;
 	

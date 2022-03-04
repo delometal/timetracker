@@ -74,7 +74,6 @@ public class UtenteService {
 					.dataScadenza(Utils.shifTimeByHour(new Date(), Utils.CREDENTIAL_EXPIRATION_SHIFT_AMOUNT)).build();
 			passwordTokenRepository.save(passwordToken);
 			personale.setUtente(utente);
-			logger.info("utente salvato");
 
 			Email email = mailBuilder.buildCredential(passwordToken, utente, randomString);
 			restClient.send(email);

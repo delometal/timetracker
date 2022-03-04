@@ -38,7 +38,7 @@ public class DatiEconomiciConsulente extends BaseEntity{
 	@JoinColumn(name = "codice_centro_di_costo")
 	private CentroDiCosto centroDiCosto;
     
-    @Column(name = "decorrenza_assegnazione_centro_di_costo")
+    @Column(name = "decorrenza_assegnazione_centro_di_costo", nullable = false)
 	private LocalDate decorrenzaAssegnazioneCentroDiCosto;
 
 	
@@ -56,7 +56,7 @@ public class DatiEconomiciConsulente extends BaseEntity{
 	@Column(name = "costo_giornaliero")
 	private Float costoGiornaliero;
 	
-	@Column(name = "data_decorrenza_costo")
+	@Column(name = "data_decorrenza_costo", nullable = false)
 	private LocalDate dataDecorrenzaCosto;
 	
 	@MapsId

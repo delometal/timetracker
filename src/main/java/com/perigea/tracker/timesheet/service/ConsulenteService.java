@@ -15,6 +15,7 @@ import com.perigea.tracker.timesheet.entity.StoricoIngaggio;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.entity.keys.StoricoAssegnazioneCentroCostoKey;
 import com.perigea.tracker.timesheet.entity.keys.StoricoIngaggioKey;
+import com.perigea.tracker.timesheet.repository.CentroDiCostoRepository;
 import com.perigea.tracker.timesheet.repository.ConsulenteRepository;
 
 @Service
@@ -22,6 +23,9 @@ public class ConsulenteService extends UtenteService {
 
 	@Autowired
 	private ConsulenteRepository consulenteRepository;
+	
+	@Autowired
+	private CentroDiCostoRepository centroDiCostoRepository;
 	
 	@Autowired
 	private StoricoService storico;
@@ -34,6 +38,7 @@ public class ConsulenteService extends UtenteService {
 	 * @return
 	 */
 	public Utente createUtenteConsulente(Utente utente, Consulente consulente, DatiEconomiciConsulente economics) {
+		economics.setCentroDiCosto(centroDiCostoRepository.findById(economics.getCodiceCentroDiCosto()).get());
 		consulente.setEconomics(economics);
 		if(economics != null) {
 			economics.setCodicePersona(null);

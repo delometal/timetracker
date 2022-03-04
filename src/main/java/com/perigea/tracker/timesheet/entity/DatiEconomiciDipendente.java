@@ -38,11 +38,11 @@ public class DatiEconomiciDipendente extends BaseEntity{
 	private String codiceCentroDiCosto;
 	
     // Genera StoricoCentroDiCosto
-	@Column(name = "decorrenza_assegnazione_centro_di_costo")
+	@Column(name = "decorrenza_assegnazione_centro_di_costo", nullable = false)
 	private LocalDate decorrenzaAssegnazioneCentroDiCosto;
     
     // 40 e 49 generano StoricoLivello
-	@Column(name = "decorrenza_livello")
+	@Column(name = "decorrenza_livello", nullable = false)
 	private LocalDate decorrenzaLivello;
 	
 	@Enumerated(EnumType.STRING)
@@ -54,7 +54,7 @@ public class DatiEconomiciDipendente extends BaseEntity{
 	private LivelloContrattoType livelloAttuale;
 	
 	// 52 e 60 generano StoricoContrattoType
-	@Column(name = "decorrenza_tipo_contratto")
+	@Column(name = "decorrenza_tipo_contratto", nullable = false)
 	private LocalDate decorrenzaTipoContratto;	
 	
 	@Enumerated(EnumType.STRING)
@@ -66,7 +66,7 @@ public class DatiEconomiciDipendente extends BaseEntity{
 	private ContrattoType tipoContrattoAttuale;
 
 	// 63 e 70 generano StoricoRal
-	@Column(name = "decorrenza_ral_attuale")
+	@Column(name = "decorrenza_ral_attuale", nullable = false)
 	private LocalDate decorrenzaRalAttuale;
 	
 	@Column(name = "ral_iniziale")
@@ -78,13 +78,13 @@ public class DatiEconomiciDipendente extends BaseEntity{
 	@Column(name = "rimborso_giornaliero")
 	private Float rimborsoGiornaliero;
 	
-	@Column(name = "decorrenza_rimborso")
+	@Column(name = "decorrenza_rimborso", nullable = false)
 	private LocalDate decorrenzaRimborso;
 	
 	@Column(name = "costo_giornaliero")
 	private Float costoGiornaliero;
 	
-	@Column(name = "data_decorrenza_costo")
+	@Column(name = "data_decorrenza_costo", nullable = false)
 	private LocalDateTime dataDecorrenzaCosto;
 	
 	// 83 87 generano StoricoPremio

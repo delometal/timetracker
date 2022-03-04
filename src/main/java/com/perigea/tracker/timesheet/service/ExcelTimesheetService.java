@@ -38,12 +38,7 @@ import com.perigea.tracker.commons.enums.EGiorno;
 import com.perigea.tracker.commons.enums.EMese;
 import com.perigea.tracker.commons.exception.TimesheetException;
 
-/**
- * TODO calcolo dei rimborsi kilometrici con i dati contenuti in InfoAutoDto,
- * capire la differenza tra CostoNotaSpeseType.KILOMETRI e
- * CostoNotaSpeseType.RIMBORSO_KILOMETRICO e come legarli ai valori del modello
- * degli economics
- */
+
 @Service
 public class ExcelTimesheetService {
 
@@ -380,7 +375,7 @@ public class ExcelTimesheetService {
 			}
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// TODO Auto-generated catch block (possibile lanciare eccezione custom)
 			e.printStackTrace();
 		}
 	}

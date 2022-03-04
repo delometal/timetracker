@@ -14,5 +14,6 @@ public interface CentroDiCostoRepository extends JpaRepository<CentroDiCosto, St
 	
 //	public List<CentroDiCosto> findByCodiceCentroDiCostoContainsIgnoreCaseOrDescrizioneContainsIgnoreCase(String codiceCentroDiCosto, String descrizione);
 	public List<CentroDiCosto> findAll(Specification<CentroDiCosto> filter);
+	
 
 }

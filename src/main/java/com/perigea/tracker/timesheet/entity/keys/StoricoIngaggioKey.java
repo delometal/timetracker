@@ -14,9 +14,10 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class StoricoContrattoTypeKey implements Serializable{
+public class StoricoIngaggioKey implements Serializable {
 
-	private static final long serialVersionUID = 5173086455798037732L;
+	private static final long serialVersionUID = -1237356022236419293L;
+	
 	@Column(name="codice_persona")
 	private String codicePersona;
 
@@ -25,5 +26,6 @@ public class StoricoContrattoTypeKey implements Serializable{
 	
 	@Column(name="scadenza")
 	private LocalDate scadenza;
+	
 
 }

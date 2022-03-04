@@ -145,6 +145,8 @@ public class Utente extends BaseEntity {
         joinColumns = { @JoinColumn(name = "codice_persona") }, 
         inverseJoinColumns = { @JoinColumn(name = "id") }
     )
+	
+	@Builder.Default
 	private List<Ruolo> ruoli = new ArrayList<>();
 
 	public void addRuolo(Ruolo ruolo) {

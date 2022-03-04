@@ -42,4 +42,6 @@ public class Dipendente extends Personale {
 	@OneToMany(mappedBy = "personale")
 	private List<StoricoRimborsiKm> storicoRimborsiKm = new ArrayList<>();
 
+	@OneToMany(mappedBy = "personale")
+	private List<StoricoCostoGiornaliero> storicoCostoGiornaliero = new ArrayList<>();
 }

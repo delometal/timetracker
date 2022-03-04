@@ -4,12 +4,16 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.perigea.tracker.commons.enums.IngaggioType;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,24 +38,22 @@ public class DatiEconomiciConsulente extends BaseEntity{
 	@JoinColumn(name = "codice_centro_di_costo")
 	private CentroDiCosto centroDiCosto;
     
-    @Column(name = "decorrenza_assegnazione_centro_di_costo")
+    @Column(name = "decorrenza_assegnazione_centro_di_costo", nullable = false)
 	private LocalDate decorrenzaAssegnazioneCentroDiCosto;
 
 	
     @Column(name = "data_ingaggio")
 	private LocalDate dataIngaggio;
 
-    
-    // TODO ??? (dovrebbe essere IngaggioType?
-    // 			 Storico?)
+    @Enumerated(EnumType.STRING)
 	@Column(name = "tipo_ingaggio")
-	private Float tipoIngaggio;
+	private IngaggioType tipoIngaggio;
 	
 	// costoGiornaliero e dataDecorrenza generano storicoCostoGiornaliero
 	@Column(name = "costo_giornaliero")
 	private Float costoGiornaliero;
 	
-	@Column(name = "data_decorrenza_costo")
+	@Column(name = "data_decorrenza_costo", nullable = false)
 	private LocalDate dataDecorrenzaCosto;
 	
 	@MapsId

@@ -10,9 +10,11 @@ import javax.persistence.Table;
 
 import com.perigea.tracker.timesheet.entity.keys.StoricoRalKey;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
@@ -22,6 +24,8 @@ import lombok.Setter;
  */
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="storico_ral")
 @EqualsAndHashCode(callSuper = true)
 public class StoricoRal extends BaseEntity {

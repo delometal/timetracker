@@ -159,12 +159,15 @@ public class DipendenteController {
 		Utente utente = dipendenteService.readUtente(datiEconomiciDipendenteDto.getCodicePersona());
 		CentroDiCosto cdc = centroDiCostoService.readCentroDiCosto(datiEconomiciDipendenteDto.getCodiceCentroDiCosto());
 		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(datiEconomiciDipendenteDto);
+		dipendenteService.createStorico(economics);
 		economics.setCodicePersona(utente.getCodicePersona());
 		Dipendente dipendente = (Dipendente) utente.getPersonale();
 		dipendente.setEconomics(economics);
 		economics.setPersonale(dipendente);
 		economics.setCentroDiCosto(cdc);
 		utente.setPersonale(dipendente);
+		
+		
 		utente = dipendenteService.updateUtente(utente);
 		datiEconomiciDipendenteDto = dtoEntityMapper.entityToDto(economics);
 		ResponseDto<DatiEconomiciDipendenteDto> genericResponse = ResponseDto.<DatiEconomiciDipendenteDto>builder()

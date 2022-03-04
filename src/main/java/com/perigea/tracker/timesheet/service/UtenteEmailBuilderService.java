@@ -2,7 +2,6 @@ package com.perigea.tracker.timesheet.service;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,12 +9,15 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.perigea.tracker.commons.enums.EmailTemplates;
 import com.perigea.tracker.commons.enums.EmailType;
+import com.perigea.tracker.commons.exception.NullFieldException;
 import com.perigea.tracker.commons.exception.URIException;
 import com.perigea.tracker.commons.model.Email;
+import com.perigea.tracker.commons.utils.NotNullValidator;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
 import com.perigea.tracker.timesheet.entity.PasswordToken;
@@ -27,19 +29,18 @@ public class UtenteEmailBuilderService {
 	@Autowired
 	private ApplicationProperties applicationProperties;
 
-	private static final String PATTERN = "dd-MM-yyyy HH:mm";
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(PATTERN);
-	private static final String PASSWORD_UPDATE_ENDPOINT = "https://localhost:9094/timesheet/api/check-token";
+	@Value("${password.endpoint}")
+	private static String passwordUpdateEndpoint;
 
 	public Email buildCredential(PasswordToken token, Utente utente, String password) throws URISyntaxException {
-		DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("ECT"));
+		Utils.DATE_FORMATTER.setTimeZone(TimeZone.getTimeZone("ECT"));
 		List<String> recipients = new ArrayList<>();
 		Map<String, Object> templateData = new HashMap<>();
 
-//		if (!NotNullValidator.validate(token))
-//			throw new NullFieldException(String.format("%s must not be null!", NotNullValidator.getDetails(token)));
-//		if (!NotNullValidator.validate(utente))
-//			throw new NullFieldException(String.format("%s must not be null!", NotNullValidator.getDetails(utente)));
+		if (!NotNullValidator.validate(token))
+			throw new NullFieldException(String.format("%s must not be null!", NotNullValidator.getDetails(token)));
+		if (!NotNullValidator.validate(utente))
+			throw new NullFieldException(String.format("%s must not be null!", NotNullValidator.getDetails(utente)));
 
 		recipients.add(utente.getMailAziendale());
 
@@ -61,10 +62,10 @@ public class UtenteEmailBuilderService {
 		List<String> recipients = new ArrayList<>();
 		Map<String, Object> templateData = new HashMap<>();
 
-//		if (!NotNullValidator.validate(token))
-//			throw new NullFieldException(String.format("%s must not be null!", NotNullValidator.getDetails(token)));
-//		if (!NotNullValidator.validate(utente))
-//			throw new NullFieldException(String.format("%s must not be null!", NotNullValidator.getDetails(utente)));
+		if (!NotNullValidator.validate(token))
+			throw new NullFieldException(String.format("%s must not be null!", NotNullValidator.getDetails(token)));
+		if (!NotNullValidator.validate(utente))
+			throw new NullFieldException(String.format("%s must not be null!", NotNullValidator.getDetails(utente)));
 
 		recipients.add(utente.getMailAziendale());
 

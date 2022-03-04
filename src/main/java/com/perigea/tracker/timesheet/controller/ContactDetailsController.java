@@ -34,6 +34,7 @@ public class ContactDetailsController {
 	@Autowired
 	private ContactDetailsService contactDetailsService;
 
+	
 	@GetMapping(value = "/contact-details/read-by-id/{contattoId}")
 	public ResponseEntity<ResponseDto<ContactDto>> readUserContactDetails(
 			@PathVariable(name = "userId") String userId) {

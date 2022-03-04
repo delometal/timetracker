@@ -82,7 +82,7 @@ public class UtenteService {
 			Email emailReminder = mailBuilder.buildCredentialReminder(passwordToken, utente, Utils.CREDENTIAL_REMINDER);
 			restClient.credentialReminder(emailReminder);
 
-			return utenteRepository.save(utente);
+			return user;
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 			throw new ConsulenteException(ex.getMessage());
@@ -111,7 +111,8 @@ public class UtenteService {
 	 */
 	public Utente readUtente(String id) {
 		try {
-			return utenteRepository.findById(id).get();
+			Utente u =  utenteRepository.findByCodicePersona(id).get();
+			return u;
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

@@ -38,9 +38,9 @@ public class ConsulenteService extends UtenteService {
 	 * @return
 	 */
 	public Utente createUtenteConsulente(Utente utente, Consulente consulente, DatiEconomiciConsulente economics) {
-		economics.setCentroDiCosto(centroDiCostoRepository.findById(economics.getCodiceCentroDiCosto()).get());
-		consulente.setEconomics(economics);
 		if(economics != null) {
+			economics.setCentroDiCosto(centroDiCostoRepository.findById(economics.getCodiceCentroDiCosto()).get());
+			consulente.setEconomics(economics);
 			economics.setCodicePersona(null);
 			economics.setPersonale(consulente);
 		}

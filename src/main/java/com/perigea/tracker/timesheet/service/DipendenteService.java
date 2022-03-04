@@ -55,9 +55,9 @@ public class DipendenteService extends UtenteService {
 	 * @return
 	 */
 	public Utente createUtenteDipendente(Utente utente, Dipendente dipendente, DatiEconomiciDipendente economics) {
-		economics.setCentroDiCosto(centroDiCostoRepository.findById(economics.getCodiceCentroDiCosto()).get());
-		dipendente.setEconomics(economics);
 		if(economics != null) {
+			economics.setCentroDiCosto(centroDiCostoRepository.findById(economics.getCodiceCentroDiCosto()).get());
+			dipendente.setEconomics(economics);
 			economics.setCodicePersona(null);
 			economics.setPersonale(dipendente);
 		}

@@ -45,9 +45,6 @@ public class DatiEconomiciConsulente extends BaseEntity{
     @Column(name = "data_ingaggio")
 	private LocalDate dataIngaggio;
 
-    
-    // TODO ??? (dovrebbe essere IngaggioType?
-    // 			 Storico?)
     @Enumerated(EnumType.STRING)
 	@Column(name = "tipo_ingaggio")
 	private IngaggioType tipoIngaggio;

@@ -21,8 +21,6 @@ import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.ContactDetailsService;
 import com.perigea.tracker.timesheet.service.UtenteService;
 
-//TODO rename utenteController
-
 @RestController
 @RequestMapping("/utenti")
 public class ContactDetailsController {

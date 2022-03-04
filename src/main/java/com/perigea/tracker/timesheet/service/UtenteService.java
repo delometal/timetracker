@@ -78,11 +78,11 @@ public class UtenteService {
 			passwordTokenRepository.save(passwordToken);
 			personale.setUtente(utente);
 			logger.info("utente salvato");
-//			Email email = mailBuilder.buildCredential(passwordToken, utente, randomString);
-//			restClient.send(email);
+			Email email = mailBuilder.buildCredential(passwordToken, utente, randomString);
+			restClient.send(email);
 			Utente user = utenteRepository.save(utente);
-//			scheduler.scheduleNotifica(Utils.shifTimeByHour(passwordToken.getDataScadenza(), Utils.CREDENTIAL_REMINDER),
-//					mailBuilder.buildCredentialReminder(passwordToken, utente, Utils.CREDENTIAL_REMINDER));
+			scheduler.scheduleNotifica(Utils.shifTimeByHour(passwordToken.getDataScadenza(), Utils.CREDENTIAL_REMINDER),
+					mailBuilder.buildCredentialReminder(passwordToken, utente, Utils.CREDENTIAL_REMINDER));
 
 			return user;
 		} catch (Exception ex) {

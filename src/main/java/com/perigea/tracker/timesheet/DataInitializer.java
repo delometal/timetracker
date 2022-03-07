@@ -44,7 +44,7 @@ public class DataInitializer implements ApplicationRunner {
 //inizializzazione Festivita
 		if (festivitaRepository.findAll().isEmpty()) {
 			for (FestivitaType f : FestivitaType.values()) {
-				festivitaRepository.save(Festivita.builder().data(f.getData()).nomeFestivo(f).build());
+				festivitaRepository.save(Festivita.builder().data(f.getData()).nomeFestivo(f.name()).build());
 			}
 		}
 //inizializzazione Cliente con PIva Perigea

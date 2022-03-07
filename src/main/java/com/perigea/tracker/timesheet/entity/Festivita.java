@@ -4,14 +4,10 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import com.perigea.tracker.commons.enums.FestivitaType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,7 +35,6 @@ public class Festivita extends BaseEntity {
 	private LocalDate data;
 
 	@Column(name = "nome_festivo", unique = true)
-	@Enumerated(EnumType.STRING)
-	private FestivitaType nomeFestivo;
+	private String nomeFestivo;
 
 }

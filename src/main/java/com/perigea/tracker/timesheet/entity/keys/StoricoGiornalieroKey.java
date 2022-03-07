@@ -2,7 +2,6 @@ package com.perigea.tracker.timesheet.entity.keys;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

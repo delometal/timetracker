@@ -75,13 +75,14 @@ public class UtenteService {
 			passwordTokenRepository.save(passwordToken);
 			personale.setUtente(utente);
 
-			Email email = mailBuilder.buildCredential(passwordToken, utente, randomString);
-			restClient.send(email);
+			Utente user = utenteRepository.save(utente);
+//			Email email = mailBuilder.buildCredential(passwordToken, utente, randomString);
+//			restClient.send(email);
+//
+//			Email emailReminder = mailBuilder.buildCredentialReminder(passwordToken, utente, Utils.CREDENTIAL_REMINDER);
+//			restClient.credentialReminder(emailReminder);
 
-			Email emailReminder = mailBuilder.buildCredentialReminder(passwordToken, utente, Utils.CREDENTIAL_REMINDER);
-			restClient.credentialReminder(emailReminder);
-
-			return utente;
+			return user;
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 			throw new ConsulenteException(ex.getMessage());

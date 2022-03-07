@@ -1,7 +1,6 @@
 package com.perigea.tracker.timesheet.entity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -87,7 +86,7 @@ public class DatiEconomiciDipendente extends BaseEntity{
 	private Float costoGiornaliero;
 	
 	@Column(name = "data_decorrenza_costo", nullable = false)
-	private LocalDateTime dataDecorrenzaCosto;
+	private LocalDate dataDecorrenzaCosto;
 	
 	// UltimoPremio, dataUltimoPremio -> StoricoPremio
 	@Column(name = "ultimo_premio")

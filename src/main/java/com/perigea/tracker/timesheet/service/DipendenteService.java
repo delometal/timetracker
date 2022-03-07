@@ -138,7 +138,7 @@ public class DipendenteService extends UtenteService {
 		
 		// Storico costo giornaliero
 		if (oldDatiEconomici.getCostoGiornaliero() != newDatiEconomici.getCostoGiornaliero()) {
-			StoricoGiornalieroKey k = new StoricoGiornalieroKey(codicePersona, oldDatiEconomici.getDataDecorrenzaCosto(), LocalDateTime.now());
+			StoricoGiornalieroKey k = new StoricoGiornalieroKey(codicePersona, oldDatiEconomici.getDataDecorrenzaCosto(), LocalDate.now());
 			StoricoCostoGiornaliero st = new StoricoCostoGiornaliero(k, new BigDecimal(oldDatiEconomici.getCostoGiornaliero()) , personale);
 			storico.createStoricoCostoGiornaliero(st);
 		}

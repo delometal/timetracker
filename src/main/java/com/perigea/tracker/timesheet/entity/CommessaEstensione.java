@@ -7,21 +7,27 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.perigea.tracker.timesheet.entity.keys.EstensioneCommessaKey;
+import com.perigea.tracker.timesheet.entity.keys.CommessaEstensioneKey;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "estensione_commessa")
 @EqualsAndHashCode(callSuper = true)
-public class EstensioneCommessa extends BaseEntity{
+public class CommessaEstensione extends BaseEntity{
 
 	private static final long serialVersionUID = 2452945618141513666L;
 
 	@EmbeddedId
-	private EstensioneCommessaKey id;
+	private CommessaEstensioneKey id;
 	
 	@Column(name = "importo_ordine_interno_estensione")
 	private Float importoInternoEstensione;

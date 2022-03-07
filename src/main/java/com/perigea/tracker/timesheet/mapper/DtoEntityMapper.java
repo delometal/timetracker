@@ -8,6 +8,7 @@ import org.mapstruct.Mapping;
 import com.perigea.tracker.commons.dto.CentroDiCostoDto;
 import com.perigea.tracker.commons.dto.ClienteDto;
 import com.perigea.tracker.commons.dto.CommessaDto;
+import com.perigea.tracker.commons.dto.CommessaEstensioneDto;
 import com.perigea.tracker.commons.dto.CommessaFatturabileDto;
 import com.perigea.tracker.commons.dto.CommessaNonFatturabileDto;
 import com.perigea.tracker.commons.dto.ConsulenteDto;
@@ -32,6 +33,7 @@ import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.timesheet.entity.CentroDiCosto;
 import com.perigea.tracker.timesheet.entity.Cliente;
 import com.perigea.tracker.timesheet.entity.Commessa;
+import com.perigea.tracker.timesheet.entity.CommessaEstensione;
 import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
 import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
 import com.perigea.tracker.timesheet.entity.Consulente;
@@ -156,6 +158,13 @@ public interface DtoEntityMapper {
 	@Mapping(target= ".", source="id")
 	DipendenteCommessaDto entityToDto(PersonaleCommessa entity);
 
+	@Mapping(target = "id.codiceCommessa", source = "codiceCommessa")
+	@Mapping(target = "id.dataEstensione", source = "dataEstensione")
+	CommessaEstensione dtoToEntity(CommessaEstensioneDto dto);
+	
+	@Mapping(target = "codiceCommessa", source = "id.codiceCommessa")
+	@Mapping(target = "dataEstensione", source = "id.dataEstensione")
+	CommessaEstensioneDto entityToDto(CommessaEstensione entity);
 	
 	/** GRUPPI E CONTATTI **/
 	Gruppo dtoToEntity(GruppoContattoDto gruppo);

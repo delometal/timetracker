@@ -74,18 +74,17 @@ public class UtenteService {
 					.dataScadenza(Utils.shifTimeByHour(new Date(), Utils.CREDENTIAL_EXPIRATION_SHIFT_AMOUNT)).build();
 			passwordTokenRepository.save(passwordToken);
 			personale.setUtente(utente);
-
 			Utente user = utenteRepository.save(utente);
+//			
 //			Email email = mailBuilder.buildCredential(passwordToken, utente, randomString);
 //			restClient.send(email);
-//
 //			Email emailReminder = mailBuilder.buildCredentialReminder(passwordToken, utente, Utils.CREDENTIAL_REMINDER);
 //			restClient.credentialReminder(emailReminder);
 
 			return user;
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
-			throw new ConsulenteException(ex.getMessage());
+			throw new UtenteException(ex.getMessage());
 		}
 	}
 

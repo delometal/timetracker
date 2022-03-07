@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-public class EstensioneCommessaKey implements Serializable{
+public class CommessaEstensioneKey implements Serializable{
 
 	private static final long serialVersionUID = -4726010809087836808L;
 	

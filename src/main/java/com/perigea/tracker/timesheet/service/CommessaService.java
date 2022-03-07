@@ -12,11 +12,15 @@ import com.perigea.tracker.commons.exception.CommessaException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Cliente;
+import com.perigea.tracker.timesheet.entity.Commessa;
+import com.perigea.tracker.timesheet.entity.CommessaEstensione;
 import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
 import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
 import com.perigea.tracker.timesheet.entity.OrdineCommessa;
+import com.perigea.tracker.timesheet.entity.keys.CommessaEstensioneKey;
 import com.perigea.tracker.timesheet.entity.keys.OrdineCommessaKey;
 import com.perigea.tracker.timesheet.repository.ClienteRepository;
+import com.perigea.tracker.timesheet.repository.CommessaEstensioneRepository;
 import com.perigea.tracker.timesheet.repository.CommessaFatturabileRepository;
 import com.perigea.tracker.timesheet.repository.CommessaNonFatturabileRepository;
 import com.perigea.tracker.timesheet.repository.OrdineCommessaRepository;
@@ -30,6 +34,9 @@ public class CommessaService {
 
 	@Autowired
 	private CommessaNonFatturabileRepository commessaNonFatturabileRepository;
+	
+	@Autowired
+	private CommessaEstensioneRepository commessaEstensioneRepository;
 
 	@Autowired
 	private CommessaFatturabileRepository commessaFatturabileRepository;
@@ -155,6 +162,23 @@ public class CommessaService {
 			CommessaFatturabile commessa = readCommessaFatturabile(codiceCommessa);
 			ordineCommessaRepository.delete(commessa.getOrdineCommessa());
 			commessaFatturabileRepository.deleteById(codiceCommessa);
+		} catch (Exception ex) {
+			throw new CommessaException(ex.getMessage());
+		}
+	}
+	
+
+	/**
+	 *************************************** ESTENSIONE **************************************
+	 */
+	public CommessaEstensione createEstensioneCommessa(CommessaEstensione estensione) {
+		try {
+			CommessaEstensioneKey id = new CommessaEstensioneKey(estensione.getId().getCodiceCommessa(), 
+					estensione.getId().getDataEstensione());
+			estensione.setId(id);
+			Commessa commessa = commessaFatturabileRepository.getById(estensione.getId().getCodiceCommessa());
+			estensione.setCommessa(commessa);
+			return commessaEstensioneRepository.save(estensione);
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());
 		}

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.dto.CommessaEstensioneDto;
 import com.perigea.tracker.commons.dto.CommessaFatturabileDto;
 import com.perigea.tracker.commons.dto.CommessaNonFatturabileDto;
 import com.perigea.tracker.commons.dto.OrdineCommessaDto;
@@ -19,6 +20,7 @@ import com.perigea.tracker.commons.dto.wrapper.CommessaFatturabileDtoWrapper;
 import com.perigea.tracker.commons.dto.wrapper.CommessaNonFatturabileDtoWrapper;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Cliente;
+import com.perigea.tracker.timesheet.entity.CommessaEstensione;
 import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
 import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
 import com.perigea.tracker.timesheet.entity.OrdineCommessa;
@@ -60,6 +62,16 @@ public class CommessaController {
 		commessa = commessaService.saveCommessaNonFatturabile(commessa);
 		CommessaNonFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessa);
 		ResponseDto<CommessaNonFatturabileDto> genericDto = ResponseDto.<CommessaNonFatturabileDto>builder().data(commessaDto).build();
+		return ResponseEntity.ok(genericDto);
+	}
+	
+	@PostMapping(value = "/create-estensione-commessa")
+	public ResponseEntity<ResponseDto<CommessaEstensioneDto>> createCommessaEstensione(
+			@RequestBody CommessaEstensioneDto estensione) {
+		CommessaEstensione entity = dtoEntityMapper.dtoToEntity(estensione);
+		CommessaEstensione res = commessaService.createEstensioneCommessa(entity);
+		CommessaEstensioneDto estensioneDto = dtoEntityMapper.entityToDto(res);
+		ResponseDto<CommessaEstensioneDto> genericDto = ResponseDto.<CommessaEstensioneDto>builder().data(estensioneDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 

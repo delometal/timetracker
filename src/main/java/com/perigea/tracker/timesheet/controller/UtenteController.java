@@ -32,8 +32,8 @@ public class UtenteController {
 	@GetMapping(value = "/check-token/{token}")
 	public ResponseEntity<ResponseDto<String>> checkToken(@PathVariable(name = "token") String token) {
 		return (utenteService.checkToken(token))
-				? ResponseEntity.badRequest().body(ResponseDto.<String>builder().data("token is valid").build())
-				: ResponseEntity.ok(
+				? ResponseEntity.ok().body(ResponseDto.<String>builder().data("token is valid").build())
+				: ResponseEntity.badRequest().body(
 						ResponseDto.<String>builder().type(ResponseType.ERROR).code(401).data("token expired").build());
 	}
 

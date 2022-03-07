@@ -2,8 +2,10 @@ package com.perigea.tracker.timesheet.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,7 +45,7 @@ public class NotaSpeseController {
 		return ResponseEntity.ok(genericDto);
 	}
 
-	@PostMapping(value = "/update")
+	@PutMapping(value = "/update")
 	public ResponseEntity<ResponseDto<NotaSpeseDto>> updateNotaSpese(@RequestBody NotaSpeseInputDto notaSpeseInputDto) {
 		NotaSpese notaSpese = dtoEntityMapper.dtoToEntity(notaSpeseInputDto);
 		notaSpese = notaSpeseService.updateNotaSpese(notaSpese);
@@ -52,7 +54,7 @@ public class NotaSpeseController {
 		return ResponseEntity.ok(genericDto);
 	}
 
-	@GetMapping(value = "/delete")
+	@DeleteMapping(value = "/delete")
 	public ResponseEntity<ResponseDto<NotaSpeseDto>> deleteNotaSpese(@RequestBody NotaSpeseKey notaSpeseKey) {
 		NotaSpese notaSpese = notaSpeseService.readNotaSpese(notaSpeseKey);
 		NotaSpeseDto dtoNotaSpese = dtoEntityMapper.entityToDto(notaSpese);

@@ -102,6 +102,9 @@ public interface DtoEntityMapper {
 	@Mapping(target= "id.anno", source="anno")
 	@Mapping(target= "id.mese", source="mese")
 	@Mapping(target= "id.costoNotaSpese", source="costoNotaSpese")
+	@Mapping(target = "id.giorno", source = "giorno")
+	@Mapping(target = "id.codicePersona", source = "codicePersona")
+	@Mapping(target = "id.codiceCommessa", source = "codiceCommessa")
 	NotaSpese dtoToEntity(NotaSpeseInputDto dto);
 	
 	@Mapping(target= ".", source="id")

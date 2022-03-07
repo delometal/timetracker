@@ -32,7 +32,7 @@ public class ExceptionHandlerController {
 		return ResponseEntity.badRequest().body(errorDto);
 	}
 	
-	@ExceptionHandler(ClienteException.class)
+	@ExceptionHandler(URIException.class)
 	public final ResponseEntity<?> handleClientException(URIException ex) {
 		GenericError eObject = new GenericError();
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());

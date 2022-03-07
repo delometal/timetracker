@@ -1,6 +1,10 @@
 package com.perigea.tracker.timesheet.controller;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +31,7 @@ import com.perigea.tracker.timesheet.entity.OrdineCommessa;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.ClienteService;
 import com.perigea.tracker.timesheet.service.CommessaService;
+
 
 @RestController
 @RequestMapping("/commesse")
@@ -145,6 +150,26 @@ public class CommessaController {
 		CommessaNonFatturabile commessaEntity = commessaService.readCommessaNonFatturabile(codiceCommessa);
 		CommessaNonFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
 		ResponseDto<CommessaNonFatturabileDto> genericDto = ResponseDto.<CommessaNonFatturabileDto>builder().data(commessaDto).build();
+		return ResponseEntity.ok(genericDto);
+	}
+	
+	@GetMapping(value = "/read-estensione-commessa/{codiceCommessa}")
+	public ResponseEntity<ResponseDto<List<CommessaEstensioneDto>>> readAllCommessaEstensione (
+			@PathVariable(name = "codiceCommessa") String codiceCommessa) {
+		List<CommessaEstensione> all = commessaService.readAllCommessaEstensione(codiceCommessa);
+		List<CommessaEstensioneDto> allDto = dtoEntityMapper.entityToDtoList(all);
+		ResponseDto<List<CommessaEstensioneDto>> genericDto = ResponseDto.<List<CommessaEstensioneDto>>builder().data(allDto).build();
+		return ResponseEntity.ok(genericDto);
+	}
+	
+	@GetMapping(value = "/read-estensione-commessa/{codiceCommessa}/{dataEstensione}")
+	public ResponseEntity<ResponseDto<CommessaEstensioneDto>> readCommessaEstensione(
+			@PathVariable(name = "codiceCommessa") String codiceCommessa,
+			@PathVariable(name = "dataEstensione") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataEstensione) {
+		
+		CommessaEstensione entity = commessaService.findById(codiceCommessa, dataEstensione);
+		CommessaEstensioneDto dto = dtoEntityMapper.entityToDto(entity);
+		ResponseDto<CommessaEstensioneDto> genericDto = ResponseDto.<CommessaEstensioneDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 

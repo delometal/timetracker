@@ -166,6 +166,9 @@ public interface DtoEntityMapper {
 	@Mapping(target = "dataEstensione", source = "id.dataEstensione")
 	CommessaEstensioneDto entityToDto(CommessaEstensione entity);
 	
+	List<CommessaEstensione> dtoToEntityList(List<CommessaEstensioneDto> dto);
+	List<CommessaEstensioneDto> entityToDtoList(List<CommessaEstensione> entity);
+	
 	/** GRUPPI E CONTATTI **/
 	Gruppo dtoToEntity(GruppoContattoDto gruppo);
 	GruppoContattoDto entityToDto(Gruppo gruppo);

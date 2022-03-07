@@ -1,5 +1,7 @@
 package com.perigea.tracker.timesheet.service;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
@@ -180,6 +182,29 @@ public class CommessaService {
 			estensione.setCommessa(commessa);
 			return commessaEstensioneRepository.save(estensione);
 		} catch (Exception ex) {
+			throw new CommessaException(ex.getMessage());
+		}
+	}
+	
+	public List<CommessaEstensione> readAllCommessaEstensione(String codiceCommessa) {
+		try {
+			return commessaEstensioneRepository.findAllByCodiceCommessa(codiceCommessa);
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new CommessaException(ex.getMessage());
+		}
+	}
+	
+	public CommessaEstensione findById(String codiceCommessa, LocalDate dataEstensione) {
+		try {
+			CommessaEstensioneKey id = new CommessaEstensioneKey(codiceCommessa, dataEstensione);
+			return commessaEstensioneRepository.findById(id).get();
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
 			throw new CommessaException(ex.getMessage());
 		}
 	}

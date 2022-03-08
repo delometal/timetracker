@@ -157,7 +157,7 @@ public class ConsulenteController {
 		economics.setCentroDiCosto(cdc);
 		utente.setPersonale(consulente);
 		
-		consulenteService.UpdateStorico(economics);
+		consulenteService.createStorico(economics);
 		utente = consulenteService.updateUtente(utente);
 		datiEconomiciConsulenteDto = dtoEntityMapper.entityToDto(economics);
 

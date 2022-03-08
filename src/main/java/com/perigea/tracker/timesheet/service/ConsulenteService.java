@@ -65,7 +65,7 @@ public class ConsulenteService extends UtenteService {
 		}
 	}
 
-	public void UpdateStorico(DatiEconomiciConsulente newDatiEconomici) {
+	public void createStorico(DatiEconomiciConsulente newDatiEconomici) {
 		String codicePersona = newDatiEconomici.getCodicePersona();
 		Consulente personale = newDatiEconomici.getPersonale();
 		

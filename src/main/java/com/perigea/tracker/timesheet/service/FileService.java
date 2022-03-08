@@ -61,10 +61,10 @@ public class FileService {
 			throw new FileUploadException("Could not initialize folder for upload!");
 		}
 	}
-
+	
 	public void uploadCurriculum(String codicePersona, MultipartFile file) {
 		try {
-			Utente utente = utenteRepository.getById(codicePersona);
+			Utente utente = utenteRepository.findById(codicePersona).get();
 			String filepath = extractCurriculumFilename(codicePersona, utente);
 			
 			if(applicationProperties.isCurriculumDiskPersistence()) {
@@ -87,10 +87,12 @@ public class FileService {
 			}
 			
 			CurriculumVitae cv = new CurriculumVitae();
+			cv.setUtente(utente);
 			cv.setCodicePersona(codicePersona);
 			cv.setCv(fileData);
 			cv.setFilename(file.getOriginalFilename());
-			curriculumVitaeRepository.save(cv);
+			utente.setCv(cv);
+			utenteRepository.save(utente);
 		} catch (Exception e) {
 			throw new FileUploadException("Could not store the file. Error: " + e.getMessage());
 		}

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -140,8 +141,13 @@ public class UtenteService {
 	 */
 	public void deleteUtente(String id) {
 		try {
-			utenteRepository.getById(id).getRuoli().clear();
+			Utente utente = utenteRepository.getById(id);
+			utente.getRuoli().clear();
 			utenteRepository.deleteById(id);
+			Optional<PasswordToken> passwordToken = passwordTokenRepository.findByUsername(utente.getUsername());
+			if(passwordToken.isPresent()) {
+				passwordTokenRepository.delete(passwordToken.get());
+			}
 			logger.info("Utente cancellato");
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {

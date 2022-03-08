@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +36,7 @@ public class CurriculumController {
 			return ResponseEntity.ok(genericResponse);
 		} catch (Exception e) {
 			ResponseDto<String> genericResponse = ResponseDto.<String>builder()
-					.data("Upload failed").build();
+					.data(e.getMessage()).code(HttpStatus.BAD_REQUEST.value()).build();
 			return ResponseEntity.badRequest().body(genericResponse);
 		}
 	}

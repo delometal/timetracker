@@ -218,6 +218,7 @@ public class UtenteService {
 
 	public Utente saveContattoEsterno(Utente utente) {
 		try {
+			utente.setCodicePersona(Utils.uuid());
 			utente.setTipo(AnagraficaType.C);
 			utente.setRuoli(Arrays.asList(Ruolo.builder().id(RuoloType.P).build()));
 			utente.setUsername(username(utente.getNome(), utente.getCognome()));

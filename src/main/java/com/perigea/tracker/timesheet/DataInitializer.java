@@ -52,6 +52,7 @@ public class DataInitializer implements ApplicationRunner {
 			Cliente cliente = new Cliente();
 			cliente.setCodiceAzienda(Utils.uuid());
 			cliente.setPartitaIva(applicationProperties.getPartitaIvaPerigea());
+			cliente.setRagioneSociale("Perigea s.r.l");
 			clienteRepository.save(cliente);
 		}
 

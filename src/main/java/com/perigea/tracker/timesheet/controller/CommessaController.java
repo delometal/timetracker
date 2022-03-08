@@ -22,7 +22,6 @@ import com.perigea.tracker.commons.dto.OrdineCommessaDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.wrapper.CommessaFatturabileDtoWrapper;
 import com.perigea.tracker.commons.dto.wrapper.CommessaNonFatturabileDtoWrapper;
-import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Cliente;
 import com.perigea.tracker.timesheet.entity.CommessaEstensione;
 import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
@@ -62,8 +61,6 @@ public class CommessaController {
 	public ResponseEntity<ResponseDto<CommessaNonFatturabileDto>> createCommessaNonFatturabile(
 			@RequestBody CommessaNonFatturabileDtoWrapper wrapper) {
 		CommessaNonFatturabile commessa = dtoEntityMapper.dtoToEntity(wrapper.getCommessaNonFatturabile());
-		commessa.setCliente(clienteService.loadClientePerigea());
-		commessa.setCodiceCommessa(Utils.uuid());
 		commessa = commessaService.saveCommessaNonFatturabile(commessa);
 		CommessaNonFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessa);
 		ResponseDto<CommessaNonFatturabileDto> genericDto = ResponseDto.<CommessaNonFatturabileDto>builder().data(commessaDto).build();

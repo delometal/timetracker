@@ -48,7 +48,10 @@ public class CommessaService {
 
 	@Autowired
 	private ClienteRepository clienteRepository;
-
+	
+	@Autowired
+	private ClienteService clienteService;
+	
 	/**
 	 * @param commessaNonFatturabile metodo per creare o aggiornate una commessa non
 	 *                               fatturabile
@@ -57,6 +60,8 @@ public class CommessaService {
 	public CommessaNonFatturabile saveCommessaNonFatturabile(CommessaNonFatturabile commessa) {
 		try {
 			commessa.setTipoCommessa(CommessaType.S);
+			commessa.setCliente(clienteService.loadClientePerigea());
+			commessa.setCodiceCommessa(Utils.uuid());
 			return commessaNonFatturabileRepository.save(commessa);
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());

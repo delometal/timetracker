@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.HolidayEventDto;
@@ -108,7 +109,7 @@ public class RichiestaController {
 
 	@PostMapping(value = "/approve-holydays-request")
 	public ResponseEntity<ResponseDto<RichiestaDto>> approveHolidaysRequest(@RequestBody HolidayEventDto event,
-			@PathVariable(name = "historyId") Long historyId, @PathVariable(name = "status") ApprovalStatus status) {
+			@RequestParam Long historyId, @RequestParam ApprovalStatus status) {
 		Richiesta richiesta = richiestaService.approveHolidaysRequest(event, historyId, status);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
 		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder().data(dto).build();

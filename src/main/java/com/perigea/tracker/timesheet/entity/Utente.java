@@ -8,7 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -20,6 +19,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.perigea.tracker.commons.annotations.NotNull;
 import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 
@@ -81,6 +81,7 @@ public class Utente extends BaseEntity {
 	@Column(name = "cognome", nullable = false)
 	private String cognome;
 
+	@NotNull
 	@Column(name = "mail_aziendale")
 	private String mailAziendale;
 

@@ -16,13 +16,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perigea.tracker.commons.dto.CreatedUtenteNotificaDto;
+import com.perigea.tracker.commons.dto.NonPersistedEventDto;
 import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.RuoloType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.exception.ConsulenteException;
 import com.perigea.tracker.commons.exception.PersistenceException;
 import com.perigea.tracker.commons.exception.UtenteException;
-import com.perigea.tracker.commons.model.Email;
 import com.perigea.tracker.commons.utils.UsernameComparator;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.PasswordToken;
@@ -54,9 +55,6 @@ public class UtenteService {
 	private PasswordTokenRepository passwordTokenRepository;
 
 	@Autowired
-	private UtenteEmailBuilderService mailBuilder;
-
-	@Autowired
 	private RestClient restClient;
 
 	public <T extends Personale> Utente createUtente(Utente utente, T personale) {
@@ -65,7 +63,7 @@ public class UtenteService {
 			personale.setCodicePersona(null);
 			String codicePersona = Utils.uuid();
 			utente.setCodicePersona(codicePersona);
-			String username = username(utente.getNome(), utente.getCognome());
+			String username = this.username(utente.getNome(), utente.getCognome());
 			utente.setUsername(username);
 			String randomString = Utils.randomString(10);
 			String password = passwordEncoder.encode(randomString);
@@ -73,15 +71,19 @@ public class UtenteService {
 			String token = Utils.uuid();
 			PasswordToken passwordToken = PasswordToken.builder().username(username).token(token)
 					.dataScadenza(Utils.shifTimeByHour(new Date(), Utils.CREDENTIAL_EXPIRATION_SHIFT_AMOUNT)).build();
-			passwordTokenRepository.save(passwordToken);
 			personale.setUtente(utente);
 			Utente user = utenteRepository.save(utente);
-//			
-//			Email email = mailBuilder.buildCredential(passwordToken, utente, randomString);
-//			restClient.send(email);
-//			Email emailReminder = mailBuilder.buildCredentialReminder(passwordToken, utente, Utils.CREDENTIAL_REMINDER);
-//			restClient.credentialReminder(emailReminder);
+			passwordTokenRepository.save(passwordToken);
 
+			CreatedUtenteNotificaDto notifica = CreatedUtenteNotificaDto.builder()
+					.token(token)
+					.mailAziendale(utente.getMailAziendale())
+					.nome(utente.getNome())
+					.password(randomString)
+					.username(username)
+					.dataScadenza(passwordToken.getDataScadenza())
+					.build();
+			restClient.sendUserNotification(new NonPersistedEventDto<CreatedUtenteNotificaDto>(CreatedUtenteNotificaDto.class, Utils.toJson(notifica)));				
 			return user;
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());

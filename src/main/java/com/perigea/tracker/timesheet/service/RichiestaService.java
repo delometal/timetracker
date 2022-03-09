@@ -26,7 +26,6 @@ import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
 import com.perigea.tracker.timesheet.repository.RichiestaHistoryRepository;
 import com.perigea.tracker.timesheet.repository.RichiestaRepository;
-import com.perigea.tracker.timesheet.repository.TimesheetRepository;
 
 @Service
 @Transactional
@@ -56,11 +55,11 @@ public class RichiestaService {
 	@Autowired
 	private UtenteService utenteService;
 
-	@Autowired
-	private CommessaService commessaService;
-	
-	@Autowired
-	private TimesheetRepository timesheetRepository;
+//	@Autowired
+//	private CommessaService commessaService;
+//	
+//	@Autowired
+//	private TimesheetRepository timesheetRepository;
 
 	public Richiesta createRichiesta(Richiesta richiesta) {
 		try {

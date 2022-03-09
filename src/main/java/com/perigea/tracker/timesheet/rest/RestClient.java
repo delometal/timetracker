@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import com.perigea.tracker.commons.dto.BaseDto;
 import com.perigea.tracker.commons.dto.CalendarEventDto;
+import com.perigea.tracker.commons.dto.NonPersistedEventDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.model.Email;
 import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
@@ -23,8 +25,8 @@ public class RestClient {
 				ResponseDto.class);
 	}
 
-	public void send(Email email) {
-		restTemplate.postForObject(applicationProperties.getNotificatorEndpoint(), email, String.class);
+	public void sendUserNotification(NonPersistedEventDto<? extends BaseDto> notifica) {
+		restTemplate.postForObject(applicationProperties.getInstantNotificationEndpoint(), notifica, String.class);
 	}
 
 	public void credentialReminder(Email email) {

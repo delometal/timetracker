@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.ResponseDto;
@@ -45,9 +44,9 @@ public class UtenteController {
 		return ResponseEntity.ok(ResponseDto.<UtenteDto>builder().data(dto).build());
 	}
 
-	@PutMapping(value = "/update-user-status")
-	public ResponseEntity<ResponseDto<UtenteDto>> updateUtenteStatus(@RequestParam String codicePersona,
-			@RequestParam StatoUtenteType status) {
+	@PutMapping(value = "/update-user-status/{codicePersona}/{status}")
+	public ResponseEntity<ResponseDto<UtenteDto>> updateUtenteStatus(@PathVariable String codicePersona,
+			@PathVariable StatoUtenteType status) {
 		Utente utente = utenteService.updateUtenteStatus(codicePersona, status);
 		UtenteDto dto = dtoEntityMapper.entityToDto(utente);
 		return ResponseEntity.ok(ResponseDto.<UtenteDto>builder().data(dto).build());

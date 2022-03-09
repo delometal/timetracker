@@ -31,6 +31,9 @@ public class ApplicationProperties {
 	@Value("${spring.mail.username}")
 	private String sender;
 	
+	@Value("${calendar.notification.userCreated}")
+	private String instantNotificationEndpoint;
+	
 	@Value("${notificator.endpoint}")
 	private String notificatorEndpoint;
 	

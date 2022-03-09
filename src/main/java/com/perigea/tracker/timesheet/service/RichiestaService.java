@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.commons.dto.ContactDto;
-import com.perigea.tracker.commons.dto.HolidayEventDto;
+import com.perigea.tracker.commons.dto.HolidayEventRequestDto;
 import com.perigea.tracker.commons.dto.NotaSpeseDto;
 import com.perigea.tracker.commons.dto.TimesheetEntryDto;
 import com.perigea.tracker.commons.dto.TimesheetEventDto;
@@ -183,7 +183,7 @@ public class RichiestaService {
 		}
 	}
 
-	public Richiesta sendHolidaysRequest(HolidayEventDto event) {
+	public Richiesta sendHolidaysRequest(HolidayEventRequestDto event) {
 		try {
 			Utente eventCreator = utenteService.readUtente(event.getEventCreator().getCodicePersona());
 			Utente responsabile = utenteService.readUtente(event.getResponsabile().getCodicePersona());
@@ -204,7 +204,7 @@ public class RichiestaService {
 		}
 	}
 
-	public Richiesta approveHolidaysRequest(HolidayEventDto event, Long historyId, ApprovalStatus newStatus) {
+	public Richiesta approveHolidaysRequest(HolidayEventRequestDto event, Long historyId, ApprovalStatus newStatus) {
 		RichiestaHistory history = richiestaHistoryRepository.findById(historyId).get();
 		history.setStato(newStatus);
 		Richiesta richiesta = updateRichiestaHistory(history);

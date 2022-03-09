@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.perigea.tracker.commons.dto.HolidayEventDto;
+import com.perigea.tracker.commons.dto.HolidayEventRequestDto;
 import com.perigea.tracker.timesheet.entity.Richiesta;
 import com.perigea.tracker.timesheet.entity.RichiestaHistory;
 import com.perigea.tracker.timesheet.rest.RestClient;
@@ -20,12 +20,12 @@ public class HolidaysApprovalWorkflow implements IApprovalFlow {
 	public static final String HOLIDAYS_REQUEST_ENDPOINT = "holiday/add";
 	public static final String HOLIDAYS_APPROVE_ENDPOINT = "holiday/approve";
 
-	public void holidaysRequest(HolidayEventDto event, Richiesta approvalRequest, RichiestaHistory history) {
+	public void holidaysRequest(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
 		restClient.sendNotifica(event, HOLIDAYS_REQUEST_ENDPOINT);
 	}
 
-	public void approveHolidaysRequest(HolidayEventDto event, Richiesta approvalRequest, RichiestaHistory history) {
+	public void approveHolidaysRequest(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
 		restClient.sendNotifica(event, HOLIDAYS_APPROVE_ENDPOINT);
 	}

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.perigea.tracker.commons.dto.HolidayEventDto;
+import com.perigea.tracker.commons.dto.HolidayEventRequestDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.RichiestaDto;
 import com.perigea.tracker.commons.dto.RichiestaHistoryDto;
@@ -99,7 +99,7 @@ public class RichiestaController {
 	}
 
 	@PostMapping(value = "/send-holidays-request")
-	public ResponseEntity<ResponseDto<RichiestaDto>> sendHolidaysRequest(@RequestBody HolidayEventDto event) {
+	public ResponseEntity<ResponseDto<RichiestaDto>> sendHolidaysRequest(@RequestBody HolidayEventRequestDto event) {
 		Richiesta richiesta = richiestaService.sendHolidaysRequest(event);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
 		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder().data(dto).build();
@@ -108,7 +108,7 @@ public class RichiestaController {
 	}
 
 	@PostMapping(value = "/approve-holydays-request")
-	public ResponseEntity<ResponseDto<RichiestaDto>> approveHolidaysRequest(@RequestBody HolidayEventDto event,
+	public ResponseEntity<ResponseDto<RichiestaDto>> approveHolidaysRequest(@RequestBody HolidayEventRequestDto event,
 			@RequestParam Long historyId, @RequestParam ApprovalStatus status) {
 		Richiesta richiesta = richiestaService.approveHolidaysRequest(event, historyId, status);
 		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);

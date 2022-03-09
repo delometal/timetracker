@@ -1,9 +1,5 @@
 package com.perigea.tracker.timesheet.service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
@@ -13,20 +9,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.commons.dto.ContactDto;
 import com.perigea.tracker.commons.dto.HolidayEventRequestDto;
-import com.perigea.tracker.commons.dto.NotaSpeseDto;
-import com.perigea.tracker.commons.dto.TimesheetEntryDto;
 import com.perigea.tracker.commons.dto.TimesheetEventDto;
 import com.perigea.tracker.commons.dto.TimesheetRefDto;
 import com.perigea.tracker.commons.enums.ApprovalStatus;
 import com.perigea.tracker.commons.enums.CalendarEventType;
-import com.perigea.tracker.commons.enums.EMese;
 import com.perigea.tracker.commons.enums.RichiestaType;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.exception.RichiestaException;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.approval.flow.HolidaysApprovalWorkflow;
 import com.perigea.tracker.timesheet.approval.flow.TimesheetApprovalWorkflow;
-import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
 import com.perigea.tracker.timesheet.entity.Richiesta;
 import com.perigea.tracker.timesheet.entity.RichiestaHistory;
 import com.perigea.tracker.timesheet.entity.Timesheet;
@@ -172,7 +164,7 @@ public class RichiestaService {
 			TimesheetEventDto timesheetEvent = TimesheetEventDto.builder().id(Utils.uuid())
 					.eventCreator(richiestaCreator).responsabile(responsabile)
 					.approvalStatus(timesheet.getStatoRichiesta()).type(CalendarEventType.Timesheet)
-					.timesheet(timesheetReferences).startDate(new Date()).endDate(new Date()).build();
+					.timesheet(timesheetReferences).build();
 			timesheetApprovalWorkflow.richiestaTimesheet(timesheetEvent, richiesta, history);
 			return richiesta;
 		} catch (Exception ex) {

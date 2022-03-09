@@ -3,7 +3,6 @@ package com.perigea.tracker.timesheet.service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -272,7 +271,7 @@ public class TimesheetService {
 				TimesheetEventDto timesheetEvent = TimesheetEventDto.builder().id(Utils.uuid())
 						.eventCreator(richiestaCreator).responsabile(responsabile)
 						.approvalStatus(timesheet.getStatoRichiesta()).type(CalendarEventType.Timesheet)
-						.timesheet(timesheetReferences).startDate(new Date()).endDate(new Date()).build();
+						.timesheet(timesheetReferences).build();
 				timesheetApprovalWorkflow.approveTimesheet(timesheet, richiesta, history, timesheetEvent);
 				return true;
 			}

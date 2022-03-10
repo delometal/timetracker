@@ -1,15 +1,18 @@
 package com.perigea.tracker.timesheet.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.commons.enums.CommessaType;
+import com.perigea.tracker.commons.exception.CentroDiCostoException;
 import com.perigea.tracker.commons.exception.CommessaException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.utils.Utils;
@@ -26,10 +29,16 @@ import com.perigea.tracker.timesheet.repository.CommessaEstensioneRepository;
 import com.perigea.tracker.timesheet.repository.CommessaFatturabileRepository;
 import com.perigea.tracker.timesheet.repository.CommessaNonFatturabileRepository;
 import com.perigea.tracker.timesheet.repository.OrdineCommessaRepository;
+import com.perigea.tracker.timesheet.search.Condition;
+import com.perigea.tracker.timesheet.search.FilterFactory;
+import com.perigea.tracker.timesheet.search.Operator;
 
 @Service
 @Transactional
 public class CommessaService {
+	
+	@Autowired
+	private FilterFactory<CommessaFatturabile> filter;
 
 	@Autowired
 	private Logger logger;
@@ -237,5 +246,22 @@ public class CommessaService {
 			throw new CommessaException("Ordine commessa non creata");
 		}
 	}
+	
+	
+	public List<CommessaFatturabile> searchCommesseAfterThat(Double totaleFatturato) {
+		try {
+			return commessaFatturabileRepository.findAll(CommesseAfterThatImport(totaleFatturato));
+		} catch (Exception ex) {
+			throw new CentroDiCostoException(ex.getMessage());
+		}
+	}
+	
+	private Specification<CommessaFatturabile> CommesseAfterThatImport(final Double totaleFatturato) {
+		
+		List<Condition> conditions = new ArrayList<>();
+		conditions.add(Condition.builder().field("totaleFatturatoDaInizioAnno").value(totaleFatturato).valueType(Double.class).operator(Operator.gt).build());
+		return filter.buildSpecification(conditions, false);
+	}
+	
 
 }

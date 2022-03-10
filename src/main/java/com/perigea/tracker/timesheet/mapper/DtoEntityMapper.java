@@ -176,6 +176,9 @@ public interface DtoEntityMapper {
 	ContactDto entityToContactDto(Utente entity);
 	List<ContactDto> entityToContactDtoList(List<Utente> entity);
 	
+
+	List<CommessaFatturabileDto> entityToCommessaFattDtoList(List<CommessaFatturabile> entity);
+	
 	
 	/** DATI ECONOMICI **/
 	DatiEconomiciDipendenteDto entityToDto(DatiEconomiciDipendente entity);

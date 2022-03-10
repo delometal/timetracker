@@ -18,17 +18,24 @@ public class HolidaysApprovalWorkflow implements IApprovalFlow {
 	private RestClient restClient;
 
 	public static final String HOLIDAYS_REQUEST_ENDPOINT = "holiday/add";
-	public static final String HOLIDAYS_APPROVE_ENDPOINT = "holiday/approve";
+	public static final String ALL_HOLIDAYS_APPROVE_ENDPOINT = "holiday/approve-all";
+	public static final String SINGLE_HOLIDAY_APPROVE_ENDPOINT = "holiday/approve-single-event";
 
 	public void holidaysRequest(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
 		restClient.sendNotifica(event, HOLIDAYS_REQUEST_ENDPOINT);
 	}
 
-	public void approveHolidaysRequest(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
+	public void approveAllHolidaysRequest(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
-		restClient.sendNotifica(event, HOLIDAYS_APPROVE_ENDPOINT);
+		restClient.sendNotifica(event, ALL_HOLIDAYS_APPROVE_ENDPOINT);
 	}
+	
+	public void approveSingleHolidaysRequest(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
+		nextStep(approvalRequest, history);
+		restClient.sendNotifica(event, SINGLE_HOLIDAY_APPROVE_ENDPOINT);
+	}
+	
 
 	@Override
 	public void nextStep(Richiesta approvalRequest, RichiestaHistory history) {

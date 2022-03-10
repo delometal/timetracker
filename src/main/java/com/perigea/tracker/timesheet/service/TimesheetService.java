@@ -89,14 +89,18 @@ public class TimesheetService {
 	 */
 	public Timesheet createTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetRefDto timeDto) {
 		try {
+			TimesheetMensileKey tsKey = new TimesheetMensileKey(timeDto.getAnno(), timeDto.getMese(),
+					timeDto.getCodicePersona());
+			if(timesheetRepository.findById(tsKey).isPresent()) {
+				return updateTimesheet(timesheetDataList, timeDto);
+			}
 			assertTimesheetIsValid(timesheetDataList, timeDto);
 			Integer oreTotali = 0;
 			Timesheet timesheet = dtoEntityMapper.dtoToEntity(timeDto);
 			Utente utente = utenteRepository.findByCodicePersona(timeDto.getCodicePersona()).get();
 			timesheet.setPersonale(utente.getPersonale());
 			utente.getPersonale().addTimesheet(timesheet);
-			TimesheetMensileKey tsKey = new TimesheetMensileKey(timeDto.getAnno(), timeDto.getMese(),
-					timeDto.getCodicePersona());
+			
 			timesheet.setId(tsKey);
 			timesheet.setStatoRichiesta(ApprovalStatus.DRAFT);
 

@@ -1,5 +1,7 @@
 package com.perigea.tracker.timesheet.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.UserCredentialDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
+import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.ResponseType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.timesheet.entity.Utente;
@@ -50,5 +53,16 @@ public class UtenteController {
 		Utente utente = utenteService.updateUtenteStatus(codicePersona, status);
 		UtenteDto dto = dtoEntityMapper.entityToDto(utente);
 		return ResponseEntity.ok(ResponseDto.<UtenteDto>builder().data(dto).build());
+	}
+	
+
+	@GetMapping(value = "/checkSpecification/{username}/{tipoKey}/{statoUtente}")
+	public ResponseEntity<ResponseDto<List<UtenteDto>>> checkToken(@PathVariable String username, @PathVariable AnagraficaType tipoKey, @PathVariable StatoUtenteType statoUtente ) {
+		
+		List<Utente> utenti = utenteService.searchUtenti(username, tipoKey, statoUtente);
+		
+		List<UtenteDto> utentiDto = dtoEntityMapper.entityToDtoUtenteList(utenti);
+		
+		return  ResponseEntity.ok().body(ResponseDto.<List<UtenteDto>>builder().data(utentiDto).build());
 	}
 }

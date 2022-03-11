@@ -1,5 +1,6 @@
 package com.perigea.tracker.timesheet.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -12,6 +13,7 @@ import javax.persistence.EntityNotFoundException;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import com.perigea.tracker.commons.dto.NonPersistedEventDto;
 import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.RuoloType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
+import com.perigea.tracker.commons.exception.CentroDiCostoException;
 import com.perigea.tracker.commons.exception.ConsulenteException;
 import com.perigea.tracker.commons.exception.PersistenceException;
 import com.perigea.tracker.commons.exception.UtenteException;
@@ -34,10 +37,16 @@ import com.perigea.tracker.timesheet.repository.ApplicationDao;
 import com.perigea.tracker.timesheet.repository.PasswordTokenRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
 import com.perigea.tracker.timesheet.rest.RestClient;
+import com.perigea.tracker.timesheet.search.Condition;
+import com.perigea.tracker.timesheet.search.FilterFactory;
+import com.perigea.tracker.timesheet.search.Operator;
 
 @Service
 @Transactional
 public class UtenteService {
+	
+	@Autowired
+	private FilterFactory<Utente> filter;
 
 	@Autowired
 	private Logger logger;
@@ -265,6 +274,27 @@ public class UtenteService {
 
 	}
 
+	public List<Utente> searchUtenti(String username, AnagraficaType tipoKey, final StatoUtenteType statoUtente) {
+		try {
+			return utenteRepository.findAll(UtenteByUsernameAndTypeSearch(username, tipoKey, statoUtente));
+		} catch (Exception ex) {
+			throw new CentroDiCostoException(ex.getMessage());
+		}
+	}
+	
+	private Specification<Utente> UtenteByUsernameAndTypeSearch(
+			final String username,
+			final AnagraficaType tipoKey,
+			final StatoUtenteType statoUtente) {
+		
+		List<Condition> conditions = new ArrayList<>();
+		conditions.add(Condition.builder().field("username").value(username).valueType(String.class).operator(Operator.like).build());
+		conditions.add(Condition.builder().field("stato").value(statoUtente).valueType(StatoUtenteType.class).operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("tipo").value(tipoKey).valueType(AnagraficaType.class).operator(Operator.eq).build());
+		return filter.buildSpecification(conditions, false);
+	}
+	
+	
 //	public Personale readAnagraficaPersonale(String codicePersona) {
 //		try {
 //			return utenteRepository.getById(codicePersona).getPersonale();

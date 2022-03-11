@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,8 +46,12 @@ import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.repository.ApplicationDao;
 import com.perigea.tracker.timesheet.repository.CommessaRepository;
 import com.perigea.tracker.timesheet.repository.FestivitaRepository;
+import com.perigea.tracker.timesheet.repository.TimesheetDataRepository;
 import com.perigea.tracker.timesheet.repository.TimesheetRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
+import com.perigea.tracker.timesheet.search.Condition;
+import com.perigea.tracker.timesheet.search.FilterFactory;
+import com.perigea.tracker.timesheet.search.Operator;
 
 @Service
 @Transactional
@@ -54,6 +59,9 @@ public class TimesheetService {
 
 	@Autowired
 	private Logger logger;
+	
+	@Autowired
+	private FilterFactory<TimesheetEntry> filter;
 
 	@Autowired
 	private FestivitaRepository festivitaRepository;
@@ -66,6 +74,9 @@ public class TimesheetService {
 
 	@Autowired
 	private TimesheetRepository timesheetRepository;
+	
+	@Autowired
+	private TimesheetDataRepository timesheetDataRepository;
 
 	@Autowired
 	private ApplicationDao applicationDao;
@@ -181,6 +192,52 @@ public class TimesheetService {
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
+	
+	public TimesheetEntry getTimesheetEntry(TimesheetEntryKey id) {
+		try {
+			return timesheetDataRepository.findById(id).get();
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new TimesheetException(ex.getMessage());
+		}
+	}
+	
+	public Specification<TimesheetEntry> entriesByDateAndCodicePersona(final Integer giorno,
+			final Integer mese, final Integer anno, final String codicePersona) {
+		List<Condition> conditions = new ArrayList<Condition>();
+		conditions.add(Condition.builder().field("id.giorno").value(giorno).valueType(Integer.class).valueTo(TimesheetEntry.class).operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("id.mese").value(mese).valueType(Integer.class).valueTo(TimesheetEntry.class).operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("id.anno").value(anno).valueType(Integer.class).valueTo(TimesheetEntry.class).operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("id.codicePersona").value(giorno).valueType(String.class).valueTo(TimesheetEntry.class).operator(Operator.eq).build());
+		return filter.buildSpecification(conditions, false);
+	}
+	
+	public List<TimesheetEntry> findAllBySpecification(Specification<TimesheetEntry> specification){
+		try {
+			return timesheetDataRepository.findAll(specification);
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new TimesheetException(ex.getMessage());
+		}
+	}
+	
+	public List<TimesheetEntry> findByQueryNative(Integer giorno,
+			 Integer mese, Integer anno, String codicePersona) {
+		try {
+			return timesheetDataRepository.findAllByIdGiornoAndIdMeseAndIdAnnoAndIdCodicePersona(giorno, mese, anno, codicePersona);
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new TimesheetException(ex.getMessage());
+		}
+	}
+	
+	
 
 	public Timesheet deleteTimesheet(Integer anno, EMese mese, String codicePersona) {
 		try {
@@ -195,6 +252,28 @@ public class TimesheetService {
 			}
 			throw new TimesheetException(ex.getMessage());
 		}
+	}
+	
+	public TimesheetEntry deleteTimesheetEntry (TimesheetEntry entry) {
+		try {
+			Timesheet timesheet = getTimesheet(new TimesheetMensileKey(entry.getId().getAnno(), entry.getId().getMese(), entry.getId().getCodicePersona()));
+			List<TimesheetEntry> entries = timesheet.getEntries();
+			if(entries.contains(entry)) {
+				entries.remove(entry);
+			}
+			timesheetDataRepository.delete(entry);
+			
+			if(timesheet.getEntries().isEmpty()) {
+				timesheetRepository.delete(timesheet);
+			}
+			return entry;
+		}catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new TimesheetException(ex.getMessage());
+		}
+		
 	}
 
 
@@ -329,5 +408,6 @@ public class TimesheetService {
 				infoAuto);
 		return excelTimesheetService.createExcelTimesheet(timesheetExcelWrapper);
 	}
-
+	
+	
 }

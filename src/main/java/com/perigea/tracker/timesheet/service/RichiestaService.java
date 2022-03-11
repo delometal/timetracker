@@ -18,6 +18,7 @@ import com.perigea.tracker.commons.dto.TimesheetEventDto;
 import com.perigea.tracker.commons.dto.TimesheetRefDto;
 import com.perigea.tracker.commons.enums.ApprovalStatus;
 import com.perigea.tracker.commons.enums.CalendarEventType;
+import com.perigea.tracker.commons.enums.CommessaType;
 import com.perigea.tracker.commons.enums.RichiestaType;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.exception.RichiestaException;
@@ -28,6 +29,7 @@ import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
 import com.perigea.tracker.timesheet.entity.Richiesta;
 import com.perigea.tracker.timesheet.entity.RichiestaHistory;
 import com.perigea.tracker.timesheet.entity.Timesheet;
+import com.perigea.tracker.timesheet.entity.TimesheetEntry;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
 import com.perigea.tracker.timesheet.repository.RichiestaHistoryRepository;
@@ -48,7 +50,7 @@ public class RichiestaService {
 
 	@Autowired
 	private TimesheetService timesheetService;
-
+	
 	@Autowired
 	private TimesheetApprovalWorkflow timesheetApprovalWorkflow;
 
@@ -151,7 +153,13 @@ public class RichiestaService {
 			throw new RichiestaException(ex.getMessage());
 		}
 	}
-
+	
+	
+	/**
+	 * invia una richiesta per l'approvazione del timesheet al responsabile
+	 * @param timesheetReferences
+	 * @return
+	 */
 	public Richiesta sendRichiestaTimesheet(TimesheetRefDto timesheetReferences) {
 		try {
 			TimesheetMensileKey key = new TimesheetMensileKey(timesheetReferences.getAnno(),
@@ -178,7 +186,13 @@ public class RichiestaService {
 			throw new RichiestaException(ex.getMessage());
 		}
 	}
-
+	
+	
+	/**
+	 * invia una richiesta per ferie/permessi al responsabile
+	 * @param event
+	 * @return
+	 */
 	public Richiesta sendHolidaysRequest(HolidayEventRequestDto event) {
 		try {
 			Utente eventCreator = utenteService.readUtente(event.getEventCreator().getCodicePersona());
@@ -199,7 +213,17 @@ public class RichiestaService {
 			throw new RichiestaException(ex.getMessage());
 		}
 	}
-
+	
+	
+	/**
+	 * approvazione di tutte le Ferie/permessi attraverso lo status complessivo e
+	 * invio notifica al richiedente ed implementazione automatica del timesheet
+	 * 
+	 * @param event
+	 * @param historyId
+	 * @param newStatus
+	 * @return
+	 */
 	public Richiesta approveHolidaysRequest(HolidayEventRequestDto event, Long historyId, ApprovalStatus newStatus) {
 		RichiestaHistory history = richiestaHistoryRepository.findById(historyId).get();
 		history.setStato(newStatus);
@@ -241,6 +265,108 @@ public class RichiestaService {
 		holidaysApprovalWorkflow.approveAllHolidaysRequest(event, richiesta, history);
 		return richiesta;
 	}
-
 	
+	
+	/**
+	 * approvazione delle Ferie/permessi attraverso i singoli eventi e invio
+	 * notifica al riciedente con eventuale elenco per gli eventi declinati ed
+	 * implementazione automatica del timesheet
+	 * 
+	 * @param event
+	 * @param historyId
+	 * @return
+	 */
+	public Richiesta approveHolidaysRequest(HolidayEventRequestDto event, Long historyId) {
+		RichiestaHistory history = richiestaHistoryRepository.findById(historyId).get();
+		history.setStato(event.getApproved());
+		Richiesta richiesta = updateRichiestaHistory(history);
+
+		List<TimesheetEntryDto> entries = new ArrayList<TimesheetEntryDto>();
+
+		TimesheetRefDto ref = null;
+
+		for (HolidayEventDto e : event.getHolidays()) {
+			if (e.getStatus().equals(ApprovalStatus.APPROVED)) {
+
+				CommessaNonFatturabile commessa = commessaService
+						.saveCommessaNonFatturabile(new CommessaNonFatturabile(e.getTipo().name()));
+				if (ref == null) {
+					ref = new TimesheetRefDto(richiesta.getRichiedente().getCodicePersona(), e.getData().getYear(),
+							e.getData().getMonthValue());
+				}
+				if (ref.getMese() != e.getData().getMonthValue()) {
+					timesheetService.createTimesheet(entries, ref);
+					entries.clear();
+					ref = new TimesheetRefDto(richiesta.getRichiedente().getCodicePersona(), e.getData().getYear(),
+							e.getData().getMonthValue());
+				}
+
+				TimesheetEntryDto entry = TimesheetEntryDto.builder().codiceCommessa(commessa.getCodiceCommessa())
+						.giorno(e.getData().getDayOfMonth())
+						.descrizioneCommessa(commessa.getDescrizioneCommessa())
+						.ore(e.getOre())
+						.tipoCommessa(commessa.getTipoCommessa())
+						.noteSpesa(new ArrayList<NotaSpeseDto>())
+						.ragioneSociale(commessa.getCliente().getRagioneSociale())
+						.build();
+				entries.add(entry);
+
+			}
+
+		}
+		timesheetService.createTimesheet(entries, ref);
+		holidaysApprovalWorkflow.approveSingleHolidaysRequest(event, richiesta, history);
+		return richiesta;
+	}
+
+	/**
+	 * richiesta di annullamento da parte del richiedente di ferie/permessi con
+	 * notifica al responsabile
+	 * 
+	 * @param event
+	 * @return
+	 */
+	public Richiesta cancelHolidays(HolidayEventRequestDto event) {
+		Utente eventCreator = utenteService.readUtente(event.getEventCreator().getCodicePersona());
+		Utente responsabile = utenteService.readUtente(event.getResponsabile().getCodicePersona());
+		Richiesta richiesta = Richiesta.builder().richiedente(eventCreator).tipo(RichiestaType.FERIE_PERMESSI).build();
+		RichiestaHistory history = RichiestaHistory.builder().responsabile(responsabile.getPersonale())
+				.stato(ApprovalStatus.PENDING).richiesta(richiesta).build();
+		history.setRichiesta(richiesta);
+		richiesta.addRichiestaHistory(history);
+		createRichiesta(richiesta);
+		
+		holidaysApprovalWorkflow.cancelHolidays(event, richiesta, history);
+		return richiesta;
+	}
+	
+	
+	/**
+	 * approvazione dell'annullamento delle ferie/permessi on notifica al
+	 * richiedente ed elimiazione automatica del timesheet
+	 * 
+	 * @param event
+	 * @param historyId
+	 * @return
+	 */
+	public Richiesta approveCancelHolidays(HolidayEventRequestDto event, Long historyId) {
+		RichiestaHistory history = richiestaHistoryRepository.findById(historyId).get();
+		history.setStato(event.getApproved());
+		Richiesta richiesta = updateRichiestaHistory(history);
+
+		for (HolidayEventDto e : event.getHolidays()) {
+
+			List<TimesheetEntry> entries = timesheetService.findByQueryNative(e.getData().getDayOfMonth(),
+					e.getData().getMonthValue(), e.getData().getYear(), richiesta.getRichiedente().getCodicePersona());
+			for (TimesheetEntry entry : entries) {
+				if (entry.getCommessa().getTipoCommessa().equals(CommessaType.S)) {
+					timesheetService.deleteTimesheetEntry(entry);
+				}
+			}
+		}
+
+		holidaysApprovalWorkflow.approveCancelHolidays(event, richiesta, history);
+		return richiesta;
+	
+	}
 }

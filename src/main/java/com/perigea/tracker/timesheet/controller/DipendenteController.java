@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perigea.tracker.commons.dto.CommessaFatturabileDto;
 import com.perigea.tracker.commons.dto.DatiEconomiciDipendenteDto;
 import com.perigea.tracker.commons.dto.DipendenteDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
@@ -21,6 +22,7 @@ import com.perigea.tracker.commons.dto.RuoloDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.timesheet.entity.CentroDiCosto;
+import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
 import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.Ruolo;
@@ -173,6 +175,15 @@ public class DipendenteController {
 		ResponseDto<DatiEconomiciDipendenteDto> genericResponse = ResponseDto.<DatiEconomiciDipendenteDto>builder()
 				.data(datiEconomiciDipendenteDto).build();
 		return ResponseEntity.ok(genericResponse);
+	}
+	
+	@GetMapping(value = "/checkSpecification/{ral}")
+	public ResponseEntity<ResponseDto<List<DipendenteDto>>> readCommessaFatturabile(
+			@PathVariable Float ral) {
+		List<Dipendente> dipendentiEntity = dipendenteService.searchDipendentiByRal(ral);
+		List<DipendenteDto> dipendentiDto = dtoEntityMapper.entityToDipendenteDtoList(dipendentiEntity);
+		ResponseDto<List<DipendenteDto>> genericDto = ResponseDto.<List<DipendenteDto>>builder().data(dipendentiDto).build();
+		return ResponseEntity.ok(genericDto);
 	}
 
 }

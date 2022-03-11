@@ -248,18 +248,20 @@ public class CommessaService {
 	}
 	
 	
-	public List<CommessaFatturabile> searchCommesseAfterThat(Double totaleFatturato) {
+	public List<CommessaFatturabile> searchCommesseAfterThatImports(Double totaleFatturato, Double importoOrdine) {
 		try {
-			return commessaFatturabileRepository.findAll(CommesseAfterThatImport(totaleFatturato));
+			return commessaFatturabileRepository.findAll(commesseAfterThatImport(totaleFatturato, importoOrdine));
 		} catch (Exception ex) {
 			throw new CentroDiCostoException(ex.getMessage());
 		}
 	}
 	
-	private Specification<CommessaFatturabile> CommesseAfterThatImport(final Double totaleFatturato) {
+	private Specification<CommessaFatturabile> commesseAfterThatImport(final Double totaleFatturato, final Double importoOrdine) {
 		
 		List<Condition> conditions = new ArrayList<>();
 		conditions.add(Condition.builder().field("totaleFatturatoDaInizioAnno").value(totaleFatturato).valueType(Double.class).operator(Operator.gt).build());
+		conditions.add(Condition.builder().field("ordineCommessa.importoOrdine").value(importoOrdine).valueType(Double.class).operator(Operator.gt).build());
+
 		return filter.buildSpecification(conditions, false);
 	}
 	

@@ -20,6 +20,10 @@ public class HolidaysApprovalWorkflow implements IApprovalFlow {
 	public static final String HOLIDAYS_REQUEST_ENDPOINT = "holiday/add";
 	public static final String ALL_HOLIDAYS_APPROVE_ENDPOINT = "holiday/approve-all";
 	public static final String SINGLE_HOLIDAY_APPROVE_ENDPOINT = "holiday/approve-single-event";
+	public static final String CANCEL_HOLIDAYS_ENDPOINT = "holiday/cancel-holidays";
+	public static final String CANCEL_HOLIDAY_APPROVE_ENDPOINT = "holiday/approve-cancel-holidays";
+	
+	
 
 	public void holidaysRequest(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
@@ -34,6 +38,16 @@ public class HolidaysApprovalWorkflow implements IApprovalFlow {
 	public void approveSingleHolidaysRequest(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
 		restClient.sendNotifica(event, SINGLE_HOLIDAY_APPROVE_ENDPOINT);
+	}
+	
+	public void cancelHolidays(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
+		nextStep(approvalRequest, history);
+		restClient.sendNotifica(event, CANCEL_HOLIDAYS_ENDPOINT);
+	}
+	
+	public void approveCancelHolidays(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
+		nextStep(approvalRequest, history);
+		restClient.sendNotifica(event, CANCEL_HOLIDAY_APPROVE_ENDPOINT);
 	}
 	
 

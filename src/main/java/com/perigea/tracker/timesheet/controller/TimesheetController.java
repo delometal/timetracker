@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.InfoAutoDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
+import com.perigea.tracker.commons.dto.TimesheetEntryDto;
 import com.perigea.tracker.commons.dto.TimesheetRefDto;
 import com.perigea.tracker.commons.dto.TimesheetResponseDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
@@ -27,7 +28,9 @@ import com.perigea.tracker.timesheet.entity.Consulente;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
 import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.Timesheet;
+import com.perigea.tracker.timesheet.entity.TimesheetEntry;
 import com.perigea.tracker.timesheet.entity.Utente;
+import com.perigea.tracker.timesheet.entity.keys.TimesheetEntryKey;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.DipendenteService;
@@ -68,6 +71,15 @@ public class TimesheetController {
 		Timesheet timesheet = timesheetService.deleteTimesheet(id.getAnno(), mese, id.getCodicePersona());
 		TimesheetResponseDto dto = dtoEntityMapper.entityToDto(timesheet);
 		ResponseDto<TimesheetResponseDto> genericDto = ResponseDto.<TimesheetResponseDto>builder().data(dto).build();
+		return ResponseEntity.ok(genericDto);
+	}
+	
+	@DeleteMapping(value = "/delete-entry")
+	public ResponseEntity<ResponseDto<TimesheetEntryDto>> deleteTimesheetEntry(@RequestBody TimesheetEntryKey id) {
+		TimesheetEntry entry = timesheetService.getTimesheetEntry(id);
+		timesheetService.deleteTimesheetEntry(entry);
+		TimesheetEntryDto dto = dtoEntityMapper.entityToDto(entry);
+		ResponseDto<TimesheetEntryDto> genericDto = ResponseDto.<TimesheetEntryDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 

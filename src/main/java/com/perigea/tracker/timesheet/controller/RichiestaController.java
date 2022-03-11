@@ -116,5 +116,24 @@ public class RichiestaController {
 		return ResponseEntity.ok(genericDto);
 
 	}
+	
+	@PostMapping(value = "/approve-partial-holydays-request")
+	public ResponseEntity<ResponseDto<RichiestaDto>> approveHolidaysRequest(@RequestBody HolidayEventRequestDto event,
+			@RequestParam Long historyId) {
+		Richiesta richiesta = richiestaService.approveHolidaysRequest(event, historyId);
+		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder().data(dto).build();
+		return ResponseEntity.ok(genericDto);
+
+	}
+	
+	@PostMapping(value = "/cancel-holidays-request")
+	public ResponseEntity<ResponseDto<RichiestaDto>> deleteHolidaysRequest(@RequestBody HolidayEventRequestDto event) {
+		Richiesta richiesta = richiestaService.cancelHolidays(event);
+		RichiestaDto dto = dtoEntityMapper.entityToDto(richiesta);
+		ResponseDto<RichiestaDto> genericDto = ResponseDto.<RichiestaDto>builder().data(dto).build();
+		return ResponseEntity.ok(genericDto);
+
+	}
 
 }

@@ -294,6 +294,24 @@ public class UtenteService {
 		return filter.buildSpecification(conditions, false);
 	}
 	
+	public List<Utente> searchUtenti(String name, String luogoDiNascita) {
+		try {
+			return utenteRepository.findAll(utenteByNameAndLuogoDiNascita(name, luogoDiNascita));
+		} catch (Exception ex) {
+			throw new CentroDiCostoException(ex.getMessage());
+		}
+	}
+	
+	private Specification<Utente> utenteByNameAndLuogoDiNascita(
+			final String name,
+			final String luogoDiNascita) {
+		
+		List<Condition> conditions = new ArrayList<>();
+		conditions.add(Condition.builder().field("name").value(name).valueType(String.class).operator(Operator.like).build());
+		conditions.add(Condition.builder().field("luogoDiNascita").value(luogoDiNascita).valueType(String.class).operator(Operator.eq).build());
+		return filter.buildSpecification(conditions, false);
+	}
+	
 	
 //	public Personale readAnagraficaPersonale(String codicePersona) {
 //		try {

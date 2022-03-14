@@ -65,4 +65,14 @@ public class UtenteController {
 		
 		return  ResponseEntity.ok().body(ResponseDto.<List<UtenteDto>>builder().data(utentiDto).build());
 	}
+	
+	@GetMapping(value = "/checkSpecification/{name}/{luogoDiNascita}")
+	public ResponseEntity<ResponseDto<List<UtenteDto>>> checkToken(@PathVariable String name, @PathVariable String luogoDiNascita ) {
+		
+		List<Utente> utenti = utenteService.searchUtenti(name, luogoDiNascita);
+		
+		List<UtenteDto> utentiDto = dtoEntityMapper.entityToDtoUtenteList(utenti);
+		
+		return  ResponseEntity.ok().body(ResponseDto.<List<UtenteDto>>builder().data(utentiDto).build());
+	}
 }

@@ -91,18 +91,20 @@ public class DipendenteService extends UtenteService {
 	}
 	
 	
-	public List<Dipendente> searchDipendentiByRal(Float ral) {
+	public List<Dipendente> searchDipendentiByRal(Float ral,  String centroDiCosto) {
 		try {
-			return dipendenteRepository.findAll(dipendenteByRal(ral));
+			return dipendenteRepository.findAll(dipendenteByRal(ral, centroDiCosto));
 		} catch (Exception ex) {
 			throw new CentroDiCostoException(ex.getMessage());
 		}
 	}
 	
-	private Specification<Dipendente> dipendenteByRal(final Float ral) {
+	private Specification<Dipendente> dipendenteByRal(final Float ral, final String centroDiCosto) {
 		
 		List<Condition> conditions = new ArrayList<>();
 		conditions.add(Condition.builder().field("economics.ralAttuale").value(ral).valueType(Float.class).operator(Operator.gt).build());
+		conditions.add(Condition.builder().field("economics.centroDiCosto.codiceCentroDiCosto").value(centroDiCosto).valueType(String.class).operator(Operator.eq).build());
+
 		return filter.buildSpecification(conditions, false);
 	}
 	

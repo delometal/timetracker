@@ -37,8 +37,7 @@ public class FilterFactory<T> {
 			private static final long serialVersionUID = -7325784609028963910L;
 
 			@Override
-			public Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery,
-					CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicates = new ArrayList<>();
 				conditions.forEach(
 						condition -> predicates.add(buildPredicate(condition, root, criteriaQuery, criteriaBuilder)));
@@ -53,6 +52,8 @@ public class FilterFactory<T> {
 
 	public Specification<T> getLikeSpecificationWithJoin(String key, String joinEntity, String value) {
 		return new Specification<T>() {
+			private static final long serialVersionUID = -2188537767362801905L;
+
 			@Override
 			public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
 				return builder.like(root.join(joinEntity).as(String.class), value);
@@ -64,8 +65,7 @@ public class FilterFactory<T> {
 		return buildSpecification(conditions, false);
 	}
 
-	private Predicate buildPredicate(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery,
-			CriteriaBuilder criteriaBuilder) {
+	private Predicate buildPredicate(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 		switch (condition.operator) {
 		case eq:
 			return buildEqualsPredicateToCriteria(condition, root, criteriaQuery, criteriaBuilder);
@@ -99,76 +99,63 @@ public class FilterFactory<T> {
 		}
 	}
 
-	private Predicate buildBetweenPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery,
-			CriteriaBuilder builder) {
+	private Predicate buildBetweenPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
 		return builder.between(getFieldCondition(condition, root),
 				builder.literal(parseJavaType(condition.value, condition.valueType)),
 				builder.literal(parseJavaType(condition.valueTo, condition.valueType)));
 	}
 
-	private Predicate buildGreaterThanPredicateToCriteria(Condition condition, Root<T> root,
-			CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
+	private Predicate buildGreaterThanPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
 		return builder.greaterThan(getFieldCondition(condition, root),
 				builder.literal(parseJavaType(condition.value, condition.valueType)));
 	}
 
-	private Predicate buildGreaterThanOrEqualPredicateToCriteria(Condition condition, Root<T> root,
-			CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
+	private Predicate buildGreaterThanOrEqualPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
 		return builder.greaterThanOrEqualTo(getFieldCondition(condition, root),
 				builder.literal(parseJavaType(condition.value, condition.valueType)));
 	}
 
-	private Predicate buildLessThanPredicateToCriteria(Condition condition, Root<T> root,
-			CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
+	private Predicate buildLessThanPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
 		return builder.lessThan(getFieldCondition(condition, root),
 				builder.literal(parseJavaType(condition.value, condition.valueType)));
 	}
 
-	private Predicate buildLessThanOrEqualPredicateToCriteria(Condition condition, Root<T> root,
-			CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
+	private Predicate buildLessThanOrEqualPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
 		return builder.lessThanOrEqualTo(getFieldCondition(condition, root),
 				builder.literal(parseJavaType(condition.value, condition.valueType)));
 	}
 
-	private Predicate buildInPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery,
-			CriteriaBuilder builder) {
+	private Predicate buildInPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
 		return getFieldCondition(condition, root).in((List<?>) condition.value);
 	}
 
-	private Predicate buildNotInPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery,
-			CriteriaBuilder builder) {
+	private Predicate buildNotInPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
 		return builder.not(buildInPredicateToCriteria(condition, root, criteriaQuery, builder));
 	}
 
-	private Predicate buildNotEqualsPredicateToCriteria(Condition condition, Root<T> root,
-			CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
+	private Predicate buildNotEqualsPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
 		return builder.not(builder.equal(getFieldCondition(condition, root), condition.value));
 	}
 
-	private Predicate buildEqualsPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery,
-			CriteriaBuilder builder) {
+	private Predicate buildEqualsPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
 		return builder.equal(getFieldCondition(condition, root), condition.value);
 	}
 
-	private Predicate buildIsNullPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> query,
-			CriteriaBuilder builder) {
+	private Predicate buildIsNullPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
 		return builder.isNull(getFieldCondition(condition, root));
 	}
 
-	private Predicate buildLikePredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> query,
-			CriteriaBuilder builder) {
+	private Predicate buildLikePredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
 		return builder.like(builder.upper(getFieldConditionForUpper(condition, root)),
 				Utils.QUERY_LIKE_BOUNDARY + (condition.value).toString().toUpperCase() + Utils.QUERY_LIKE_BOUNDARY);
 	}
 
-	private Predicate buildEndsWithPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> query,
-			CriteriaBuilder builder) {
+	private Predicate buildEndsWithPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
 		return builder.like(builder.upper(getFieldConditionForUpper(condition, root)),
 				Utils.join(Utils.QUERY_LIKE_BOUNDARY, condition.value.toString().toUpperCase()));
 	}
 
-	private Predicate buildStartsPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> query,
-			CriteriaBuilder builder) {
+	private Predicate buildStartsPredicateToCriteria(Condition condition, Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
 		return builder.like(builder.upper(getFieldConditionForUpper(condition, root)),
 				Utils.join(condition.value.toString().toUpperCase(), Utils.QUERY_LIKE_BOUNDARY));
 	}

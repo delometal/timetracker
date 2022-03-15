@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -176,15 +177,11 @@ public class FilterFactory<T> {
 
 		if (condition.field.contains(".")) {
 			String[] arr = condition.field.split("\\.");
-			String joinName = arr[0];
-			if (arr.length <= 2) {
-				String fieldName = arr[1];
-				return root.join(joinName).get(fieldName);
-			} else {
-				String joinSecondName = arr[1];
-				String fieldName = arr[2];
-				return root.join(joinName).join(joinSecondName).get(fieldName);
+			Join<Object, Object> cond = root.join(arr[0]);
+			for(int i = 1; i < arr.length-1; i++) {
+				cond= cond.join(arr[i]);
 			}
+			return cond.get(arr[arr.length-1]);
 		} else {
 			return root.get(condition.field);
 		}
@@ -194,15 +191,11 @@ public class FilterFactory<T> {
 
 		if (condition.field.contains(".")) {
 			String[] arr = condition.field.split("\\.");
-			String joinName = arr[0];
-			if (arr.length <= 2) {
-				String fieldName = arr[1];
-				return root.join(joinName).get(fieldName);
-			} else {
-				String joinSecondName = arr[1];
-				String fieldName = arr[2];
-				return root.join(joinName).join(joinSecondName).get(fieldName);
+			Join<Object, Object> cond = root.join(arr[0]);
+			for(int i = 1; i < arr.length-1; i++) {
+				cond= cond.join(arr[i]);
 			}
+			return cond.get(arr[arr.length-1]);
 		} else {
 			return root.get(condition.field);
 		}

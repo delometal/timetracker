@@ -8,7 +8,6 @@ import com.perigea.tracker.commons.dto.BaseDto;
 import com.perigea.tracker.commons.dto.CalendarEventDto;
 import com.perigea.tracker.commons.dto.NonPersistedEventDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
-import com.perigea.tracker.commons.model.Email;
 import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
 
 @Component
@@ -21,8 +20,7 @@ public class RestClient {
 	private ApplicationProperties applicationProperties;
 
 	public <T extends CalendarEventDto> void sendNotifica(T event, String endpoint) {
-		restTemplate.postForObject(applicationProperties.getCalendarConnectionString() + endpoint, event,
-				ResponseDto.class);
+		restTemplate.postForObject(applicationProperties.getCalendarConnectionString() + endpoint, event, ResponseDto.class);
 	}
 
 	public void sendUserNotification(NonPersistedEventDto<? extends BaseDto> notifica) {

@@ -27,8 +27,12 @@ import com.perigea.tracker.commons.enums.RichiestaType;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.exception.FestivitaException;
 import com.perigea.tracker.commons.exception.TimesheetException;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.approval.flow.TimesheetApprovalWorkflow;
 import com.perigea.tracker.timesheet.entity.Commessa;
+import com.perigea.tracker.timesheet.entity.Consulente;
+import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
+import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.Festivita;
 import com.perigea.tracker.timesheet.entity.NotaSpese;
 import com.perigea.tracker.timesheet.entity.Richiesta;
@@ -414,7 +418,38 @@ public class TimesheetService {
 		return excelTimesheetService.createExcelTimesheet(timesheetExcelWrapper);
 	}
 	
+	public Map<String, byte[]> getExcelTimesheetsMap(Integer anno, Integer mese) {
+		try {
+		Map<String, byte[]> excelTimesheetsMap = new HashMap<String, byte[]>();
+		List<Timesheet> timesheets = timesheetRepository.findAllByIdAnnoAndIdMese(anno, mese);
+		for (Timesheet timesheet: timesheets) {
+			String username = timesheet.getPersonale().getUtente().getUsername();
+			String filename = username + "_timesheet" + Utils.EXCEL_EXT;
+			UtenteDto utenteDto = dtoEntityMapper.entityToDto(timesheet.getPersonale().getUtente());
+			InfoAutoDto infoAuto = getInfoAuto(timesheet.getPersonale().getUtente());
+			byte[] bArray = downloadExcelTimesheet(anno, EMese.getByMonthId(mese), utenteDto, infoAuto);
+			excelTimesheetsMap.put(filename, bArray);
+		}
+		return excelTimesheetsMap; 
+	}catch (Exception e) {
+		throw new TimesheetException(e.getMessage());
+	}
+}
 	
+	public InfoAutoDto getInfoAuto(Utente utente) {
+		InfoAutoDto infoAuto = null;
+		if (utente.getPersonale().getClass().isAssignableFrom(Dipendente.class)) {
+			Dipendente dipendente = (Dipendente) utente.getPersonale();
+			DatiEconomiciDipendente economics = dipendente.getEconomics();
+			infoAuto = new InfoAutoDto(economics.getModelloAuto(), economics.getRimborsoPerKm(),
+					economics.getKmPerGiorno());
+		} else if (utente.getPersonale().getClass().isAssignableFrom(Consulente.class)) {
+			infoAuto = new InfoAutoDto("", 0.0f, 0.0f);
+		} else {
+			throw new TimesheetException("Tipo utente non valido");
+		}
+		return infoAuto;
+	}
 	
-	
+		
 }

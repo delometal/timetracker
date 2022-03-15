@@ -1,6 +1,7 @@
 package com.perigea.tracker.timesheet.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -119,8 +120,7 @@ public class TimesheetController {
 	public ResponseEntity<byte[]> downloadExcelTimesheet(@PathVariable(value = "anno") Integer anno,
 			@PathVariable(value = "mese") EMese mese, @PathVariable(value = "codicePersona") String codicePersona) {
 		Utente utente = dipendenteService.readUtente(codicePersona);
-		InfoAutoDto infoAuto = dipendenteService.getInfoAuto(utente);
-
+		InfoAutoDto infoAuto = timesheetService.getInfoAuto(utente);
 		String fileName = Utils
 				.removeAllSpaces(anno + mese.getMonthPart() + "_" + utente.getCognome() + Utils.EXCEL_EXT).trim();
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
@@ -128,6 +128,19 @@ public class TimesheetController {
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").body(excel);
 	}
-
+	
+	
+	@GetMapping(value = "/download-zip-reports/{anno}/{mese}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public ResponseEntity<byte[]> downloadZipTimesheets(@PathVariable(value = "anno") Integer anno,
+			@PathVariable(value = "mese") Integer mese) {
+		String month = EMese.getByMonthId(mese).name(); 
+		String fileName = Utils.removeAllSpaces(anno + month + "timesheets" + Utils.ZIP_EXT).trim();
+		
+		Map<String, byte[]> excelsMap = timesheetService.getExcelTimesheetsMap(anno, mese);
+		byte[] zip = Utils.zipMultipleFiles(excelsMap);
+		
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").body(zip);
+	}
 
 }

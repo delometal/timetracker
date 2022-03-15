@@ -92,7 +92,7 @@ public class UtenteService {
 					.username(username)
 					.dataScadenza(passwordToken.getDataScadenza())
 					.build();
-			restClient.sendUserNotification(new NonPersistedEventDto<CreatedUtenteNotificaDto>(CreatedUtenteNotificaDto.class, Utils.toJson(notifica)));				
+//			restClient.sendUserNotification(new NonPersistedEventDto<CreatedUtenteNotificaDto>(CreatedUtenteNotificaDto.class, Utils.toJson(notifica)));				
 			return user;
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());

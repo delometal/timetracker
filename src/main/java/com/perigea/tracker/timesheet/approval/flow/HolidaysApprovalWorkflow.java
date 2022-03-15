@@ -32,12 +32,12 @@ public class HolidaysApprovalWorkflow implements IApprovalFlow {
 
 	public void approveAllHolidaysRequest(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
-		restClient.sendNotifica(event, ALL_HOLIDAYS_APPROVE_ENDPOINT);
+		restClient.sendNotificaApprovazione(event, ALL_HOLIDAYS_APPROVE_ENDPOINT);
 	}
 	
 	public void approveSingleHolidaysRequest(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
-		restClient.sendNotifica(event, SINGLE_HOLIDAY_APPROVE_ENDPOINT);
+		restClient.sendNotificaApprovazione(event, SINGLE_HOLIDAY_APPROVE_ENDPOINT);
 	}
 	
 	public void cancelHolidays(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
@@ -47,7 +47,7 @@ public class HolidaysApprovalWorkflow implements IApprovalFlow {
 	
 	public void approveCancelHolidays(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
-		restClient.sendNotifica(event, CANCEL_HOLIDAY_APPROVE_ENDPOINT);
+		restClient.sendNotificaApprovazione(event, CANCEL_HOLIDAY_APPROVE_ENDPOINT);
 	}
 	
 

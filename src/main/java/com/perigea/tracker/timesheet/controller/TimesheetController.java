@@ -1,5 +1,7 @@
 package com.perigea.tracker.timesheet.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.perigea.tracker.commons.dto.InfoAutoDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.TimesheetEntryDto;
-import com.perigea.tracker.commons.dto.TimesheetRefDto;
+import com.perigea.tracker.commons.dto.TimesheetEventDto;
 import com.perigea.tracker.commons.dto.TimesheetResponseDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.dto.wrapper.TimesheetWrapper;
@@ -88,17 +90,30 @@ public class TimesheetController {
 	}
 
 	@PutMapping(value = "/update-status/{status}")
-	public ResponseEntity<ResponseDto<Boolean>> updateTimesheetStatus(@RequestBody TimesheetRefDto timesheetDto,
+	public ResponseEntity<ResponseDto<Boolean>> updateTimesheetStatus(@RequestBody TimesheetEventDto timesheetEvent,
 			@PathVariable(value = "status") ApprovalStatus newStatus) {
-		TimesheetMensileKey tsKey = new TimesheetMensileKey(timesheetDto.getAnno(), timesheetDto.getMese(),
-				timesheetDto.getCodicePersona());
-		Boolean update = timesheetService.editTimesheetStatus(tsKey, newStatus);
+		Boolean update = timesheetService.editTimesheetStatus(timesheetEvent, newStatus);
 		ResponseDto<Boolean> genericDto = ResponseDto.<Boolean>builder().data(update).build();
 		if (update) {
 			return ResponseEntity.ok(genericDto);
 		}
 		return ResponseEntity.badRequest().body(genericDto);
 	}
+	
+	
+	@PutMapping(value = "/update-multiple-status/{status}")
+	public ResponseEntity<ResponseDto<Boolean>> updateMultiTimesheetStatus(
+			@RequestBody List<TimesheetEventDto> timesheetDtos,
+			@PathVariable(value = "status") ApprovalStatus newStatus) {
+
+		Boolean update = timesheetService.approveMultiTimesheet(timesheetDtos, newStatus);
+		ResponseDto<Boolean> genericDto = ResponseDto.<Boolean>builder().data(update).build();
+		if (update) {
+			return ResponseEntity.ok(genericDto);
+		}
+		return ResponseEntity.badRequest().body(genericDto);
+	}
+	
 
 	@GetMapping(value = "/download-report/{anno}/{mese}/{codicePersona}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public ResponseEntity<byte[]> downloadExcelTimesheet(@PathVariable(value = "anno") Integer anno,

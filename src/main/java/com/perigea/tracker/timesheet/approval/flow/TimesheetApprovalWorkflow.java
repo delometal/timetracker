@@ -30,7 +30,7 @@ public class TimesheetApprovalWorkflow implements IApprovalFlow {
 		nextStep(approvalRequest, history);
 		timesheet.setRichiesta(approvalRequest);
 		timesheetRepository.save(timesheet);
-		restClient.sendNotifica(event, APPROVE_TIMESHEET_ENDPOINT);
+		restClient.sendNotificaApprovazione(event, APPROVE_TIMESHEET_ENDPOINT);
 
 	}
 

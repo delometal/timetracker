@@ -14,7 +14,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.perigea.tracker.commons.dto.ContactDto;
 import com.perigea.tracker.commons.dto.InfoAutoDto;
 import com.perigea.tracker.commons.dto.TimesheetEntryDto;
 import com.perigea.tracker.commons.dto.TimesheetEventDto;
@@ -23,13 +22,11 @@ import com.perigea.tracker.commons.dto.TimesheetResponseDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.dto.wrapper.TimesheetExcelWrapper;
 import com.perigea.tracker.commons.enums.ApprovalStatus;
-import com.perigea.tracker.commons.enums.CalendarEventType;
 import com.perigea.tracker.commons.enums.EMese;
 import com.perigea.tracker.commons.enums.RichiestaType;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.exception.FestivitaException;
 import com.perigea.tracker.commons.exception.TimesheetException;
-import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.approval.flow.TimesheetApprovalWorkflow;
 import com.perigea.tracker.timesheet.entity.Commessa;
 import com.perigea.tracker.timesheet.entity.Festivita;
@@ -90,8 +87,6 @@ public class TimesheetService {
 	@Autowired
 	private TimesheetApprovalWorkflow timesheetApprovalWorkflow;
 	
-	@Autowired
-	private ContactDetailsService contactDetailsService;
 
 
 	/**
@@ -339,27 +334,36 @@ public class TimesheetService {
 		}
 	}
 
-	public Boolean editTimesheetStatus(TimesheetMensileKey key, ApprovalStatus newStatus) {
+	public Boolean editTimesheetStatus(TimesheetEventDto timesheetEvent, ApprovalStatus newStatus) {
 		try {
+			TimesheetMensileKey key = new TimesheetMensileKey(timesheetEvent.getTimesheet().getAnno(),
+					timesheetEvent.getTimesheet().getMese(), timesheetEvent.getTimesheet().getCodicePersona());
 			if (applicationDao.updateTimesheetStatus(key, newStatus) == 1) {
 				Timesheet timesheet = getTimesheet(key);
+
 				Richiesta richiesta = timesheet.getRichiesta();
 				RichiestaHistory history = RichiestaHistory.builder()
 						.responsabile(timesheet.getPersonale().getResponsabile()).stato(newStatus).richiesta(richiesta)
 						.build();
-				TimesheetRefDto timesheetReferences = new TimesheetRefDto(key.getCodicePersona(), key.getAnno(), key.getMese());
-				ContactDto richiestaCreator = contactDetailsService
-						.readUserContactDetails(richiesta.getRichiedente().getCodicePersona());
-				ContactDto responsabile = contactDetailsService
-						.readUserContactDetails(history.getResponsabile().getCodicePersona());
-				TimesheetEventDto timesheetEvent = TimesheetEventDto.builder().id(Utils.uuid())
-						.eventCreator(richiestaCreator).responsabile(responsabile)
-						.approvalStatus(timesheet.getStatoRichiesta()).type(CalendarEventType.Timesheet)
-						.timesheet(timesheetReferences).build();
+
+				timesheetEvent.setApprovalStatus(newStatus);
+
 				timesheetApprovalWorkflow.approveTimesheet(timesheet, richiesta, history, timesheetEvent);
 				return true;
 			}
 			return false;
+		} catch (Exception ex) {
+			throw new TimesheetException(ex.getMessage());
+		}
+	}
+	
+	public Boolean approveMultiTimesheet(List<TimesheetEventDto> events, ApprovalStatus newStatus) {
+		try {
+			Boolean statusUpdate = false;
+			for(TimesheetEventDto event: events) {
+				statusUpdate = editTimesheetStatus(event, newStatus);
+			}
+			return statusUpdate;
 		} catch (Exception ex) {
 			throw new TimesheetException(ex.getMessage());
 		}

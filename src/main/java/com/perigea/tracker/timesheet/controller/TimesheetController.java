@@ -26,6 +26,7 @@ import com.perigea.tracker.commons.dto.wrapper.TimesheetWrapper;
 import com.perigea.tracker.commons.enums.ApprovalStatus;
 import com.perigea.tracker.commons.enums.EMese;
 import com.perigea.tracker.commons.utils.Utils;
+import com.perigea.tracker.timesheet.entity.Personale;
 import com.perigea.tracker.timesheet.entity.Timesheet;
 import com.perigea.tracker.timesheet.entity.TimesheetEntry;
 import com.perigea.tracker.timesheet.entity.Utente;
@@ -142,5 +143,24 @@ public class TimesheetController {
 		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").body(zip);
 	}
+	
+	
+	@GetMapping(value = "/download-zip-reports-by-responsabile/{anno}/{mese}/{codiceResponsabile}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public ResponseEntity<byte[]> downloadZipTimesheets(@PathVariable(value = "anno") Integer anno,
+			@PathVariable(value = "mese") Integer mese,
+			@PathVariable(value = "codiceResponsabile") String codiceResponsabile) {
+		String month = EMese.getByMonthId(mese).name();
+		Personale responsabile = dipendenteService.readAnagraficaDipendente(codiceResponsabile);
+		List<Personale> sottoposti = dipendenteService.readAllDipendentiByResponsabile(responsabile);
+		String fileName = Utils.removeAllSpaces(anno + "_" + month + "_" + responsabile.getUtente().getUsername()
+				+ "_sottoposti_timesheets" + Utils.ZIP_EXT).trim();
 
+		Map<String, byte[]> excelsMap = timesheetService.getExcelTimesheetsMap(anno, mese, sottoposti);
+		byte[] zip = Utils.zipMultipleFiles(excelsMap);
+		
+		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").body(zip);
+	}
+	
+	
 }

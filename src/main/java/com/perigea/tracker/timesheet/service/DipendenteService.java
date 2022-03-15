@@ -15,6 +15,7 @@ import com.perigea.tracker.commons.exception.DipendenteException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
 import com.perigea.tracker.timesheet.entity.Dipendente;
+import com.perigea.tracker.timesheet.entity.Personale;
 import com.perigea.tracker.timesheet.entity.StoricoAssegnazioneCentroCosto;
 import com.perigea.tracker.timesheet.entity.StoricoContrattoType;
 import com.perigea.tracker.timesheet.entity.StoricoCostoGiornaliero;
@@ -82,6 +83,17 @@ public class DipendenteService extends UtenteService {
 	public Dipendente readAnagraficaDipendente(String codicePersona) {
 		try {
 			return dipendenteRepository.findByCodicePersona(codicePersona).get();
+		} catch (Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new DipendenteException(ex.getMessage());
+		}
+	}
+	
+	public List<Personale> readAllDipendentiByResponsabile(Personale responsabile) {
+		try {
+			return dipendenteRepository.findAllByResponsabile(responsabile);
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

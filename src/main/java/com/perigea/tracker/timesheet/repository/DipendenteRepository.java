@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.perigea.tracker.timesheet.entity.Dipendente;
+import com.perigea.tracker.timesheet.entity.Personale;
 
 @Repository
 public interface DipendenteRepository extends JpaRepository<Dipendente, String>, JpaSpecificationExecutor<Dipendente> {
@@ -16,5 +17,7 @@ public interface DipendenteRepository extends JpaRepository<Dipendente, String>,
 	public Optional<Dipendente> findByCodicePersona(String codicePersona);
 
 	public List<Dipendente> findAll(Specification<Dipendente> filter);
+	
+	public List<Personale> findAllByResponsabile(Personale responsabile);
 } 
 

@@ -9,7 +9,6 @@ import java.util.List;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import com.perigea.tracker.commons.utils.UsernameComparator;
 import com.perigea.tracker.commons.utils.Utils;
@@ -21,7 +20,6 @@ class ApplicationTests {
 
 	@Test	
 	public void test() {
-		
 		String username = "pippo.paperino";
 		String lastUsername = "pippo.paperino72";
 		String refNum = lastUsername.substring(username.length(), lastUsername.length());

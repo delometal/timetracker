@@ -29,7 +29,5 @@ public class RestClient {
 		restTemplate.postForObject(applicationProperties.getInstantNotificationEndpoint(), notifica, String.class);
 	}
 
-	public void credentialReminder(Email email) {
-		restTemplate.postForObject(applicationProperties.getSchedulerEndpoint(), email, ResponseDto.class);
-	}
+	
 }

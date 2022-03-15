@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perigea.tracker.commons.dto.InfoAutoDto;
 import com.perigea.tracker.commons.exception.DipendenteException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
+import com.perigea.tracker.timesheet.entity.Consulente;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
 import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.StoricoAssegnazioneCentroCosto;
@@ -141,5 +143,20 @@ public class DipendenteService extends UtenteService {
 			StoricoCostoGiornaliero st = new StoricoCostoGiornaliero(k, new BigDecimal(oldDatiEconomici.getCostoGiornaliero()) , personale);
 			storico.createStoricoCostoGiornaliero(st);
 		}
+	}
+	
+	public InfoAutoDto getInfoAuto(Utente utente) {
+		InfoAutoDto infoAuto = null;
+		if (utente.getPersonale().getClass().isAssignableFrom(Dipendente.class)) {
+			Dipendente dipendente = (Dipendente) utente.getPersonale();
+			DatiEconomiciDipendente economics = dipendente.getEconomics();
+			infoAuto = new InfoAutoDto(economics.getModelloAuto(), economics.getRimborsoPerKm(),
+					economics.getKmPerGiorno());
+		} else if (utente.getPersonale().getClass().isAssignableFrom(Consulente.class)) {
+			infoAuto = new InfoAutoDto("", 0.0f, 0.0f);
+		} else {
+			throw new DipendenteException("Tipo utente non valido");
+		}
+		return infoAuto;
 	}
 }

@@ -174,5 +174,15 @@ public class DipendenteController {
 				.data(datiEconomiciDipendenteDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
+	
+	@GetMapping(value = "/checkSpecification/{ral}/{centroDiCosto}")
+	public ResponseEntity<ResponseDto<List<DipendenteDto>>> readCommessaFatturabile(
+			@PathVariable Float ral,
+			@PathVariable String centroDiCosto) {
+		List<Dipendente> dipendentiEntity = dipendenteService.searchDipendentiByRal(ral, centroDiCosto);
+		List<DipendenteDto> dipendentiDto = dtoEntityMapper.entityToDipendenteDtoList(dipendentiEntity);
+		ResponseDto<List<DipendenteDto>> genericDto = ResponseDto.<List<DipendenteDto>>builder().data(dipendentiDto).build();
+		return ResponseEntity.ok(genericDto);
+	}
 
 }

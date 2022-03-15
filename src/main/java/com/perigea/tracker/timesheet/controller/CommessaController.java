@@ -170,10 +170,11 @@ public class CommessaController {
 		return ResponseEntity.ok(genericDto);
 	}
 	
-	@GetMapping(value = "/checkSpecification/{importo}")
+	@GetMapping(value = "/checkSpecification/{importoTotAnno}/{importoOrdine}")
 	public ResponseEntity<ResponseDto<List<CommessaFatturabileDto>>> readCommessaFatturabile(
-			@PathVariable Double importo) {
-		List<CommessaFatturabile> commesseEntity = commessaService.searchCommesseAfterThat(importo);
+			@PathVariable Double importoTotAnno,
+			@PathVariable Double importoOrdine) {
+		List<CommessaFatturabile> commesseEntity = commessaService.searchCommesseAfterThatImports(importoTotAnno,importoOrdine);
 		List<CommessaFatturabileDto> commesseDto = dtoEntityMapper.entityToCommessaFattDtoList(commesseEntity);
 		ResponseDto<List<CommessaFatturabileDto>> genericDto = ResponseDto.<List<CommessaFatturabileDto>>builder().data(commesseDto).build();
 		return ResponseEntity.ok(genericDto);

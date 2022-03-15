@@ -1,13 +1,17 @@
 package com.perigea.tracker.timesheet.service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.commons.dto.InfoAutoDto;
+import com.perigea.tracker.commons.exception.CentroDiCostoException;
 import com.perigea.tracker.commons.exception.DipendenteException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.timesheet.entity.Consulente;
@@ -32,10 +36,16 @@ import com.perigea.tracker.timesheet.entity.keys.StoricoRalKey;
 import com.perigea.tracker.timesheet.entity.keys.StoricoRimborsiKmKey;
 import com.perigea.tracker.timesheet.repository.CentroDiCostoRepository;
 import com.perigea.tracker.timesheet.repository.DipendenteRepository;
+import com.perigea.tracker.timesheet.search.Condition;
+import com.perigea.tracker.timesheet.search.FilterFactory;
+import com.perigea.tracker.timesheet.search.Operator;
 
 @Service
 @Transactional
 public class DipendenteService extends UtenteService {
+	
+	@Autowired
+	private FilterFactory<Dipendente> filter;
 
 	@Autowired
 	private DipendenteRepository dipendenteRepository;
@@ -81,6 +91,25 @@ public class DipendenteService extends UtenteService {
 			throw new DipendenteException(ex.getMessage());
 		}
 	}
+	
+	
+	public List<Dipendente> searchDipendentiByRal(Float ral,  String centroDiCosto) {
+		try {
+			return dipendenteRepository.findAll(dipendenteByRal(ral, centroDiCosto));
+		} catch (Exception ex) {
+			throw new CentroDiCostoException(ex.getMessage());
+		}
+	}
+	
+	private Specification<Dipendente> dipendenteByRal(final Float ral, final String centroDiCosto) {
+		
+		List<Condition> conditions = new ArrayList<>();
+		conditions.add(Condition.builder().field("economics.ralAttuale").value(ral).valueType(Float.class).operator(Operator.gt).build());
+		conditions.add(Condition.builder().field("economics.centroDiCosto.codiceCentroDiCosto").value(centroDiCosto).valueType(String.class).operator(Operator.eq).build());
+
+		return filter.buildSpecification(conditions, false);
+	}
+	
 	
 	public void createStorico(DatiEconomiciDipendente newDatiEconomici) {
 		String codicePersona = newDatiEconomici.getCodicePersona();

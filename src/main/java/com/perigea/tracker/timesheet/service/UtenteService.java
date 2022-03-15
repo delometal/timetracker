@@ -274,23 +274,41 @@ public class UtenteService {
 
 	}
 
-	public List<Utente> searchUtenti(String username, AnagraficaType tipoKey, final StatoUtenteType statoUtente) {
+	public List<Utente> searchUtenti(String username, AnagraficaType tipoAnagrafica, final StatoUtenteType statoUtente) {
 		try {
-			return utenteRepository.findAll(UtenteByUsernameAndTypeSearch(username, tipoKey, statoUtente));
+			return utenteRepository.findAll(utenteByUsernameAndTypeSearch(username, tipoAnagrafica, statoUtente));
 		} catch (Exception ex) {
 			throw new CentroDiCostoException(ex.getMessage());
 		}
 	}
 	
-	private Specification<Utente> UtenteByUsernameAndTypeSearch(
+	private Specification<Utente> utenteByUsernameAndTypeSearch(
 			final String username,
-			final AnagraficaType tipoKey,
+			final AnagraficaType tipoAnagrafica,
 			final StatoUtenteType statoUtente) {
 		
 		List<Condition> conditions = new ArrayList<>();
 		conditions.add(Condition.builder().field("username").value(username).valueType(String.class).operator(Operator.like).build());
 		conditions.add(Condition.builder().field("stato").value(statoUtente).valueType(StatoUtenteType.class).operator(Operator.eq).build());
-		conditions.add(Condition.builder().field("tipo").value(tipoKey).valueType(AnagraficaType.class).operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("tipo").value(tipoAnagrafica).valueType(AnagraficaType.class).operator(Operator.eq).build());
+		return filter.buildSpecification(conditions, false);
+	}
+	
+	public List<Utente> searchUtenti(String name, String luogoDiNascita) {
+		try {
+			return utenteRepository.findAll(utenteByNameAndLuogoDiNascita(name, luogoDiNascita));
+		} catch (Exception ex) {
+			throw new CentroDiCostoException(ex.getMessage());
+		}
+	}
+	
+	private Specification<Utente> utenteByNameAndLuogoDiNascita(
+			final String name,
+			final String luogoDiNascita) {
+		
+		List<Condition> conditions = new ArrayList<>();
+		conditions.add(Condition.builder().field("name").value(name).valueType(String.class).operator(Operator.like).build());
+		conditions.add(Condition.builder().field("luogoDiNascita").value(luogoDiNascita).valueType(String.class).operator(Operator.eq).build());
 		return filter.buildSpecification(conditions, false);
 	}
 	

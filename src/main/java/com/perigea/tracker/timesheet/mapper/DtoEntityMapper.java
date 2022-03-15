@@ -179,6 +179,8 @@ public interface DtoEntityMapper {
 
 	List<CommessaFatturabileDto> entityToCommessaFattDtoList(List<CommessaFatturabile> entity);
 	
+	List<DipendenteDto> entityToDipendenteDtoList(List<Dipendente> entity);
+	
 	
 	/** DATI ECONOMICI **/
 	DatiEconomiciDipendenteDto entityToDto(DatiEconomiciDipendente entity);

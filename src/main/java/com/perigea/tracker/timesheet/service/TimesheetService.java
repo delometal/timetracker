@@ -526,6 +526,8 @@ public class TimesheetService {
 					TimesheetExcelWrapper timesheetExcelWrapper = getExcelWrapper(timesheet, utenteDto, infoAuto);
 					byte[] bArray = excelTimesheetService.createExcelTimesheet(timesheetExcelWrapper);
 					excelTimesheetsMap.put(filename, bArray);
+				} else {
+					logger.info("Timesheet relativo al'utente non presente");
 				}
 			}
 			return excelTimesheetsMap;

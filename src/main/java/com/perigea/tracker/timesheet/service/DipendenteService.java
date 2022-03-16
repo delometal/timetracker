@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.exception.CentroDiCostoException;
 import com.perigea.tracker.commons.exception.DipendenteException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
@@ -55,6 +56,8 @@ public class DipendenteService extends UtenteService {
 	@Autowired
 	private StoricoService storico;
 	
+	
+	
 
 	/**
 	 * Creazione anagrafica dipendente e utente
@@ -71,6 +74,7 @@ public class DipendenteService extends UtenteService {
 			economics.setCodicePersona(null);
 			economics.setPersonale(dipendente);
 		}
+		dipendente.setDataCessazione(null);
 		utente.setPersonale(dipendente);
 		return super.createUtente(utente, dipendente);
 	}
@@ -134,6 +138,21 @@ public class DipendenteService extends UtenteService {
 		conditions.add(Condition.builder().field("economics.centroDiCosto.codiceCentroDiCosto").value(centroDiCosto).valueType(String.class).operator(Operator.eq).build());
 
 		return filter.buildSpecification(conditions, false);
+	}
+	
+	
+	/**
+	 * cessazione attività dipendente
+	 * @param dipendente
+	 * @param dataCessazione
+	 * @return
+	 */
+	public Dipendente cessazioneDipendente(Dipendente dipendente, LocalDate dataCessazione) {
+		dipendente.setDataCessazione(dataCessazione);
+		updateUtenteStatus(dipendente.getCodicePersona(), StatoUtenteType.C);
+		createStorico(dipendente.getEconomics());
+		dipendenteRepository.save(dipendente);
+		return dipendente;
 	}
 	
 	/**

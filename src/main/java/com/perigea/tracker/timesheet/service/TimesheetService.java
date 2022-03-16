@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -469,9 +470,7 @@ public class TimesheetService {
 	 */
 	public byte[] downloadExcelTimesheet(Integer anno, EMese mese, UtenteDto angrafica, InfoAutoDto infoAuto) {
 		Timesheet timesheet = getTimesheet(anno, mese, angrafica.getCodicePersona());
-		TimesheetResponseDto timesheetResponseDto = dtoEntityMapper.entityToDto(timesheet);
-		TimesheetExcelWrapper timesheetExcelWrapper = new TimesheetExcelWrapper(timesheetResponseDto, angrafica,
-				infoAuto);
+		TimesheetExcelWrapper timesheetExcelWrapper = getExcelWrapper(timesheet, angrafica, infoAuto);
 		return excelTimesheetService.createExcelTimesheet(timesheetExcelWrapper);
 	}
 	
@@ -517,13 +516,15 @@ public class TimesheetService {
 		try {
 			Map<String, byte[]> excelTimesheetsMap = new HashMap<String, byte[]>();
 			for (Personale p : sottoposti) {
-				if (timesheetRepository.findById(new TimesheetMensileKey(anno, mese, p.getCodicePersona()))
-						.isPresent()) {
+				Optional<Timesheet> optionalTimesheet = timesheetRepository.findById(new TimesheetMensileKey(anno, mese, p.getCodicePersona()));
+				if (optionalTimesheet.isPresent()) {
+					Timesheet timesheet = optionalTimesheet.get();
 					String username = p.getUtente().getUsername();
 					String filename = username + "_timesheet" + Utils.EXCEL_EXT;
 					UtenteDto utenteDto = dtoEntityMapper.entityToDto(p.getUtente());
 					InfoAutoDto infoAuto = getInfoAuto(p.getUtente());
-					byte[] bArray = downloadExcelTimesheet(anno, EMese.getByMonthId(mese), utenteDto, infoAuto);
+					TimesheetExcelWrapper timesheetExcelWrapper = getExcelWrapper(timesheet, utenteDto, infoAuto);
+					byte[] bArray = excelTimesheetService.createExcelTimesheet(timesheetExcelWrapper);
 					excelTimesheetsMap.put(filename, bArray);
 				}
 			}
@@ -552,6 +553,16 @@ public class TimesheetService {
 			throw new TimesheetException("Tipo utente non valido");
 		}
 		return infoAuto;
+	}
+	
+	/**
+	 * metodo per creare un timesheetExcelWrapper
+	 * @param timesheet
+	 * @return
+	 */
+	public TimesheetExcelWrapper getExcelWrapper(Timesheet timesheet, UtenteDto utenteDto, InfoAutoDto infoAuto) {
+		TimesheetResponseDto timesheetResponseDto = dtoEntityMapper.entityToDto(timesheet);
+		return new TimesheetExcelWrapper(timesheetResponseDto, utenteDto, infoAuto);
 	}
 
 }

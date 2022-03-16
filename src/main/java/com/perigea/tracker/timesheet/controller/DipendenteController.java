@@ -1,5 +1,6 @@
 package com.perigea.tracker.timesheet.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -19,14 +20,17 @@ import com.perigea.tracker.commons.dto.DipendenteDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.RuoloDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
+import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.timesheet.entity.CentroDiCosto;
+import com.perigea.tracker.timesheet.entity.Consulente;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
 import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.CentroDiCostoService;
+import com.perigea.tracker.timesheet.service.ConsulenteService;
 import com.perigea.tracker.timesheet.service.DipendenteService;
 
 @RestController
@@ -44,6 +48,9 @@ public class DipendenteController {
 
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
+	
+	@Autowired
+	private ConsulenteService consulenteService;
 
 	@PostMapping(value = "/create")
 	public ResponseEntity<ResponseDto<DipendenteDto>> createDipendente(@RequestBody DipendenteDto dipendenteDto) {
@@ -183,6 +190,29 @@ public class DipendenteController {
 		List<DipendenteDto> dipendentiDto = dtoEntityMapper.entityToDipendenteDtoList(dipendentiEntity);
 		ResponseDto<List<DipendenteDto>> genericDto = ResponseDto.<List<DipendenteDto>>builder().data(dipendentiDto).build();
 		return ResponseEntity.ok(genericDto);
+	}
+	
+	
+	@PutMapping(value = "/from-consulente-to-dipendente")
+	public ResponseEntity<ResponseDto<DipendenteDto>> fromConsulenteToDipendente(
+			@RequestBody DipendenteDto dipendenteDto, @PathVariable LocalDate dataCessazione,
+			@PathVariable String codiceConsulente) {
+		Consulente consulente = consulenteService.readAnagraficaConsulente(codiceConsulente);
+		Utente utente = consulente.getUtente();
+		utente.setTipo(AnagraficaType.I);
+		utente.setMailAziendale(dipendenteDto.getUtente().getMailAziendale());
+		utente.setCodiceAzienda(dipendenteDto.getUtente().getCodiceAzienda());
+		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
+		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(dipendenteDto.getEconomics());
+		loadResponsabile(dipendenteDto, dipendente);
+		utente = dipendenteService.createUtenteDipendente(utente, dipendente, economics);
+		Dipendente anagrafica = (Dipendente) utente.getPersonale();
+		dipendenteDto = dtoEntityMapper.entityToDto(anagrafica);
+		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
+		dipendenteDto.setUtente(utenteDto);
+		consulenteService.cessazioneConsulente(consulente, dataCessazione);
+		ResponseDto<DipendenteDto> genericResponse = ResponseDto.<DipendenteDto>builder().data(dipendenteDto).build();
+		return ResponseEntity.ok(genericResponse);
 	}
 
 }

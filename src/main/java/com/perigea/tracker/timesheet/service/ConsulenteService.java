@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.exception.ConsulenteException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.timesheet.entity.Consulente;
@@ -62,6 +63,20 @@ public class ConsulenteService extends UtenteService {
 			}
 			throw new ConsulenteException(ex.getMessage());
 		}
+	}
+	
+	/**
+	 * cessazione attività consulente
+	 * @param consulente
+	 * @param dataCessazione
+	 * @return
+	 */
+	public Consulente cessazioneConsulente(Consulente consulente, LocalDate dataCessazione) {
+		consulente.setDataCessazione(dataCessazione);
+		updateUtenteStatus(consulente.getCodicePersona(), StatoUtenteType.C);
+		createStorico(consulente.getEconomics());
+		consulenteRepository.save(consulente);
+		return consulente;
 	}
 	
 	/**

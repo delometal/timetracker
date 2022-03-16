@@ -37,6 +37,7 @@ import com.perigea.tracker.commons.dto.wrapper.TimesheetExcelWrapper;
 import com.perigea.tracker.commons.enums.EGiorno;
 import com.perigea.tracker.commons.enums.EMese;
 import com.perigea.tracker.commons.exception.TimesheetException;
+import com.perigea.tracker.commons.utils.Utils;
 
 
 @Service
@@ -344,7 +345,7 @@ public class ExcelTimesheetService {
 		try {
 			
 			//Anchor per il logo
-			InputStream logoStream = getClass().getClassLoader().getResourceAsStream("perigea_logo_color.png");
+			InputStream logoStream = getClass().getClassLoader().getResourceAsStream(Utils.PERIGEA_LOGO_COLOR);
 			byte[] logoBytes = IOUtils.toByteArray(logoStream);
 			int logo = sheet.getWorkbook().addPicture(logoBytes, Workbook.PICTURE_TYPE_JPEG);
 			XSSFDrawing drawing = (XSSFDrawing) sheet.createDrawingPatriarch();

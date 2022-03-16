@@ -37,6 +37,11 @@ public class NotaSpeseService {
 	@Autowired
 	private TimesheetDataRepository timesheetEntryRepository;
 
+	/**
+	 * creazione di una nota spese
+	 * @param notaSpese
+	 * @return
+	 */
 	public NotaSpese createNotaSpese(NotaSpese notaSpese) {
 		try {
 			NotaSpeseKey id = new NotaSpeseKey(notaSpese.getId().getAnno(), notaSpese.getId().getMese(), notaSpese.getId().getGiorno(),
@@ -60,6 +65,11 @@ public class NotaSpeseService {
 		}
 	}
 	
+	/**
+	 * lettura di una nota spese
+	 * @param key
+	 * @return
+	 */
 	public NotaSpese readNotaSpese(NotaSpeseKey key) {
 		try {
 			return notaSpeseRepository.findById(key).get();
@@ -70,7 +80,12 @@ public class NotaSpeseService {
 			throw new NotaSpeseException("NotaSpese non trovata");
 		}
 	}
-
+	
+	/**
+	 * update di una nota spese
+	 * @param notaSpese
+	 * @return
+	 */
 	public NotaSpese updateNotaSpese(NotaSpese notaSpese) {
 		try {
 			notaSpeseRepository.save(notaSpese);
@@ -79,7 +94,11 @@ public class NotaSpeseService {
 			throw new NotaSpeseException(ex.getMessage());
 		}
 	}
-
+	
+	/**
+	 * delete di una nota spese tramite composite key
+	 * @param key
+	 */
 	public void deleteNotaSpese(NotaSpeseKey key) {
 		try {
 			notaSpeseRepository.deleteById(key);
@@ -90,7 +109,11 @@ public class NotaSpeseService {
 			throw new NotaSpeseException(ex.getMessage());
 		}
 	}
-
+	
+	/**
+	 * delete di una nota spese
+	 * @param notaSpese
+	 */
 	public void deleteNotaSpese(NotaSpese notaSpese) {
 		try {
 			notaSpeseRepository.delete(notaSpese);

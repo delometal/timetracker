@@ -67,7 +67,7 @@ public class ContactDetailsController {
 	public ResponseEntity<ResponseDto<UtenteDto>> updateContatto(@RequestBody UtenteDto esternoDto) {
 		
 		Utente utente = dtoEntityMapper.dtoToEntity(esternoDto);
-		utente = utenteService.updateContattoEsterno(utente);
+		utente = utenteService.updateUtente(utente);
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
 		
 		ResponseDto<UtenteDto> response = ResponseDto.<UtenteDto>builder().data(utenteDto).build();

@@ -10,7 +10,6 @@ import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,9 +50,6 @@ import com.perigea.tracker.timesheet.repository.FestivitaRepository;
 import com.perigea.tracker.timesheet.repository.TimesheetDataRepository;
 import com.perigea.tracker.timesheet.repository.TimesheetRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
-import com.perigea.tracker.timesheet.search.Condition;
-import com.perigea.tracker.timesheet.search.FilterFactory;
-import com.perigea.tracker.timesheet.search.Operator;
 
 @Service
 @Transactional
@@ -61,9 +57,6 @@ public class TimesheetService {
 
 	@Autowired
 	private Logger logger;
-
-	@Autowired
-	private FilterFactory<TimesheetEntry> filter;
 
 	@Autowired
 	private FestivitaRepository festivitaRepository;
@@ -93,6 +86,7 @@ public class TimesheetService {
 	private TimesheetApprovalWorkflow timesheetApprovalWorkflow;
 
 	/**
+	 * creazione del timesheet
 	 * @param timesheetDataList
 	 * @param timeDto
 	 * @return
@@ -168,7 +162,15 @@ public class TimesheetService {
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
-
+	
+	
+	/**
+	 * ricerca di un timesheet mensile attraverso anno, mese e giorno
+	 * @param anno
+	 * @param mese
+	 * @param codicePersona
+	 * @return
+	 */
 	public Timesheet getTimesheet(Integer anno, EMese mese, String codicePersona) {
 		try {
 			return timesheetRepository.findById(new TimesheetMensileKey(anno, mese.getMonthId(), codicePersona)).get();
@@ -179,7 +181,13 @@ public class TimesheetService {
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
-
+	
+	
+	/**
+	 * ricerca di un timesheet mensile attraverso la composite key
+	 * @param id
+	 * @return
+	 */
 	public Timesheet getTimesheet(TimesheetMensileKey id) {
 		try {
 			return timesheetRepository.findById(id).get();
@@ -190,7 +198,13 @@ public class TimesheetService {
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
-
+	
+	
+	/**
+	 * ricerca di un singolo dato di un timesheet
+	 * @param id
+	 * @return
+	 */
 	public TimesheetEntry getTimesheetEntry(TimesheetEntryKey id) {
 		try {
 			return timesheetDataRepository.findById(id).get();
@@ -202,31 +216,15 @@ public class TimesheetService {
 		}
 	}
 
-	public Specification<TimesheetEntry> entriesByDateAndCodicePersona(final Integer giorno, final Integer mese,
-			final Integer anno, final String codicePersona) {
-		List<Condition> conditions = new ArrayList<Condition>();
-		conditions.add(Condition.builder().field("id.giorno").value(giorno).valueType(Integer.class)
-				.valueTo(TimesheetEntry.class).operator(Operator.eq).build());
-		conditions.add(Condition.builder().field("id.mese").value(mese).valueType(Integer.class)
-				.valueTo(TimesheetEntry.class).operator(Operator.eq).build());
-		conditions.add(Condition.builder().field("id.anno").value(anno).valueType(Integer.class)
-				.valueTo(TimesheetEntry.class).operator(Operator.eq).build());
-		conditions.add(Condition.builder().field("id.codicePersona").value(giorno).valueType(String.class)
-				.valueTo(TimesheetEntry.class).operator(Operator.eq).build());
-		return filter.buildSpecification(conditions, false);
-	}
-
-	public List<TimesheetEntry> findAllBySpecification(Specification<TimesheetEntry> specification) {
-		try {
-			return timesheetDataRepository.findAll(specification);
-		} catch (Exception ex) {
-			if (ex instanceof NoSuchElementException) {
-				throw new EntityNotFoundException(ex.getMessage());
-			}
-			throw new TimesheetException(ex.getMessage());
-		}
-	}
-
+	
+	/**
+	 * ricerca di singoli dati attraverso una query nativa
+	 * @param giorno
+	 * @param mese
+	 * @param anno
+	 * @param codicePersona
+	 * @return
+	 */
 	public List<TimesheetEntry> findByQueryNative(Integer giorno, Integer mese, Integer anno, String codicePersona) {
 		try {
 			return timesheetDataRepository.findAllByIdGiornoAndIdMeseAndIdAnnoAndIdCodicePersona(giorno, mese, anno,
@@ -238,7 +236,15 @@ public class TimesheetService {
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
-
+	
+	
+	/**
+	 * delete del timesheet mensile
+	 * @param anno
+	 * @param mese
+	 * @param codicePersona
+	 * @return
+	 */
 	public Timesheet deleteTimesheet(Integer anno, EMese mese, String codicePersona) {
 		try {
 			Timesheet timesheet = getTimesheet(anno, mese, codicePersona);
@@ -253,7 +259,13 @@ public class TimesheetService {
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
-
+	
+	
+	/**
+	 * delete di una singolo dato e dell'intero timesheet se in esso non ci sono più dati
+	 * @param entry
+	 * @return
+	 */
 	public TimesheetEntry deleteTimesheetEntry(TimesheetEntry entry) {
 		try {
 			Timesheet timesheet = getTimesheet(new TimesheetMensileKey(entry.getId().getAnno(), entry.getId().getMese(),
@@ -274,9 +286,15 @@ public class TimesheetService {
 			}
 			throw new TimesheetException(ex.getMessage());
 		}
-
 	}
-
+	
+	
+	/**
+	 * update di un timesheet mensile
+	 * @param timesheetDataList
+	 * @param timeDto
+	 * @return
+	 */
 	public Timesheet updateTimesheet(List<TimesheetEntryDto> timesheetDataList, TimesheetRefDto timeDto) {
 		try {
 			TimesheetMensileKey key = new TimesheetMensileKey(timeDto.getAnno(), timeDto.getMese(),
@@ -338,7 +356,16 @@ public class TimesheetService {
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
-
+	
+	
+	/**
+	 * metodo di approvazione di un singolo timesheet e workflow per l'invio della
+	 * notifica all'utente
+	 * 
+	 * @param timesheetEvent
+	 * @param newStatus
+	 * @return
+	 */
 	public Boolean editTimesheetStatus(TimesheetEventDto timesheetEvent, ApprovalStatus newStatus) {
 		try {
 			TimesheetMensileKey key = new TimesheetMensileKey(timesheetEvent.getTimesheet().getAnno(),
@@ -361,7 +388,14 @@ public class TimesheetService {
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
-
+	
+	
+	/**
+	 * metodo per l'approvazione di una lista di timesheet e invio delle notifiche ai singoli utenti
+	 * @param events
+	 * @param newStatus
+	 * @return
+	 */
 	public Boolean approveMultiTimesheet(List<TimesheetEventDto> events, ApprovalStatus newStatus) {
 		try {
 			Boolean statusUpdate = false;
@@ -373,7 +407,14 @@ public class TimesheetService {
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
-
+	
+	
+	/**
+	 * metodo per il controllo delle festività
+	 * @param festivi
+	 * @param timesheetData
+	 * @param timesheetDto
+	 */
 	private void controlloFestivita(List<Festivita> festivi, TimesheetEntryDto timesheetData,
 			TimesheetRefDto timesheetDto) {
 		LocalDate data = LocalDate.of(timesheetDto.getAnno(), timesheetDto.getMese(), timesheetData.getGiorno());
@@ -384,7 +425,13 @@ public class TimesheetService {
 			}
 		}
 	}
-
+	
+	/**
+	 * metodo per il controllo della validità dei dati che vengono inseriti nel timesheet
+	 * @param timesheetDataList
+	 * @param timesheetDto
+	 * @throws TimesheetException
+	 */
 	private void assertTimesheetIsValid(List<TimesheetEntryDto> timesheetDataList, TimesheetRefDto timesheetDto)
 			throws TimesheetException {
 		List<Festivita> festivi = festivitaRepository.findAll();
@@ -410,8 +457,10 @@ public class TimesheetService {
 			}
 		}
 	}
+	
+	
 	/**
-	 * download di un dile excel relativo al timesheet mensile di un utente
+	 * download di un file excel relativo al timesheet mensile di un utente
 	 * @param anno
 	 * @param mese
 	 * @param angrafica
@@ -425,7 +474,16 @@ public class TimesheetService {
 				infoAuto);
 		return excelTimesheetService.createExcelTimesheet(timesheetExcelWrapper);
 	}
-
+	
+	
+	/**
+	 * generazione di una mappa di chiave filename e di valore l'excel del timesheet relativo ad
+	 * un utente, a partire da una lista di timesheet relativi allo stesso mese
+	 * 
+	 * @param anno
+	 * @param mese
+	 * @return
+	 */
 	public Map<String, byte[]> getExcelTimesheetsMap(Integer anno, Integer mese) {
 		try {
 			Map<String, byte[]> excelTimesheetsMap = new HashMap<String, byte[]>();
@@ -444,6 +502,17 @@ public class TimesheetService {
 		}
 	}
 	
+	
+	/**
+	 * generazione di una mappa di chiave filename e di valore l'excel del timesheet
+	 * relativo ad un utente, a partire da una lista di utenti che hanno tutti lo
+	 * stesso responsabile
+	 * 
+	 * @param anno
+	 * @param mese
+	 * @param sottoposti
+	 * @return
+	 */
 	public Map<String, byte[]> getExcelTimesheetsMap(Integer anno, Integer mese, List<Personale> sottoposti) {
 		try {
 			Map<String, byte[]> excelTimesheetsMap = new HashMap<String, byte[]>();
@@ -464,10 +533,12 @@ public class TimesheetService {
 		}
 	}
 	
-	
-	
-	
-		
+
+	/**
+	 * metodo per la creazione delle InfoAuto relative ad un Dipendente/Consulente	
+	 * @param utente
+	 * @return
+	 */
 	public InfoAutoDto getInfoAuto(Utente utente) {
 		InfoAutoDto infoAuto = null;
 		if (utente.getPersonale().getClass().isAssignableFrom(Dipendente.class)) {

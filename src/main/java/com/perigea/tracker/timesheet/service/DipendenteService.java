@@ -91,6 +91,11 @@ public class DipendenteService extends UtenteService {
 		}
 	}
 	
+	/**
+	 * ricerca di tutti gli utenti tramite il responsabile
+	 * @param responsabile
+	 * @return
+	 */
 	public List<Personale> readAllDipendentiByResponsabile(Personale responsabile) {
 		try {
 			return dipendenteRepository.findAllByResponsabile(responsabile);
@@ -102,7 +107,12 @@ public class DipendenteService extends UtenteService {
 		}
 	}
 	
-	
+	/**
+	 * ricerca di tutti i dipendenti in base al RAL
+	 * @param ral
+	 * @param centroDiCosto
+	 * @return
+	 */
 	public List<Dipendente> searchDipendentiByRal(Float ral,  String centroDiCosto) {
 		try {
 			return dipendenteRepository.findAll(dipendenteByRal(ral, centroDiCosto));
@@ -111,6 +121,12 @@ public class DipendenteService extends UtenteService {
 		}
 	}
 	
+	/**
+	 * Specification del RAL
+	 * @param ral
+	 * @param centroDiCosto
+	 * @return
+	 */
 	private Specification<Dipendente> dipendenteByRal(final Float ral, final String centroDiCosto) {
 		
 		List<Condition> conditions = new ArrayList<>();
@@ -120,7 +136,10 @@ public class DipendenteService extends UtenteService {
 		return filter.buildSpecification(conditions, false);
 	}
 	
-	
+	/**
+	 * metodo di creazione dello storico di un dipendente
+	 * @param newDatiEconomici
+	 */
 	public void createStorico(DatiEconomiciDipendente newDatiEconomici) {
 		String codicePersona = newDatiEconomici.getCodicePersona();
 		Dipendente personale = newDatiEconomici.getPersonale();

@@ -67,7 +67,11 @@ public class RichiestaService {
 	private CommessaService commessaService;
 	
 	
-
+	/**
+	 * creazione di una richiesta
+	 * @param richiesta
+	 * @return
+	 */
 	public Richiesta createRichiesta(Richiesta richiesta) {
 		try {
 			richiestaRepository.save(richiesta);
@@ -77,7 +81,12 @@ public class RichiestaService {
 			throw new RichiestaException(ex.getMessage());
 		}
 	}
-
+	
+	/**
+	 * lettura di una richiesta
+	 * @param codiceRichiesta
+	 * @return
+	 */
 	public Richiesta readRichiesta(Long codiceRichiesta) {
 		try {
 			Richiesta richiesta = richiestaRepository.findById(codiceRichiesta).get();
@@ -90,7 +99,12 @@ public class RichiestaService {
 			throw new RichiestaException(ex.getMessage());
 		}
 	}
-
+	
+	/**
+	 * update di una richiesta
+	 * @param richiesta
+	 * @return
+	 */
 	public Richiesta updateRichiesta(Richiesta richiesta) {
 		try {
 			return richiestaRepository.save(richiesta);
@@ -98,7 +112,11 @@ public class RichiestaService {
 			throw new RichiestaException(ex.getMessage());
 		}
 	}
-
+	
+	/**
+	 * delete di una richiesta
+	 * @param richiesta
+	 */
 	public void deleteRichiesta(Richiesta richiesta) {
 		try {
 			richiestaRepository.delete(richiesta);
@@ -106,7 +124,11 @@ public class RichiestaService {
 			throw new RichiestaException(ex.getMessage());
 		}
 	}
-
+	
+	/**
+	 * delete di una richiesta tramite id
+	 * @param id
+	 */
 	public void deleteRichiesta(Long id) {
 		try {
 			richiestaRepository.deleteById(id);
@@ -115,6 +137,11 @@ public class RichiestaService {
 		}
 	}
 
+	/**
+	 * update di una history
+	 * @param history
+	 * @return
+	 */
 	public Richiesta updateRichiestaHistory(RichiestaHistory history) {
 		try {
 			Richiesta richiesta = richiestaRepository.findById(history.getRichiesta().getCodiceRichiesta()).get();
@@ -135,6 +162,11 @@ public class RichiestaService {
 		}
 	}
 
+	/**
+	 * delete di una history
+	 * @param history
+	 * @return
+	 */
 	public Richiesta deleteRichiestaHistory(RichiestaHistory history) {
 		try {
 			Richiesta richiesta = richiestaRepository.findById(history.getRichiesta().getCodiceRichiesta()).get();

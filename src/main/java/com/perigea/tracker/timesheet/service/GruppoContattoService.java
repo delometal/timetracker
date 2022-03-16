@@ -1,6 +1,5 @@
 package com.perigea.tracker.timesheet.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -8,19 +7,12 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.perigea.tracker.commons.enums.AnagraficaType;
-import com.perigea.tracker.commons.enums.RuoloType;
-import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.exception.ContattoException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.exception.GruppoException;
-import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Gruppo;
-import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.repository.GruppoRepository;
-import com.perigea.tracker.timesheet.repository.RuoliRepository;
-import com.perigea.tracker.timesheet.repository.UtenteRepository;
 
 @Service
 public class GruppoContattoService {
@@ -31,11 +23,6 @@ public class GruppoContattoService {
 	@Autowired
 	private GruppoRepository gruppoRepository;
 
-	@Autowired
-	private UtenteRepository utenteRepository;
-
-	@Autowired
-	private RuoliRepository ruoliRepository;
 
 	/**
 	 * Creazione gruppo
@@ -69,7 +56,7 @@ public class GruppoContattoService {
 	}
 
 	/**
-	 * 
+	 * update gruppo 
 	 * @param gruppo
 	 * @return
 	 */
@@ -82,7 +69,7 @@ public class GruppoContattoService {
 	}
 
 	/**
-	 * 
+	 * delete di un gruppo tramite id
 	 * @param id
 	 */
 	public void deleteGruppo(final Long id) {
@@ -97,77 +84,6 @@ public class GruppoContattoService {
 	}
 
 	/**
-	 * Creazione contatto
-	 * 
-	 * @param contatto
-	 * @return
-	 */
-	public Utente createContatto(Utente contatto) {
-		try {
-			List<Ruolo> ruoli = new ArrayList<Ruolo>(1);
-			ruoli.add(ruoliRepository.getById(RuoloType.P));
-			contatto.setCodicePersona(Utils.uuid());
-			contatto.setStato(StatoUtenteType.A);
-			contatto.setRuoli(ruoli);
-			contatto.setTipo(AnagraficaType.C);
-			utenteRepository.save(contatto);
-			return contatto;
-		} catch (Exception ex) {
-			throw new GruppoException(ex.getMessage());
-		}
-	}
-
-	/**
-	 * Lettura contatto
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public Utente readContatto(final String codicePersona) {
-		try {
-			return utenteRepository.findByCodicePersonaAndTipo(codicePersona, AnagraficaType.C).get();
-		} catch (Exception ex) {
-			if (ex instanceof NoSuchElementException) {
-				logger.info("l'utente ricercato non è presente o potrebbe non essere un contatto");
-				throw new EntityNotFoundException(ex.getMessage());
-			}
-			throw new ContattoException(ex.getMessage());
-		}
-	}
-
-	/**
-	 * lettura contatto attraverso nome e cognome
-	 * 
-	 * @param nome
-	 * @param cognome
-	 * @return
-	 */
-	public List<Utente> readContatto(String nome, String cognome) {
-		try {
-			return utenteRepository.findAllByNomeAndCognome(nome, cognome);
-		} catch (Exception ex) {
-			if (ex instanceof NoSuchElementException) {
-				throw new EntityNotFoundException(ex.getMessage());
-			}
-			throw new ContattoException(ex.getMessage());
-		}
-	}
-
-	/**
-	 * Lettura tutti i contatti
-	 * 
-	 * @param id
-	 * @return
-	 */
-	public List<Utente> readAllContatti() {
-		try {
-			return utenteRepository.findAllOfType(AnagraficaType.C);
-		} catch (Exception ex) {
-			throw new ContattoException(ex.getMessage());
-		}
-	}
-
-	/**
 	 * Lettura tutti i contatti di un gruppo
 	 * 
 	 * @param id
@@ -176,35 +92,6 @@ public class GruppoContattoService {
 	public List<Utente> readAllContactsByGroupId(Long groupId) {
 		try {
 			return gruppoRepository.getById(groupId).getContatti();
-		} catch (Exception ex) {
-			throw new ContattoException(ex.getMessage());
-		}
-	}
-
-	/**
-	 * 
-	 * @param gruppo
-	 * @return
-	 */
-	public Utente updateContatto(Utente contattoAggiornato) {
-		try {
-			utenteRepository.findByCodicePersonaAndTipo(contattoAggiornato.getCodicePersona(), AnagraficaType.C).get();
-			return utenteRepository.save(contattoAggiornato);
-		} catch (Exception ex) {
-			if (ex instanceof NoSuchElementException) {
-				throw new EntityNotFoundException(ex.getMessage());
-			}
-			throw new ContattoException(ex.getMessage());
-		}
-	}
-
-	/**
-	 * 
-	 * @param id
-	 */
-	public void deleteContatto(final String id) {
-		try {
-			utenteRepository.deleteById(id);
 		} catch (Exception ex) {
 			throw new ContattoException(ex.getMessage());
 		}

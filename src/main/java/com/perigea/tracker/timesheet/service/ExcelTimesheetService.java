@@ -47,7 +47,12 @@ public class ExcelTimesheetService {
 	
 	@Autowired
 	private Logger logger;
-
+	
+	/**
+	 * metodo globale per la creazione dell'excel
+	 * @param timesheetExcelWrapper
+	 * @return
+	 */
 	public byte[] createExcelTimesheet(TimesheetExcelWrapper timesheetExcelWrapper) {
 		
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -82,6 +87,12 @@ public class ExcelTimesheetService {
 		}
 	}
 	
+	/**
+	 * metodo per la creazione dello sheet relativo alle note spese
+	 * @param timesheetDataWrapper
+	 * @param style
+	 * @param workbook
+	 */
 	private void buildNoteSpese(TimesheetDataWrapper timesheetDataWrapper, XSSFCellStyle style, XSSFWorkbook workbook) {
 		XSSFSheet secondSheet = workbook.createSheet(NOTE_SPESE_NAME);
 		buildHeader(timesheetDataWrapper,secondSheet,style, timesheetDataWrapper.getRefNamesNoteSpese());
@@ -196,7 +207,13 @@ public class ExcelTimesheetService {
 
 	}
 
-
+	
+	/**
+	 * metodo per la creazione dello sheet relativo al timesheet
+	 * @param timesheetDataWrapper
+	 * @param style
+	 * @param workbook
+	 */
 	private void buildTimesheet(TimesheetDataWrapper timesheetDataWrapper, XSSFCellStyle style, XSSFWorkbook workbook) {
 		XSSFSheet sheet = workbook.createSheet(TIMESHEET_NAME);
 		buildHeader(timesheetDataWrapper,sheet,style, timesheetDataWrapper.getRefNamesTimesheet());
@@ -315,7 +332,14 @@ public class ExcelTimesheetService {
 			sheet.autoSizeColumn(columnIndex);
 		}
 	}
-
+	
+	/**
+	 * metodo per la creazione dell'header
+	 * @param timesheetDataWrapper
+	 * @param sheet
+	 * @param style
+	 * @param refNames
+	 */
 	private void buildHeader(TimesheetDataWrapper timesheetDataWrapper, XSSFSheet sheet, XSSFCellStyle style, LinkedHashMap<String, String> refNames) {
 		try {
 			
@@ -380,7 +404,11 @@ public class ExcelTimesheetService {
 		}
 	}
 
-	//Creazione Wrapper per il raccoglimento dei valori interessati agli sheet
+	/**
+	 * Creazione Wrapper per il raccoglimento dei valori interessati agli sheet
+	 * @param timesheetExcelWrapper
+	 * @return
+	 */
 	private TimesheetDataWrapper buildTimesheetData(TimesheetExcelWrapper timesheetExcelWrapper) {
 		TimesheetResponseDto timesheet = timesheetExcelWrapper.getTimesheet();
 
@@ -392,7 +420,11 @@ public class ExcelTimesheetService {
 				.statoTimesheet(timesheet.getStatoRichiesta().name()).build();
 	}
 
-	//Ciclo per la raccolta delle entries per commessa
+	/**
+	 * Ciclo per la raccolta delle entries per commessa
+	 * @param timesheetExcelWrapper
+	 * @return
+	 */
 	private Map<String, List<TimesheetEntryDto>> getTimesheetEntriesDto(TimesheetExcelWrapper timesheetExcelWrapper) {
 		TimesheetResponseDto timesheet = timesheetExcelWrapper.getTimesheet();
 		Map<String, List<TimesheetEntryDto>> entries = new HashMap<>();
@@ -410,7 +442,11 @@ public class ExcelTimesheetService {
 		return entries;
 	}
 	
-	//Classe di utilita conteggio
+	/**
+	 * Classe di utilita conteggio
+	 * 
+	 *
+	 */
 	private class Counter{
 		public int i = 0;
 	}

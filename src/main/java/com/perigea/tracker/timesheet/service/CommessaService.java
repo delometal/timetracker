@@ -200,6 +200,11 @@ public class CommessaService {
 		}
 	}
 	
+	/**
+	 * lettura di tutte le estensioni di una commessa
+	 * @param codiceCommessa
+	 * @return
+	 */
 	public List<CommessaEstensione> readAllCommessaEstensione(String codiceCommessa) {
 		try {
 			return commessaEstensioneRepository.findAllByCodiceCommessa(codiceCommessa);
@@ -211,6 +216,12 @@ public class CommessaService {
 		}
 	}
 	
+	/**
+	 * lettura di un'estensione tramite composite key
+	 * @param codiceCommessa
+	 * @param dataEstensione
+	 * @return
+	 */
 	public CommessaEstensione findById(String codiceCommessa, LocalDate dataEstensione) {
 		try {
 			CommessaEstensioneKey id = new CommessaEstensioneKey(codiceCommessa, dataEstensione);
@@ -247,7 +258,12 @@ public class CommessaService {
 		}
 	}
 	
-	
+	/**
+	 * lettura commesse fatturabili tramite specification
+	 * @param totaleFatturato
+	 * @param importoOrdine
+	 * @return
+	 */
 	public List<CommessaFatturabile> searchCommesseAfterThatImports(Double totaleFatturato, Double importoOrdine) {
 		try {
 			return commessaFatturabileRepository.findAll(commesseAfterThatImport(totaleFatturato, importoOrdine));
@@ -256,6 +272,12 @@ public class CommessaService {
 		}
 	}
 	
+	/**
+	 * specification commesse fatturabili
+	 * @param totaleFatturato
+	 * @param importoOrdine
+	 * @return
+	 */
 	private Specification<CommessaFatturabile> commesseAfterThatImport(final Double totaleFatturato, final Double importoOrdine) {
 		
 		List<Condition> conditions = new ArrayList<>();

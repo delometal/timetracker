@@ -62,6 +62,11 @@ public class FileService {
 		}
 	}
 	
+	/**
+	 * upload di un curriculum vitae
+	 * @param codicePersona
+	 * @param file
+	 */
 	public void uploadCurriculum(String codicePersona, MultipartFile file) {
 		try {
 			Utente utente = utenteRepository.findById(codicePersona).get();
@@ -97,12 +102,23 @@ public class FileService {
 			throw new FileUploadException("Could not store the file. Error: " + e.getMessage());
 		}
 	}
-
+	
+	/**
+	 * estrazione del nome del file
+	 * @param codicePersona
+	 * @param utente
+	 * @return
+	 */
 	private String extractCurriculumFilename(String codicePersona, Utente utente) {
 		String filepath = utente.getCognome() + "-" + utente.getNome() + "-" + codicePersona;
 		return Utils.removeAllSpaces(filepath).trim();
 	}
-
+	
+	/**
+	 * lettura di un curriculum
+	 * @param codicePersona
+	 * @return
+	 */
 	public CurriculumVitae getCurriculum(String codicePersona) {
 		try {
 			return utenteRepository.getById(codicePersona).getCv();

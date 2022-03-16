@@ -53,7 +53,6 @@ public class ConsulenteService extends UtenteService {
 	 * @param consulenteParam
 	 * @return
 	 */
-
 	public Consulente readAnagraficaConsulente(String codicePersona) {
 		try {
 			return consulenteRepository.findByCodicePersona(codicePersona).get();
@@ -64,7 +63,11 @@ public class ConsulenteService extends UtenteService {
 			throw new ConsulenteException(ex.getMessage());
 		}
 	}
-
+	
+	/**
+	 * metodo creazione dello storico di un consulennte
+	 * @param newDatiEconomici
+	 */
 	public void createStorico(DatiEconomiciConsulente newDatiEconomici) {
 		String codicePersona = newDatiEconomici.getCodicePersona();
 		Consulente personale = newDatiEconomici.getPersonale();

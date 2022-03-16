@@ -66,6 +66,13 @@ public class UtenteService {
 	@Autowired
 	private RestClient restClient;
 
+	/**
+	 * metodo di creazione di un utente ed invio notifica delle credenzili
+	 * @param <T>
+	 * @param utente
+	 * @param personale
+	 * @return
+	 */
 	public <T extends Personale> Utente createUtente(Utente utente, T personale) {
 		try {
 			utente.setCodicePersona(null);
@@ -92,28 +99,14 @@ public class UtenteService {
 					.username(username)
 					.dataScadenza(passwordToken.getDataScadenza())
 					.build();
-//			restClient.sendUserNotification(new NonPersistedEventDto<CreatedUtenteNotificaDto>(CreatedUtenteNotificaDto.class, Utils.toJson(notifica)));				
+			restClient.sendUserNotification(new NonPersistedEventDto<CreatedUtenteNotificaDto>(CreatedUtenteNotificaDto.class, Utils.toJson(notifica)));				
 			return user;
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 			throw new UtenteException(ex.getMessage());
 		}
 	}
-
-	/**
-	 * creazione utente
-	 * 
-	 * @param utente
-	 * @return
-	 */
-	public Utente saveUtente(Utente utente) {
-		try {
-			return utenteRepository.save(utente);
-		} catch (Exception ex) {
-			throw new UtenteException(ex.getMessage());
-		}
-	}
-
+	
 	/**
 	 * lettura utente
 	 * 
@@ -143,6 +136,7 @@ public class UtenteService {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
+	
 
 	/**
 	 * cancellazione utente
@@ -167,6 +161,7 @@ public class UtenteService {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
+	
 
 	/**
 	 * delete contatto
@@ -180,7 +175,12 @@ public class UtenteService {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
-
+	
+	/**
+	 * update di un utente
+	 * @param utente
+	 * @return
+	 */
 	public Utente updateUtente(Utente utente) {
 		try {
 			return utenteRepository.save(utente);
@@ -188,8 +188,14 @@ public class UtenteService {
 			throw new ConsulenteException(ex.getMessage());
 		}
 	}
+	
 
-	// Metodo per aggiornare lo stato (attivo/cessato) di un utente
+	/**
+	 *  Metodo per aggiornare lo stato (attivo/cessato) di un utente
+	 * @param codicePersona
+	 * @param newStatus
+	 * @return
+	 */
 	public Utente updateUtenteStatus(String codicePersona, StatoUtenteType newStatus) {
 		try {
 			Integer edits = applicationDao.updateUserStatus(codicePersona, newStatus);
@@ -204,7 +210,14 @@ public class UtenteService {
 			throw ex;
 		}
 	}
-
+	
+	
+	/**
+	 * update della password di un utente
+	 * @param codicePersona
+	 * @param newPassword
+	 * @return
+	 */
 	public Utente updateUtentePassword(String codicePersona, String newPassword) {
 		try {
 			String cryptedPassword = passwordEncoder.encode(newPassword);
@@ -221,7 +234,12 @@ public class UtenteService {
 			throw ex;
 		}
 	}
-
+	
+	/**
+	 * controllo del token per l'aggiornamento della password
+	 * @param token
+	 * @return
+	 */
 	public boolean checkToken(String token) {
 		try {
 			PasswordToken passwordToken = passwordTokenRepository.findByToken(token).get();
@@ -232,7 +250,12 @@ public class UtenteService {
 			throw ex;
 		}
 	}
-
+	
+	/**
+	 * creazione di un contatto esterno
+	 * @param utente
+	 * @return
+	 */
 	public Utente saveContattoEsterno(Utente utente) {
 		try {
 			utente.setCodicePersona(Utils.uuid());
@@ -246,16 +269,13 @@ public class UtenteService {
 			throw ex;
 		}
 	}
-
-	public Utente updateContattoEsterno(Utente utente) {
-		try {
-			utente = utenteRepository.save(utente);
-			return utente;
-		} catch (Exception ex) {
-			throw ex;
-		}
-	}
-
+	
+	/**
+	 * creazione automatica dello username di un utente
+	 * @param nome
+	 * @param cognome
+	 * @return
+	 */
 	public String username(String nome, String cognome) {
 		String username = nome + "." + cognome;
 		List<Utente> userList = utenteRepository.findAllByNomeAndCognome(nome, cognome);
@@ -273,7 +293,14 @@ public class UtenteService {
 		}
 
 	}
-
+	
+	/**
+	 * ricerca di utenti tramite specification
+	 * @param username
+	 * @param tipoAnagrafica
+	 * @param statoUtente
+	 * @return
+	 */
 	public List<Utente> searchUtenti(String username, AnagraficaType tipoAnagrafica, final StatoUtenteType statoUtente) {
 		try {
 			return utenteRepository.findAll(utenteByUsernameAndTypeSearch(username, tipoAnagrafica, statoUtente));
@@ -282,6 +309,13 @@ public class UtenteService {
 		}
 	}
 	
+	/**
+	 * specification Utente
+	 * @param username
+	 * @param tipoAnagrafica
+	 * @param statoUtente
+	 * @return
+	 */
 	private Specification<Utente> utenteByUsernameAndTypeSearch(
 			final String username,
 			final AnagraficaType tipoAnagrafica,
@@ -294,6 +328,12 @@ public class UtenteService {
 		return filter.buildSpecification(conditions, false);
 	}
 	
+	/**
+	 * ricerca di utenti tramite specification
+	 * @param name
+	 * @param luogoDiNascita
+	 * @return
+	 */
 	public List<Utente> searchUtenti(String name, String luogoDiNascita) {
 		try {
 			return utenteRepository.findAll(utenteByNameAndLuogoDiNascita(name, luogoDiNascita));
@@ -302,6 +342,12 @@ public class UtenteService {
 		}
 	}
 	
+	/**
+	 * specification Utente
+	 * @param name
+	 * @param luogoDiNascita
+	 * @return
+	 */
 	private Specification<Utente> utenteByNameAndLuogoDiNascita(
 			final String name,
 			final String luogoDiNascita) {
@@ -311,17 +357,6 @@ public class UtenteService {
 		conditions.add(Condition.builder().field("luogoDiNascita").value(luogoDiNascita).valueType(String.class).operator(Operator.eq).build());
 		return filter.buildSpecification(conditions, false);
 	}
-	
-	
-//	public Personale readAnagraficaPersonale(String codicePersona) {
-//		try {
-//			return utenteRepository.getById(codicePersona).getPersonale();
-//		} catch (Exception ex) {
-//			if(ex instanceof NoSuchElementException) {
-//				throw new EntityNotFoundException(ex.getMessage());
-//			}
-//			throw new ConsulenteException(ex.getMessage());
-//		}
-//	}
+
 
 }

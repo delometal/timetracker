@@ -18,6 +18,7 @@ public class RestClient {
 
 	@Autowired
 	private ApplicationProperties applicationProperties;
+	
 
 	public <T extends CalendarEventDto> void sendNotifica(T event, String endpoint) {
 		restTemplate.postForObject(applicationProperties.getCalendarConnectionString() + endpoint, event, ResponseDto.class);

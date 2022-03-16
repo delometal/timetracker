@@ -20,13 +20,23 @@ public class ContactDetailsService {
 
 	@Autowired
 	private GruppoContattoService gruppoContattoService;
-
+	
+	/**
+	 * lettura dei recapiti di un utente
+	 * @param userId
+	 * @return
+	 */
 	public ContactDto readUserContactDetails(String userId) {
 		Utente utente = utenteService.readUtente(userId);
 		ContactDto contactDetails = dtoEntityMapper.entityToContactDto(utente);
 		return contactDetails;
 	}
-
+	
+	/**
+	 * lettura dei recapiti di tutti gli utenti di un determinato gruppo
+	 * @param groupId
+	 * @return
+	 */
 	public List<ContactDto> readAllContactDetails(Long groupId) {
 		List<Utente> utenti = gruppoContattoService.readAllContactsByGroupId(groupId);
 		List<ContactDto> details = dtoEntityMapper.entityToContactDtoList(utenti);

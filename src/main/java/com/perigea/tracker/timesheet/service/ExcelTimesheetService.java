@@ -56,10 +56,8 @@ public class ExcelTimesheetService {
 	 */
 	public byte[] createExcelTimesheet(TimesheetExcelWrapper timesheetExcelWrapper) {
 		
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		XSSFWorkbook workbook = new XSSFWorkbook();
-
-		try {
+		try(ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			XSSFWorkbook workbook = new XSSFWorkbook();) {
 			TimesheetDataWrapper dataWrapper = buildTimesheetData(timesheetExcelWrapper);
 			
 			XSSFCellStyle style = workbook.createCellStyle();
@@ -77,14 +75,6 @@ public class ExcelTimesheetService {
 			return bos.toByteArray();
 		} catch (Exception ex) {
 			throw new TimesheetException(ex.getMessage());
-		} finally {
-			try {
-				bos.close();
-				workbook.close();
-			} catch (IOException e) {
-				logger.error(e.getMessage());
-				e.printStackTrace();
-			}
 		}
 	}
 	

@@ -69,7 +69,7 @@ public class DipendenteService extends UtenteService {
 	 */
 	public Utente createUtenteDipendente(Utente utente, Dipendente dipendente, DatiEconomiciDipendente economics) {
 		if(economics != null) {
-			economics.setCentroDiCosto(centroDiCostoRepository.findById(economics.getCodiceCentroDiCosto()).get());
+			economics.setCentroDiCosto(centroDiCostoRepository.findById(economics.getCodiceCentroDiCosto()).orElseThrow());
 			dipendente.setEconomics(economics);
 			economics.setCodicePersona(null);
 			economics.setPersonale(dipendente);
@@ -86,7 +86,7 @@ public class DipendenteService extends UtenteService {
 	 */
 	public Dipendente readAnagraficaDipendente(String codicePersona) {
 		try {
-			return dipendenteRepository.findByCodicePersona(codicePersona).get();
+			return dipendenteRepository.findByCodicePersona(codicePersona).orElseThrow();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -163,7 +163,7 @@ public class DipendenteService extends UtenteService {
 		String codicePersona = newDatiEconomici.getCodicePersona();
 		Dipendente personale = newDatiEconomici.getPersonale();
 		
-		DatiEconomiciDipendente oldDatiEconomici = dipendenteRepository.findById(codicePersona).get().getEconomics();
+		DatiEconomiciDipendente oldDatiEconomici = dipendenteRepository.findById(codicePersona).orElseThrow().getEconomics();
 		
 		// Storico LivelloContrattuale
 		if (! oldDatiEconomici.getLivelloAttuale().equals(newDatiEconomici.getLivelloAttuale())) {

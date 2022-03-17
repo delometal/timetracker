@@ -40,7 +40,7 @@ public class FestivitaService {
 	 */
 	public Festivita readFestivita(Integer id) {
 		try {
-			return festivitaRepository.findById(id).get();
+			return festivitaRepository.findById(id).orElseThrow();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -56,7 +56,7 @@ public class FestivitaService {
 	 */
 	public Festivita readFestivitaByName(String nomeFestivo) {
 		try {
-			return festivitaRepository.findByNomeFestivo(nomeFestivo).get();
+			return festivitaRepository.findByNomeFestivo(nomeFestivo).orElseThrow();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

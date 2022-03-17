@@ -85,7 +85,7 @@ public class CommessaService {
 	 */
 	public CommessaNonFatturabile readCommessaNonFatturabile(String codiceCommessa) {
 		try {
-			return commessaNonFatturabileRepository.findByCodiceCommessa(codiceCommessa).get();
+			return commessaNonFatturabileRepository.findByCodiceCommessa(codiceCommessa).orElseThrow();
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -121,9 +121,7 @@ public class CommessaService {
 	 */
 	public CommessaFatturabile createCommessaFatturabile(CommessaFatturabile commessa, Cliente cliente) {
 		try {
-			try {
-				clienteRepository.findById(cliente.getCodiceAzienda()).get();
-			} catch (Exception e) {
+			if (clienteRepository.findById(cliente.getCodiceAzienda()).isEmpty()) {
 				cliente = clienteRepository.save(cliente);
 			}
 			commessa.setCliente(cliente);
@@ -144,7 +142,7 @@ public class CommessaService {
 	 */
 	public CommessaFatturabile readCommessaFatturabile(final String codiceCommessa) {
 		try {
-			return commessaFatturabileRepository.findByCodiceCommessa(codiceCommessa).get();
+			return commessaFatturabileRepository.findByCodiceCommessa(codiceCommessa).orElseThrow();
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -225,7 +223,7 @@ public class CommessaService {
 	public CommessaEstensione findById(String codiceCommessa, LocalDate dataEstensione) {
 		try {
 			CommessaEstensioneKey id = new CommessaEstensioneKey(codiceCommessa, dataEstensione);
-			return commessaEstensioneRepository.findById(id).get();
+			return commessaEstensioneRepository.findById(id).orElseThrow();
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

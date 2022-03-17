@@ -1,6 +1,7 @@
 package com.perigea.tracker.timesheet.service;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -24,6 +25,7 @@ public class RuoloService {
 
 	/**
 	 * Creazione ruolo
+	 * 
 	 * @param ruolo
 	 * @return
 	 */
@@ -42,7 +44,7 @@ public class RuoloService {
 	 */
 	public Ruolo readRole(RuoloType ruolo) {
 		try {
-			return ruoliRepository.findById(ruolo).get();
+			return ruoliRepository.findById(ruolo).orElseThrow();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -53,6 +55,7 @@ public class RuoloService {
 
 	/**
 	 * Aggiornamento ruolo
+	 * 
 	 * @param ruoloDto
 	 * @return
 	 */
@@ -67,6 +70,7 @@ public class RuoloService {
 
 	/**
 	 * Cancellazione ruolo
+	 * 
 	 * @param ruolo
 	 * @return
 	 */

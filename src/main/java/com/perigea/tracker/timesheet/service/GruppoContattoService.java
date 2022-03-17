@@ -46,7 +46,7 @@ public class GruppoContattoService {
 	 */
 	public Gruppo readGruppo(final Long id) {
 		try {
-			return gruppoRepository.findById(id).get();
+			return gruppoRepository.findById(id).orElseThrow();
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

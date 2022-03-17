@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +52,9 @@ import com.perigea.tracker.timesheet.repository.FestivitaRepository;
 import com.perigea.tracker.timesheet.repository.TimesheetDataRepository;
 import com.perigea.tracker.timesheet.repository.TimesheetRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
+import com.perigea.tracker.timesheet.search.Condition;
+import com.perigea.tracker.timesheet.search.FilterFactory;
+import com.perigea.tracker.timesheet.search.Operator;
 
 @Service
 @Transactional
@@ -85,6 +89,9 @@ public class TimesheetService {
 
 	@Autowired
 	private TimesheetApprovalWorkflow timesheetApprovalWorkflow;
+	
+	@Autowired
+	private FilterFactory<TimesheetEntry> filter;
 
 	/**
 	 * creazione del timesheet
@@ -572,6 +579,71 @@ public class TimesheetService {
 		TimesheetResponseDto timesheetResponseDto = dtoEntityMapper.entityToDto(timesheet);
 		return new TimesheetExcelWrapper(timesheetResponseDto, utenteDto, infoAuto);
 	}
+	
+	
+	/**
+	 * metodo per ottenere le ore totali lavorate per una commessa in un mese
+	 * @param codiceCommessa
+	 * @param anno
+	 * @param mese
+	 * @param codicePersona
+	 * @return
+	 */
+	public Integer getOreTotaliPerCommessa(String codiceCommessa, Integer anno, EMese mese, String codicePersona) {
+		try {
+			List<TimesheetEntry> entries = timesheetDataRepository
+					.findAll(entriesBySpecification(anno, mese.getMonthId(), codiceCommessa, codicePersona));
+			Integer oreTotali = 0;
+			for (TimesheetEntry entry : entries) {
+				oreTotali += entry.getOre();
+			}
+			return oreTotali;
+		} catch (Exception e) {
+			throw new TimesheetException(e.getMessage());
+		}
+	}
+
+	private Specification<TimesheetEntry> entriesBySpecification(final Integer anno, final Integer mese,
+			final String codiceCommessa, final String codicePersona) {
+
+		List<Condition> conditions = new ArrayList<>();
+		conditions.add(Condition.builder().field("id.anno").value(anno).valueType(Integer.class).operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("id.mese").value(mese).valueType(Integer.class).operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("id.codiceCommessa").value(codiceCommessa).valueType(String.class).operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("id.codicePersona").value(codicePersona).valueType(String.class).operator(Operator.eq).build());
+		return filter.buildSpecification(conditions, false);
+	}
+	
+	/**
+	 * metodo per ottenere le ore totali lavorate per una commessa in un anno
+	 * @param codiceCommessa
+	 * @param anno
+	 * @param codicePersona
+	 * @return
+	 */
+	public Integer getOreTotaliPerCommessa(String codiceCommessa, Integer anno, String codicePersona) {
+		try {
+			List<TimesheetEntry> entries = timesheetDataRepository
+					.findAll(entriesBySpecification(anno, codiceCommessa, codicePersona));
+			Integer oreTotali = 0;
+			for (TimesheetEntry entry : entries) {
+				oreTotali += entry.getOre();
+			}
+			return oreTotali;
+		} catch (Exception e) {
+			throw new TimesheetException(e.getMessage());
+		}
+	}
+
+	private Specification<TimesheetEntry> entriesBySpecification(final Integer anno, final String codiceCommessa, final String codicePersona) {
+
+		List<Condition> conditions = new ArrayList<>();
+		conditions.add(Condition.builder().field("id.anno").value(anno).valueType(Integer.class).operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("id.codiceCommessa").value(codiceCommessa).valueType(String.class).operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("id.codicePersona").value(codicePersona).valueType(String.class).operator(Operator.eq).build());
+		return filter.buildSpecification(conditions, false);
+	}
+	
 	
 	
 	

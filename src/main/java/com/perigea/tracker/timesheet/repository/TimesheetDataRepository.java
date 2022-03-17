@@ -18,4 +18,6 @@ public interface TimesheetDataRepository
 			Integer anno, String codicePersona);
 
 	public List<TimesheetEntry> findAll(Specification<TimesheetEntry> filter);
+	
+	
 }

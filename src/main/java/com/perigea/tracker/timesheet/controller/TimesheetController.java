@@ -25,6 +25,7 @@ import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.dto.wrapper.TimesheetWrapper;
 import com.perigea.tracker.commons.enums.ApprovalStatus;
 import com.perigea.tracker.commons.enums.EMese;
+import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Personale;
 import com.perigea.tracker.timesheet.entity.Timesheet;
@@ -162,5 +163,25 @@ public class TimesheetController {
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").body(zip);
 	}
 	
+	@GetMapping(value = "/read-ore-totali-lavorate-per-commessa-mensili/{anno}/{mese}/{codicePersona}/{codiceCommessa}")
+	public ResponseEntity<ResponseDto<Integer>> getOreTotaliCommessaMese(@PathVariable(value = "anno") Integer anno,
+			@PathVariable(value = "mese") EMese mese,
+			@PathVariable(value = "codicePersona") String codicePersona,
+			@PathVariable(value = "codiceCommessa") String codiceCommessa) {
+		Integer oreTotali = timesheetService.getOreTotaliPerCommessa(codiceCommessa, anno, mese, codicePersona);
+		ResponseDto<Integer> genericResponse = ResponseDto.<Integer>builder().data(oreTotali).build();
+		return ResponseEntity.ok(genericResponse);
+
+	}
+	
+	@GetMapping(value = "/read-ore-totali-lavorate-per-commessa-annuali/{anno}/{codicePersona}/{codiceCommessa}")
+	public ResponseEntity<ResponseDto<Integer>> getOreTotaliCommessaMese(@PathVariable(value = "anno") Integer anno,
+			@PathVariable(value = "codicePersona") String codicePersona,
+			@PathVariable(value = "codiceCommessa") String codiceCommessa) {
+		Integer oreTotali = timesheetService.getOreTotaliPerCommessa(codiceCommessa, anno, codicePersona);
+		ResponseDto<Integer> genericResponse = ResponseDto.<Integer>builder().data(oreTotali).build();
+		return ResponseEntity.ok(genericResponse);
+
+	}
 	
 }

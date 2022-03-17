@@ -90,16 +90,16 @@ public class ConsulenteService extends UtenteService {
 		DatiEconomiciConsulente oldDatiEconomici = consulenteRepository.findById(codicePersona).get().getEconomics();
 		
 		// Storico CentroDiCosto 
-		if (oldDatiEconomici.getCodiceCentroDiCosto() != newDatiEconomici.getCodiceCentroDiCosto()) {
+		if (! oldDatiEconomici.getCodiceCentroDiCosto().equals(newDatiEconomici.getCodiceCentroDiCosto())) {
 			StoricoAssegnazioneCentroCostoKey k = new StoricoAssegnazioneCentroCostoKey(codicePersona, oldDatiEconomici.getDecorrenzaAssegnazioneCentroDiCosto(), LocalDate.now());
 			StoricoAssegnazioneCentroCosto st = new StoricoAssegnazioneCentroCosto(k, oldDatiEconomici.getCodiceCentroDiCosto(), personale);
 			storico.createStoricoAssegnazioneCentroCosto(st);
 		}
 		
 		// Storico Ingaggio
-		if (oldDatiEconomici.getCostoGiornaliero() != newDatiEconomici.getCostoGiornaliero()) {
+		if (! oldDatiEconomici.getCostoGiornaliero().equals(newDatiEconomici.getCostoGiornaliero())) {
 			StoricoIngaggioKey k = new StoricoIngaggioKey(codicePersona, oldDatiEconomici.getDataDecorrenzaCosto(), LocalDate.now());
-			StoricoIngaggio st = new StoricoIngaggio(k, new BigDecimal(oldDatiEconomici.getCostoGiornaliero()), personale);
+			StoricoIngaggio st = new StoricoIngaggio(k, BigDecimal.valueOf(oldDatiEconomici.getCostoGiornaliero()), personale);
 			storico.createStoricoIngaggio(st);
 		}
 	}

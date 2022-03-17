@@ -147,7 +147,7 @@ public class RichiestaService {
 			Richiesta richiesta = richiestaRepository.findById(history.getRichiesta().getCodiceRichiesta()).get();
 			RichiestaHistory historyOld = null;
 			for (RichiestaHistory h : richiesta.getHistory()) {
-				if (h.getCodiceRichiestaHistory() == history.getCodiceRichiestaHistory()) {
+				if (h.getCodiceRichiestaHistory().equals(history.getCodiceRichiestaHistory())) {
 					historyOld = h;
 					break;
 				}
@@ -172,7 +172,7 @@ public class RichiestaService {
 			Richiesta richiesta = richiestaRepository.findById(history.getRichiesta().getCodiceRichiesta()).get();
 			RichiestaHistory historyOld = null;
 			for (RichiestaHistory h : richiesta.getHistory()) {
-				if (h.getCodiceRichiestaHistory() == history.getCodiceRichiestaHistory()) {
+				if (h.getCodiceRichiestaHistory().equals(history.getCodiceRichiestaHistory())) {
 					historyOld = h;
 					break;
 				}

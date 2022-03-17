@@ -108,6 +108,14 @@ public class ConsulenteController {
 		return ResponseEntity.ok(genericResponse);
 	}	
 	
+	@GetMapping(value = "/read-consulenti-attivi-totali/{status}")
+	public ResponseEntity<ResponseDto<Integer>> getAllConsulentiAttivi(@PathVariable StatoUtenteType status) {
+		Integer totaleConsulenti = consulenteService.getAllConsulentiByActivityStatus(status);
+		ResponseDto<Integer> genericResponse = ResponseDto.<Integer>builder().data(totaleConsulenti).build();
+		return ResponseEntity.ok(genericResponse);
+
+	}
+	
 	@PutMapping(value = "/update-status/{codicePersona}/{status}")
 	public ResponseEntity<ResponseDto<UtenteDto>> editStatusUser(@PathVariable("codicePersona") String codicePersona, @PathVariable("status") StatoUtenteType status) {
 		Utente utente = consulenteService.updateUtenteStatus(codicePersona, status);

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.exception.CentroDiCostoException;
+import com.perigea.tracker.commons.exception.ConsulenteException;
 import com.perigea.tracker.commons.exception.DipendenteException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
@@ -137,6 +138,32 @@ public class DipendenteService extends UtenteService {
 		conditions.add(Condition.builder().field("economics.ralAttuale").value(ral).valueType(Float.class).operator(Operator.gt).build());
 		conditions.add(Condition.builder().field("economics.centroDiCosto.codiceCentroDiCosto").value(centroDiCosto).valueType(String.class).operator(Operator.eq).build());
 
+		return filter.buildSpecification(conditions, false);
+	}
+	
+	/**
+	 * metodo per il calcolo del numero di dipendenti attivi o inattivi
+	 * 
+	 * @param status
+	 * @return
+	 */
+	public Integer getAllDipendentiByActivityStatus(StatoUtenteType status) {
+		try {
+			return dipendenteRepository.findAll(dipendentiByStatus(status)).size();
+	
+		} catch (Exception e) {
+			if (e instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(e.getMessage());
+			}
+			throw new ConsulenteException(e.getMessage());
+		}
+	}
+
+	private Specification<Dipendente> dipendentiByStatus(final StatoUtenteType statoUtente) {
+
+		List<Condition> conditions = new ArrayList<>();
+		conditions.add(Condition.builder().field("utente.stato").value(statoUtente).valueType(StatoUtenteType.class)
+				.operator(Operator.eq).build());
 		return filter.buildSpecification(conditions, false);
 	}
 	

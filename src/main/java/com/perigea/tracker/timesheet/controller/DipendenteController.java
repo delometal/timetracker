@@ -192,6 +192,14 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericDto);
 	}
 	
+	@GetMapping(value = "/read-dipendenti-attivi-totali/{status}")
+	public ResponseEntity<ResponseDto<Integer>> getAllDipendentiAttivi(@PathVariable StatoUtenteType status) {
+		Integer totaleDipendenti = dipendenteService.getAllDipendentiByActivityStatus(status);
+		ResponseDto<Integer> genericResponse = ResponseDto.<Integer>builder().data(totaleDipendenti).build();
+		return ResponseEntity.ok(genericResponse);
+
+	}
+	
 	
 	@PutMapping(value = "/from-consulente-to-dipendente")
 	public ResponseEntity<ResponseDto<DipendenteDto>> fromConsulenteToDipendente(

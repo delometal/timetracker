@@ -1,9 +1,12 @@
 package com.perigea.tracker.timesheet.service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.perigea.tracker.commons.enums.StatoUtenteType;
@@ -18,6 +21,9 @@ import com.perigea.tracker.timesheet.entity.keys.StoricoAssegnazioneCentroCostoK
 import com.perigea.tracker.timesheet.entity.keys.StoricoIngaggioKey;
 import com.perigea.tracker.timesheet.repository.CentroDiCostoRepository;
 import com.perigea.tracker.timesheet.repository.ConsulenteRepository;
+import com.perigea.tracker.timesheet.search.Condition;
+import com.perigea.tracker.timesheet.search.FilterFactory;
+import com.perigea.tracker.timesheet.search.Operator;
 
 @Service
 public class ConsulenteService extends UtenteService {
@@ -30,6 +36,9 @@ public class ConsulenteService extends UtenteService {
 	
 	@Autowired
 	private StoricoService storico;
+	
+	@Autowired
+	private FilterFactory<Consulente> filter;
 
 	/**
 	 * Creazione anagrafica consulente e utente
@@ -65,7 +74,30 @@ public class ConsulenteService extends UtenteService {
 		}
 	}
 	
-//	public Consulente getAllConsulentiByActivityStatus
+	/**
+	 * metodo per il calcolo del numero di consulenti attivi o inattivi
+	 * 
+	 * @param status
+	 * @return
+	 */
+	public Integer getAllConsulentiByActivityStatus(StatoUtenteType status) {
+		try {
+			return consulenteRepository.findAll(consulentiByStatus(status)).size();
+		} catch (Exception e) {
+			if (e instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(e.getMessage());
+			}
+			throw new ConsulenteException(e.getMessage());
+		}
+	}
+
+	private Specification<Consulente> consulentiByStatus(final StatoUtenteType statoUtente) {
+
+		List<Condition> conditions = new ArrayList<>();
+		conditions.add(Condition.builder().field("utente.stato").value(statoUtente).valueType(StatoUtenteType.class)
+				.operator(Operator.eq).build());
+		return filter.buildSpecification(conditions, false);
+	}
 	
 	/**
 	 * cessazione attività consulente

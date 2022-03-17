@@ -207,7 +207,7 @@ public class RichiestaService {
 					.readUserContactDetails(history.getResponsabile().getCodicePersona());
 			TimesheetEventDto timesheetEvent = TimesheetEventDto.builder().id(Utils.uuid())
 					.eventCreator(richiestaCreator).responsabile(responsabile)
-					.approvalStatus(timesheet.getStatoRichiesta()).type(CalendarEventType.Timesheet)
+					.approvalStatus(timesheet.getStatoRichiesta()).type(CalendarEventType.TIMESHEET)
 					.timesheet(timesheetReferences).build();
 			timesheetApprovalWorkflow.richiestaTimesheet(timesheetEvent, richiesta, history);
 			return richiesta;

@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -333,9 +332,8 @@ public class ExcelTimesheetService {
 	 * @param style
 	 * @param refNames
 	 */
-	private void buildHeader(TimesheetDataWrapper timesheetDataWrapper, XSSFSheet sheet, XSSFCellStyle style, LinkedHashMap<String, String> refNames) {
+	private void buildHeader(TimesheetDataWrapper timesheetDataWrapper, XSSFSheet sheet, XSSFCellStyle style, Map<String, String> refNames) {
 		try {
-			
 			//Anchor per il logo
 			InputStream logoStream = getClass().getClassLoader().getResourceAsStream(Utils.PERIGEA_LOGO_COLOR);
 			byte[] logoBytes = IOUtils.toByteArray(logoStream);

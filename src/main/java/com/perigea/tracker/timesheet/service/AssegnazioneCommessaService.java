@@ -42,7 +42,7 @@ public class AssegnazioneCommessaService {
 	 */
 	public PersonaleCommessa readDipendenteCommessa(DipendenteCommessaKey id) {
 		try {
-			return assegnazioneCommessaRepository.findById(id).get();
+			return assegnazioneCommessaRepository.findById(id).orElseThrow();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

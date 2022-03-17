@@ -49,9 +49,9 @@ public class NotaSpeseService {
 					notaSpese.getId().getCostoNotaSpese());
 			notaSpese.setId(id);
 			TimesheetEntryKey tsKey = new TimesheetEntryKey(notaSpese.getId().getAnno(), notaSpese.getId().getMese(), notaSpese.getId().getGiorno(), notaSpese.getId().getCodicePersona(), notaSpese.getId().getCodiceCommessa());
-			TimesheetEntry timesheetEntry = timesheetEntryRepository.findById(tsKey).get();
-			Commessa commessa = commessaRepository.findByCodiceCommessa(notaSpese.getId().getCodiceCommessa()).get();
-			Utente utente = utenteRepository.findByCodicePersona(notaSpese.getId().getCodicePersona()).get();
+			TimesheetEntry timesheetEntry = timesheetEntryRepository.findById(tsKey).orElseThrow();
+			Commessa commessa = commessaRepository.findByCodiceCommessa(notaSpese.getId().getCodiceCommessa()).orElseThrow();
+			Utente utente = utenteRepository.findByCodicePersona(notaSpese.getId().getCodicePersona()).orElseThrow();
 			if(timesheetEntry != null) {
 				notaSpese.setTimesheetEntry(timesheetEntry);
 			}
@@ -72,7 +72,7 @@ public class NotaSpeseService {
 	 */
 	public NotaSpese readNotaSpese(NotaSpeseKey key) {
 		try {
-			return notaSpeseRepository.findById(key).get();
+			return notaSpeseRepository.findById(key).orElseThrow();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

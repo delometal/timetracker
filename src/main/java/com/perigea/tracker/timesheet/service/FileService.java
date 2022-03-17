@@ -69,7 +69,7 @@ public class FileService {
 	 */
 	public void uploadCurriculum(String codicePersona, MultipartFile file) {
 		try {
-			Utente utente = utenteRepository.findById(codicePersona).get();
+			Utente utente = utenteRepository.findById(codicePersona).orElseThrow();
 			String filepath = extractCurriculumFilename(codicePersona, utente);
 			
 			if(applicationProperties.isCurriculumDiskPersistence()) {

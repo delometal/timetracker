@@ -204,7 +204,6 @@ public class CommessaController {
 		CommessaEstensione commessaEntity = dtoEntityMapper.dtoToEntity(estensione);
 		CommessaFatturabile commessaFatturabile = commessaService.readCommessaFatturabile(estensione.getCodiceCommessa());
 		CommessaEstensione res = commessaService.updateEstensioneCommessa(commessaEntity);
-//		commessaFatturabile.setTotaleEstensioni(commessaFatturabile.getTotaleEstensioni()+1);
 		commessaFatturabile.setDataFineCommessa(estensione.getDataFineEstensione());
 		commessaService.updateCommessaFatturabile(commessaFatturabile);
 		CommessaEstensioneDto estensioneDto = dtoEntityMapper.entityToDto(res);

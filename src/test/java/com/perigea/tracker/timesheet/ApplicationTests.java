@@ -46,4 +46,5 @@ class ApplicationTests {
 		String password = Utils.randomString(length);
 		assertTrue(password.length()==length);
 	}
+	
 }

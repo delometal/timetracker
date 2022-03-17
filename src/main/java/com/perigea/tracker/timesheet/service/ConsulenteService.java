@@ -65,6 +65,8 @@ public class ConsulenteService extends UtenteService {
 		}
 	}
 	
+//	public Consulente getAllConsulentiByActivityStatus
+	
 	/**
 	 * cessazione attività consulente
 	 * @param consulente

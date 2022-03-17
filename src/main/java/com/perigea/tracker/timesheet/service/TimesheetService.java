@@ -102,7 +102,7 @@ public class TimesheetService {
 			assertTimesheetIsValid(timesheetDataList, timeDto);
 			Integer oreTotali = 0;
 			Timesheet timesheet = dtoEntityMapper.dtoToEntity(timeDto);
-			Utente utente = utenteRepository.findByCodicePersona(timeDto.getCodicePersona()).get();
+			Utente utente = utenteRepository.findById(timeDto.getCodicePersona()).orElseThrow();
 			timesheet.setPersonale(utente.getPersonale());
 			utente.getPersonale().addTimesheet(timesheet);
 
@@ -131,7 +131,7 @@ public class TimesheetService {
 			});
 			for (TimesheetEntryDto dataDto : timesheetDataList) {
 				oreTotali += dataDto.getOre();
-				Commessa commessa = commessaRepository.findByCodiceCommessa(dataDto.getCodiceCommessa()).get();
+				Commessa commessa = commessaRepository.findByCodiceCommessa(dataDto.getCodiceCommessa()).orElseThrow();
 				TimesheetEntry entry = dtoEntityMapper.dtoToEntity(dataDto);
 				TimesheetEntryKey entryKey = new TimesheetEntryKey(timesheet.getId().getAnno(),
 						timesheet.getId().getMese(), dataDto.getGiorno(), timesheet.getId().getCodicePersona(),
@@ -174,7 +174,7 @@ public class TimesheetService {
 	 */
 	public Timesheet getTimesheet(Integer anno, EMese mese, String codicePersona) {
 		try {
-			return timesheetRepository.findById(new TimesheetMensileKey(anno, mese.getMonthId(), codicePersona)).get();
+			return timesheetRepository.findById(new TimesheetMensileKey(anno, mese.getMonthId(), codicePersona)).orElseThrow();
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -186,12 +186,13 @@ public class TimesheetService {
 	
 	/**
 	 * ricerca di un timesheet mensile attraverso la composite key
+	 * 
 	 * @param id
 	 * @return
 	 */
 	public Timesheet getTimesheet(TimesheetMensileKey id) {
 		try {
-			return timesheetRepository.findById(id).get();
+			return timesheetRepository.findById(id).orElseThrow();
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -203,12 +204,13 @@ public class TimesheetService {
 	
 	/**
 	 * ricerca di un singolo dato di un timesheet
+	 * 
 	 * @param id
 	 * @return
 	 */
 	public TimesheetEntry getTimesheetEntry(TimesheetEntryKey id) {
 		try {
-			return timesheetDataRepository.findById(id).get();
+			return timesheetDataRepository.findById(id).orElseThrow();
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -216,7 +218,6 @@ public class TimesheetService {
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
-
 	
 	/**
 	 * ricerca di singoli dati attraverso una query nativa
@@ -303,7 +304,7 @@ public class TimesheetService {
 			assertTimesheetIsValid(timesheetDataList, timeDto);
 			Integer oreTotali = 0;
 			Timesheet timesheet = getTimesheet(key);
-			Utente utente = utenteRepository.findByCodicePersona(timeDto.getCodicePersona()).get();
+			Utente utente = utenteRepository.findByCodicePersona(timeDto.getCodicePersona()).orElseThrow();
 			timesheet.setPersonale(utente.getPersonale());
 			utente.getPersonale().addTimesheet(timesheet);
 			TimesheetMensileKey tsKey = new TimesheetMensileKey(timeDto.getAnno(), timeDto.getMese(),
@@ -332,7 +333,7 @@ public class TimesheetService {
 			});
 			for (TimesheetEntryDto dataDto : timesheetDataList) {
 				oreTotali += dataDto.getOre();
-				Commessa commessa = commessaRepository.findByCodiceCommessa(dataDto.getCodiceCommessa()).get();
+				Commessa commessa = commessaRepository.findByCodiceCommessa(dataDto.getCodiceCommessa()).orElseThrow();
 				TimesheetEntry entry = dtoEntityMapper.dtoToEntity(dataDto);
 				TimesheetEntryKey entryKey = new TimesheetEntryKey(timesheet.getId().getAnno(),
 						timesheet.getId().getMese(), dataDto.getGiorno(), timesheet.getId().getCodicePersona(),

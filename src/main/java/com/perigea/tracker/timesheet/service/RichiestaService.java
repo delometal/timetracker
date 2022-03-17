@@ -89,7 +89,7 @@ public class RichiestaService {
 	 */
 	public Richiesta readRichiesta(Long codiceRichiesta) {
 		try {
-			Richiesta richiesta = richiestaRepository.findById(codiceRichiesta).get();
+			Richiesta richiesta = richiestaRepository.findById(codiceRichiesta).orElseThrow();
 			richiesta.getHistory(); // load history in session
 			return richiesta;
 		} catch (Exception ex) {
@@ -144,10 +144,10 @@ public class RichiestaService {
 	 */
 	public Richiesta updateRichiestaHistory(RichiestaHistory history) {
 		try {
-			Richiesta richiesta = richiestaRepository.findById(history.getRichiesta().getCodiceRichiesta()).get();
+			Richiesta richiesta = richiestaRepository.findById(history.getRichiesta().getCodiceRichiesta()).orElseThrow();
 			RichiestaHistory historyOld = null;
 			for (RichiestaHistory h : richiesta.getHistory()) {
-				if (h.getCodiceRichiestaHistory() == history.getCodiceRichiestaHistory()) {
+				if (h.getCodiceRichiestaHistory().equals(history.getCodiceRichiestaHistory())) {
 					historyOld = h;
 					break;
 				}
@@ -169,10 +169,10 @@ public class RichiestaService {
 	 */
 	public Richiesta deleteRichiestaHistory(RichiestaHistory history) {
 		try {
-			Richiesta richiesta = richiestaRepository.findById(history.getRichiesta().getCodiceRichiesta()).get();
+			Richiesta richiesta = richiestaRepository.findById(history.getRichiesta().getCodiceRichiesta()).orElseThrow();
 			RichiestaHistory historyOld = null;
 			for (RichiestaHistory h : richiesta.getHistory()) {
-				if (h.getCodiceRichiestaHistory() == history.getCodiceRichiestaHistory()) {
+				if (h.getCodiceRichiestaHistory().equals(history.getCodiceRichiestaHistory())) {
 					historyOld = h;
 					break;
 				}
@@ -257,7 +257,7 @@ public class RichiestaService {
 	 * @return
 	 */
 	public Richiesta approveHolidaysRequest(HolidayEventRequestDto event, Long historyId, ApprovalStatus newStatus) {
-		RichiestaHistory history = richiestaHistoryRepository.findById(historyId).get();
+		RichiestaHistory history = richiestaHistoryRepository.findById(historyId).orElseThrow();
 		history.setStato(newStatus);
 		Richiesta richiesta = updateRichiestaHistory(history);
 
@@ -309,7 +309,7 @@ public class RichiestaService {
 	 * @return
 	 */
 	public Richiesta approveHolidaysRequest(HolidayEventRequestDto event, Long historyId) {
-		RichiestaHistory history = richiestaHistoryRepository.findById(historyId).get();
+		RichiestaHistory history = richiestaHistoryRepository.findById(historyId).orElseThrow();
 		history.setStato(event.getApproved());
 		Richiesta richiesta = updateRichiestaHistory(history);
 
@@ -382,7 +382,7 @@ public class RichiestaService {
 	 * @return
 	 */
 	public Richiesta approveCancelHolidays(HolidayEventRequestDto event, Long historyId) {
-		RichiestaHistory history = richiestaHistoryRepository.findById(historyId).get();
+		RichiestaHistory history = richiestaHistoryRepository.findById(historyId).orElseThrow();
 		history.setStato(event.getApproved());
 		Richiesta richiesta = updateRichiestaHistory(history);
 

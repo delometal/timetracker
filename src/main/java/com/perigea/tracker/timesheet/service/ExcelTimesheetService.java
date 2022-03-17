@@ -68,8 +68,6 @@ public class ExcelTimesheetService {
 
 
 			workbook.write(bos);
-			bos.close();
-			workbook.close();
 			logger.info("Complete");
 			return bos.toByteArray();
 		} catch (Exception ex) {
@@ -88,33 +86,7 @@ public class ExcelTimesheetService {
 		buildHeader(timesheetDataWrapper,secondSheet,style, timesheetDataWrapper.getRefNamesNoteSpese());
 		
 		//Creazione row valori statici 
-		XSSFRow eightRow = secondSheet.createRow(10);
-		eightRow.createCell(0).setCellValue("Data");
-		eightRow.getCell(0).setCellStyle(style);
-		eightRow.createCell(1).setCellValue("Commessa");
-		eightRow.getCell(1).setCellStyle(style);
-		eightRow.createCell(2).setCellValue("Descrizione");
-		eightRow.getCell(2).setCellStyle(style);
-		eightRow.createCell(3).setCellValue("Aereo");
-		eightRow.getCell(3).setCellStyle(style);
-		eightRow.createCell(4).setCellValue("Alloggi");
-		eightRow.getCell(4).setCellStyle(style);
-		eightRow.createCell(5).setCellValue("Trasporti e carburante");
-		eightRow.getCell(5).setCellStyle(style);
-		eightRow.createCell(6).setCellValue("Pasti");
-		eightRow.getCell(6).setCellStyle(style);
-		eightRow.createCell(7).setCellValue("Conferenze e seminari");
-		eightRow.getCell(7).setCellStyle(style);
-		eightRow.createCell(8).setCellValue("Kilometri");
-		eightRow.getCell(8).setCellStyle(style);
-		eightRow.createCell(9).setCellValue("Rimborso Kilometrico");
-		eightRow.getCell(9).setCellStyle(style);
-		eightRow.createCell(10).setCellValue("Spese varie");
-		eightRow.getCell(10).setCellStyle(style);
-		eightRow.createCell(11).setCellValue("Cambio");
-		eightRow.getCell(11).setCellStyle(style);
-		eightRow.createCell(12).setCellValue("Importo €");
-		eightRow.getCell(12).setCellStyle(style);
+		createHeaderReferencesNS(style, secondSheet);
 		
 		//Creazione Rows per inserimento delle note (1 Row per Nota)
 		Map<String, List<TimesheetEntryDto>> entries = timesheetDataWrapper.getEntries();
@@ -197,6 +169,36 @@ public class ExcelTimesheetService {
 
 	}
 
+	private void createHeaderReferencesNS(XSSFCellStyle style, XSSFSheet secondSheet) {
+		XSSFRow eightRow = secondSheet.createRow(10);
+		eightRow.createCell(0).setCellValue("Data");
+		eightRow.getCell(0).setCellStyle(style);
+		eightRow.createCell(1).setCellValue("Commessa");
+		eightRow.getCell(1).setCellStyle(style);
+		eightRow.createCell(2).setCellValue("Descrizione");
+		eightRow.getCell(2).setCellStyle(style);
+		eightRow.createCell(3).setCellValue("Aereo");
+		eightRow.getCell(3).setCellStyle(style);
+		eightRow.createCell(4).setCellValue("Alloggi");
+		eightRow.getCell(4).setCellStyle(style);
+		eightRow.createCell(5).setCellValue("Trasporti e carburante");
+		eightRow.getCell(5).setCellStyle(style);
+		eightRow.createCell(6).setCellValue("Pasti");
+		eightRow.getCell(6).setCellStyle(style);
+		eightRow.createCell(7).setCellValue("Conferenze e seminari");
+		eightRow.getCell(7).setCellStyle(style);
+		eightRow.createCell(8).setCellValue("Kilometri");
+		eightRow.getCell(8).setCellStyle(style);
+		eightRow.createCell(9).setCellValue("Rimborso Kilometrico");
+		eightRow.getCell(9).setCellStyle(style);
+		eightRow.createCell(10).setCellValue("Spese varie");
+		eightRow.getCell(10).setCellStyle(style);
+		eightRow.createCell(11).setCellValue("Cambio");
+		eightRow.getCell(11).setCellStyle(style);
+		eightRow.createCell(12).setCellValue("Importo €");
+		eightRow.getCell(12).setCellStyle(style);
+	}
+
 	
 	/**
 	 * metodo per la creazione dello sheet relativo al timesheet
@@ -234,7 +236,7 @@ public class ExcelTimesheetService {
 			giornoSettimana = EGiorno.getGiorno(date.getDayOfWeek());
 			eightRow.createCell(5 + i).setCellValue(giornoSettimana.getInitial());
 			eightRow.getCell(5 + i).setCellStyle(style);
-			rowDaysOfWeek.createCell(5 + i).setCellValue(1 + i);
+			rowDaysOfWeek.createCell(5 + i).setCellValue(1.0 + i);
 			rowDaysOfWeek.getCell(5 + i).setCellStyle(style);
 			totalsColumnIndex = (6 + i);
 		}

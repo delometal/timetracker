@@ -54,11 +54,8 @@ public class CentroDiCostoService {
 	 */
 	public CentroDiCosto readCentroDiCosto(String id) {
 		try {
-			return centroDiCostoRepository.findById(id).get();
+			return centroDiCostoRepository.findById(id).orElseThrow();
 		} catch (Exception ex) {
-			if(ex instanceof NoSuchElementException) {
-				throw new EntityNotFoundException(ex.getMessage());
-			}
 			throw new CentroDiCostoException(ex.getMessage());
 		}
 	}

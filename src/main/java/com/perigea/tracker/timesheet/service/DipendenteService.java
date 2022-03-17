@@ -69,7 +69,7 @@ public class DipendenteService extends UtenteService {
 	 */
 	public Utente createUtenteDipendente(Utente utente, Dipendente dipendente, DatiEconomiciDipendente economics) {
 		if(economics != null) {
-			economics.setCentroDiCosto(centroDiCostoRepository.findById(economics.getCodiceCentroDiCosto()).get());
+			economics.setCentroDiCosto(centroDiCostoRepository.findById(economics.getCodiceCentroDiCosto()).orElseThrow());
 			dipendente.setEconomics(economics);
 			economics.setCodicePersona(null);
 			economics.setPersonale(dipendente);
@@ -86,7 +86,7 @@ public class DipendenteService extends UtenteService {
 	 */
 	public Dipendente readAnagraficaDipendente(String codicePersona) {
 		try {
-			return dipendenteRepository.findByCodicePersona(codicePersona).get();
+			return dipendenteRepository.findByCodicePersona(codicePersona).orElseThrow();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -163,61 +163,61 @@ public class DipendenteService extends UtenteService {
 		String codicePersona = newDatiEconomici.getCodicePersona();
 		Dipendente personale = newDatiEconomici.getPersonale();
 		
-		DatiEconomiciDipendente oldDatiEconomici = dipendenteRepository.findById(codicePersona).get().getEconomics();
+		DatiEconomiciDipendente oldDatiEconomici = dipendenteRepository.findById(codicePersona).orElseThrow().getEconomics();
 		
 		// Storico LivelloContrattuale
-		if (oldDatiEconomici.getLivelloAttuale() != newDatiEconomici.getLivelloAttuale()) {
+		if (! oldDatiEconomici.getLivelloAttuale().equals(newDatiEconomici.getLivelloAttuale())) {
 			StoricoLivelloContrattualeKey k = new StoricoLivelloContrattualeKey(codicePersona, oldDatiEconomici.getDecorrenzaLivello(), LocalDate.now());
 			StoricoLivelloContrattuale st = new StoricoLivelloContrattuale(k, oldDatiEconomici.getLivelloAttuale(), personale);
 			storico.createStoricoLivelloContrattuale(st);
 		}
 		
 		// Storico TipoContratto
-		if (oldDatiEconomici.getTipoContrattoAttuale() != newDatiEconomici.getTipoContrattoAttuale()) {
+		if (! oldDatiEconomici.getTipoContrattoAttuale().equals(newDatiEconomici.getTipoContrattoAttuale())) {
 			StoricoContrattoTypeKey k = new StoricoContrattoTypeKey(codicePersona, newDatiEconomici.getDecorrenzaTipoContratto(), LocalDate.now());
 			StoricoContrattoType st = new StoricoContrattoType(k, oldDatiEconomici.getTipoContrattoAttuale(), personale);
 			storico.createStoricoContrattoType(st);
 		}
 		
 		// Storico Ral
-		if (oldDatiEconomici.getRalAttuale() != newDatiEconomici.getRalAttuale()) {
+		if (! oldDatiEconomici.getRalAttuale().equals(newDatiEconomici.getRalAttuale())) {
 			StoricoRalKey k = new StoricoRalKey(codicePersona, oldDatiEconomici.getDecorrenzaRalAttuale(), LocalDate.now());
-			StoricoRal st = new StoricoRal(k, new BigDecimal(oldDatiEconomici.getRalAttuale()), personale);
+			StoricoRal st = new StoricoRal(k, BigDecimal.valueOf(oldDatiEconomici.getRalAttuale()), personale);
 			storico.createStoricoRal(st);
 		}
 		
 		// Storico premio
-		if (oldDatiEconomici.getDataUltimoPremio() != newDatiEconomici.getDataUltimoPremio()) {
+		if (! oldDatiEconomici.getDataUltimoPremio().equals(newDatiEconomici.getDataUltimoPremio())) {
 			StoricoPremioKey k = new StoricoPremioKey(codicePersona, oldDatiEconomici.getDataUltimoPremio());
-			StoricoPremio st = new StoricoPremio(k, new BigDecimal(oldDatiEconomici.getUltimoPremio()), personale);
+			StoricoPremio st = new StoricoPremio(k, BigDecimal.valueOf(oldDatiEconomici.getUltimoPremio()), personale);
 			storico.createStoricoPremio(st);
 		}
 		
 		// Storico rimborsiKm
-		if (oldDatiEconomici.getModelloAuto() != newDatiEconomici.getModelloAuto() || oldDatiEconomici.getRimborsoPerKm() != newDatiEconomici.getRimborsoPerKm()) {
+		if ((! oldDatiEconomici.getModelloAuto().equals(newDatiEconomici.getModelloAuto())) || (! oldDatiEconomici.getRimborsoPerKm().equals(newDatiEconomici.getRimborsoPerKm()))) {
 			StoricoRimborsiKmKey k = new StoricoRimborsiKmKey(codicePersona, oldDatiEconomici.getDecorrenzaRimborsiKm(), LocalDate.now());
-			StoricoRimborsiKm st = new StoricoRimborsiKm(k, codicePersona, new BigDecimal(oldDatiEconomici.getRimborsoPerKm()), personale);
+			StoricoRimborsiKm st = new StoricoRimborsiKm(k, codicePersona, BigDecimal.valueOf(oldDatiEconomici.getRimborsoPerKm()), personale);
 			storico.createStoricoRimborsiKm(st);
 		}
 		
 		// Storico KmRimborsabili
-		if (oldDatiEconomici.getKmPerGiorno() != newDatiEconomici.getKmPerGiorno()) {
+		if (! oldDatiEconomici.getKmPerGiorno().equals(newDatiEconomici.getKmPerGiorno())) {
 			StoricoKmRimborsabiliPerGiornoKey k = new StoricoKmRimborsabiliPerGiornoKey(codicePersona, oldDatiEconomici.getDecorrenzaKmRimborsabili(), LocalDate.now());
-			StoricoKmRimborsabiliPerGiorno st = new StoricoKmRimborsabiliPerGiorno(k, new BigDecimal(oldDatiEconomici.getKmPerGiorno()), personale);
+			StoricoKmRimborsabiliPerGiorno st = new StoricoKmRimborsabiliPerGiorno(k, BigDecimal.valueOf(oldDatiEconomici.getKmPerGiorno()), personale);
 			storico.createStoricoKmRimborsabiliPerGiorno(st);
 		}
 		
 		// Storico assegnazioneCentroDiCosto
-		if (oldDatiEconomici.getCodiceCentroDiCosto() != newDatiEconomici.getCodiceCentroDiCosto()) {
+		if (! oldDatiEconomici.getCodiceCentroDiCosto().equals(newDatiEconomici.getCodiceCentroDiCosto())) {
 			StoricoAssegnazioneCentroCostoKey k = new StoricoAssegnazioneCentroCostoKey(codicePersona, oldDatiEconomici.getDecorrenzaAssegnazioneCentroDiCosto(), LocalDate.now());
 			StoricoAssegnazioneCentroCosto st = new StoricoAssegnazioneCentroCosto(k, oldDatiEconomici.getCodiceCentroDiCosto(), personale);
 			storico.createStoricoAssegnazioneCentroCosto(st);
 		}
 		
 		// Storico costo giornaliero
-		if (oldDatiEconomici.getCostoGiornaliero() != newDatiEconomici.getCostoGiornaliero()) {
+		if (! oldDatiEconomici.getCostoGiornaliero().equals(newDatiEconomici.getCostoGiornaliero())) {
 			StoricoGiornalieroKey k = new StoricoGiornalieroKey(codicePersona, oldDatiEconomici.getDataDecorrenzaCosto(), LocalDate.now());
-			StoricoCostoGiornaliero st = new StoricoCostoGiornaliero(k, new BigDecimal(oldDatiEconomici.getCostoGiornaliero()) , personale);
+			StoricoCostoGiornaliero st = new StoricoCostoGiornaliero(k, BigDecimal.valueOf(oldDatiEconomici.getCostoGiornaliero()) , personale);
 			storico.createStoricoCostoGiornaliero(st);
 		}
 	}

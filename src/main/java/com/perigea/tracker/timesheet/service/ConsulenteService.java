@@ -40,7 +40,7 @@ public class ConsulenteService extends UtenteService {
 	 */
 	public Utente createUtenteConsulente(Utente utente, Consulente consulente, DatiEconomiciConsulente economics) {
 		if(economics != null) {
-			economics.setCentroDiCosto(centroDiCostoRepository.findById(economics.getCodiceCentroDiCosto()).get());
+			economics.setCentroDiCosto(centroDiCostoRepository.findById(economics.getCodiceCentroDiCosto()).orElseThrow());
 			consulente.setEconomics(economics);
 			economics.setCodicePersona(null);
 			economics.setPersonale(consulente);
@@ -56,7 +56,7 @@ public class ConsulenteService extends UtenteService {
 	 */
 	public Consulente readAnagraficaConsulente(String codicePersona) {
 		try {
-			return consulenteRepository.findByCodicePersona(codicePersona).get();
+			return consulenteRepository.findByCodicePersona(codicePersona).orElseThrow();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -87,19 +87,19 @@ public class ConsulenteService extends UtenteService {
 		String codicePersona = newDatiEconomici.getCodicePersona();
 		Consulente personale = newDatiEconomici.getPersonale();
 		
-		DatiEconomiciConsulente oldDatiEconomici = consulenteRepository.findById(codicePersona).get().getEconomics();
+		DatiEconomiciConsulente oldDatiEconomici = consulenteRepository.findById(codicePersona).orElseThrow().getEconomics();
 		
 		// Storico CentroDiCosto 
-		if (oldDatiEconomici.getCodiceCentroDiCosto() != newDatiEconomici.getCodiceCentroDiCosto()) {
+		if (! oldDatiEconomici.getCodiceCentroDiCosto().equals(newDatiEconomici.getCodiceCentroDiCosto())) {
 			StoricoAssegnazioneCentroCostoKey k = new StoricoAssegnazioneCentroCostoKey(codicePersona, oldDatiEconomici.getDecorrenzaAssegnazioneCentroDiCosto(), LocalDate.now());
 			StoricoAssegnazioneCentroCosto st = new StoricoAssegnazioneCentroCosto(k, oldDatiEconomici.getCodiceCentroDiCosto(), personale);
 			storico.createStoricoAssegnazioneCentroCosto(st);
 		}
 		
 		// Storico Ingaggio
-		if (oldDatiEconomici.getCostoGiornaliero() != newDatiEconomici.getCostoGiornaliero()) {
+		if (! oldDatiEconomici.getCostoGiornaliero().equals(newDatiEconomici.getCostoGiornaliero())) {
 			StoricoIngaggioKey k = new StoricoIngaggioKey(codicePersona, oldDatiEconomici.getDataDecorrenzaCosto(), LocalDate.now());
-			StoricoIngaggio st = new StoricoIngaggio(k, new BigDecimal(oldDatiEconomici.getCostoGiornaliero()), personale);
+			StoricoIngaggio st = new StoricoIngaggio(k, BigDecimal.valueOf(oldDatiEconomici.getCostoGiornaliero()), personale);
 			storico.createStoricoIngaggio(st);
 		}
 	}

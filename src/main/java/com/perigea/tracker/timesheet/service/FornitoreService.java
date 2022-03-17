@@ -53,7 +53,7 @@ public class FornitoreService {
 	 */
 	public Fornitore readFornitoreById(String id) {
 		try {
-			return fornitoreRepository.findById(id).get();
+			return fornitoreRepository.findById(id).orElseThrow();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -70,7 +70,7 @@ public class FornitoreService {
 	 */
 	public Fornitore readFornitoreByPartitaIva(String partitaIva) {
 		try {
-			return fornitoreRepository.findByPartitaIva(partitaIva).get();
+			return fornitoreRepository.findByPartitaIva(partitaIva).orElseThrow();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -120,7 +120,7 @@ public class FornitoreService {
 	 */
 	public Utente findContatto(String codicePersona) {
 		try {
-			return utenteRepository.findByCodicePersona(codicePersona).get();
+			return utenteRepository.findByCodicePersona(codicePersona).orElseThrow();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

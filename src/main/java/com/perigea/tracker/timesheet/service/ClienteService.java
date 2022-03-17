@@ -51,7 +51,7 @@ public class ClienteService {
 	 */
 	public Cliente readClienteById(String id) {
 		try {
-			return clienteRepository.findById(id).get();
+			return clienteRepository.findById(id).orElseThrow();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -67,7 +67,7 @@ public class ClienteService {
 	 */
 	public Cliente readClienteByPartitaIva(String partitaIva) {
 		try {
-			return clienteRepository.findByPartitaIva(partitaIva).get();
+			return clienteRepository.findByPartitaIva(partitaIva).orElseThrow();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

@@ -9,7 +9,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityNotFoundException;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,7 @@ import com.perigea.tracker.commons.enums.RuoloType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.exception.CentroDiCostoException;
 import com.perigea.tracker.commons.exception.ConsulenteException;
+import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.exception.PersistenceException;
 import com.perigea.tracker.commons.exception.UtenteException;
 import com.perigea.tracker.commons.utils.UsernameComparator;
@@ -115,8 +115,7 @@ public class UtenteService {
 	 */
 	public Utente readUtente(String id) {
 		try {
-			Utente u =  utenteRepository.findByCodicePersona(id).get();
-			return u;
+			return utenteRepository.findById(id).orElseThrow();
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -191,7 +190,8 @@ public class UtenteService {
 	
 
 	/**
-	 *  Metodo per aggiornare lo stato (attivo/cessato) di un utente
+	 * Metodo per aggiornare lo stato (attivo/cessato) di un utente
+	 * 
 	 * @param codicePersona
 	 * @param newStatus
 	 * @return
@@ -200,7 +200,7 @@ public class UtenteService {
 		try {
 			Integer edits = applicationDao.updateUserStatus(codicePersona, newStatus);
 			if (edits != null && edits == 1) {
-				return utenteRepository.findByCodicePersona(codicePersona).get();
+				return readUtente(codicePersona);
 			} else {
 				throw new PersistenceException(String.format(
 						"Si è verificato un errore durante l'aggiornamento per l'utente %s con il nuovo stato %s",
@@ -223,7 +223,7 @@ public class UtenteService {
 			String cryptedPassword = passwordEncoder.encode(newPassword);
 			Integer edits = applicationDao.updateUserPassword(codicePersona, cryptedPassword);
 			if (edits != null && edits == 1) {
-				return utenteRepository.findByCodicePersona(codicePersona).get();
+				return readUtente(codicePersona);
 			} else {
 				throw new PersistenceException(String.format(
 						"Si è verificato un errore durante l'aggiornamento per l'utente %s con la nuova password %s",
@@ -242,8 +242,13 @@ public class UtenteService {
 	 */
 	public boolean checkToken(String token) {
 		try {
-			PasswordToken passwordToken = passwordTokenRepository.findByToken(token).get();
+			Optional<PasswordToken> pwtOptional = passwordTokenRepository.findByToken(token);
+			if(pwtOptional.isPresent()) {
+			PasswordToken passwordToken = pwtOptional.get();
 			return (passwordToken.getDataScadenza().after(new Date()));
+			} else {
+				throw new EntityNotFoundException("token non trovato");
+			}
 
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());

@@ -235,7 +235,7 @@ public class ExcelTimesheetService {
 			giornoSettimana = EGiorno.getGiorno(date.getDayOfWeek());
 			eightRow.createCell(5 + i).setCellValue(giornoSettimana.getInitial());
 			eightRow.getCell(5 + i).setCellStyle(style);
-			rowDaysOfWeek.createCell(5 + i).setCellValue(1 + i);
+			rowDaysOfWeek.createCell(5 + i).setCellValue(1.0 + i);
 			rowDaysOfWeek.getCell(5 + i).setCellStyle(style);
 			totalsColumnIndex = (6 + i);
 		}

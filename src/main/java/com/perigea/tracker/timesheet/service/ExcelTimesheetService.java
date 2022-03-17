@@ -83,7 +83,7 @@ public class ExcelTimesheetService {
 	 */
 	private void buildNoteSpese(TimesheetDataWrapper timesheetDataWrapper, XSSFCellStyle style, XSSFWorkbook workbook) {
 		XSSFSheet secondSheet = workbook.createSheet(NOTE_SPESE_NAME);
-		buildHeader(timesheetDataWrapper,secondSheet,style, timesheetDataWrapper.getRefNamesNoteSpese());
+		buildHeader(secondSheet,style, timesheetDataWrapper.getRefNamesNoteSpese());
 		
 		//Creazione row valori statici 
 		createHeaderReferencesNS(style, secondSheet);
@@ -208,7 +208,7 @@ public class ExcelTimesheetService {
 	 */
 	private void buildTimesheet(TimesheetDataWrapper timesheetDataWrapper, XSSFCellStyle style, XSSFWorkbook workbook) {
 		XSSFSheet sheet = workbook.createSheet(TIMESHEET_NAME);
-		buildHeader(timesheetDataWrapper,sheet,style, timesheetDataWrapper.getRefNamesTimesheet());
+		buildHeader(sheet,style, timesheetDataWrapper.getRefNamesTimesheet());
 		
 		XSSFRow eightRow = sheet.createRow(8);
 		eightRow.createCell(0).setCellValue("Cliente");
@@ -332,7 +332,7 @@ public class ExcelTimesheetService {
 	 * @param style
 	 * @param refNames
 	 */
-	private void buildHeader(TimesheetDataWrapper timesheetDataWrapper, XSSFSheet sheet, XSSFCellStyle style, Map<String, String> refNames) {
+	private void buildHeader( XSSFSheet sheet, XSSFCellStyle style, Map<String, String> refNames) {
 		try {
 			//Anchor per il logo
 			InputStream logoStream = getClass().getClassLoader().getResourceAsStream(Utils.PERIGEA_LOGO_COLOR);

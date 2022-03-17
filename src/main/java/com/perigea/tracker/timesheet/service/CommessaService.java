@@ -231,6 +231,23 @@ public class CommessaService {
 			throw new CommessaException(ex.getMessage());
 		}
 	}
+	
+	public void deleteEstensioneCommessa(String codiceCommessa, LocalDate dataEstensione) {
+		try {
+			commessaEstensioneRepository.deleteById(new CommessaEstensioneKey(codiceCommessa, dataEstensione));
+		} catch (Exception ex) {
+			logger.error(ex.getMessage());
+			throw new CommessaException(ex.getMessage());
+		}
+	}
+	
+	public CommessaEstensione updateEstensioneCommessa(CommessaEstensione commessaAggiornata) {
+		try {
+			return commessaEstensioneRepository.save(commessaAggiornata);
+		} catch (Exception ex) {
+			throw new CommessaException(ex.getMessage());
+		}
+	}
 
 	/**
 	 * metodo per creare un ordine commessa
@@ -285,5 +302,6 @@ public class CommessaService {
 		return filter.buildSpecification(conditions, false);
 	}
 	
-
+	
+	
 }

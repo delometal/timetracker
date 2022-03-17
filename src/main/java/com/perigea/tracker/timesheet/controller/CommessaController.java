@@ -71,6 +71,10 @@ public class CommessaController {
 	public ResponseEntity<ResponseDto<CommessaEstensioneDto>> createCommessaEstensione(
 			@RequestBody CommessaEstensioneDto estensione) {
 		CommessaEstensione entity = dtoEntityMapper.dtoToEntity(estensione);
+		CommessaFatturabile commessaFatturabile = commessaService.readCommessaFatturabile(estensione.getCodiceCommessa());
+		commessaFatturabile.setTotaleEstensioni(commessaFatturabile.getTotaleEstensioni()+1);
+		commessaFatturabile.setDataFineCommessa(estensione.getDataFineEstensione());
+		commessaService.updateCommessaFatturabile(commessaFatturabile);
 		CommessaEstensione res = commessaService.createEstensioneCommessa(entity);
 		CommessaEstensioneDto estensioneDto = dtoEntityMapper.entityToDto(res);
 		ResponseDto<CommessaEstensioneDto> genericDto = ResponseDto.<CommessaEstensioneDto>builder().data(estensioneDto).build();
@@ -177,6 +181,34 @@ public class CommessaController {
 		List<CommessaFatturabile> commesseEntity = commessaService.searchCommesseAfterThatImports(importoTotAnno,importoOrdine);
 		List<CommessaFatturabileDto> commesseDto = dtoEntityMapper.entityToCommessaFattDtoList(commesseEntity);
 		ResponseDto<List<CommessaFatturabileDto>> genericDto = ResponseDto.<List<CommessaFatturabileDto>>builder().data(commesseDto).build();
+		return ResponseEntity.ok(genericDto);
+	}
+	
+	@DeleteMapping(value = "/delete-estensione-commessa/{codiceCommessa}/{dataEstensione}")
+	public ResponseEntity<ResponseDto<CommessaEstensioneDto>> deleteEstensioneCommessa(
+			@PathVariable(name = "codiceCommessa") String codiceCommessa,
+			@PathVariable(name = "dataEstensione") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataEstensione) {
+		CommessaEstensione commessaEntity = commessaService.findById(codiceCommessa, dataEstensione);
+		CommessaEstensioneDto commessaDto = dtoEntityMapper.entityToDto(commessaEntity);
+		commessaService.deleteEstensioneCommessa(codiceCommessa, dataEstensione);
+		CommessaFatturabile commessaFatturabile = commessaService.readCommessaFatturabile(codiceCommessa);
+		commessaFatturabile.setTotaleEstensioni(commessaFatturabile.getTotaleEstensioni()-1);
+		commessaService.updateCommessaFatturabile(commessaFatturabile);
+		ResponseDto<CommessaEstensioneDto> genericDto = ResponseDto.<CommessaEstensioneDto>builder().data(commessaDto).build();
+		return ResponseEntity.ok(genericDto);
+	}
+	
+	@PutMapping(value = "/update-estensione-commessa")
+	public ResponseEntity<ResponseDto<CommessaEstensioneDto>> updateCommessaEstensione(
+			@RequestBody CommessaEstensioneDto estensione) {
+		CommessaEstensione commessaEntity = dtoEntityMapper.dtoToEntity(estensione);
+		CommessaFatturabile commessaFatturabile = commessaService.readCommessaFatturabile(estensione.getCodiceCommessa());
+		CommessaEstensione res = commessaService.updateEstensioneCommessa(commessaEntity);
+//		commessaFatturabile.setTotaleEstensioni(commessaFatturabile.getTotaleEstensioni()+1);
+		commessaFatturabile.setDataFineCommessa(estensione.getDataFineEstensione());
+		commessaService.updateCommessaFatturabile(commessaFatturabile);
+		CommessaEstensioneDto estensioneDto = dtoEntityMapper.entityToDto(res);
+		ResponseDto<CommessaEstensioneDto> genericDto = ResponseDto.<CommessaEstensioneDto>builder().data(estensioneDto).build();
 		return ResponseEntity.ok(genericDto);
 	}
 

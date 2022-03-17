@@ -1,5 +1,7 @@
 package com.perigea.tracker.timesheet.entity;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -31,6 +33,9 @@ public class CommessaEstensione extends BaseEntity{
 	
 	@Column(name = "importo_ordine_interno_estensione")
 	private Float importoInternoEstensione;
+	
+	@Column(name = "data_fine_estensione")
+	private LocalDate dataFineEstensione;
 	
 	@ManyToOne
 	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false, insertable = false, updatable = false)

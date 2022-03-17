@@ -39,7 +39,7 @@ public class CommessaFatturabile extends Commessa {
 	private Double importoCommessaInizialePresunto;
 
 	@Column(name = "totale_estensioni")
-	private Double totaleEstensioni;
+	private Integer totaleEstensioni;
 
 	@Column(name = "ordine_interno_corrente")
 	private Double ordineInternoCorrente;

@@ -15,6 +15,7 @@ import com.perigea.tracker.commons.exception.CentroDiCostoException;
 import com.perigea.tracker.commons.exception.ConsulenteException;
 import com.perigea.tracker.commons.exception.DipendenteException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
 import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.Personale;
@@ -50,7 +51,7 @@ public class DipendenteService extends UtenteService {
 
 	@Autowired
 	private DipendenteRepository dipendenteRepository;
-	
+
 	@Autowired
 	private CentroDiCostoRepository centroDiCostoRepository;
 	
@@ -176,9 +177,13 @@ public class DipendenteService extends UtenteService {
 	 */
 	public Dipendente cessazioneDipendente(Dipendente dipendente, LocalDate dataCessazione) {
 		dipendente.setDataCessazione(dataCessazione);
-		updateUtenteStatus(dipendente.getCodicePersona(), StatoUtenteType.C);
+		dipendente.getEconomics().setArchived(true);
+		dipendente.getUtente().setUsername(dipendente.getUtente().getUsername() + Utils.SET_ARCHIVED + dipendente.getTipo());
+		dipendente.getUtente().setStato(StatoUtenteType.C);
+		super.updateUtente(dipendente.getUtente());
 		createStorico(dipendente.getEconomics());
 		dipendenteRepository.save(dipendente);
+		
 		return dipendente;
 	}
 	

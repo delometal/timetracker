@@ -9,7 +9,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.commons.dto.CreatedUtenteNotificaDto;
-import com.perigea.tracker.commons.dto.NonPersistedEventDto;
 import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.RuoloType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;

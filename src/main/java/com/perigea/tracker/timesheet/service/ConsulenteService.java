@@ -16,8 +16,6 @@ import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Consulente;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciConsulente;
-import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
-import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.StoricoAssegnazioneCentroCosto;
 import com.perigea.tracker.timesheet.entity.StoricoIngaggio;
 import com.perigea.tracker.timesheet.entity.Utente;
@@ -32,9 +30,6 @@ import com.perigea.tracker.timesheet.search.Operator;
 @Transactional
 @Service
 public class ConsulenteService extends UtenteService {
-	
-	@Autowired
-	private DipendenteService dipendenteService;
 
 	@Autowired
 	private ConsulenteRepository consulenteRepository;
@@ -121,18 +116,12 @@ public class ConsulenteService extends UtenteService {
 		super.updateUtente(consulente.getUtente());
 		createStorico(consulente.getEconomics());
 		consulenteRepository.save(consulente);
+		
 		return consulente;
 	}
-	
-	public Dipendente conversioneConsulenteToDipendente(Consulente consulente,Utente utente, Dipendente dipendente,
-		DatiEconomiciDipendente economics, LocalDate dataCessazione) {
-		utente = dipendenteService.createUtenteDipendente(utente, dipendente, economics);
-		cessazioneConsulente(consulente, dataCessazione);
-		return dipendenteService.readAnagraficaDipendente(utente.getCodicePersona());
-	}
-	
+
 	/**
-	 * metodo creazione dello storico di un consulennte
+	 * metodo creazione dello storico di un consulente
 	 * @param newDatiEconomici
 	 */
 	public void createStorico(DatiEconomiciConsulente newDatiEconomici) {

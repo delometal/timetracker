@@ -122,6 +122,9 @@ public class DatiEconomiciDipendente extends BaseEntity{
 	@Column(name = "job_title")
 	private JobTitle jobTitle;
 	
+	@Column(name = "archived")
+	private Boolean archived;
+	
 	@MapsId
 	@OneToOne
 	@JoinColumn(name = "codice_persona")

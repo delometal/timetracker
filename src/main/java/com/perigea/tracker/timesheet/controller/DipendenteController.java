@@ -31,7 +31,7 @@ import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.CentroDiCostoService;
-import com.perigea.tracker.timesheet.service.ConsulenteService;
+import com.perigea.tracker.timesheet.service.ConversioneService;
 import com.perigea.tracker.timesheet.service.DipendenteService;
 
 @RestController
@@ -51,7 +51,7 @@ public class DipendenteController {
 	private DtoEntityMapper dtoEntityMapper;
 	
 	@Autowired
-	private ConsulenteService consulenteService;
+	private ConversioneService conversioneService;
 
 	@PostMapping(value = "/create")
 	public ResponseEntity<ResponseDto<DipendenteDto>> createDipendente(@RequestBody DipendenteDto dipendenteDto) {
@@ -206,13 +206,13 @@ public class DipendenteController {
 	public ResponseEntity<ResponseDto<DipendenteDto>> fromConsulenteToDipendente(
 			@RequestBody DipendenteDto dipendenteDto, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataCessazione,
 			@PathVariable String codiceConsulente) {
-		Consulente consulente = consulenteService.readAnagraficaConsulente(codiceConsulente);
+		Consulente consulente = conversioneService.readAnagraficaConsulente(codiceConsulente);
 		consulente.getUtente().getRuoli().stream().forEach(a ->{});
 		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
 		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(dipendenteDto.getEconomics());
 		loadResponsabile(dipendenteDto, dipendente);
 		Utente newUtenteEntity = changeUtente(consulente, dipendente);
-		dipendente = consulenteService.conversioneConsulenteToDipendente(consulente, newUtenteEntity, dipendente, economics, dataCessazione) ;
+		dipendente = conversioneService.conversioneConsulenteToDipendente(consulente, newUtenteEntity, dipendente, economics, dataCessazione) ;
 		dipendenteDto = dtoEntityMapper.entityToDto(dipendente);
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(dipendente.getUtente());
 		dipendenteDto.setUtente(utenteDto);

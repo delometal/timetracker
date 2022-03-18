@@ -25,7 +25,6 @@ import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.dto.wrapper.TimesheetWrapper;
 import com.perigea.tracker.commons.enums.ApprovalStatus;
 import com.perigea.tracker.commons.enums.EMese;
-import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Personale;
 import com.perigea.tracker.timesheet.entity.Timesheet;

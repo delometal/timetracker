@@ -1,8 +1,10 @@
 package com.perigea.tracker.timesheet.controller;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,15 +20,18 @@ import com.perigea.tracker.commons.dto.DatiEconomiciConsulenteDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.dto.RuoloDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
+import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.timesheet.entity.CentroDiCosto;
 import com.perigea.tracker.timesheet.entity.Consulente;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciConsulente;
+import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.Ruolo;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.CentroDiCostoService;
 import com.perigea.tracker.timesheet.service.ConsulenteService;
+import com.perigea.tracker.timesheet.service.ConversioneService;
 
 @RestController
 @RequestMapping("/consulenti")
@@ -37,6 +42,9 @@ public class ConsulenteController {
 	
 	@Autowired
 	private ConsulenteService consulenteService;
+
+	@Autowired
+	private ConversioneService conversioneService;
 	
 	@Autowired
 	private CentroDiCostoService centroDiCostoService;
@@ -152,7 +160,34 @@ public class ConsulenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 
+	@PutMapping(value = "/from-dipendente-to-consulente/{dataCessazione}/{codiceDipendente}")
+	public ResponseEntity<ResponseDto<ConsulenteDto>> fromDipendenteToConsulente(
+			@RequestBody ConsulenteDto consulenteDto, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataCessazione,
+			@PathVariable String codiceDipendente){
+		Dipendente dipendente = conversioneService.readAnagraficaDipendente(codiceDipendente);
+		dipendente.getUtente().getRuoli().stream().forEach(a -> {});
+		Consulente consulente = dtoEntityMapper.dtoToEntity(consulenteDto);
+		DatiEconomiciConsulente economics = dtoEntityMapper.dtoToEntity(consulenteDto.getEconomics());
+		loadResponsabile(consulenteDto, consulente);
+		Utente newUtenteEntity = changeUtente(consulente, dipendente);
+		consulente = conversioneService.conversioneDipendenteConsulente(dipendente, newUtenteEntity, consulente, economics, dataCessazione);
+		consulenteDto = dtoEntityMapper.entityToDto(consulente);
+		UtenteDto utenteDto = dtoEntityMapper.entityToDto(consulente.getUtente());
+		consulenteDto.setUtente(utenteDto);
+		ResponseDto<ConsulenteDto> genericResponse = ResponseDto.<ConsulenteDto>builder().data(consulenteDto).build();
+		return ResponseEntity.ok(genericResponse);
+	}
 	
+	private Utente changeUtente(Consulente consulente, Dipendente dipendente) {
+		UtenteDto dtoNewUtente = dtoEntityMapper.entityToDto(dipendente.getUtente());
+		dtoNewUtente.setCodicePersona(null);
+		dtoNewUtente.setStato(StatoUtenteType.A);
+		dtoNewUtente.setTipo(AnagraficaType.E);
+		dtoNewUtente.setMailAziendale(consulente.getUtente().getMailAziendale());
+		dtoNewUtente.setCodiceAzienda(consulente.getUtente().getCodiceAzienda());
+		Utente newUtenteEntity = dtoEntityMapper.dtoToEntity(dtoNewUtente);
+		return newUtenteEntity;
+	}
 	
 	@PutMapping(value = "/update-economics")
 	public ResponseEntity<ResponseDto<DatiEconomiciConsulenteDto>> editDatiEconomiciConsulente(@RequestBody DatiEconomiciConsulenteDto datiEconomiciConsulenteDto) {

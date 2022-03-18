@@ -47,6 +47,7 @@ public class ConsulenteController {
 	@PostMapping(value = "/create")
 	public ResponseEntity<ResponseDto<ConsulenteDto>> createConsulente(@RequestBody ConsulenteDto consulenteDto) {
 		Utente utente = dtoEntityMapper.dtoToEntity(consulenteDto.getUtente());
+		consulenteDto.getEconomics().setArchived(false);
 		Consulente consulente = dtoEntityMapper.dtoToEntity(consulenteDto);
 		DatiEconomiciConsulente economics = dtoEntityMapper.dtoToEntity(consulenteDto.getEconomics());
 		loadResponsabile(consulenteDto, consulente);

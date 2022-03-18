@@ -8,12 +8,16 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.exception.ConsulenteException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Consulente;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciConsulente;
+import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
+import com.perigea.tracker.timesheet.entity.Dipendente;
 import com.perigea.tracker.timesheet.entity.StoricoAssegnazioneCentroCosto;
 import com.perigea.tracker.timesheet.entity.StoricoIngaggio;
 import com.perigea.tracker.timesheet.entity.Utente;
@@ -25,8 +29,12 @@ import com.perigea.tracker.timesheet.search.Condition;
 import com.perigea.tracker.timesheet.search.FilterFactory;
 import com.perigea.tracker.timesheet.search.Operator;
 
+@Transactional
 @Service
 public class ConsulenteService extends UtenteService {
+	
+	@Autowired
+	private DipendenteService dipendenteService;
 
 	@Autowired
 	private ConsulenteRepository consulenteRepository;
@@ -107,10 +115,20 @@ public class ConsulenteService extends UtenteService {
 	 */
 	public Consulente cessazioneConsulente(Consulente consulente, LocalDate dataCessazione) {
 		consulente.setDataCessazione(dataCessazione);
-		updateUtenteStatus(consulente.getCodicePersona(), StatoUtenteType.C);
+		consulente.getEconomics().setArchived(true);
+		consulente.getUtente().setUsername(consulente.getUtente().getUsername()+ Utils.SET_ARCHIVED + consulente.getTipo());
+		consulente.getUtente().setStato(StatoUtenteType.C);
+		super.updateUtente(consulente.getUtente());
 		createStorico(consulente.getEconomics());
 		consulenteRepository.save(consulente);
 		return consulente;
+	}
+	
+	public Dipendente conversioneConsulenteToDipendente(Consulente consulente,Utente utente, Dipendente dipendente,
+		DatiEconomiciDipendente economics, LocalDate dataCessazione) {
+		utente = dipendenteService.createUtenteDipendente(utente, dipendente, economics);
+		cessazioneConsulente(consulente, dataCessazione);
+		return dipendenteService.readAnagraficaDipendente(utente.getCodicePersona());
 	}
 	
 	/**

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -201,26 +202,33 @@ public class DipendenteController {
 	}
 	
 	
-	@PutMapping(value = "/from-consulente-to-dipendente")
+	@PutMapping(value = "/from-consulente-to-dipendente/{dataCessazione}/{codiceConsulente}")
 	public ResponseEntity<ResponseDto<DipendenteDto>> fromConsulenteToDipendente(
-			@RequestBody DipendenteDto dipendenteDto, @PathVariable LocalDate dataCessazione,
+			@RequestBody DipendenteDto dipendenteDto, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataCessazione,
 			@PathVariable String codiceConsulente) {
 		Consulente consulente = consulenteService.readAnagraficaConsulente(codiceConsulente);
-		Utente utente = consulente.getUtente();
-		utente.setTipo(AnagraficaType.I);
-		utente.setMailAziendale(dipendenteDto.getUtente().getMailAziendale());
-		utente.setCodiceAzienda(dipendenteDto.getUtente().getCodiceAzienda());
+		consulente.getUtente().getRuoli().stream().forEach(a ->{});
 		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
 		DatiEconomiciDipendente economics = dtoEntityMapper.dtoToEntity(dipendenteDto.getEconomics());
 		loadResponsabile(dipendenteDto, dipendente);
-		utente = dipendenteService.createUtenteDipendente(utente, dipendente, economics);
-		Dipendente anagrafica = (Dipendente) utente.getPersonale();
-		dipendenteDto = dtoEntityMapper.entityToDto(anagrafica);
-		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
+		Utente newUtenteEntity = changeUtente(consulente, dipendente);
+		dipendente = consulenteService.conversioneConsulenteToDipendente(consulente, newUtenteEntity, dipendente, economics, dataCessazione) ;
+		dipendenteDto = dtoEntityMapper.entityToDto(dipendente);
+		UtenteDto utenteDto = dtoEntityMapper.entityToDto(dipendente.getUtente());
 		dipendenteDto.setUtente(utenteDto);
-		consulenteService.cessazioneConsulente(consulente, dataCessazione);
 		ResponseDto<DipendenteDto> genericResponse = ResponseDto.<DipendenteDto>builder().data(dipendenteDto).build();
 		return ResponseEntity.ok(genericResponse);
+	}
+
+	private Utente changeUtente(Consulente consulente, Dipendente dipendente) {
+		UtenteDto dtoNewUtente = dtoEntityMapper.entityToDto(consulente.getUtente());
+		dtoNewUtente.setCodicePersona(null);
+		dtoNewUtente.setStato(StatoUtenteType.A);
+		dtoNewUtente.setTipo(AnagraficaType.I);
+		dtoNewUtente.setMailAziendale(dipendente.getUtente().getMailAziendale());
+		dtoNewUtente.setCodiceAzienda(dipendente.getUtente().getCodiceAzienda());
+		Utente newUtenteEntity = dtoEntityMapper.dtoToEntity(dtoNewUtente);
+		return newUtenteEntity;
 	}
 
 }

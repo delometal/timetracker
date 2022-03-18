@@ -60,6 +60,9 @@ public class DatiEconomiciConsulente extends BaseEntity{
 	@OneToOne
 	@JoinColumn(name = "codice_persona")
 	private Consulente personale;
+	
+	@Column(name = "archived")
+	private Boolean archived;
   
 	
 }

@@ -10,7 +10,7 @@ import com.perigea.tracker.timesheet.entity.Richiesta;
 import com.perigea.tracker.timesheet.entity.RichiestaHistory;
 import com.perigea.tracker.timesheet.entity.Timesheet;
 import com.perigea.tracker.timesheet.repository.TimesheetRepository;
-import com.perigea.tracker.timesheet.rest.RestClient;
+import com.perigea.tracker.timesheet.rest.NotificationRestClient;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED)
@@ -20,7 +20,7 @@ public class TimesheetApprovalWorkflow implements IApprovalFlow {
 	private TimesheetRepository timesheetRepository;
 
 	@Autowired
-	private RestClient restClient;
+	private NotificationRestClient restClient;
 
 	public static final String TIMESHEET_REQUEST_ENDPOINT = "timesheet/create";
 	public static final String APPROVE_TIMESHEET_ENDPOINT = "timesheet/approve";

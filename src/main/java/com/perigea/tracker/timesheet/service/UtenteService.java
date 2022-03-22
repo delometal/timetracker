@@ -34,7 +34,7 @@ import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.repository.ApplicationDao;
 import com.perigea.tracker.timesheet.repository.PasswordTokenRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
-import com.perigea.tracker.timesheet.rest.RestClient;
+import com.perigea.tracker.timesheet.rest.NotificationRestClient;
 import com.perigea.tracker.timesheet.search.Condition;
 import com.perigea.tracker.timesheet.search.FilterFactory;
 import com.perigea.tracker.timesheet.search.Operator;
@@ -62,7 +62,7 @@ public class UtenteService {
 	private PasswordTokenRepository passwordTokenRepository;
 
 	@Autowired
-	private RestClient restClient;
+	private NotificationRestClient notificationRestClient;
 
 	/**
 	 * metodo di creazione di un utente ed invio notifica delle credenzili
@@ -97,7 +97,7 @@ public class UtenteService {
 					.username(username)
 					.dataScadenza(passwordToken.getDataScadenza())
 					.build();
-//			restClient.sendUserNotification(new NonPersistedEventDto<CreatedUtenteNotificaDto>(CreatedUtenteNotificaDto.class, Utils.toJson(notifica)));				
+//			notificationRestClient.sendUserNotification(new NonPersistedEventDto<CreatedUtenteNotificaDto>(CreatedUtenteNotificaDto.class, Utils.toJson(notifica)));				
 			return user;
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
@@ -223,9 +223,7 @@ public class UtenteService {
 			if (edits != null && edits == 1) {
 				return readUtente(codicePersona);
 			} else {
-				throw new PersistenceException(String.format(
-						"Si è verificato un errore durante l'aggiornamento per l'utente %s con la nuova password %s",
-						codicePersona, cryptedPassword));
+				throw new PersistenceException(String.format("Si è verificato un errore durante l'aggiornamento per l'utente %s con la nuova password %s", codicePersona, cryptedPassword));
 			}
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());

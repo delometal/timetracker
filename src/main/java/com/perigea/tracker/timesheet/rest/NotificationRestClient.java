@@ -11,7 +11,7 @@ import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
 
 @Component
-public class RestClient {
+public class NotificationRestClient {
 
 	@Autowired
 	private RestTemplate restTemplate;

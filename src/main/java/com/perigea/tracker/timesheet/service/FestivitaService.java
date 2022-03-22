@@ -86,7 +86,7 @@ public class FestivitaService {
 	public void deleteFestivita(Integer id) {
 		try {
 			festivitaRepository.deleteById(id);
-			logger.info(String.format("Festività con id $s cancellata", id));
+			logger.info(String.format("Festività con id %s cancellata", id));
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

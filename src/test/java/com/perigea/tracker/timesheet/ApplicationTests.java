@@ -19,7 +19,7 @@ import com.perigea.tracker.commons.utils.Utils;
 class ApplicationTests {
 
 	@Test	
-	public void test() {
+	 void test() {
 		String username = "pippo.paperino";
 		String lastUsername = "pippo.paperino72";
 		String refNum = lastUsername.substring(username.length(), lastUsername.length());
@@ -28,7 +28,7 @@ class ApplicationTests {
 	}
 	
 	@Test
-	public void test2() {
+	 void test2() {
 		List<String> usernames = new ArrayList<String>();
 		usernames.add("pippo.paperino1");
 		usernames.add("pippo.paperino12");
@@ -41,7 +41,7 @@ class ApplicationTests {
 	}
 	
 	@Test
-	public void test3() {
+	 void test3() {
 		int length = 8;
 		String password = Utils.randomString(length);
 		assertTrue(password.length()==length);

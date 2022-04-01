@@ -1,5 +1,6 @@
 package com.perigea.tracker.timesheet.controller;
 
+import com.perigea.tracker.commons.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -7,18 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.commons.enums.ResponseType;
-import com.perigea.tracker.commons.exception.CentroDiCostoException;
-import com.perigea.tracker.commons.exception.ClienteException;
-import com.perigea.tracker.commons.exception.CommessaException;
-import com.perigea.tracker.commons.exception.EntityNotFoundException;
-import com.perigea.tracker.commons.exception.FestivitaException;
-import com.perigea.tracker.commons.exception.FileUploadException;
-import com.perigea.tracker.commons.exception.GenericError;
-import com.perigea.tracker.commons.exception.GruppoException;
-import com.perigea.tracker.commons.exception.RuoloException;
-import com.perigea.tracker.commons.exception.TimesheetException;
-import com.perigea.tracker.commons.exception.URIException;
-import com.perigea.tracker.commons.exception.UtenteException;
 
 @ControllerAdvice
 public class ExceptionHandlerController {
@@ -52,6 +41,15 @@ public class ExceptionHandlerController {
 
 	@ExceptionHandler(RuoloException.class)
 	public final ResponseEntity<?> handleRoleException(RuoloException ex) {
+		GenericError eObject = new GenericError();
+		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+		eObject.setMessage(ex.getMessage());
+		ResponseDto<GenericError> errorDto = ResponseDto.<GenericError>builder().code(HttpStatus.BAD_REQUEST.value()).type(ResponseType.ERROR).data(eObject).build();
+		return ResponseEntity.badRequest().body(errorDto);
+	}
+
+	@ExceptionHandler(AvvisoBachecaException.class)
+	public final ResponseEntity<?> handleAvvisoException(AvvisoBachecaException ex) {
 		GenericError eObject = new GenericError();
 		eObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
 		eObject.setMessage(ex.getMessage());

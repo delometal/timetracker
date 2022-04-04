@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.commons.dto.CreatedUtenteNotificaDto;
+import com.perigea.tracker.commons.dto.NonPersistedEventDto;
 import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.RuoloType;
 import com.perigea.tracker.commons.enums.StatoUtenteType;
@@ -27,6 +28,7 @@ import com.perigea.tracker.commons.exception.PersistenceException;
 import com.perigea.tracker.commons.exception.UtenteException;
 import com.perigea.tracker.commons.utils.UsernameComparator;
 import com.perigea.tracker.commons.utils.Utils;
+import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
 import com.perigea.tracker.timesheet.entity.PasswordToken;
 import com.perigea.tracker.timesheet.entity.Personale;
 import com.perigea.tracker.timesheet.entity.Ruolo;
@@ -63,6 +65,9 @@ public class UtenteService {
 
 	@Autowired
 	private NotificationRestClient notificationRestClient;
+	
+	@Autowired
+	private ApplicationProperties properties;
 
 	/**
 	 * metodo di creazione di un utente ed invio notifica delle credenzili
@@ -97,7 +102,8 @@ public class UtenteService {
 					.username(username)
 					.dataScadenza(passwordToken.getDataScadenza())
 					.build();
-//			notificationRestClient.sendUserNotification(new NonPersistedEventDto<CreatedUtenteNotificaDto>(CreatedUtenteNotificaDto.class, Utils.toJson(notifica)));				
+//			notificationRestClient.sendInstantNotification(new NonPersistedEventDto<CreatedUtenteNotificaDto>(CreatedUtenteNotificaDto.class, Utils.toJson(notifica)),
+//				properties.getUserCreationNotificationEndpoint());				
 			return user;
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());

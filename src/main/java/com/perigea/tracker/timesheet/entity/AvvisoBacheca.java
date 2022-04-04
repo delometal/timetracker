@@ -1,12 +1,23 @@
 package com.perigea.tracker.timesheet.entity;
 
-import lombok.Data;
+import java.util.Date;
 
-import javax.persistence.*;
-import java.time.LocalDate;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Entity(name="bacheca")
+@NoArgsConstructor
+@AllArgsConstructor
 public class AvvisoBacheca extends BaseEntity{
 
     private static final long serialVersionUID = -211063501319745848L;
@@ -22,8 +33,8 @@ public class AvvisoBacheca extends BaseEntity{
     private String tipo;
 
     @Column
-    private Boolean fissato;
+    private Boolean pinned;
 
     @Column(name="data_evento")
-    private LocalDate dataEvento;
+    private Date dataEvento;
 }

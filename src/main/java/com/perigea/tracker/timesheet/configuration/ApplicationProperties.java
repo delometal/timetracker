@@ -32,7 +32,10 @@ public class ApplicationProperties {
 	private String sender;
 	
 	@Value("${calendar.notification.userCreated}")
-	private String instantNotificationEndpoint;
+	private String userCreationNotificationEndpoint;
+	
+	@Value("${calendar.notification.avvisoBacheca}")
+	private String avvisoBachecaEndpoint;
 	
 	@Value("${notificator.endpoint}")
 	private String notificatorEndpoint;

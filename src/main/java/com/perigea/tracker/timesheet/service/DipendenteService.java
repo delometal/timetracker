@@ -159,6 +159,17 @@ public class DipendenteService extends UtenteService {
 			throw new ConsulenteException(e.getMessage());
 		}
 	}
+	
+	public List<Dipendente> getAllActiveDipendenti(){
+		try {
+			return dipendenteRepository.findAll(dipendentiByStatus(StatoUtenteType.A));
+		} catch (Exception e) {
+			if (e instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(e.getMessage());
+			}
+			throw new ConsulenteException(e.getMessage());
+		}
+	}
 
 	private Specification<Dipendente> dipendentiByStatus(final StatoUtenteType statoUtente) {
 

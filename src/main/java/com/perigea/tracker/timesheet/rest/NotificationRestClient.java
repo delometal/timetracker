@@ -24,8 +24,8 @@ public class NotificationRestClient {
 		restTemplate.postForObject(applicationProperties.getCalendarConnectionString() + endpoint, event, ResponseDto.class);
 	}
 
-	public void sendUserNotification(NonPersistedEventDto<? extends BaseDto> notifica) {
-		restTemplate.postForObject(applicationProperties.getInstantNotificationEndpoint(), notifica, String.class);
+	public void sendInstantNotification(NonPersistedEventDto<? extends BaseDto> notifica, String endpoint) {
+		restTemplate.postForObject(endpoint, notifica, String.class);
 	}
 	
 	public <T extends CalendarEventDto> void sendNotificaApprovazione(T event, String endpoint) {

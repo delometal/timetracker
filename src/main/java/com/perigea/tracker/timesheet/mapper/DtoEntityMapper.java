@@ -203,6 +203,10 @@ public interface DtoEntityMapper {
 	/** AVVISI BACHECA **/
 	AvvisoBacheca dtoToEntity(AvvisoBachecaDto dto);
 	@Mapping(target = "recipients", ignore = true)
+	@Mapping(target = "createUser", ignore = true)
+	@Mapping(target = "createTimestamp", ignore = true)
+	@Mapping(target = "lastUpdateUser", ignore = true)
+	@Mapping(target = "lastUpdateTimestamp", ignore = true)
 	AvvisoBachecaDto entityToDto(AvvisoBacheca entity);
 	List<AvvisoBachecaDto> avvisoEntityToDtoList(List<AvvisoBacheca> entity);
-}
+}	

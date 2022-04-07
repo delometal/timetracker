@@ -125,6 +125,15 @@ public class ConsulenteController {
 
 	}
 	
+	@GetMapping(value = "/read-all-consulenti")
+	public ResponseEntity<ResponseDto<List<ConsulenteDto>>> getAllConsulenti() {
+		List<Consulente> listaConsulentiEntity = consulenteService.findAllConsulenti();
+		List<ConsulenteDto> listaConsulentiDto =  dtoEntityMapper.entityToDtoConsulenteList(listaConsulentiEntity);
+		ResponseDto<List<ConsulenteDto>> genericResponse = ResponseDto.<List<ConsulenteDto>>builder().data(listaConsulentiDto).build();
+		return ResponseEntity.ok(genericResponse);
+
+	}
+	
 	@PutMapping(value = "/update-status/{codicePersona}/{status}")
 	public ResponseEntity<ResponseDto<UtenteDto>> editStatusUser(@PathVariable("codicePersona") String codicePersona, @PathVariable("status") StatoUtenteType status) {
 		Utente utente = consulenteService.updateUtenteStatus(codicePersona, status);

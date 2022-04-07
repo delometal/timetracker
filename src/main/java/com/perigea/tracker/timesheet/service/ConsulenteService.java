@@ -61,6 +61,10 @@ public class ConsulenteService extends UtenteService {
 		return super.createUtente(utente, consulente);		
 	}
 	
+	public List<Consulente> findAllConsulenti(){
+		return consulenteRepository.findAll();
+	}
+	
 	/**
 	 * Lettura dati di una AnagraficaConsulente
 	 * @param consulenteParam

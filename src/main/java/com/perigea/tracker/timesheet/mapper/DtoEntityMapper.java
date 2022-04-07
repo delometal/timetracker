@@ -37,6 +37,8 @@ public interface DtoEntityMapper {
 		
 	Consulente dtoToEntity(ConsulenteDto dto);
 	ConsulenteDto entityToDto(Consulente entity);
+	List<ConsulenteDto> entityToDtoConsulenteList(List<Consulente> dto);
+	List<Consulente> dtoToEntityConsulenteList(List<ConsulenteDto> entity);
 	
 	
 	/** CLIENTI & FORNITORI **/

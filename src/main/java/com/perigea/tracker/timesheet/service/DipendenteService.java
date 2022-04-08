@@ -97,6 +97,17 @@ public class DipendenteService extends UtenteService {
 		}
 	}
 	
+	public List<Dipendente> getAllDipendenti() {
+		try {
+			return dipendenteRepository.findAll();
+		} catch (Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new DipendenteException(ex.getMessage());
+		}
+	}
+	
 	/**
 	 * ricerca di tutti gli utenti tramite il responsabile
 	 * @param responsabile

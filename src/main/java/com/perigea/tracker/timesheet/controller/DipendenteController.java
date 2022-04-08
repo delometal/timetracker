@@ -92,6 +92,14 @@ public class DipendenteController {
 		ResponseDto<DipendenteDto> genericResponse = ResponseDto.<DipendenteDto>builder().data(dipendenteDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
+	
+	@GetMapping(value = "/read-all-dipendenti")
+	public ResponseEntity<ResponseDto<List<DipendenteDto>>> readAllDipendenti() {
+		List<Dipendente> dipendenti = dipendenteService.getAllDipendenti();
+		List<DipendenteDto> dtos = dtoEntityMapper.entityToDipendenteDtoList(dipendenti);
+		ResponseDto<List<DipendenteDto>> genericResponse = ResponseDto.<List<DipendenteDto>>builder().data(dtos).build();
+		return ResponseEntity.ok(genericResponse);
+	}
 
 	@DeleteMapping(value = "/delete/{codicePersona}")
 	public ResponseEntity<ResponseDto<DipendenteDto>> deleteDipendente(

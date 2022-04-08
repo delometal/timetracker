@@ -102,8 +102,8 @@ public class UtenteService {
 					.username(username)
 					.dataScadenza(passwordToken.getDataScadenza())
 					.build();
-//			notificationRestClient.sendInstantNotification(new NonPersistedEventDto<CreatedUtenteNotificaDto>(CreatedUtenteNotificaDto.class, Utils.toJson(notifica)),
-//				properties.getUserCreationNotificationEndpoint());				
+			notificationRestClient.sendInstantNotification(new NonPersistedEventDto<CreatedUtenteNotificaDto>(CreatedUtenteNotificaDto.class, Utils.toJson(notifica)),
+				properties.getUserCreationNotificationEndpoint());				
 			return user;
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());

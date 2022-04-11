@@ -57,7 +57,7 @@ public class AvvisoBachecaController {
         	allEmail.add(s.getUtente().getMailAziendale());
         });
        avvisoDto.setRecipients(allEmail);
-        notificationRestClient.sendInstantNotification(new NonPersistedEventDto<AvvisoBachecaDto>(AvvisoBachecaDto.class, Utils.toJson(avvisoDto)), 
+       notificationRestClient.sendInstantNotification(new NonPersistedEventDto<AvvisoBachecaDto>(AvvisoBachecaDto.class, Utils.toJson(avvisoDto)), 
         		properties.getAvvisoBachecaEndpoint());
         ResponseDto<AvvisoBachecaDto> genericResponse = ResponseDto.<AvvisoBachecaDto>builder().data(avvisoDto).build();
         return ResponseEntity.ok(genericResponse);

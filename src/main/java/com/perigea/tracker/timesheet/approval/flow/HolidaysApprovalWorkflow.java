@@ -42,6 +42,7 @@ public class HolidaysApprovalWorkflow implements IApprovalFlow {
 	
 	public void cancelHolidays(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
+		// try catch con Kafka
 		restClient.sendNotifica(event, CANCEL_HOLIDAYS_ENDPOINT);
 	}
 	

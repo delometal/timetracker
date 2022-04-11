@@ -36,6 +36,7 @@ public class TimesheetApprovalWorkflow implements IApprovalFlow {
 
 	public void richiestaTimesheet(TimesheetEventDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
+		// TODO Kafka
 		restClient.sendNotifica(event, TIMESHEET_REQUEST_ENDPOINT);
 	}
 

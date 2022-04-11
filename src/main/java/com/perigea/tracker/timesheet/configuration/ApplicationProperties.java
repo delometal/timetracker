@@ -1,6 +1,8 @@
 package com.perigea.tracker.timesheet.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
@@ -12,6 +14,9 @@ import lombok.Setter;
 @Configuration
 @PropertySource("classpath:/application.properties")
 public class ApplicationProperties {
+	
+	@Autowired
+	private KafkaProperties kafkaProperties;
 
 	@Value("${perigea.data.partita-iva}")
 	private String partitaIvaPerigea;

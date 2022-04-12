@@ -41,7 +41,9 @@ public class KafkaSender {
 	
 	public void send(CalendarEventDto message) {
 		Class<? extends CalendarEventDto> clazz = message.getClass();
-		String clazzType = clazz.getName();
+		String clazzType = clazz.getSimpleName();
+		
+		
 		
 		switch(clazzType) {
 			case "TimesheetEventDto":

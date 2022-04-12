@@ -21,6 +21,7 @@ import com.perigea.tracker.commons.dto.MeetingEventDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
 import com.perigea.tracker.timesheet.entity.Gruppo;
 import com.perigea.tracker.timesheet.entity.Utente;
+import com.perigea.tracker.timesheet.kafka.sender.KafkaSender;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.rest.NotificationRestClient;
 import com.perigea.tracker.timesheet.service.ContactDetailsService;
@@ -33,6 +34,8 @@ public class GruppoController {
 
 	// TODO ricerca per filtri (nome/username/...) 
 
+	@Autowired
+	private KafkaSender kafkaSender;
 	
 	@Autowired
 	private GruppoContattoService gruppoContattoService;
@@ -97,12 +100,13 @@ public class GruppoController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PostMapping(value = "/create-meeting-by-group")
-	public ResponseEntity<ResponseDto<MeetingEventDto>> createMeeting(Long groupId, MeetingEventDto event) {
+	@PostMapping(value = "/create-meeting-by-group/{groupId}")
+	public ResponseEntity<ResponseDto<MeetingEventDto>> createMeeting(@PathVariable Long groupId,@RequestBody MeetingEventDto event) {
 		List<ContactDto> contatti = contactDetailsService.readAllContactDetails(groupId);
 		event.setParticipants(contatti);
 		
-		restClient.sendNotifica(event, CREATE_MEETING_ENDPOINT);
+		//restClient.sendNotifica(event, CREATE_MEETING_ENDPOINT);
+		kafkaSender.send(event);
 
 		ResponseDto<MeetingEventDto> genericDto = ResponseDto.<MeetingEventDto>builder()
 				.data(event)

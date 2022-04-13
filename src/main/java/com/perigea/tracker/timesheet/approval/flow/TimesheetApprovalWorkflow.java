@@ -9,6 +9,7 @@ import com.perigea.tracker.commons.dto.TimesheetEventDto;
 import com.perigea.tracker.timesheet.entity.Richiesta;
 import com.perigea.tracker.timesheet.entity.RichiestaHistory;
 import com.perigea.tracker.timesheet.entity.Timesheet;
+import com.perigea.tracker.timesheet.kafka.sender.KafkaSender;
 import com.perigea.tracker.timesheet.repository.TimesheetRepository;
 import com.perigea.tracker.timesheet.rest.NotificationRestClient;
 
@@ -22,6 +23,9 @@ public class TimesheetApprovalWorkflow implements IApprovalFlow {
 	@Autowired
 	private NotificationRestClient restClient;
 
+	@Autowired
+	private KafkaSender kafkaSender;
+	
 	public static final String TIMESHEET_REQUEST_ENDPOINT = "timesheet/create";
 	public static final String APPROVE_TIMESHEET_ENDPOINT = "timesheet/approve";
 
@@ -37,7 +41,8 @@ public class TimesheetApprovalWorkflow implements IApprovalFlow {
 	public void richiestaTimesheet(TimesheetEventDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
 		// TODO Kafka
-		restClient.sendNotifica(event, TIMESHEET_REQUEST_ENDPOINT);
+		//restClient.sendNotifica(event, TIMESHEET_REQUEST_ENDPOINT);
+		kafkaSender.send(event);
 	}
 
 	@Override

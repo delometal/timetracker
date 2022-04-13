@@ -1,6 +1,8 @@
 package com.perigea.tracker.timesheet.kafka.sender;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
+import org.springframework.kafka.event.NonResponsiveConsumerEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,15 +37,14 @@ public class KafkaSender {
 	
 	@Transactional(transactionManager = "meetingKafkaTransactionManager")
 	private void send(MeetingEventDto message) {
-		RiunioneEventKafkaSender sender = (RiunioneEventKafkaSender) kafkaRiunioneStrategyFactory.load(MeetingEventDto.class);
+		MeetingEventKafkaSender sender = (MeetingEventKafkaSender) kafkaRiunioneStrategyFactory.load(MeetingEventDto.class);
 		sender.send(message);
 	}
 	
+	@Transactional
 	public void send(CalendarEventDto message) {
 		Class<? extends CalendarEventDto> clazz = message.getClass();
 		String clazzType = clazz.getSimpleName();
-		
-		
 		
 		switch(clazzType) {
 			case "TimesheetEventDto":

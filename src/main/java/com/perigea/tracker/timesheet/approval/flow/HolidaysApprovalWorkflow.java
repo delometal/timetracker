@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.perigea.tracker.commons.dto.HolidayEventRequestDto;
 import com.perigea.tracker.timesheet.entity.Richiesta;
 import com.perigea.tracker.timesheet.entity.RichiestaHistory;
+import com.perigea.tracker.timesheet.kafka.sender.KafkaSender;
 import com.perigea.tracker.timesheet.rest.NotificationRestClient;
 
 @Component
@@ -17,6 +18,9 @@ public class HolidaysApprovalWorkflow implements IApprovalFlow {
 	@Autowired
 	private NotificationRestClient restClient;
 
+	@Autowired
+	private KafkaSender kafkaSender;
+	
 	public static final String HOLIDAYS_REQUEST_ENDPOINT = "holiday/add";
 	public static final String ALL_HOLIDAYS_APPROVE_ENDPOINT = "holiday/approve-all";
 	public static final String SINGLE_HOLIDAY_APPROVE_ENDPOINT = "holiday/approve-single-event";
@@ -27,7 +31,8 @@ public class HolidaysApprovalWorkflow implements IApprovalFlow {
 
 	public void holidaysRequest(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
-		restClient.sendNotifica(event, HOLIDAYS_REQUEST_ENDPOINT);
+		kafkaSender.send(event);
+		//restClient.sendNotifica(event, HOLIDAYS_REQUEST_ENDPOINT);
 	}
 
 	public void approveAllHolidaysRequest(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {

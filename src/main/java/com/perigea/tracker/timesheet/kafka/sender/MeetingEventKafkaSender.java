@@ -6,11 +6,11 @@ import com.perigea.tracker.commons.dto.MeetingEventDto;
 import com.perigea.tracker.commons.enums.KafkaCalendarEventType;
 
 @Component
-public class RiunioneEventKafkaSender extends AbstractKafkaSender<MeetingEventDto> {
+public class MeetingEventKafkaSender extends AbstractKafkaSender<MeetingEventDto> {
 	
 	@Override
 	public KafkaCalendarEventType eventType() {
-		return KafkaCalendarEventType.RIUNIONE_EVENT_MESSAGE;
+		return KafkaCalendarEventType.MEETING_EVENT_MESSAGE;
 	}
 	
 	@Override

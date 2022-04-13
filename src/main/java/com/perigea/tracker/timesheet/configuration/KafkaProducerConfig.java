@@ -79,11 +79,12 @@ public class KafkaProducerConfig {
 		return new KafkaTransactionManager<String, HolidayEventRequestDto>(holidayMessageProducerFactory());
 	}
 	
-	@Bean("riunioneMessageProducerFactory")
-	public ProducerFactory<String, MeetingEventDto> riunioneMessageProducerFactory() {
+	@Bean("meetingMessageProducerFactory")
+	public ProducerFactory<String, MeetingEventDto> meetingMessageProducerFactory() {
 		Map<String, Object> producerProperties = applicationProperties.getKafkaProperties().buildProducerProperties();
 		producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 		producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class.getName());
+		producerProperties.put(ProducerConfig.RETRIES_CONFIG, 2);
 		DefaultKafkaProducerFactory<String, MeetingEventDto> factory = new DefaultKafkaProducerFactory<>(producerProperties);
 		String transactionIdPrefix = applicationProperties.getKafkaProperties().getProducer().getTransactionIdPrefix();
 		if (transactionIdPrefix != null) {
@@ -95,11 +96,12 @@ public class KafkaProducerConfig {
 	
 	@Bean("meetingMessageKafkaTemplate")
 	public KafkaTemplate<String, MeetingEventDto> meetingMessageKafkaTemplate(){
-		return new KafkaTemplate<>(riunioneMessageProducerFactory());
+		return new KafkaTemplate<>(meetingMessageProducerFactory());
 	}
 	
 	@Bean("meetingKafkaTransactionManager")
 	public KafkaTransactionManager<String, MeetingEventDto> meetingKafkaTransactionManager(){
-		return new KafkaTransactionManager<String, MeetingEventDto>(riunioneMessageProducerFactory());
+		return new KafkaTransactionManager<String, MeetingEventDto>(meetingMessageProducerFactory());
 	}
+	
 }

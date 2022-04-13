@@ -93,7 +93,7 @@ public class DipendenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@GetMapping(value = "/read-all-dipendenti")
+	@GetMapping(value = "/read-all")
 	public ResponseEntity<ResponseDto<List<DipendenteDto>>> readAllDipendenti() {
 		List<Dipendente> dipendenti = dipendenteService.getAllDipendenti();
 		List<DipendenteDto> dtos = dtoEntityMapper.entityToDipendenteDtoList(dipendenti);

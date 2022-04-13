@@ -126,7 +126,7 @@ public class ConsulenteController {
 
 	}
 	
-	@GetMapping(value = "/read-all-consulenti")
+	@GetMapping(value = "/read-all")
 	public ResponseEntity<ResponseDto<List<ConsulenteDto>>> getAllConsulenti() {
 		List<Consulente> listaConsulentiEntity = consulenteService.findAllConsulenti();
 		List<ConsulenteDto> listaConsulentiDto =  dtoEntityMapper.entityToDtoConsulenteList(listaConsulentiEntity);

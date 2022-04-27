@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Configuration
-@PropertySource("classpath:/application.properties")
+@PropertySource("classpath:/application-${spring.profiles.active}.properties")
 public class ApplicationProperties {
 
 	@Value("${perigea.data.partita-iva}")
@@ -45,5 +45,16 @@ public class ApplicationProperties {
 	
 	@Value("${password.endpoint}")
 	private String passwordUpdateEndpoint;
-		
+	
+	@Value("${authServer.token.endpoint}")
+	private String oauthTokenEndpoint;
+	
+	@Value("${grant.type}")
+	private String grantType;
+	
+	@Value("${authorization.username}")
+	private String authClientUsername;
+	
+	@Value("${authorization.password}")
+	private String authClientPassword;
 }

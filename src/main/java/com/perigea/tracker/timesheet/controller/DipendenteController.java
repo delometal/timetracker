@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,7 +55,8 @@ public class DipendenteController {
 	
 	@Autowired
 	private ConversioneService conversioneService;
-
+	
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@PostMapping(value = "/create")
 	public ResponseEntity<ResponseDto<DipendenteDto>> createDipendente(@RequestBody DipendenteDto dipendenteDto) {
 		Utente utente = dtoEntityMapper.dtoToEntity(dipendenteDto.getUtente());

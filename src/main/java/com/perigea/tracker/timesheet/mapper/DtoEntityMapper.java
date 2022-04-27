@@ -15,6 +15,10 @@ public interface DtoEntityMapper {
 	Utente dtoToEntity(UtenteDto dto);
 
 	@Mapping(ignore = true, target = "password")
+	@Mapping(target = "createUser", ignore = true)
+	@Mapping(target = "createTimestamp", ignore = true)
+	@Mapping(target = "lastUpdateUser", ignore = true)
+	@Mapping(target = "lastUpdateTimestamp", ignore = true)
 	UtenteDto entityToDto(Utente entity);
 		
 	Ruolo dtoToEntity(RuoloDto dto);
@@ -125,6 +129,11 @@ public interface DtoEntityMapper {
 	List<CommessaEstensione> dtoToEntityList(List<CommessaEstensioneDto> dto);
 	List<CommessaEstensioneDto> entityToDtoList(List<CommessaEstensione> entity);
 	
+	List<CommessaFatturabileDto> entityToCommessaFattDtoList(List<CommessaFatturabile> entity);
+	List<CommessaNonFatturabileDto> entityToCommessaNoFattDtoList(List<CommessaNonFatturabile> entity);
+	List<CommessaDto> entityToCommessaDtoList(List<Commessa> entity);
+
+	
 	/** GRUPPI E CONTATTI **/
 	Gruppo dtoToEntity(GruppoContattoDto gruppo);
 	GruppoContattoDto entityToDto(Gruppo gruppo);
@@ -133,7 +142,7 @@ public interface DtoEntityMapper {
 	List<ContactDto> entityToContactDtoList(List<Utente> entity);
 	
 
-	List<CommessaFatturabileDto> entityToCommessaFattDtoList(List<CommessaFatturabile> entity);
+	
 	
 	List<DipendenteDto> entityToDipendenteDtoList(List<Dipendente> entity);
 	

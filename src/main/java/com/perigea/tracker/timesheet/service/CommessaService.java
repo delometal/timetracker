@@ -36,7 +36,7 @@ import com.perigea.tracker.timesheet.search.Operator;
 @Service
 @Transactional
 public class CommessaService {
-	
+
 	@Autowired
 	private FilterFactory<CommessaFatturabile> filter;
 
@@ -45,7 +45,7 @@ public class CommessaService {
 
 	@Autowired
 	private CommessaNonFatturabileRepository commessaNonFatturabileRepository;
-	
+
 	@Autowired
 	private CommessaEstensioneRepository commessaEstensioneRepository;
 
@@ -57,10 +57,10 @@ public class CommessaService {
 
 	@Autowired
 	private ClienteRepository clienteRepository;
-	
+
 	@Autowired
 	private ClienteService clienteService;
-	
+
 	/**
 	 * @param commessaNonFatturabile metodo per creare o aggiornate una commessa non
 	 *                               fatturabile
@@ -180,14 +180,13 @@ public class CommessaService {
 			throw new CommessaException(ex.getMessage());
 		}
 	}
-	
 
 	/**
 	 *************************************** ESTENSIONE **************************************
 	 */
 	public CommessaEstensione createEstensioneCommessa(CommessaEstensione estensione) {
 		try {
-			CommessaEstensioneKey id = new CommessaEstensioneKey(estensione.getId().getCodiceCommessa(), 
+			CommessaEstensioneKey id = new CommessaEstensioneKey(estensione.getId().getCodiceCommessa(),
 					estensione.getId().getDataEstensione());
 			estensione.setId(id);
 			Commessa commessa = commessaFatturabileRepository.getById(estensione.getId().getCodiceCommessa());
@@ -197,9 +196,10 @@ public class CommessaService {
 			throw new CommessaException(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * lettura di tutte le estensioni di una commessa
+	 * 
 	 * @param codiceCommessa
 	 * @return
 	 */
@@ -213,9 +213,10 @@ public class CommessaService {
 			throw new CommessaException(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * lettura di un'estensione tramite composite key
+	 * 
 	 * @param codiceCommessa
 	 * @param dataEstensione
 	 * @return
@@ -231,7 +232,7 @@ public class CommessaService {
 			throw new CommessaException(ex.getMessage());
 		}
 	}
-	
+
 	public void deleteEstensioneCommessa(String codiceCommessa, LocalDate dataEstensione) {
 		try {
 			commessaEstensioneRepository.deleteById(new CommessaEstensioneKey(codiceCommessa, dataEstensione));
@@ -240,7 +241,7 @@ public class CommessaService {
 			throw new CommessaException(ex.getMessage());
 		}
 	}
-	
+
 	public CommessaEstensione updateEstensioneCommessa(CommessaEstensione commessaAggiornata) {
 		try {
 			return commessaEstensioneRepository.save(commessaAggiornata);
@@ -269,12 +270,13 @@ public class CommessaService {
 			logger.info("Ordine commessa creato e salvato a database");
 			return ordineCommessa;
 		} catch (Exception ex) {
-			throw new CommessaException("Ordine commessa non creata");
+			throw new CommessaException("Ordine commessa non creata" + ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * lettura commesse fatturabili tramite specification
+	 * 
 	 * @param totaleFatturato
 	 * @param importoOrdine
 	 * @return
@@ -286,22 +288,64 @@ public class CommessaService {
 			throw new CentroDiCostoException(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * specification commesse fatturabili
+	 * 
 	 * @param totaleFatturato
 	 * @param importoOrdine
 	 * @return
 	 */
-	private Specification<CommessaFatturabile> commesseAfterThatImport(final Double totaleFatturato, final Double importoOrdine) {
-		
+	private Specification<CommessaFatturabile> commesseAfterThatImport(final Double totaleFatturato,
+			final Double importoOrdine) {
+
 		List<Condition> conditions = new ArrayList<>();
-		conditions.add(Condition.builder().field("totaleFatturatoDaInizioAnno").value(totaleFatturato).valueType(Double.class).operator(Operator.gt).build());
-		conditions.add(Condition.builder().field("ordineCommessa.importoOrdine").value(importoOrdine).valueType(Double.class).operator(Operator.gt).build());
+		conditions.add(Condition.builder().field("totaleFatturatoDaInizioAnno").value(totaleFatturato)
+				.valueType(Double.class).operator(Operator.gt).build());
+		conditions.add(Condition.builder().field("ordineCommessa.importoOrdine").value(importoOrdine)
+				.valueType(Double.class).operator(Operator.gt).build());
 
 		return filter.buildSpecification(conditions, false);
 	}
+
+	/**
+	 * find di tutte le commesse fatturabili
+	 * 
+	 * @return
+	 */
+	public List<CommessaFatturabile> getAllCommesseFatturabili() {
+		try {
+			return commessaFatturabileRepository.findAll();
+
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new CommessaException(ex.getMessage());
+		}
+	}
 	
+	/**
+	 * find di tutte le commesse non fatturabili
+	 * @return
+	 */
+	public List<CommessaNonFatturabile> getAllCommesseNonFatturabili() {
+		try {
+			return commessaNonFatturabileRepository.findAll();
+
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new CommessaException(ex.getMessage());
+		}
+	}
 	
-	
+	public List<Commessa> getAllCommesse() {
+		List<Commessa> commesse = new ArrayList<Commessa>();
+		commesse.addAll(getAllCommesseFatturabili());
+		commesse.addAll(getAllCommesseNonFatturabili());
+		return commesse;
+	}
+
 }

@@ -44,7 +44,7 @@ import com.perigea.tracker.timesheet.search.Operator;
 @Service
 @Transactional
 public class UtenteService {
-	
+
 	@Autowired
 	private FilterFactory<Utente> filter;
 
@@ -65,12 +65,13 @@ public class UtenteService {
 
 	@Autowired
 	private NotificationRestClient notificationRestClient;
-	
+
 	@Autowired
 	private ApplicationProperties properties;
 
 	/**
 	 * metodo di creazione di un utente ed invio notifica delle credenzili
+	 * 
 	 * @param <T>
 	 * @param utente
 	 * @param personale
@@ -86,7 +87,7 @@ public class UtenteService {
 			utente.setUsername(username);
 			String randomString = Utils.randomString(10);
 			String password = passwordEncoder.encode(randomString);
-			utente.setPassword(password);
+			utente.setPassword("{bcrypt}"+password);
 			String token = Utils.uuid();
 			PasswordToken passwordToken = PasswordToken.builder().username(username).token(token)
 					.dataScadenza(Utils.shifTimeByHour(new Date(), Utils.CREDENTIAL_EXPIRATION_SHIFT_AMOUNT)).build();
@@ -94,23 +95,20 @@ public class UtenteService {
 			Utente user = utenteRepository.save(utente);
 			passwordTokenRepository.save(passwordToken);
 
-			CreatedUtenteNotificaDto notifica = CreatedUtenteNotificaDto.builder()
-					.token(token)
-					.mailAziendale(utente.getMailAziendale())
-					.nome(utente.getNome())
-					.password(randomString)
-					.username(username)
-					.dataScadenza(passwordToken.getDataScadenza())
-					.build();
-			notificationRestClient.sendInstantNotification(new NonPersistedEventDto<CreatedUtenteNotificaDto>(CreatedUtenteNotificaDto.class, Utils.toJson(notifica)),
-				properties.getUserCreationNotificationEndpoint());				
+			CreatedUtenteNotificaDto notifica = CreatedUtenteNotificaDto.builder().token(token)
+					.mailAziendale(utente.getMailAziendale()).nome(utente.getNome()).password(randomString)
+					.username(username).dataScadenza(passwordToken.getDataScadenza()).build();
+			notificationRestClient.sendInstantNotification(
+					new NonPersistedEventDto<CreatedUtenteNotificaDto>(CreatedUtenteNotificaDto.class,
+							Utils.toJson(notifica)),
+					properties.getUserCreationNotificationEndpoint());
 			return user;
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 			throw new UtenteException(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * lettura utente
 	 * 
@@ -139,7 +137,6 @@ public class UtenteService {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
-	
 
 	/**
 	 * cancellazione utente
@@ -153,7 +150,7 @@ public class UtenteService {
 			utente.getRuoli().clear();
 			utenteRepository.deleteById(id);
 			Optional<PasswordToken> passwordToken = passwordTokenRepository.findByUsername(utente.getUsername());
-			if(passwordToken.isPresent()) {
+			if (passwordToken.isPresent()) {
 				passwordTokenRepository.delete(passwordToken.get());
 			}
 			logger.info("Utente cancellato");
@@ -164,7 +161,6 @@ public class UtenteService {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
-	
 
 	/**
 	 * delete contatto
@@ -178,9 +174,10 @@ public class UtenteService {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * update di un utente
+	 * 
 	 * @param utente
 	 * @return
 	 */
@@ -191,7 +188,6 @@ public class UtenteService {
 			throw new ConsulenteException(ex.getMessage());
 		}
 	}
-	
 
 	/**
 	 * Metodo per aggiornare lo stato (attivo/cessato) di un utente
@@ -214,10 +210,10 @@ public class UtenteService {
 			throw ex;
 		}
 	}
-	
-	
+
 	/**
 	 * update della password di un utente
+	 * 
 	 * @param codicePersona
 	 * @param newPassword
 	 * @return
@@ -229,25 +225,28 @@ public class UtenteService {
 			if (edits != null && edits == 1) {
 				return readUtente(codicePersona);
 			} else {
-				throw new PersistenceException(String.format("Si è verificato un errore durante l'aggiornamento per l'utente %s con la nuova password %s", codicePersona, cryptedPassword));
+				throw new PersistenceException(String.format(
+						"Si è verificato un errore durante l'aggiornamento per l'utente %s con la nuova password %s",
+						codicePersona, cryptedPassword));
 			}
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 			throw ex;
 		}
 	}
-	
+
 	/**
 	 * controllo del token per l'aggiornamento della password
+	 * 
 	 * @param token
 	 * @return
 	 */
 	public boolean checkToken(String token) {
 		try {
 			Optional<PasswordToken> pwtOptional = passwordTokenRepository.findByToken(token);
-			if(pwtOptional.isPresent()) {
-			PasswordToken passwordToken = pwtOptional.get();
-			return (passwordToken.getDataScadenza().after(new Date()));
+			if (pwtOptional.isPresent()) {
+				PasswordToken passwordToken = pwtOptional.get();
+				return (passwordToken.getDataScadenza().after(new Date()));
 			} else {
 				throw new EntityNotFoundException("token non trovato");
 			}
@@ -257,9 +256,10 @@ public class UtenteService {
 			throw ex;
 		}
 	}
-	
+
 	/**
 	 * creazione di un contatto esterno
+	 * 
 	 * @param utente
 	 * @return
 	 */
@@ -276,9 +276,10 @@ public class UtenteService {
 			throw ex;
 		}
 	}
-	
+
 	/**
 	 * creazione automatica dello username di un utente
+	 * 
 	 * @param nome
 	 * @param cognome
 	 * @return
@@ -300,43 +301,48 @@ public class UtenteService {
 		}
 
 	}
-	
+
 	/**
 	 * ricerca di utenti tramite specification
+	 * 
 	 * @param username
 	 * @param tipoAnagrafica
 	 * @param statoUtente
 	 * @return
 	 */
-	public List<Utente> searchUtenti(String username, AnagraficaType tipoAnagrafica, final StatoUtenteType statoUtente) {
+	public List<Utente> searchUtenti(String username, AnagraficaType tipoAnagrafica,
+			final StatoUtenteType statoUtente) {
 		try {
 			return utenteRepository.findAll(utenteByUsernameAndTypeSearch(username, tipoAnagrafica, statoUtente));
 		} catch (Exception ex) {
 			throw new CentroDiCostoException(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * specification Utente
+	 * 
 	 * @param username
 	 * @param tipoAnagrafica
 	 * @param statoUtente
 	 * @return
 	 */
-	private Specification<Utente> utenteByUsernameAndTypeSearch(
-			final String username,
-			final AnagraficaType tipoAnagrafica,
-			final StatoUtenteType statoUtente) {
-		
+	private Specification<Utente> utenteByUsernameAndTypeSearch(final String username,
+			final AnagraficaType tipoAnagrafica, final StatoUtenteType statoUtente) {
+
 		List<Condition> conditions = new ArrayList<>();
-		conditions.add(Condition.builder().field("username").value(username).valueType(String.class).operator(Operator.like).build());
-		conditions.add(Condition.builder().field("stato").value(statoUtente).valueType(StatoUtenteType.class).operator(Operator.eq).build());
-		conditions.add(Condition.builder().field("tipo").value(tipoAnagrafica).valueType(AnagraficaType.class).operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("username").value(username).valueType(String.class)
+				.operator(Operator.like).build());
+		conditions.add(Condition.builder().field("stato").value(statoUtente).valueType(StatoUtenteType.class)
+				.operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("tipo").value(tipoAnagrafica).valueType(AnagraficaType.class)
+				.operator(Operator.eq).build());
 		return filter.buildSpecification(conditions, false);
 	}
-	
+
 	/**
 	 * ricerca di utenti tramite specification
+	 * 
 	 * @param name
 	 * @param luogoDiNascita
 	 * @return
@@ -348,22 +354,22 @@ public class UtenteService {
 			throw new CentroDiCostoException(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * specification Utente
+	 * 
 	 * @param name
 	 * @param luogoDiNascita
 	 * @return
 	 */
-	private Specification<Utente> utenteByNameAndLuogoDiNascita(
-			final String name,
-			final String luogoDiNascita) {
-		
+	private Specification<Utente> utenteByNameAndLuogoDiNascita(final String name, final String luogoDiNascita) {
+
 		List<Condition> conditions = new ArrayList<>();
-		conditions.add(Condition.builder().field("name").value(name).valueType(String.class).operator(Operator.like).build());
-		conditions.add(Condition.builder().field("luogoDiNascita").value(luogoDiNascita).valueType(String.class).operator(Operator.eq).build());
+		conditions.add(
+				Condition.builder().field("name").value(name).valueType(String.class).operator(Operator.like).build());
+		conditions.add(Condition.builder().field("luogoDiNascita").value(luogoDiNascita).valueType(String.class)
+				.operator(Operator.eq).build());
 		return filter.buildSpecification(conditions, false);
 	}
-
 
 }

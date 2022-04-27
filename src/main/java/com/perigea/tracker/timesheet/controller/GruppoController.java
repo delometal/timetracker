@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,12 +15,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.perigea.tracker.commons.dto.ContactDto;
 import com.perigea.tracker.commons.dto.GruppoContattoDto;
 import com.perigea.tracker.commons.dto.MeetingEventDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Gruppo;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.kafka.sender.KafkaSender;
@@ -34,6 +40,9 @@ public class GruppoController {
 
 	// TODO ricerca per filtri (nome/username/...) 
 
+	@Autowired
+	private Logger logger;
+	
 	@Autowired
 	private KafkaSender kafkaSender;
 	
@@ -100,13 +109,18 @@ public class GruppoController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PostMapping(value = "/create-meeting-by-group/{groupId}")
-	public ResponseEntity<ResponseDto<MeetingEventDto>> createMeeting(@PathVariable Long groupId,@RequestBody MeetingEventDto event) {
+	@PostMapping(value = "/create-meeting-by-group/{groupId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<ResponseDto<MeetingEventDto>> createMeeting(@PathVariable Long groupId, @RequestPart("event") MeetingEventDto event,
+			@RequestParam("files") MultipartFile[] files) {
 		List<ContactDto> contatti = contactDetailsService.readAllContactDetails(groupId);
 		event.setParticipants(contatti);
-		
-		//restClient.sendNotifica(event, CREATE_MEETING_ENDPOINT);
-		kafkaSender.send(event);
+		event.setAttachments(Utils.getFileList(files));
+		if (kafkaSender.isBrokerOn()) {
+			kafkaSender.send(event); 
+		} else {
+			logger.warn("Unable to send {}. Falling back to REST", event);
+			//restClient.sendNotifica(event, CREATE_MEETING_ENDPOINT);
+		}
 
 		ResponseDto<MeetingEventDto> genericDto = ResponseDto.<MeetingEventDto>builder()
 				.data(event)

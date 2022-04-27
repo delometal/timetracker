@@ -58,6 +58,10 @@
 		<appender-ref ref="ROLLING_FILE_LOGGER"/>
 		<appender-ref ref="CONSOLE" />
 	</logger>
+	<logger name="org.apache.kafka" level="off" additivity="false">
+		<appender-ref ref="ROLLING_FILE_LOGGER"/>
+		<appender-ref ref="CONSOLE" />
+	</logger>
 	<logger name="org.springframework.context.annotation" level="off" additivity="false">	
 		<appender-ref ref="ROLLING_FILE_LOGGER"/>
 		<appender-ref ref="CONSOLE" />

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 
+import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +85,6 @@ public class KafkaProducerConfig {
 		Map<String, Object> producerProperties = applicationProperties.getKafkaProperties().buildProducerProperties();
 		producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 		producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class.getName());
-		producerProperties.put(ProducerConfig.RETRIES_CONFIG, 2);
 		DefaultKafkaProducerFactory<String, MeetingEventDto> factory = new DefaultKafkaProducerFactory<>(producerProperties);
 		String transactionIdPrefix = applicationProperties.getKafkaProperties().getProducer().getTransactionIdPrefix();
 		if (transactionIdPrefix != null) {
@@ -104,4 +104,8 @@ public class KafkaProducerConfig {
 		return new KafkaTransactionManager<String, MeetingEventDto>(meetingMessageProducerFactory());
 	}
 	
+	@Bean("kafkaAdminClient")
+	public AdminClient client() {
+		return AdminClient.create(applicationProperties.getKafkaProperties().buildAdminProperties());
+	}
 }

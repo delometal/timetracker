@@ -2,10 +2,58 @@ package com.perigea.tracker.timesheet.mapper;
 
 import java.util.List;
 
-import com.perigea.tracker.commons.dto.*;
-import com.perigea.tracker.timesheet.entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import com.perigea.tracker.commons.dto.AvvisoBachecaDto;
+import com.perigea.tracker.commons.dto.CentroDiCostoDto;
+import com.perigea.tracker.commons.dto.ClienteDto;
+import com.perigea.tracker.commons.dto.CommessaDto;
+import com.perigea.tracker.commons.dto.CommessaEstensioneDto;
+import com.perigea.tracker.commons.dto.CommessaFatturabileDto;
+import com.perigea.tracker.commons.dto.CommessaNonFatturabileDto;
+import com.perigea.tracker.commons.dto.ConsulenteDto;
+import com.perigea.tracker.commons.dto.ContactDto;
+import com.perigea.tracker.commons.dto.DatiEconomiciConsulenteDto;
+import com.perigea.tracker.commons.dto.DatiEconomiciDipendenteDto;
+import com.perigea.tracker.commons.dto.DipendenteCommessaDto;
+import com.perigea.tracker.commons.dto.DipendenteDto;
+import com.perigea.tracker.commons.dto.FestivitaDto;
+import com.perigea.tracker.commons.dto.FornitoreDto;
+import com.perigea.tracker.commons.dto.GruppoContattoDto;
+import com.perigea.tracker.commons.dto.NotaSpeseDto;
+import com.perigea.tracker.commons.dto.NotaSpeseInputDto;
+import com.perigea.tracker.commons.dto.OrdineCommessaDto;
+import com.perigea.tracker.commons.dto.RichiestaDto;
+import com.perigea.tracker.commons.dto.RichiestaHistoryDto;
+import com.perigea.tracker.commons.dto.RuoloDto;
+import com.perigea.tracker.commons.dto.TimesheetEntryDto;
+import com.perigea.tracker.commons.dto.TimesheetRefDto;
+import com.perigea.tracker.commons.dto.TimesheetResponseDto;
+import com.perigea.tracker.commons.dto.UtenteDto;
+import com.perigea.tracker.timesheet.entity.AvvisoBacheca;
+import com.perigea.tracker.timesheet.entity.CentroDiCosto;
+import com.perigea.tracker.timesheet.entity.Cliente;
+import com.perigea.tracker.timesheet.entity.Commessa;
+import com.perigea.tracker.timesheet.entity.CommessaEstensione;
+import com.perigea.tracker.timesheet.entity.CommessaFatturabile;
+import com.perigea.tracker.timesheet.entity.CommessaNonFatturabile;
+import com.perigea.tracker.timesheet.entity.Consulente;
+import com.perigea.tracker.timesheet.entity.DatiEconomiciConsulente;
+import com.perigea.tracker.timesheet.entity.DatiEconomiciDipendente;
+import com.perigea.tracker.timesheet.entity.Dipendente;
+import com.perigea.tracker.timesheet.entity.Festivita;
+import com.perigea.tracker.timesheet.entity.Fornitore;
+import com.perigea.tracker.timesheet.entity.Gruppo;
+import com.perigea.tracker.timesheet.entity.NotaSpese;
+import com.perigea.tracker.timesheet.entity.OrdineCommessa;
+import com.perigea.tracker.timesheet.entity.PersonaleCommessa;
+import com.perigea.tracker.timesheet.entity.Richiesta;
+import com.perigea.tracker.timesheet.entity.RichiestaHistory;
+import com.perigea.tracker.timesheet.entity.Ruolo;
+import com.perigea.tracker.timesheet.entity.Timesheet;
+import com.perigea.tracker.timesheet.entity.TimesheetEntry;
+import com.perigea.tracker.timesheet.entity.Utente;
 
 @Mapper(componentModel = "spring")
 public interface DtoEntityMapper {

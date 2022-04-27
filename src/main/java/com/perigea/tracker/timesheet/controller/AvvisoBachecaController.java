@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,6 +64,7 @@ public class AvvisoBachecaController {
         return ResponseEntity.ok(genericResponse);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_MANAGEMENT')")
     @GetMapping(value = "/read-all")
     public ResponseEntity<ResponseDto<List<AvvisoBachecaDto>>> readAllAvvisi(){
         List<AvvisoBacheca> avvisi = avvisoBachecaService.readAllAvvisi();

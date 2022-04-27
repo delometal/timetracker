@@ -1,5 +1,6 @@
 package com.perigea.tracker.timesheet.approval.flow;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -17,6 +18,9 @@ import com.perigea.tracker.timesheet.rest.NotificationRestClient;
 @Transactional(propagation = Propagation.REQUIRED)
 public class TimesheetApprovalWorkflow implements IApprovalFlow {
 
+	@Autowired
+	private Logger logger;
+	
 	@Autowired
 	private TimesheetRepository timesheetRepository;
 
@@ -40,9 +44,13 @@ public class TimesheetApprovalWorkflow implements IApprovalFlow {
 
 	public void richiestaTimesheet(TimesheetEventDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
-		// TODO Kafka
-		//restClient.sendNotifica(event, TIMESHEET_REQUEST_ENDPOINT);
-		kafkaSender.send(event);
+		
+		if (kafkaSender.isBrokerOn()) {
+			kafkaSender.send(event);
+		} else {
+			logger.error("Unable to send {}, broker may be offline. Falling back to REST", event);
+			//restClient.sendNotifica(event, TIMESHEET_REQUEST_ENDPOINT);
+		}
 	}
 
 	@Override

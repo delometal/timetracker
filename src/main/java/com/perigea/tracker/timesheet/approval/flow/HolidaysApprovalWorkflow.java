@@ -1,5 +1,6 @@
 package com.perigea.tracker.timesheet.approval.flow;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -17,6 +18,9 @@ public class HolidaysApprovalWorkflow implements IApprovalFlow {
 
 	@Autowired
 	private NotificationRestClient restClient;
+	
+	@Autowired
+	private Logger logger;
 
 	@Autowired
 	private KafkaSender kafkaSender;
@@ -28,11 +32,15 @@ public class HolidaysApprovalWorkflow implements IApprovalFlow {
 	public static final String CANCEL_HOLIDAY_APPROVE_ENDPOINT = "holiday/approve-cancel-holidays";
 	
 	
-
+// FIXME ?? NextStep DOPO send????
 	public void holidaysRequest(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {
 		nextStep(approvalRequest, history);
-		kafkaSender.send(event);
-		//restClient.sendNotifica(event, HOLIDAYS_REQUEST_ENDPOINT);
+		if (kafkaSender.isBrokerOn()) {
+			kafkaSender.send(event);
+		} else {
+			logger.warn("Unable to send {}, broker may be offline. Falling back to REST", event);
+			//restClient.sendNotifica(event, HOLIDAYS_REQUEST_ENDPOINT);
+		}
 	}
 
 	public void approveAllHolidaysRequest(HolidayEventRequestDto event, Richiesta approvalRequest, RichiestaHistory history) {

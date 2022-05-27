@@ -173,6 +173,8 @@ public interface DtoEntityMapper {
 	@Mapping (target = "ragioneSociale", source = "commessa.cliente.ragioneSociale")
 	TimesheetEntryDto entityToDto(TimesheetEntry entity);
 	
+	
+	
 	List<TimesheetEntry> fromEntityToDtoTimesheetData(List<TimesheetEntryDto> dtos);
 	List<TimesheetEntryDto> entityToDtoTimesheetEntryList(List<TimesheetEntry> entities);
 
@@ -182,6 +184,7 @@ public interface DtoEntityMapper {
 	@Mapping (target = "mailAziendale", source = "personale.utente.mailAziendale")
 	TimesheetResponseDto entityToDto(Timesheet entity);
 	
+	List<TimesheetResponseDto> entityToDto(List<Timesheet> entity);
 
 	/** RICHIESTE **/
 	@Mapping(target = "codiceOwner", source = "richiedente.codicePersona")

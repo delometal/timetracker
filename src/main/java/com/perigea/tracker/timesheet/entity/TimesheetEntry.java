@@ -43,7 +43,7 @@ public class TimesheetEntry extends BaseEntity {
 	@JoinColumn(name = "codice_commessa", referencedColumnName = "codice_commessa", nullable = false, updatable = false, insertable = false)
 	private Commessa commessa;
 	
-	@OneToMany (mappedBy = "timesheetEntry", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany (mappedBy = "timesheetEntry", cascade = CascadeType.ALL)
 	private List<NotaSpese> noteSpesa;
 	
 	@Enumerated(EnumType.STRING)

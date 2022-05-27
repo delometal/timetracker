@@ -23,7 +23,6 @@ import com.perigea.tracker.commons.dto.TimesheetResponseDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.dto.wrapper.TimesheetExcelWrapper;
 import com.perigea.tracker.commons.enums.ApprovalStatus;
-import com.perigea.tracker.commons.enums.EMese;
 import com.perigea.tracker.commons.enums.RichiestaType;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.exception.FestivitaException;
@@ -49,6 +48,7 @@ import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.repository.ApplicationDao;
 import com.perigea.tracker.timesheet.repository.CommessaRepository;
 import com.perigea.tracker.timesheet.repository.FestivitaRepository;
+import com.perigea.tracker.timesheet.repository.NotaSpeseRepository;
 import com.perigea.tracker.timesheet.repository.TimesheetDataRepository;
 import com.perigea.tracker.timesheet.repository.TimesheetRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
@@ -89,9 +89,15 @@ public class TimesheetService {
 
 	@Autowired
 	private TimesheetApprovalWorkflow timesheetApprovalWorkflow;
-	
+
 	@Autowired
 	private FilterFactory<TimesheetEntry> filter;
+
+	@Autowired
+	private FilterFactory<Timesheet> timesheetFilter;
+
+	@Autowired
+	private NotaSpeseRepository notaSpeseRepository;
 
 	/**
 	 * creazione del timesheet
@@ -180,10 +186,9 @@ public class TimesheetService {
 	 * @param codicePersona
 	 * @return
 	 */
-	public Timesheet getTimesheet(Integer anno, EMese mese, String codicePersona) {
+	public Timesheet getTimesheet(Integer anno, Integer mese, String codicePersona) {
 		try {
-			return timesheetRepository.findById(new TimesheetMensileKey(anno, mese.getMonthId(), codicePersona))
-					.orElseThrow();
+			return timesheetRepository.findById(new TimesheetMensileKey(anno, mese, codicePersona)).orElseThrow();
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -201,6 +206,18 @@ public class TimesheetService {
 	public Timesheet getTimesheet(TimesheetMensileKey id) {
 		try {
 			return timesheetRepository.findById(id).orElseThrow();
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new TimesheetException(ex.getMessage());
+		}
+	}
+	
+	
+	public List<Timesheet> getAllTimesheet() {
+		try {
+			return timesheetRepository.findAll();
 		} catch (Exception ex) {
 			if (ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());
@@ -248,6 +265,33 @@ public class TimesheetService {
 	}
 
 	/**
+	 * ricerca di tutti i timesheet in un anno di un singolo utente
+	 * 
+	 * @param anno
+	 * @param codicePersona
+	 * @return
+	 */
+	public List<Timesheet> findAllByAnnoAndCodicePersona(Integer anno, String codicePersona) {
+		try {
+			return timesheetRepository.findAll(timesheetsBySpecification(anno, codicePersona));
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new TimesheetException(ex.getMessage());
+		}
+	}
+
+	private Specification<Timesheet> timesheetsBySpecification(final Integer anno, final String codicePersona) {
+		List<Condition> conditions = new ArrayList<>();
+		conditions.add(Condition.builder().field("id.anno").value(anno).valueType(Integer.class).operator(Operator.eq)
+				.build());
+		conditions.add(Condition.builder().field("id.codicePersona").value(codicePersona).valueType(String.class)
+				.operator(Operator.eq).build());
+		return timesheetFilter.buildSpecification(conditions, false);
+	}
+
+	/**
 	 * delete del timesheet mensile
 	 * 
 	 * @param anno
@@ -255,10 +299,10 @@ public class TimesheetService {
 	 * @param codicePersona
 	 * @return
 	 */
-	public Timesheet deleteTimesheet(Integer anno, EMese mese, String codicePersona) {
+	public Timesheet deleteTimesheet(Integer anno, Integer mese, String codicePersona) {
 		try {
 			Timesheet timesheet = getTimesheet(anno, mese, codicePersona);
-			timesheet.getEntries().forEach(e -> e.getNoteSpesa().clear());
+			timesheet.getEntries().forEach(e -> notaSpeseRepository.deleteAll(e.getNoteSpesa()));
 			timesheet.getEntries().clear();
 			timesheetRepository.delete(timesheet);
 			return timesheet;
@@ -329,9 +373,15 @@ public class TimesheetService {
 					NotaSpeseKey notaSpeseKey = new NotaSpeseKey(entryKey.getAnno(), entryKey.getMese(),
 							entryKey.getGiorno(), entryKey.getCodicePersona(), entryKey.getCodiceCommessa(),
 							r.getCostoNotaSpese());
-					NotaSpese notaSpese = new NotaSpese();
-					notaSpese.setId(notaSpeseKey);
-					notaSpese.setImporto(r.getImporto());
+					NotaSpese notaSpese;
+					Optional<NotaSpese> notaOpt = notaSpeseRepository.findById(notaSpeseKey);
+					if (notaOpt.isEmpty()) {
+						notaSpese = new NotaSpese();
+						notaSpese.setId(notaSpeseKey);
+						notaSpese.setImporto(r.getImporto());
+					} else {
+						notaSpese = notaOpt.get();
+					}
 					if (map.containsKey(entryKey)) {
 						map.get(entryKey).add(notaSpese);
 					} else {
@@ -343,17 +393,32 @@ public class TimesheetService {
 			for (TimesheetEntryDto dataDto : timesheetDataList) {
 				oreTotali += dataDto.getOre();
 				Commessa commessa = commessaRepository.findByCodiceCommessa(dataDto.getCodiceCommessa()).orElseThrow();
-				TimesheetEntry entry = dtoEntityMapper.dtoToEntity(dataDto);
 				TimesheetEntryKey entryKey = new TimesheetEntryKey(timesheet.getId().getAnno(),
 						timesheet.getId().getMese(), dataDto.getGiorno(), timesheet.getId().getCodicePersona(),
 						dataDto.getCodiceCommessa());
-				entry.setId(entryKey);
-				entry.setCommessa(commessa);
-				entry.setTimesheet(timesheet);
-				entry.setTipoCommessa(commessa.getTipoCommessa());
-				timesheet.addTimesheet(entry);
-				timesheet.setOreTotali(oreTotali);
-				entry.setNoteSpesa(map.get(entryKey));
+				Optional<TimesheetEntry> entryOpt = timesheetDataRepository.findById(entryKey);
+				if (entryOpt.isPresent()) {
+					TimesheetEntry entry = entryOpt.get();
+
+					entry.setOre(dataDto.getOre());
+					entry.setTrasferta(dataDto.getTrasferta());
+					entry.setId(entryKey);
+					entry.setCommessa(commessa);
+					entry.setTimesheet(timesheet);
+					entry.setTipoCommessa(commessa.getTipoCommessa());
+					timesheet.addTimesheet(entry);
+					timesheet.setOreTotali(oreTotali);
+					entry.setNoteSpesa(map.get(entryKey));
+				} else {
+					TimesheetEntry entry = dtoEntityMapper.dtoToEntity(dataDto);
+					entry.setId(entryKey);
+					entry.setCommessa(commessa);
+					entry.setTimesheet(timesheet);
+					entry.setTipoCommessa(commessa.getTipoCommessa());
+					timesheet.addTimesheet(entry);
+					timesheet.setOreTotali(oreTotali);
+					entry.setNoteSpesa(map.get(entryKey));
+				}
 			}
 
 			timesheetRepository.save(timesheet);
@@ -480,7 +545,7 @@ public class TimesheetService {
 	 * @param infoAuto
 	 * @return
 	 */
-	public byte[] downloadExcelTimesheet(Integer anno, EMese mese, UtenteDto angrafica, InfoAutoDto infoAuto) {
+	public byte[] downloadExcelTimesheet(Integer anno, Integer mese, UtenteDto angrafica, InfoAutoDto infoAuto) {
 		Timesheet timesheet = getTimesheet(anno, mese, angrafica.getCodicePersona());
 		TimesheetExcelWrapper timesheetExcelWrapper = getExcelWrapper(timesheet, angrafica, infoAuto);
 		return excelTimesheetService.createExcelTimesheet(timesheetExcelWrapper);
@@ -504,7 +569,34 @@ public class TimesheetService {
 				String filename = username + "_timesheet" + Utils.EXCEL_EXT;
 				UtenteDto utenteDto = dtoEntityMapper.entityToDto(timesheet.getPersonale().getUtente());
 				InfoAutoDto infoAuto = getInfoAuto(timesheet.getPersonale().getUtente());
-				byte[] bArray = downloadExcelTimesheet(anno, EMese.getByMonthId(mese), utenteDto, infoAuto);
+				byte[] bArray = downloadExcelTimesheet(anno, mese, utenteDto, infoAuto);
+				excelTimesheetsMap.put(filename, bArray);
+			}
+			return excelTimesheetsMap;
+		} catch (Exception e) {
+			throw new TimesheetException(e.getMessage());
+		}
+	}
+
+	/**
+	 * generazione di una mappa di chiave filename e di valore l'excel del timesheet
+	 * relativo ad un utente, a partire da una lista di timesheet di un anno
+	 * relativi allo stesso utente
+	 * 
+	 * @param anno
+	 * @param codicePersona
+	 * @return
+	 */
+	public Map<String, byte[]> getExcelTimesheetsMap(Integer anno, String codicePersona) {
+		try {
+			Map<String, byte[]> excelTimesheetsMap = new HashMap<String, byte[]>();
+			List<Timesheet> timesheets = timesheetRepository.findAllByIdAnnoAndIdCodicePersona(anno, codicePersona);
+			for (Timesheet timesheet : timesheets) {
+				String username = timesheet.getPersonale().getUtente().getUsername();
+				String filename = username + "_timesheet" + Utils.EXCEL_EXT;
+				UtenteDto utenteDto = dtoEntityMapper.entityToDto(timesheet.getPersonale().getUtente());
+				InfoAutoDto infoAuto = getInfoAuto(timesheet.getPersonale().getUtente());
+				byte[] bArray = downloadExcelTimesheet(anno, timesheet.getId().getMese(), utenteDto, infoAuto);
 				excelTimesheetsMap.put(filename, bArray);
 			}
 			return excelTimesheetsMap;
@@ -559,8 +651,12 @@ public class TimesheetService {
 		if (utente.getPersonale().getClass().isAssignableFrom(Dipendente.class)) {
 			Dipendente dipendente = (Dipendente) utente.getPersonale();
 			DatiEconomiciDipendente economics = dipendente.getEconomics();
-			infoAuto = new InfoAutoDto(economics.getModelloAuto(), economics.getRimborsoPerKm(),
-					economics.getKmPerGiorno());
+			if (economics.equals(null)) {
+				infoAuto = new InfoAutoDto("", 0.0f, 0.0f);
+			} else {
+				infoAuto = new InfoAutoDto(economics.getModelloAuto(), economics.getRimborsoPerKm(),
+						economics.getKmPerGiorno());
+			}
 		} else if (utente.getPersonale().getClass().isAssignableFrom(Consulente.class)) {
 			infoAuto = new InfoAutoDto("", 0.0f, 0.0f);
 		} else {
@@ -579,20 +675,20 @@ public class TimesheetService {
 		TimesheetResponseDto timesheetResponseDto = dtoEntityMapper.entityToDto(timesheet);
 		return new TimesheetExcelWrapper(timesheetResponseDto, utenteDto, infoAuto);
 	}
-	
-	
+
 	/**
 	 * metodo per ottenere le ore totali lavorate per una commessa in un mese
+	 * 
 	 * @param codiceCommessa
 	 * @param anno
 	 * @param mese
 	 * @param codicePersona
 	 * @return
 	 */
-	public Integer getOreTotaliPerCommessa(String codiceCommessa, Integer anno, EMese mese, String codicePersona) {
+	public Integer getOreTotaliPerCommessa(String codiceCommessa, Integer anno, Integer mese, String codicePersona) {
 		try {
 			List<TimesheetEntry> entries = timesheetDataRepository
-					.findAll(entriesBySpecification(anno, mese.getMonthId(), codiceCommessa, codicePersona));
+					.findAll(entriesBySpecification(anno, mese, codiceCommessa, codicePersona));
 			Integer oreTotali = 0;
 			for (TimesheetEntry entry : entries) {
 				oreTotali += entry.getOre();
@@ -607,15 +703,20 @@ public class TimesheetService {
 			final String codiceCommessa, final String codicePersona) {
 
 		List<Condition> conditions = new ArrayList<>();
-		conditions.add(Condition.builder().field("id.anno").value(anno).valueType(Integer.class).operator(Operator.eq).build());
-		conditions.add(Condition.builder().field("id.mese").value(mese).valueType(Integer.class).operator(Operator.eq).build());
-		conditions.add(Condition.builder().field("id.codiceCommessa").value(codiceCommessa).valueType(String.class).operator(Operator.eq).build());
-		conditions.add(Condition.builder().field("id.codicePersona").value(codicePersona).valueType(String.class).operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("id.anno").value(anno).valueType(Integer.class).operator(Operator.eq)
+				.build());
+		conditions.add(Condition.builder().field("id.mese").value(mese).valueType(Integer.class).operator(Operator.eq)
+				.build());
+		conditions.add(Condition.builder().field("id.codiceCommessa").value(codiceCommessa).valueType(String.class)
+				.operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("id.codicePersona").value(codicePersona).valueType(String.class)
+				.operator(Operator.eq).build());
 		return filter.buildSpecification(conditions, false);
 	}
-	
+
 	/**
 	 * metodo per ottenere le ore totali lavorate per una commessa in un anno
+	 * 
 	 * @param codiceCommessa
 	 * @param anno
 	 * @param codicePersona
@@ -635,16 +736,17 @@ public class TimesheetService {
 		}
 	}
 
-	private Specification<TimesheetEntry> entriesBySpecification(final Integer anno, final String codiceCommessa, final String codicePersona) {
+	private Specification<TimesheetEntry> entriesBySpecification(final Integer anno, final String codiceCommessa,
+			final String codicePersona) {
 
 		List<Condition> conditions = new ArrayList<>();
-		conditions.add(Condition.builder().field("id.anno").value(anno).valueType(Integer.class).operator(Operator.eq).build());
-		conditions.add(Condition.builder().field("id.codiceCommessa").value(codiceCommessa).valueType(String.class).operator(Operator.eq).build());
-		conditions.add(Condition.builder().field("id.codicePersona").value(codicePersona).valueType(String.class).operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("id.anno").value(anno).valueType(Integer.class).operator(Operator.eq)
+				.build());
+		conditions.add(Condition.builder().field("id.codiceCommessa").value(codiceCommessa).valueType(String.class)
+				.operator(Operator.eq).build());
+		conditions.add(Condition.builder().field("id.codicePersona").value(codicePersona).valueType(String.class)
+				.operator(Operator.eq).build());
 		return filter.buildSpecification(conditions, false);
 	}
-	
-	
-	
-	
+
 }

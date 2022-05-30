@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import com.perigea.tracker.timesheet.service.UtenteService;
 
 @RestController
 @RequestMapping("/utenti")
+@CrossOrigin(allowedHeaders = "*", origins = "*", originPatterns = "*", exposedHeaders = "*")
 public class ContactDetailsController {
 	
 	@Autowired
@@ -35,7 +37,7 @@ public class ContactDetailsController {
 	private ContactDetailsService contactDetailsService;
 
 	
-	@GetMapping(value = "/contact-details/read-by-id/{contattoId}")
+	@GetMapping(value = "/contact-details/read-by-id/{userId}")
 	public ResponseEntity<ResponseDto<ContactDto>> readUserContactDetails(
 			@PathVariable(name = "userId") String userId) {
 		ContactDto contactDetails = contactDetailsService.readUserContactDetails(userId);

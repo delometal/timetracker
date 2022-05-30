@@ -77,6 +77,20 @@ public class TimesheetController {
 				.build();
 		return ResponseEntity.ok(genericDto);
 	}
+	
+	
+	@GetMapping(value = "/read-all-by-responsabile/{anno}/{mese}/{codiceResponsabile}")
+	public ResponseEntity<ResponseDto<List<TimesheetResponseDto>>> readAllTimesheet(@PathVariable(value = "anno") Integer anno,
+			@PathVariable(value = "mese") Integer mese,
+			@PathVariable(value = "codiceResponsabile") String codiceResponsabile) {
+		Personale responsabile = dipendenteService.readAnagraficaDipendente(codiceResponsabile);
+		List<Personale> sottoposti = dipendenteService.readAllDipendentiByResponsabile(responsabile);
+		List<Timesheet> timesheets = timesheetService.getTimesheetsByResponabile(anno, mese, sottoposti);
+		List<TimesheetResponseDto> dto = dtoEntityMapper.entityToDto(timesheets);
+		ResponseDto<List<TimesheetResponseDto>> genericDto = ResponseDto.<List<TimesheetResponseDto>>builder().data(dto)
+				.build();
+		return ResponseEntity.ok(genericDto);
+	}
 
 	@GetMapping(value = "/read-all-by-anno-codicePersona/{anno}/{codicePersona}")
 	public ResponseEntity<ResponseDto<List<TimesheetResponseDto>>> readAllAnnualTimesheet(@PathVariable Integer anno,
@@ -163,8 +177,6 @@ public class TimesheetController {
 	}
 	
 	
-	
-
 	@GetMapping(value = "/download-zip-reports-by-responsabile/{anno}/{mese}/{codiceResponsabile}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public ResponseEntity<byte[]> downloadZipTimesheets(@PathVariable(value = "anno") Integer anno,
 			@PathVariable(value = "mese") Integer mese,

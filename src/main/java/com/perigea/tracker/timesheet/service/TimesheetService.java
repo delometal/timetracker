@@ -196,6 +196,26 @@ public class TimesheetService {
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
+	
+	/**
+	 * ricerca di tutti i timesheet dei sottoposti di un responsabile
+	 * @param anno
+	 * @param mese
+	 * @param sottoposti
+	 * @return
+	 */
+	public List<Timesheet> getTimesheetsByResponabile(Integer anno, Integer mese, List<Personale> sottoposti) {
+		List<Timesheet> timesheets = new ArrayList<Timesheet>();
+		for (Personale p : sottoposti) {
+			Optional<Timesheet> optionalTimesheet = timesheetRepository
+					.findById(new TimesheetMensileKey(anno, mese, p.getCodicePersona()));
+			if (optionalTimesheet.isPresent()) {
+				Timesheet timesheet = optionalTimesheet.get();
+				timesheets.add(timesheet);
+			}
+		}
+		return timesheets;
+	}
 
 	/**
 	 * ricerca di un timesheet mensile attraverso la composite key
@@ -214,7 +234,10 @@ public class TimesheetService {
 		}
 	}
 	
-	
+	/**
+	 * ricerca di tutti i timesheet
+	 * @return
+	 */
 	public List<Timesheet> getAllTimesheet() {
 		try {
 			return timesheetRepository.findAll();

@@ -1,6 +1,8 @@
 package com.perigea.tracker.timesheet.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -208,7 +210,7 @@ public class RichiestaService {
 			TimesheetEventDto timesheetEvent = TimesheetEventDto.builder().id(Utils.uuid())
 					.eventCreator(richiestaCreator).responsabile(responsabile)
 					.approvalStatus(timesheet.getStatoRichiesta()).type(CalendarEventType.TIMESHEET)
-					.timesheet(timesheetReferences).build();
+					.timesheet(timesheetReferences).date(LocalDateTime.now()).build();
 			timesheetApprovalWorkflow.richiestaTimesheet(timesheetEvent, richiesta, history);
 			return richiesta;
 		} catch (Exception ex) {

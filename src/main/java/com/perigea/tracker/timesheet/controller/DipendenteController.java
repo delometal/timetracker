@@ -56,7 +56,7 @@ public class DipendenteController {
 	@Autowired
 	private ConversioneService conversioneService;
 	
-	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	@PostMapping(value = "/create")
 	public ResponseEntity<ResponseDto<DipendenteDto>> createDipendente(@RequestBody DipendenteDto dipendenteDto) {
 		Utente utente = dtoEntityMapper.dtoToEntity(dipendenteDto.getUtente());
@@ -108,6 +108,7 @@ public class DipendenteController {
 			@PathVariable(name = "codicePersona") String codicePersona) {
 		Utente utente = dipendenteService.readUtente(codicePersona);
 		Dipendente dipendente = (Dipendente) utente.getPersonale();
+		dipendente.setEconomics(null);
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
 		DipendenteDto dipendenteDto = dtoEntityMapper.entityToDto(dipendente);
 		dipendenteDto.setUtente(utenteDto);

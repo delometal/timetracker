@@ -117,6 +117,8 @@ public interface DtoEntityMapper {
 	
 	@Mapping(target= ".", source="id")
 	DipendenteCommessaDto entityToDto(PersonaleCommessa entity);
+	
+	List<DipendenteCommessaDto> entityToDtoListDipendenteCommessa(List<PersonaleCommessa> entity);
 
 	@Mapping(target = "id.codiceCommessa", source = "codiceCommessa")
 	@Mapping(target = "id.dataEstensione", source = "dataEstensione")

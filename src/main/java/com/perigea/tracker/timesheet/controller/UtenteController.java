@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,6 +24,7 @@ import com.perigea.tracker.timesheet.service.UtenteService;
 
 @RestController
 @RequestMapping("/utente")
+@CrossOrigin(allowedHeaders = "*", origins = "*")
 public class UtenteController {
 
 	@Autowired
@@ -30,6 +32,23 @@ public class UtenteController {
 
 	@Autowired
 	private DtoEntityMapper dtoEntityMapper;
+	
+	
+	@GetMapping(value = "/read-all-utenti")
+	public ResponseEntity<ResponseDto<List<UtenteDto>>> readAll() {
+		List<Utente> utenti = utenteService.readAll();
+		List<UtenteDto> dtos = dtoEntityMapper.entityToDtoUtenteList(utenti);
+		ResponseDto<List<UtenteDto>> genericResponse = ResponseDto.<List<UtenteDto>>builder().data(dtos).build();
+		return ResponseEntity.ok(genericResponse);
+	}
+	
+	@GetMapping(value = "/read-utente-by-id/{codicePersona}")
+	public ResponseEntity<ResponseDto<UtenteDto>> readUtente(@PathVariable String codicePersona) {
+		Utente utente = utenteService.readUtente(codicePersona);
+		UtenteDto dto = dtoEntityMapper.entityToDto(utente);
+		ResponseDto<UtenteDto> genericResponse = ResponseDto.<UtenteDto>builder().data(dto).build();
+		return ResponseEntity.ok(genericResponse);
+	}
 
 	@GetMapping(value = "/check-token/{token}")
 	public ResponseEntity<ResponseDto<String>> checkToken(@PathVariable(name = "token") String token) {

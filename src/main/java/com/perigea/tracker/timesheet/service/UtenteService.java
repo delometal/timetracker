@@ -125,6 +125,40 @@ public class UtenteService {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
+	
+	
+	public List<Utente> readUtenti(List<String> codiciPersona) {
+		try {
+			List<Utente> utenti = new ArrayList<>();
+			for(String id: codiciPersona) {
+				Utente utente = readUtente(id);
+				utenti.add(utente);
+			}
+			return utenti;
+		}catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new UtenteException(ex.getMessage());
+		}
+	}
+	
+	/**
+	 * lettura di tutti gli utenti
+	 * 
+	 * @return
+	 */
+	public List<Utente> readAll() {
+		try {
+			return utenteRepository.findAll();
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new UtenteException(ex.getMessage());
+		}
+	}
+	
 
 	@SuppressWarnings("deprecation")
 	public Utente loadUtente(String id) {

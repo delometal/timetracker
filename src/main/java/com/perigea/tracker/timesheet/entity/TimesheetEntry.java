@@ -56,6 +56,10 @@ public class TimesheetEntry extends BaseEntity {
 	@Column(name = "trasferta")
 	private Boolean trasferta;
 	
+	@Column(name = "staordinario")
+	private Boolean straordinario;	
+	
+	
 	public void addNotaSpese(NotaSpese notaSpesa) {
 		this.noteSpesa.add(notaSpesa);
 		notaSpesa.setTimesheetEntry(this);

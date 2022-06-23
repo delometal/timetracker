@@ -159,6 +159,9 @@ public class CommessaService {
 	 */
 	public CommessaFatturabile updateCommessaFatturabile(CommessaFatturabile commessaAggiornata) {
 		try {
+			CommessaFatturabile commessaDaAggiornare = readCommessaFatturabile(commessaAggiornata.getCodiceCommessa());
+			commessaAggiornata.setOrdineCommessa(commessaDaAggiornare.getOrdineCommessa());
+			commessaAggiornata.setCliente(commessaDaAggiornare.getCliente());
 			return commessaFatturabileRepository.save(commessaAggiornata);
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());
@@ -175,7 +178,7 @@ public class CommessaService {
 		try {
 			CommessaFatturabile commessa = readCommessaFatturabile(codiceCommessa);
 			ordineCommessaRepository.delete(commessa.getOrdineCommessa());
-			commessaFatturabileRepository.deleteById(codiceCommessa);
+			commessaFatturabileRepository.delete(commessa);
 		} catch (Exception ex) {
 			throw new CommessaException(ex.getMessage());
 		}
@@ -305,6 +308,26 @@ public class CommessaService {
 		conditions.add(Condition.builder().field("ordineCommessa.importoOrdine").value(importoOrdine)
 				.valueType(Double.class).operator(Operator.gt).build());
 
+		return filter.buildSpecification(conditions, false);
+	}
+	
+	/**
+	 * metodo per la ricerca delle commesse fatturabili in base al cliente
+	 * @param codiceAzienda
+	 * @return
+	 */
+	public List<CommessaFatturabile> findCommesseByCliente(Cliente cliente) {
+		try {
+			return commessaFatturabileRepository.findAll(commesseByCliente(cliente));
+		}catch (Exception e) {
+			throw new CommessaException(e.getMessage());
+		}
+	}
+
+	private Specification<CommessaFatturabile> commesseByCliente(final Cliente cliente) {
+		List<Condition> conditions = new ArrayList<>();
+		conditions.add(Condition.builder().field("cliente").value(cliente).valueType(String.class)
+				.operator(Operator.eq).build());
 		return filter.buildSpecification(conditions, false);
 	}
 

@@ -2,7 +2,6 @@ package com.perigea.tracker.timesheet.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -199,6 +198,8 @@ public class RichiestaService {
 			TimesheetMensileKey key = new TimesheetMensileKey(timesheetReferences.getAnno(),
 					timesheetReferences.getMese(), timesheetReferences.getCodicePersona());
 			Timesheet timesheet = timesheetService.getTimesheet(key);
+			timesheet.setStatoRichiesta(ApprovalStatus.PENDING);
+			timesheetService.assertTimesheetIsComplete(timesheet.getEntries(), timesheetReferences);
 			Richiesta richiesta = timesheet.getRichiesta();
 			RichiestaHistory history = RichiestaHistory.builder()
 					.responsabile(timesheet.getPersonale().getResponsabile()).stato(ApprovalStatus.PENDING)

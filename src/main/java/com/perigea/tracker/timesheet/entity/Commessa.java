@@ -56,4 +56,7 @@ public class Commessa extends BaseEntity {
 	@JoinColumn(name = "codice_azienda", nullable = false)
 	private Cliente cliente;
 	
+	@OneToMany(mappedBy = "commessa")
+	private List<CommessaEstensione> estensioni;
+	
 }

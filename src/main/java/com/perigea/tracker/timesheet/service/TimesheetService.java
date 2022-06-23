@@ -23,9 +23,9 @@ import com.perigea.tracker.commons.dto.TimesheetResponseDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.dto.wrapper.TimesheetExcelWrapper;
 import com.perigea.tracker.commons.enums.ApprovalStatus;
+import com.perigea.tracker.commons.enums.EMese;
 import com.perigea.tracker.commons.enums.RichiestaType;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
-import com.perigea.tracker.commons.exception.FestivitaException;
 import com.perigea.tracker.commons.exception.TimesheetException;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.approval.flow.TimesheetApprovalWorkflow;
@@ -113,18 +113,20 @@ public class TimesheetService {
 			if (timesheetRepository.findById(tsKey).isPresent()) {
 				return updateTimesheet(timesheetDataList, timeDto);
 			}
-			assertTimesheetIsValid(timesheetDataList, timeDto);
+			Utente utente = utenteRepository.findById(timeDto.getCodicePersona()).orElseThrow();
+			List<TimesheetEntryDto> assunsioneDimissioneEntries = getAssunzioneDimissioneEntries(utente, timeDto);
+			timesheetDataList.addAll(assunsioneDimissioneEntries);
+			List<TimesheetEntryDto> validEntries = assertTimesheetIsValid(timesheetDataList, timeDto);
 			Integer oreTotali = 0;
 			Timesheet timesheet = dtoEntityMapper.dtoToEntity(timeDto);
-			Utente utente = utenteRepository.findById(timeDto.getCodicePersona()).orElseThrow();
-			timesheet.setPersonale(utente.getPersonale());
+						timesheet.setPersonale(utente.getPersonale());
 			utente.getPersonale().addTimesheet(timesheet);
 
 			timesheet.setId(tsKey);
 			timesheet.setStatoRichiesta(ApprovalStatus.DRAFT);
 
 			Map<TimesheetEntryKey, List<NotaSpese>> map = new HashMap<>();
-			timesheetDataList.forEach(entry -> {
+			validEntries.forEach(entry -> {
 				entry.getNoteSpesa().forEach(r -> {
 					TimesheetEntryKey entryKey = new TimesheetEntryKey(timesheet.getId().getAnno(),
 							timesheet.getId().getMese(), entry.getGiorno(), timesheet.getId().getCodicePersona(),
@@ -143,14 +145,14 @@ public class TimesheetService {
 					}
 				});
 			});
-			for (TimesheetEntryDto dataDto : timesheetDataList) {
+			for (TimesheetEntryDto dataDto : validEntries) {
 				oreTotali += dataDto.getOre();
 				Commessa commessa = commessaRepository.findByCodiceCommessa(dataDto.getCodiceCommessa()).orElseThrow();
 				TimesheetEntry entry = dtoEntityMapper.dtoToEntity(dataDto);
 				TimesheetEntryKey entryKey = new TimesheetEntryKey(timesheet.getId().getAnno(),
 						timesheet.getId().getMese(), dataDto.getGiorno(), timesheet.getId().getCodicePersona(),
 						dataDto.getCodiceCommessa());
-				entry.setId(entryKey);
+				entry.setId(entryKey);				
 				entry.setCommessa(commessa);
 				entry.setTimesheet(timesheet);
 				entry.setTipoCommessa(commessa.getTipoCommessa());
@@ -177,6 +179,8 @@ public class TimesheetService {
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
+	
+	
 
 	/**
 	 * ricerca di un timesheet mensile attraverso anno, mese e giorno
@@ -514,15 +518,16 @@ public class TimesheetService {
 	 * @param timesheetData
 	 * @param timesheetDto
 	 */
-	private void controlloFestivita(List<Festivita> festivi, TimesheetEntryDto timesheetData,
+	private boolean controlloFestivita(List<Festivita> festivi, TimesheetEntryDto timesheetData,
 			TimesheetRefDto timesheetDto) {
 		LocalDate data = LocalDate.of(timesheetDto.getAnno(), timesheetDto.getMese(), timesheetData.getGiorno());
 		for (Festivita f : festivi) {
 			if (f.getData().isEqual(data) || data.getDayOfWeek() == DayOfWeek.SUNDAY
 					|| data.getDayOfWeek() == DayOfWeek.SATURDAY) {
-				throw new FestivitaException("Il giorno inserito non è corretto");
+				return true;
 			}
 		}
+		return false;
 	}
 
 	/**
@@ -533,8 +538,9 @@ public class TimesheetService {
 	 * @param timesheetDto
 	 * @throws TimesheetException
 	 */
-	private void assertTimesheetIsValid(List<TimesheetEntryDto> timesheetDataList, TimesheetRefDto timesheetDto)
+	private List<TimesheetEntryDto> assertTimesheetIsValid(List<TimesheetEntryDto> timesheetDataList, TimesheetRefDto timesheetDto)
 			throws TimesheetException {
+		List<TimesheetEntryDto> controlledList = new ArrayList<TimesheetEntryDto>();
 		List<Festivita> festivi = festivitaRepository.findAll();
 		Map<Integer, List<TimesheetEntryDto>> dataMap = new HashMap<Integer, List<TimesheetEntryDto>>();
 		timesheetDataList.forEach(r -> {
@@ -551,13 +557,113 @@ public class TimesheetService {
 			int oreGiorno = 0;
 			for (TimesheetEntryDto dto : list) {
 				oreGiorno = oreGiorno + dto.getOre();
-				controlloFestivita(festivi, dto, timesheetDto);
+				if(controlloFestivita(festivi, dto, timesheetDto)) {
+					dto.setStraordinario(true);
+				}
+				controlledList.add(dto);
 			}
-			if (oreGiorno > 8) {
-				throw new TimesheetException("numero ore giornaliere inserite non valido");
+			if (oreGiorno > 12) {
+				throw new TimesheetException(String.format("numero ore giornaliere inserite non valido per il giorno %s", key));
 			}
 		}
+		return controlledList;
 	}
+	
+	/**
+	 * metodo per il popolamento delle entries in base alle date di assunzione e dimissione
+	 * @param utente
+	 * @param refs
+	 * @return
+	 */
+	private List<TimesheetEntryDto> getAssunzioneDimissioneEntries(Utente utente, TimesheetRefDto refs) {
+		List<TimesheetEntryDto> list = new ArrayList<>();
+		Commessa assunzione = commessaRepository.findByCodiceCommessa("c36e87a1-4af9-4a3b-b1a8-79490fe20082")
+				.orElseThrow();
+		Commessa dimissione = commessaRepository.findByCodiceCommessa("da8fbeff-fce6-4c7c-989d-95ec03c7dd92")
+				.orElseThrow();
+		Personale user = utente.getPersonale();
+		LocalDate dataAssunzione = user.getDataAssunzione();
+		LocalDate dataCessazione = user.getDataCessazione();
+		if (refs.getMese() == dataAssunzione.getMonthValue() && refs.getAnno() == dataAssunzione.getYear()) {
+			for (int i = 1; i < dataAssunzione.getDayOfMonth(); i++) {
+				LocalDate date = LocalDate.of(refs.getAnno(), refs.getMese(), i);
+				if(date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY) {	
+				TimesheetEntryDto entryDto = TimesheetEntryDto.builder()
+						.codiceCommessa(assunzione.getCodiceCommessa())
+						.giorno(i)
+						.ore(8)
+						.trasferta(false)
+						.tipoCommessa(assunzione.getTipoCommessa())
+						.descrizioneCommessa(assunzione.getDescrizioneCommessa())
+						.ragioneSociale(assunzione.getCliente().getRagioneSociale())
+						.build();
+				list.add(entryDto);
+				}
+			}			
+		}
+		if(refs.getMese() == dataCessazione.getMonthValue() && refs.getAnno() == dataCessazione.getYear()) {
+			for(int i=dataCessazione.getDayOfMonth()+1; i<EMese.getDays(refs.getMese(), refs.getAnno()); i++) {
+				LocalDate date = LocalDate.of(refs.getAnno(), refs.getMese(), i);
+				if(date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY) {	
+				TimesheetEntryDto entryDto = TimesheetEntryDto.builder()
+						.codiceCommessa(dimissione.getCodiceCommessa())
+						.giorno(i)
+						.ore(8)
+						.trasferta(false)
+						.tipoCommessa(dimissione.getTipoCommessa())
+						.descrizioneCommessa(dimissione.getDescrizioneCommessa())
+						.ragioneSociale(dimissione.getCliente().getRagioneSociale())
+						.build();
+				list.add(entryDto);
+				} 
+			}
+		}
+		return list;
+	}
+	
+	
+	public void assertTimesheetIsComplete(List<TimesheetEntry> list, TimesheetRefDto refs) {
+		Map<Integer, List<TimesheetEntry>> dataMap = new HashMap<Integer, List<TimesheetEntry>>();
+		list.forEach(r -> {
+			Integer giorno = r.getId().getGiorno();
+			if (dataMap.containsKey(giorno)) {
+				dataMap.get(giorno).add(r);
+			} else {
+				dataMap.put(giorno, new ArrayList<>());
+				dataMap.get(giorno).add(r);
+			}
+		});
+		List<LocalDate> giorniLavorativi = getGiorniLavorativi(refs.getMese(), refs.getAnno());
+		giorniLavorativi.forEach(day -> {
+			if(!dataMap.containsKey(day.getDayOfMonth())) {
+				throw new TimesheetException(String.format("il timesheet non è completo mancano i dati del giorno %s", day.getDayOfMonth()));
+			}
+		});			
+		}
+		
+		
+		
+	
+	
+		private List<LocalDate> getGiorniLavorativi(Integer mese, Integer anno) {
+			List<LocalDate> giorniLavorativi = new ArrayList<LocalDate>();
+			List<Festivita> festivi = festivitaRepository.findAll();
+			Boolean festivo = false;
+			for (int i = 1; i <= EMese.getDays(mese, anno); i++) {
+				LocalDate data = LocalDate.of(anno, mese, i);
+				for (Festivita f : festivi) {
+					if (f.getData().isEqual(data) || data.getDayOfWeek() == DayOfWeek.SUNDAY
+							|| data.getDayOfWeek() == DayOfWeek.SATURDAY) {
+						festivo = true;
+						break;
+					}
+				}
+				if (festivo.equals(false)) {
+					giorniLavorativi.add(data);
+				}
+			}
+			return giorniLavorativi;
+		}
 
 	/**
 	 * download di un file excel relativo al timesheet mensile di un utente
@@ -674,7 +780,7 @@ public class TimesheetService {
 		if (utente.getPersonale().getClass().isAssignableFrom(Dipendente.class)) {
 			Dipendente dipendente = (Dipendente) utente.getPersonale();
 			DatiEconomiciDipendente economics = dipendente.getEconomics();
-			if (economics.equals(null)) {
+			if (economics==null) {
 				infoAuto = new InfoAutoDto("", 0.0f, 0.0f);
 			} else {
 				infoAuto = new InfoAutoDto(economics.getModelloAuto(), economics.getRimborsoPerKm(),

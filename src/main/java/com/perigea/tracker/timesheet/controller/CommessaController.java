@@ -90,10 +90,8 @@ public class CommessaController {
 
 	@PutMapping(value = "/update-commessa-fatturabile")
 	public ResponseEntity<ResponseDto<CommessaFatturabileDto>> updateCommessaFatturabile(
-			@RequestBody CommessaFatturabileDtoWrapper wrapper) {
-		CommessaFatturabile commessa = dtoEntityMapper.dtoToEntity(wrapper.getCommessaFatturabile());
-		Cliente cliente = clienteService.readClienteById(wrapper.getCliente().getCodiceAzienda());
-		commessa.setCliente(cliente);
+			@RequestBody CommessaFatturabileDto commessaFatturabileDto) {
+		CommessaFatturabile commessa = dtoEntityMapper.dtoToEntity(commessaFatturabileDto);		
 		commessa = commessaService.updateCommessaFatturabile(commessa);
 		CommessaFatturabileDto commessaDto = dtoEntityMapper.entityToDto(commessa);
 		ResponseDto<CommessaFatturabileDto> genericDto = ResponseDto.<CommessaFatturabileDto>builder().data(commessaDto)
@@ -156,6 +154,17 @@ public class CommessaController {
 		ResponseDto<CommessaFatturabileDto> genericDto = ResponseDto.<CommessaFatturabileDto>builder().data(commessaDto)
 				.build();
 		return ResponseEntity.ok(genericDto);
+	}
+	
+	@GetMapping(value = "/read-commesse-by-cliente/{codiceAzienda}")
+	public ResponseEntity<ResponseDto<List<CommessaFatturabileDto>>> readCommesseByCliente(
+			@PathVariable String codiceAzienda) {
+		Cliente cliente = clienteService.readClienteById(codiceAzienda);
+		List<CommessaFatturabile> commesse = commessaService.findCommesseByCliente(cliente);
+		List<CommessaFatturabileDto> commesseDto = dtoEntityMapper.entityToCommessaFattDtoList(commesse);
+		ResponseDto<List<CommessaFatturabileDto>> genericResponse = ResponseDto.<List<CommessaFatturabileDto>>builder()
+				.data(commesseDto).build();
+		return ResponseEntity.ok(genericResponse);
 	}
 
 	@GetMapping(value = "/read-commessa-non-fatturabile/{codiceCommessa}")

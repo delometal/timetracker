@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +41,7 @@ public class AssegnazioneCommessaController {
 	private UtenteService utenteService;
 	
 	@PostMapping(value = "/create")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<DipendenteCommessaDto>> createDipendenteCommessa(@RequestBody DipendenteCommessaDto dipendenteCommessaDto) {
 		PersonaleCommessa dipendenteCommessa = dtoEntityMapper.dtoToEntity(dipendenteCommessaDto);
 		dipendenteCommessa = assegnazioneCommessaService.createDipendenteCommessa(dipendenteCommessa);
@@ -49,6 +51,7 @@ public class AssegnazioneCommessaController {
 	}
 
 	@GetMapping(value = "/read/commessa/{codiceCommessa}/dipendente/{codicePersona}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<DipendenteCommessaDto>> readDipendenteCommessa(@PathVariable(name = "codicePersona") String codicePersona, @PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		PersonaleCommessa dipendenteCommessa = assegnazioneCommessaService.readDipendenteCommessa(new DipendenteCommessaKey(codicePersona, codiceCommessa));
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);
@@ -57,6 +60,7 @@ public class AssegnazioneCommessaController {
 	}
 	
 	@GetMapping(value = "/read-utenti-assegnati-by-commessa/{codiceCommessa}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<List<UtenteDto>>>	readAllUtentiAssegnatiByCommessa(@PathVariable String codiceCommessa) {		
 		List<UtenteDto> utentiDto = new ArrayList<>();
 		List<PersonaleCommessa> dipendentiCommessa = assegnazioneCommessaService
@@ -82,6 +86,7 @@ public class AssegnazioneCommessaController {
 	
 
 	@PutMapping(value = "/update")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<DipendenteCommessaDto>> updateDipendenteCommessa(@RequestBody DipendenteCommessaDto dipendenteCommessaDto) {
 		PersonaleCommessa dipendenteCommessa = dtoEntityMapper.dtoToEntity(dipendenteCommessaDto);
 		dipendenteCommessa = assegnazioneCommessaService.updateDipendenteCommessa(dipendenteCommessa);
@@ -91,6 +96,7 @@ public class AssegnazioneCommessaController {
 	}
 
 	@DeleteMapping(value = "/delete/commessa/{codiceCommessa}/dipendente/{codicePersona}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	ResponseEntity<ResponseDto<DipendenteCommessaDto>> deleteDipendenteCommessa(@PathVariable(name = "codicePersona") String codicePersona, @PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		PersonaleCommessa dipendenteCommessa = assegnazioneCommessaService.readDipendenteCommessa(new DipendenteCommessaKey(codicePersona, codiceCommessa));
 		DipendenteCommessaDto dto = dtoEntityMapper.entityToDto(dipendenteCommessa);

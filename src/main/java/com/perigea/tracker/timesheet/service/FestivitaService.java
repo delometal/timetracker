@@ -1,5 +1,6 @@
 package com.perigea.tracker.timesheet.service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
@@ -57,6 +58,21 @@ public class FestivitaService {
 	public Festivita readFestivitaByName(String nomeFestivo) {
 		try {
 			return festivitaRepository.findByNomeFestivo(nomeFestivo).orElseThrow();
+		} catch (Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new FestivitaException(ex.getMessage());
+		}
+	}
+	
+	/**
+	 * find all festività
+	 * @return
+	 */
+	public List<Festivita> readAll() {
+		try {
+			return festivitaRepository.findAll();
 		} catch (Exception ex) {
 			if(ex instanceof NoSuchElementException) {
 				throw new EntityNotFoundException(ex.getMessage());

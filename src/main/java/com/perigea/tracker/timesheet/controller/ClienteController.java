@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +33,7 @@ public class ClienteController {
 	private DtoEntityMapper dtoEntityMapper;
 
 	@PostMapping(value = "/create")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<ClienteDto>> saveCliente(@RequestBody ClienteDto clienteDto) {
 		Cliente cliente = dtoEntityMapper.dtoToEntity(clienteDto);
 		cliente = clienteService.saveCliente(cliente);
@@ -49,6 +51,7 @@ public class ClienteController {
 	}
 
 	@GetMapping(value = "/read-by-id/{codiceAzienda}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<ClienteDto>> readClienteById(@PathVariable(name = "codiceAzienda") String codiceAzienda) {
 		Cliente cliente = clienteService.readClienteById(codiceAzienda);
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);
@@ -57,6 +60,7 @@ public class ClienteController {
 	}
 
 	@GetMapping(value = "/read-by-partita-iva/{partitaIva}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<ClienteDto>> readCliente(@PathVariable(name = "partitaIva") String partitaIva) {
 		Cliente cliente = clienteService.readClienteByPartitaIva(partitaIva);
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);
@@ -65,6 +69,7 @@ public class ClienteController {
 	}
 
 	@PutMapping(value = "/update")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<ClienteDto>> updateCliente(@RequestBody ClienteDto clienteDto) {
 		Cliente cliente = dtoEntityMapper.dtoToEntity(clienteDto);
 		cliente = clienteService.saveCliente(cliente);
@@ -74,6 +79,7 @@ public class ClienteController {
 	}
 
 	@DeleteMapping(value = "/delete-by-id/{codiceAzienda}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<ClienteDto>> deleteClienteById(@PathVariable(name = "codiceAzienda") String codiceAzienda) {
 		Cliente cliente = clienteService.readClienteById(codiceAzienda);
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);
@@ -83,6 +89,7 @@ public class ClienteController {
 	}
 	
 	@DeleteMapping(value = "/delete-by-partita-iva/{partitaIva}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<ClienteDto>> deleteClienteByPartitaIva(@PathVariable(name = "partitaIva") String partitaIva) {
 		Cliente cliente = clienteService.readClienteByPartitaIva(partitaIva);
 		ClienteDto clienteDto = dtoEntityMapper.entityToDto(cliente);

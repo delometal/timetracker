@@ -38,7 +38,7 @@ import com.perigea.tracker.timesheet.service.DipendenteService;
 
 @RestController
 @RequestMapping("/dipendenti")
-@CrossOrigin(allowedHeaders = "*", origins = "*")
+@CrossOrigin(allowedHeaders = "*", origins = "*",originPatterns = "*"  )
 public class DipendenteController {
 
 	@Autowired
@@ -56,7 +56,7 @@ public class DipendenteController {
 	@Autowired
 	private ConversioneService conversioneService;
 	
-//	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	@PostMapping(value = "/create")
 	public ResponseEntity<ResponseDto<DipendenteDto>> createDipendente(@RequestBody DipendenteDto dipendenteDto) {
 		Utente utente = dtoEntityMapper.dtoToEntity(dipendenteDto.getUtente());
@@ -83,7 +83,7 @@ public class DipendenteController {
 	}
 
 	@GetMapping(value = "/read/{codicePersona}")
-//	@PreAuthorize("hasAuthority('ROLE_MANAGEMENT')")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR', 'ROLE_DIPENDENTE')")
 	public ResponseEntity<ResponseDto<DipendenteDto>> readDipendente(
 			@PathVariable(name = "codicePersona") String codicePersona) {
 		Utente utente = dipendenteService.readUtente(codicePersona);
@@ -102,8 +102,10 @@ public class DipendenteController {
 		ResponseDto<List<DipendenteDto>> genericResponse = ResponseDto.<List<DipendenteDto>>builder().data(dtos).build();
 		return ResponseEntity.ok(genericResponse);
 	}
-
+	
+	
 	@DeleteMapping(value = "/delete/{codicePersona}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<DipendenteDto>> deleteDipendente(
 			@PathVariable(name = "codicePersona") String codicePersona) {
 		Utente utente = dipendenteService.readUtente(codicePersona);
@@ -118,9 +120,10 @@ public class DipendenteController {
 	}
 
 	@PutMapping(value = "/update")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR', 'ROLE_DIPENDENTE')")
 	public ResponseEntity<ResponseDto<DipendenteDto>> updateUser(@RequestBody DipendenteDto dipendenteDto) {
 		Dipendente dipendente = dtoEntityMapper.dtoToEntity(dipendenteDto);
-		Utente utente = dipendenteService.readUtente(dipendenteDto.getUtente().getCodicePersona());
+		Utente utente = dipendente.getUtente();
 		loadResponsabile(dipendenteDto, dipendente);
 		dipendente.setCodicePersona(utente.getCodicePersona());
 		utente.setPersonale(dipendente);
@@ -135,6 +138,7 @@ public class DipendenteController {
 	}
 
 	@PutMapping(value = "/update-status/{codicePersona}/{status}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<UtenteDto>> editStatusUser(@PathVariable("codicePersona") String codicePersona,
 			@PathVariable("status") StatoUtenteType status) {
 		Utente utente = dipendenteService.updateUtenteStatus(codicePersona, status);
@@ -144,6 +148,7 @@ public class DipendenteController {
 	}
 
 	@PutMapping(value = "/update-roles/{codicePersona}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<UtenteDto>> editRoleUser(
 			@PathVariable(name = "codicePersona") String codicePersona, @RequestBody List<RuoloDto> ruoliDto) {
 		Utente utente = dipendenteService.readUtente(codicePersona);
@@ -156,6 +161,7 @@ public class DipendenteController {
 	}
 
 	@PostMapping(value = "/create-economics")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<DatiEconomiciDipendenteDto>> createDatiEconomiciDipendente(
 			@RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
 		Utente utente = dipendenteService.readUtente(datiEconomiciDipendenteDto.getCodicePersona());
@@ -166,7 +172,7 @@ public class DipendenteController {
 		economics.setPersonale(dipendente);
 		economics.setCentroDiCosto(cdc);
 		utente.setPersonale(dipendente);
-		utente = dipendenteService.updateUtente(utente);
+		dipendenteService.updateUtente(utente);
 		datiEconomiciDipendenteDto = dtoEntityMapper.entityToDto(economics);
 
 		ResponseDto<DatiEconomiciDipendenteDto> genericResponse = ResponseDto.<DatiEconomiciDipendenteDto>builder()
@@ -175,6 +181,7 @@ public class DipendenteController {
 	}
 
 	@PutMapping(value = "/update-economics")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<DatiEconomiciDipendenteDto>> editDatiEconomiciDipendente(
 			@RequestBody DatiEconomiciDipendenteDto datiEconomiciDipendenteDto) {
 		Utente utente = dipendenteService.readUtente(datiEconomiciDipendenteDto.getCodicePersona());
@@ -216,6 +223,7 @@ public class DipendenteController {
 	
 	
 	@PutMapping(value = "/from-consulente-to-dipendente/{dataCessazione}/{codiceConsulente}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<DipendenteDto>> fromConsulenteToDipendente(
 			@RequestBody DipendenteDto dipendenteDto, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataCessazione,
 			@PathVariable String codiceConsulente) {

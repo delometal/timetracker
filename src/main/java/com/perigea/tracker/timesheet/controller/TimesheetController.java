@@ -1,5 +1,6 @@
 package com.perigea.tracker.timesheet.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetEntryKey;
 import com.perigea.tracker.timesheet.entity.keys.TimesheetMensileKey;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
+import com.perigea.tracker.timesheet.service.ConsulenteService;
 import com.perigea.tracker.timesheet.service.DipendenteService;
 import com.perigea.tracker.timesheet.service.TimesheetService;
 
@@ -50,7 +52,10 @@ public class TimesheetController {
 
 	@Autowired
 	private DipendenteService dipendenteService;
-
+	
+	@Autowired
+	private ConsulenteService consulenteService;
+	
 	@PostMapping(value = "/create")
 	public ResponseEntity<ResponseDto<TimesheetResponseDto>> createTimesheet(@RequestBody TimesheetWrapper wrapper) {
 		Timesheet timesheet = timesheetService.createTimesheet(wrapper.getEntries(), wrapper.getTimesheet());
@@ -84,7 +89,11 @@ public class TimesheetController {
 			@PathVariable(value = "mese") Integer mese,
 			@PathVariable(value = "codiceResponsabile") String codiceResponsabile) {
 		Personale responsabile = dipendenteService.readAnagraficaDipendente(codiceResponsabile);
-		List<Personale> sottoposti = dipendenteService.readAllDipendentiByResponsabile(responsabile);
+		List<Personale> sottoposti = new ArrayList<>();
+		List<Personale> consulentiSottoposti = consulenteService.readAllDipendentiByResponsabile(responsabile);
+		List<Personale> dipendentiSottoposti = dipendenteService.readAllDipendentiByResponsabile(responsabile);
+		sottoposti.addAll(dipendentiSottoposti);
+		sottoposti.addAll(consulentiSottoposti);
 		List<Timesheet> timesheets = timesheetService.getTimesheetsByResponabile(anno, mese, sottoposti);
 		List<TimesheetResponseDto> dto = dtoEntityMapper.entityToDto(timesheets);
 		ResponseDto<List<TimesheetResponseDto>> genericDto = ResponseDto.<List<TimesheetResponseDto>>builder().data(dto)

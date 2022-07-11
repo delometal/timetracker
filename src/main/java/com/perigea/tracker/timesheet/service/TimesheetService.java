@@ -601,7 +601,7 @@ public class TimesheetService {
 				}
 			}			
 		}
-		if(refs.getMese() == dataCessazione.getMonthValue() && refs.getAnno() == dataCessazione.getYear()) {
+		if(dataCessazione != null && refs.getMese() == dataCessazione.getMonthValue() && refs.getAnno() == dataCessazione.getYear()) {
 			for(int i=dataCessazione.getDayOfMonth()+1; i<EMese.getDays(refs.getMese(), refs.getAnno()); i++) {
 				LocalDate date = LocalDate.of(refs.getAnno(), refs.getMese(), i);
 				if(date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY) {	
@@ -621,7 +621,11 @@ public class TimesheetService {
 		return list;
 	}
 	
-	
+	/**
+	 * metodo per il controllo della completezza del timesheet prima della richiesta
+	 * @param list
+	 * @param refs
+	 */
 	public void assertTimesheetIsComplete(List<TimesheetEntry> list, TimesheetRefDto refs) {
 		Map<Integer, List<TimesheetEntry>> dataMap = new HashMap<Integer, List<TimesheetEntry>>();
 		list.forEach(r -> {
@@ -639,12 +643,14 @@ public class TimesheetService {
 				throw new TimesheetException(String.format("il timesheet non è completo mancano i dati del giorno %s", day.getDayOfMonth()));
 			}
 		});			
-		}
-		
-		
-		
+		}		
 	
-	
+		/**
+		 * metodo per ottenere i giorni lavorativi in un mese
+		 * @param mese
+		 * @param anno
+		 * @return
+		 */
 		private List<LocalDate> getGiorniLavorativi(Integer mese, Integer anno) {
 			List<LocalDate> giorniLavorativi = new ArrayList<LocalDate>();
 			List<Festivita> festivi = festivitaRepository.findAll();

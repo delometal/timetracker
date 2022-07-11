@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,6 +56,7 @@ public class ConsulenteController {
 	private DtoEntityMapper dtoEntityMapper;
 
 	@PostMapping(value = "/create")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<ConsulenteDto>> createConsulente(@RequestBody ConsulenteDto consulenteDto) {
 		Utente utente = dtoEntityMapper.dtoToEntity(consulenteDto.getUtente());
 		Consulente consulente = dtoEntityMapper.dtoToEntity(consulenteDto);
@@ -80,6 +82,7 @@ public class ConsulenteController {
 	}
 
 	@GetMapping(value = "/read/{codicePersona}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR', 'ROLE_CONSULENTE')")
 	public ResponseEntity<ResponseDto<ConsulenteDto>> readConsulente(@PathVariable(name = "codicePersona") String codicePersona) {
 		Utente utente = consulenteService.readUtente(codicePersona);
 		UtenteDto utenteDto = dtoEntityMapper.entityToDto(utente);
@@ -91,6 +94,7 @@ public class ConsulenteController {
 	}
 
 	@DeleteMapping(value = "/delete/{codicePersona}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<ConsulenteDto>> deleteConsulente(@PathVariable(name = "codicePersona") String codicePersona) {
 		Utente utente = consulenteService.readUtente(codicePersona);
 		Consulente consulente = (Consulente) utente.getPersonale();
@@ -103,9 +107,10 @@ public class ConsulenteController {
 	}
 
 	@PutMapping(value = "/update")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR', 'ROLE_CONSULENTE')")
 	public ResponseEntity<ResponseDto<ConsulenteDto>> updateUser(@RequestBody ConsulenteDto consulenteDto) {
 		Consulente consulente = dtoEntityMapper.dtoToEntity(consulenteDto);
-		Utente utente = consulenteService.readUtente(consulenteDto.getUtente().getCodicePersona());
+		Utente utente = consulente.getUtente();
 		loadResponsabile(consulenteDto, consulente);
 		consulente.setCodicePersona(utente.getCodicePersona());
 		utente.setPersonale(consulente);
@@ -119,6 +124,7 @@ public class ConsulenteController {
 	}	
 	
 	@GetMapping(value = "/read-consulenti-attivi-totali/{status}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<Integer>> getAllConsulentiAttivi(@PathVariable StatoUtenteType status) {
 		Integer totaleConsulenti = consulenteService.getAllConsulentiByActivityStatus(status);
 		ResponseDto<Integer> genericResponse = ResponseDto.<Integer>builder().data(totaleConsulenti).build();
@@ -136,6 +142,7 @@ public class ConsulenteController {
 	}
 	
 	@PutMapping(value = "/update-status/{codicePersona}/{status}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<UtenteDto>> editStatusUser(@PathVariable("codicePersona") String codicePersona, @PathVariable("status") StatoUtenteType status) {
 		Utente utente = consulenteService.updateUtenteStatus(codicePersona, status);
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
@@ -144,6 +151,7 @@ public class ConsulenteController {
 	}
 	
 	@PutMapping(value = "/update-roles/{codicePersona}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<UtenteDto>> editRoleUser(@PathVariable(name = "codicePersona") String codicePersona, @RequestBody List<RuoloDto> ruoliDto) {
 		Utente utente = consulenteService.readUtente(codicePersona);
 		List<Ruolo> ruoli = dtoEntityMapper.dtoToEntityRuoloList(ruoliDto);
@@ -155,6 +163,7 @@ public class ConsulenteController {
 	}
 	
 	@PostMapping(value = "/create-economics")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<DatiEconomiciConsulenteDto>> createDatiEconomiciConsulente(@RequestBody DatiEconomiciConsulenteDto datiEconomiciConsulenteDto) {
 		Utente utente = consulenteService.readUtente(datiEconomiciConsulenteDto.getCodicePersona());
 		CentroDiCosto cdc = centroDiCostoService.readCentroDiCosto(datiEconomiciConsulenteDto.getCodiceCentroDiCosto());
@@ -171,6 +180,7 @@ public class ConsulenteController {
 	}
 
 	@PutMapping(value = "/from-dipendente-to-consulente/{dataCessazione}/{codiceDipendente}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<ConsulenteDto>> fromDipendenteToConsulente(
 			@RequestBody ConsulenteDto consulenteDto, @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataCessazione,
 			@PathVariable String codiceDipendente){
@@ -200,6 +210,7 @@ public class ConsulenteController {
 	}
 	
 	@PutMapping(value = "/update-economics")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<DatiEconomiciConsulenteDto>> editDatiEconomiciConsulente(@RequestBody DatiEconomiciConsulenteDto datiEconomiciConsulenteDto) {
 		Utente utente = consulenteService.readUtente(datiEconomiciConsulenteDto.getCodicePersona());
 		CentroDiCosto cdc = centroDiCostoService.readCentroDiCosto(datiEconomiciConsulenteDto.getCodiceCentroDiCosto());

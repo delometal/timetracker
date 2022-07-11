@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,6 +68,7 @@ public class UtenteController {
 	}
 
 	@PutMapping(value = "/update-user-status/{codicePersona}/{status}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<UtenteDto>> updateUtenteStatus(@PathVariable String codicePersona,
 			@PathVariable StatoUtenteType status) {
 		Utente utente = utenteService.updateUtenteStatus(codicePersona, status);

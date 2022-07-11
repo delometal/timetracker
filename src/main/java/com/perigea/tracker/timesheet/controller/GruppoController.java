@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,6 +55,7 @@ public class GruppoController {
 	
 
 	@PostMapping(value = "/create")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<GruppoContattoDto>> createGruppo(@RequestBody GruppoContattoDto gruppoContattoDto) {
 		Gruppo gruppo = dtoEntityMapper.dtoToEntity(gruppoContattoDto);
 		List<Utente> contatti= gruppoContattoDto.getContatti().stream()
@@ -75,6 +77,7 @@ public class GruppoController {
 	}
 
 	@PutMapping(value = "/update")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<GruppoContattoDto>> updateGruppo(@RequestBody GruppoContattoDto gruppoContattoDto) {
 		gruppoContattoService.deleteGruppo(gruppoContattoDto.getId());
 		Gruppo gruppo = dtoEntityMapper.dtoToEntity(gruppoContattoDto);
@@ -89,6 +92,7 @@ public class GruppoController {
 	}
 
 	@DeleteMapping(value = "/delete/{id}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<GruppoContattoDto>> deleteGruppo(@PathVariable(name="id") Long id) {
 		Gruppo gruppoContatto = gruppoContattoService.readGruppo(id);
 		GruppoContattoDto dto = dtoEntityMapper.entityToDto(gruppoContatto);
@@ -98,6 +102,7 @@ public class GruppoController {
 	}
 	
 	@PostMapping(value = "/create-meeting-by-group")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<MeetingEventDto>> createMeeting(Long groupId, MeetingEventDto event) {
 		List<ContactDto> contatti = contactDetailsService.readAllContactDetails(groupId);
 		event.setParticipants(contatti);

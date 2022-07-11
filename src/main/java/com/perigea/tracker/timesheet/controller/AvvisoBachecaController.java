@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,6 +48,7 @@ public class AvvisoBachecaController {
 	private ApplicationProperties properties;
 
     @PostMapping(value = "/create-avviso")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
     public ResponseEntity<ResponseDto<AvvisoBachecaDto>> saveAvvisoBacheca(@RequestBody AvvisoBachecaDto avvisoDto){
         AvvisoBacheca avviso = dtoEntityMapper.dtoToEntity(avvisoDto);
         avviso = avvisoBachecaService.createAvvisoBacheca(avviso);
@@ -80,6 +82,7 @@ public class AvvisoBachecaController {
     }
 
     @PutMapping(value = "/update-avviso")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
     public ResponseEntity<ResponseDto<AvvisoBachecaDto>> updateAvviso(@RequestBody AvvisoBachecaDto avvisoDto){
         AvvisoBacheca avviso = dtoEntityMapper.dtoToEntity(avvisoDto);
         avviso = avvisoBachecaService.updateAvviso(avviso);
@@ -89,6 +92,7 @@ public class AvvisoBachecaController {
     }
 
     @DeleteMapping(value = "/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
     public ResponseEntity<ResponseDto<AvvisoBachecaDto>> deleteAvviso(@PathVariable Long id){
         AvvisoBacheca avviso = avvisoBachecaService.readAvvisoBacheca(id);
         AvvisoBachecaDto avvisoDto = dtoEntityMapper.entityToDto(avviso);

@@ -208,6 +208,8 @@ public interface DtoEntityMapper {
 	/** FESTIVITA **/
 	Festivita dtoToEntity(FestivitaDto dto);
 	FestivitaDto entityToDto(Festivita entity);
+	
+	List<FestivitaDto> entityToDtoListFestivi(List<Festivita> entity);
 
 	
 	/** CENTRI DI COSTO **/

@@ -1,7 +1,10 @@
 package com.perigea.tracker.timesheet.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +22,7 @@ import com.perigea.tracker.timesheet.service.FestivitaService;
 
 @RestController
 @RequestMapping("/backoffice/festivita")
+@CrossOrigin(allowedHeaders = "*", origins = "*", originPatterns = "*", exposedHeaders = "*")
 public class FestivitaController {
 
 	@Autowired
@@ -41,6 +45,14 @@ public class FestivitaController {
 		Festivita festivita = festeService.readFestivita(id);
 		FestivitaDto dtoFestivita = dtoEntityMapper.entityToDto(festivita);
 		ResponseDto<FestivitaDto> genericDto = ResponseDto.<FestivitaDto>builder().data(dtoFestivita).build();
+		return ResponseEntity.ok(genericDto);
+	}
+	
+	@GetMapping(value = "/read-all")
+	public ResponseEntity<ResponseDto<List<FestivitaDto>>> readAllFestivita() {
+		List<Festivita> festivita = festeService.readAll();
+		List<FestivitaDto> dtoFestivita = dtoEntityMapper.entityToDtoListFestivi(festivita);
+		ResponseDto<List<FestivitaDto>> genericDto = ResponseDto.<List<FestivitaDto>>builder().data(dtoFestivita).build();
 		return ResponseEntity.ok(genericDto);
 	}
 

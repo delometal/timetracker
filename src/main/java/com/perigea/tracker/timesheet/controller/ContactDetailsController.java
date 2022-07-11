@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,6 +56,7 @@ public class ContactDetailsController {
 
 	// CRUD per creazione contatto semplice
 	@PostMapping(value = "/contatto/create")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<UtenteDto>> createContatto(@RequestBody UtenteDto esternoDto) {
 		
 		Utente utente = dtoEntityMapper.dtoToEntity(esternoDto);
@@ -66,6 +68,7 @@ public class ContactDetailsController {
 	}
 
 	@PutMapping(value = "/contatto/update")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<UtenteDto>> updateContatto(@RequestBody UtenteDto esternoDto) {
 		
 		Utente utente = dtoEntityMapper.dtoToEntity(esternoDto);
@@ -87,6 +90,7 @@ public class ContactDetailsController {
 	}
 
 	@DeleteMapping(value = "/contatto/delete/{codicePersona}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<UtenteDto>> deleteContatto(@PathVariable String codicePersona) {
 
 		Utente contatto = utenteService.readUtente(codicePersona);

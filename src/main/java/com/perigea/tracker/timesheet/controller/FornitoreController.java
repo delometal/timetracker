@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +33,7 @@ public class FornitoreController {
 	private DtoEntityMapper dtoEntityMapper;
 
 	@PostMapping(value = "/create")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<FornitoreDto>> saveFornitore(@RequestBody FornitoreDto fornitoreDto) {
 		Fornitore fornitore = dtoEntityMapper.dtoToEntity(fornitoreDto);
 		fornitore = fornitoreService.saveFornitore(fornitore);
@@ -49,6 +51,7 @@ public class FornitoreController {
 	}
 
 	@GetMapping(value = "/read-by-partita-iva/{partitaIva}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<FornitoreDto>> readFornitoreByPartitaIva(@PathVariable(name = "partitaIva") String partitaIva) {
 		Fornitore fornitore = fornitoreService.readFornitoreByPartitaIva(partitaIva);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
@@ -57,6 +60,7 @@ public class FornitoreController {
 	}
 
 	@GetMapping(value = "/read-by-id/{codiceAzienda}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<FornitoreDto>> readFornitoreById(@PathVariable(name = "codiceAzienda") String codiceAzienda) {
 		Fornitore fornitore = fornitoreService.readFornitoreById(codiceAzienda);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
@@ -65,6 +69,7 @@ public class FornitoreController {
 	}
 	
 	@PutMapping(value = "/update")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<FornitoreDto>> updateFornitore(@RequestBody FornitoreDto fornitoreDto) {
 		Fornitore fornitore = dtoEntityMapper.dtoToEntity(fornitoreDto);
 		fornitore = fornitoreService.saveFornitore(fornitore);
@@ -74,6 +79,7 @@ public class FornitoreController {
 	}
 
 	@DeleteMapping(value = "/delete-by-partita-iva/{partitaIva}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<FornitoreDto>> deleteFornitoreByPartitaIva(@PathVariable(name = "partitaIva") String partitaIva) {
 		Fornitore fornitore = fornitoreService.readFornitoreByPartitaIva(partitaIva);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);
@@ -83,6 +89,7 @@ public class FornitoreController {
 	}
 
 	@DeleteMapping(value = "/delete-by-id/{codiceAzienda}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<FornitoreDto>> deleteFornitoreById(@PathVariable(name = "codiceAzienda") String codiceAzienda) {
 		Fornitore fornitore = fornitoreService.readFornitoreById(codiceAzienda);
 		FornitoreDto fornitoreDto = dtoEntityMapper.entityToDto(fornitore);

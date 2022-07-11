@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,7 @@ public class CentroDiCostoController {
 	private DtoEntityMapper dtoEntityMapper;
 
 	@PostMapping(value = "/create")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<CentroDiCostoDto>> createCentroDiCosto(@RequestBody CentroDiCostoDto centroDiCostoDto) {
 		CentroDiCosto centroDiCosto = dtoEntityMapper.dtoToEntity(centroDiCostoDto);
 		centroDiCosto = centroDiCostoService.createCentroDiCosto(centroDiCosto);
@@ -40,6 +42,7 @@ public class CentroDiCostoController {
 	}
 
 	@GetMapping(value = "/read/{id}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<CentroDiCostoDto>> readCentroDiCosto(@PathVariable("id") String id) {
 		CentroDiCosto centroDiCosto = centroDiCostoService.readCentroDiCosto(id);
 		CentroDiCostoDto dtoCentroDiCosto = dtoEntityMapper.entityToDto(centroDiCosto);
@@ -56,6 +59,7 @@ public class CentroDiCostoController {
 	}
 
 	@PutMapping(value = "/update")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<CentroDiCostoDto>> updateCentroDiCosto(@RequestBody CentroDiCostoDto centroDiCostoDto) {
 		CentroDiCosto centroDiCosto = dtoEntityMapper.dtoToEntity(centroDiCostoDto);
 		centroDiCosto = centroDiCostoService.updateCentroDiCosto(centroDiCosto);
@@ -65,6 +69,7 @@ public class CentroDiCostoController {
 	}
 	
 	@DeleteMapping(value = "/delete/{id}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<CentroDiCostoDto>> deleteCentroDiCosto(@PathVariable("id") String id) {
 		CentroDiCosto centroDiCosto = centroDiCostoService.readCentroDiCosto(id);
 		CentroDiCostoDto centroDiCostoDto = dtoEntityMapper.entityToDto(centroDiCosto);

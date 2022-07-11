@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +37,7 @@ import com.perigea.tracker.timesheet.service.CommessaService;
 
 @RestController
 @RequestMapping("/commesse")
-@CrossOrigin(allowedHeaders = "*", origins = "*")
+@CrossOrigin(allowedHeaders = "*", origins = "*",originPatterns = "*")
 public class CommessaController {
 
 	@Autowired
@@ -49,6 +50,7 @@ public class CommessaController {
 	private DtoEntityMapper dtoEntityMapper;
 
 	@PostMapping(value = "/create-commessa-fatturabile")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<CommessaFatturabileDto>> createCommessaFatturabile(
 			@RequestBody CommessaFatturabileDtoWrapper wrapper) {
 		CommessaFatturabile commessa = dtoEntityMapper.dtoToEntity(wrapper.getCommessaFatturabile());
@@ -62,6 +64,7 @@ public class CommessaController {
 	}
 
 	@PostMapping(value = "/create-commessa-non-fatturabile")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<CommessaNonFatturabileDto>> createCommessaNonFatturabile(
 			@RequestBody CommessaNonFatturabileDtoWrapper wrapper) {
 		CommessaNonFatturabile commessa = dtoEntityMapper.dtoToEntity(wrapper.getCommessaNonFatturabile());
@@ -73,6 +76,7 @@ public class CommessaController {
 	}
 
 	@PostMapping(value = "/create-estensione-commessa")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<CommessaEstensioneDto>> createCommessaEstensione(
 			@RequestBody CommessaEstensioneDto estensione) {
 		CommessaEstensione entity = dtoEntityMapper.dtoToEntity(estensione);
@@ -89,6 +93,7 @@ public class CommessaController {
 	}
 
 	@PutMapping(value = "/update-commessa-fatturabile")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<CommessaFatturabileDto>> updateCommessaFatturabile(
 			@RequestBody CommessaFatturabileDto commessaFatturabileDto) {
 		CommessaFatturabile commessa = dtoEntityMapper.dtoToEntity(commessaFatturabileDto);		
@@ -100,6 +105,7 @@ public class CommessaController {
 	}
 
 	@PutMapping(value = "/update-commessa-non-fatturabile")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<CommessaNonFatturabileDto>> updateCommessaNonFatturabile(
 			@RequestBody CommessaNonFatturabileDtoWrapper wrapper) {
 		CommessaNonFatturabile commessa = dtoEntityMapper.dtoToEntity(wrapper.getCommessaNonFatturabile());
@@ -112,6 +118,7 @@ public class CommessaController {
 	}
 
 	@PostMapping(value = "/create-ordine-commessa")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<OrdineCommessaDto>> createOrdineCommessa(
 			@RequestBody CommessaFatturabileDtoWrapper wrapper) {
 		CommessaFatturabile commessa = dtoEntityMapper.dtoToEntity(wrapper.getCommessaFatturabile());
@@ -125,6 +132,7 @@ public class CommessaController {
 	}
 
 	@DeleteMapping(value = "/delete-commessa-fatturabile/{codiceCommessa}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<CommessaFatturabileDto>> deleteCommessaFatturabile(
 			@PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		CommessaFatturabile commessaEntity = commessaService.readCommessaFatturabile(codiceCommessa);
@@ -136,6 +144,7 @@ public class CommessaController {
 	}
 
 	@DeleteMapping(value = "/delete-commessa-non-fatturabile/{codiceCommessa}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<CommessaNonFatturabileDto>> deleteCommessaNonFatturabile(
 			@PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		CommessaNonFatturabile commessaEntity = commessaService.readCommessaNonFatturabile(codiceCommessa);
@@ -146,7 +155,8 @@ public class CommessaController {
 		return ResponseEntity.ok(genericDto);
 	}
 
-	@GetMapping(value = "/read-commessa-fatturabile/{codiceCommessa}")
+	@GetMapping(value = "/read-commessa-fatturabile/{codiceCommessa}")	
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<CommessaFatturabileDto>> readCommessaFatturabile(
 			@PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		CommessaFatturabile commessaEntity = commessaService.readCommessaFatturabile(codiceCommessa);
@@ -157,6 +167,7 @@ public class CommessaController {
 	}
 	
 	@GetMapping(value = "/read-commesse-by-cliente/{codiceAzienda}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<List<CommessaFatturabileDto>>> readCommesseByCliente(
 			@PathVariable String codiceAzienda) {
 		Cliente cliente = clienteService.readClienteById(codiceAzienda);
@@ -168,6 +179,7 @@ public class CommessaController {
 	}
 
 	@GetMapping(value = "/read-commessa-non-fatturabile/{codiceCommessa}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<CommessaNonFatturabileDto>> readCommessaNonFatturabile(
 			@PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		CommessaNonFatturabile commessaEntity = commessaService.readCommessaNonFatturabile(codiceCommessa);
@@ -178,6 +190,7 @@ public class CommessaController {
 	}
 
 	@GetMapping(value = "/read-estensione-commessa/{codiceCommessa}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<List<CommessaEstensioneDto>>> readAllCommessaEstensione(
 			@PathVariable(name = "codiceCommessa") String codiceCommessa) {
 		List<CommessaEstensione> all = commessaService.readAllCommessaEstensione(codiceCommessa);
@@ -188,6 +201,7 @@ public class CommessaController {
 	}
 
 	@GetMapping(value = "/read-estensione-commessa/{codiceCommessa}/{dataEstensione}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<CommessaEstensioneDto>> readCommessaEstensione(
 			@PathVariable(name = "codiceCommessa") String codiceCommessa,
 			@PathVariable(name = "dataEstensione") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataEstensione) {
@@ -199,6 +213,7 @@ public class CommessaController {
 	}
 
 	@GetMapping(value = "/checkSpecification/{importoTotAnno}/{importoOrdine}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<List<CommessaFatturabileDto>>> readCommessaFatturabile(
 			@PathVariable Double importoTotAnno, @PathVariable Double importoOrdine) {
 		List<CommessaFatturabile> commesseEntity = commessaService.searchCommesseAfterThatImports(importoTotAnno,
@@ -210,6 +225,7 @@ public class CommessaController {
 	}
 
 	@DeleteMapping(value = "/delete-estensione-commessa/{codiceCommessa}/{dataEstensione}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<CommessaEstensioneDto>> deleteEstensioneCommessa(
 			@PathVariable(name = "codiceCommessa") String codiceCommessa,
 			@PathVariable(name = "dataEstensione") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataEstensione) {
@@ -225,6 +241,7 @@ public class CommessaController {
 	}
 
 	@PutMapping(value = "/update-estensione-commessa")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_SALES')")
 	public ResponseEntity<ResponseDto<CommessaEstensioneDto>> updateCommessaEstensione(
 			@RequestBody CommessaEstensioneDto estensione) {
 		CommessaEstensione commessaEntity = dtoEntityMapper.dtoToEntity(estensione);

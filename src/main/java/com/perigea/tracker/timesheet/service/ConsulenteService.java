@@ -12,10 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.perigea.tracker.commons.enums.StatoUtenteType;
 import com.perigea.tracker.commons.exception.ConsulenteException;
+import com.perigea.tracker.commons.exception.DipendenteException;
 import com.perigea.tracker.commons.exception.EntityNotFoundException;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Consulente;
 import com.perigea.tracker.timesheet.entity.DatiEconomiciConsulente;
+import com.perigea.tracker.timesheet.entity.Personale;
 import com.perigea.tracker.timesheet.entity.StoricoAssegnazioneCentroCosto;
 import com.perigea.tracker.timesheet.entity.StoricoIngaggio;
 import com.perigea.tracker.timesheet.entity.Utente;
@@ -78,6 +80,22 @@ public class ConsulenteService extends UtenteService {
 				throw new EntityNotFoundException(ex.getMessage());
 			}
 			throw new ConsulenteException(ex.getMessage());
+		}
+	}
+	
+	/**
+	 * ricerca di tutti gli utenti tramite il responsabile
+	 * @param responsabile
+	 * @return
+	 */
+	public List<Personale> readAllDipendentiByResponsabile(Personale responsabile) {
+		try {
+			return consulenteRepository.findAllByResponsabile(responsabile);
+		} catch (Exception ex) {
+			if(ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new DipendenteException(ex.getMessage());
 		}
 	}
 	

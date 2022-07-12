@@ -87,9 +87,9 @@ public class FileService {
 			
 			byte[] fileData = IOUtils.toByteArray(file.getInputStream());
 			Optional<CurriculumVitae> cvOpt = curriculumVitaeRepository.findByCodicePersona(codicePersona);
-			if(cvOpt.isPresent()) {
-				curriculumVitaeRepository.deleteById(codicePersona);
-			}
+//			if(cvOpt.isPresent()) {
+//				curriculumVitaeRepository.delete(cvOpt.get());
+//			}
 			
 			CurriculumVitae cv = new CurriculumVitae();
 			cv.setUtente(utente);

@@ -34,6 +34,9 @@ public class ApplicationProperties {
 	@Value("${calendar.notification.userCreated}")
 	private String userCreationNotificationEndpoint;
 	
+	@Value("${calendar.notification.recoverPassword}")
+	private String recoverPasswordNotificationEndpoint;
+	
 	@Value("${calendar.notification.avvisoBacheca}")
 	private String avvisoBachecaEndpoint;
 	

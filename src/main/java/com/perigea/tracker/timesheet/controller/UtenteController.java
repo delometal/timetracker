@@ -58,10 +58,17 @@ public class UtenteController {
 				: ResponseEntity.badRequest().body(
 						ResponseDto.<String>builder().type(ResponseType.ERROR).code(401).data("token expired").build());
 	}
+	
+	@GetMapping(value = "/recover-password-request/{username}")
+	public ResponseEntity<ResponseDto<String>> recoverPasswordRequest(@PathVariable(name = "username") String username) {
+		utenteService.sendRecoverPasswordRequest(username);
+		return ResponseEntity.ok().body(ResponseDto.<String>builder().data("recover Request sent").build());
+	}
 
-	@PutMapping(value = "/update-user-password")
-	public ResponseEntity<ResponseDto<UtenteDto>> updateUtentePassword(@RequestBody UserCredentialDto credentialDto) {
-		Utente utente = utenteService.updateUtentePassword(credentialDto.getCodicePersona(),
+	@PutMapping(value = "/update-user-password/{codiceControllo}")
+	public ResponseEntity<ResponseDto<UtenteDto>> updateUtentePassword(@RequestBody UserCredentialDto credentialDto,
+			@PathVariable(name = "codiceControllo") String codiceControllo) {
+		Utente utente = utenteService.updatePasswordWithCode(codiceControllo, credentialDto.getUsername(),
 				credentialDto.getPassword());
 		UtenteDto dto = dtoEntityMapper.entityToDto(utente);
 		return ResponseEntity.ok(ResponseDto.<UtenteDto>builder().data(dto).build());
@@ -76,6 +83,7 @@ public class UtenteController {
 		return ResponseEntity.ok(ResponseDto.<UtenteDto>builder().data(dto).build());
 	}
 	
+		
 
 	@GetMapping(value = "/checkSpecification/{username}/{tipoAnagrafica}/{statoUtente}")
 	public ResponseEntity<ResponseDto<List<UtenteDto>>> checkToken(@PathVariable String username, @PathVariable AnagraficaType tipoAnagrafica, @PathVariable StatoUtenteType statoUtente ) {

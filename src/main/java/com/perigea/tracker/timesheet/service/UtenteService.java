@@ -108,6 +108,55 @@ public class UtenteService {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
+	
+	/**
+	 * metodo per richiedere di reimpostare la password
+	 * @param username
+	 * @param password
+	 */
+	public void sendRecoverPasswordRequest(String username) {
+		try {
+		Utente utente = utenteRepository.findByUsername(username).orElseThrow();
+		String randomCode = Utils.randomString(6);
+		String token = Utils.uuid();
+		PasswordToken passwordToken = passwordTokenRepository.findByUsername(username).orElseThrow();
+		passwordToken.setCodiceRecupero(randomCode);
+		passwordToken.setToken(token);
+		passwordToken.setDataScadenza(Utils.shifTimeByHour(new Date(), Utils.CREDENTIAL_EXPIRATION_SHIFT_AMOUNT));
+		passwordTokenRepository.save(passwordToken);
+		
+		CreatedUtenteNotificaDto notifica = CreatedUtenteNotificaDto.builder()
+				.mailAziendale(utente.getMailAziendale())
+				.token(token)
+				.nome(utente.getNome())
+				.password(passwordToken.getCodiceRecupero())
+				.username(username)
+				.dataScadenza(passwordToken.getDataScadenza())
+				.build();
+		notificationRestClient.sendInstantNotification(
+				new NonPersistedEventDto<CreatedUtenteNotificaDto>(CreatedUtenteNotificaDto.class,
+						Utils.toJson(notifica)),
+				properties.getRecoverPasswordNotificationEndpoint());
+		} catch (Exception ex) {
+			logger.error(ex.getMessage());
+			throw new UtenteException(ex.getMessage());
+		}
+	}
+	
+	public Utente updatePasswordWithCode(String recoverCode, String username, String newPassword) {
+		try {
+			Utente utente = utenteRepository.findByUsername(username).orElseThrow();
+			PasswordToken passwordToken = passwordTokenRepository.findByUsername(username).orElseThrow();
+			if (!passwordToken.getDataScadenza().after(new Date()) || !recoverCode.equals(passwordToken.getCodiceRecupero())) {
+				throw new UtenteException("codice di controllo scaduto o errato");
+			} else {
+				return updateUtentePassword(utente.getCodicePersona(), newPassword);
+			}
+			
+		} catch (Exception ex) {
+			throw new UtenteException(ex.getMessage());
+		}
+	}
 
 	/**
 	 * lettura utente
@@ -255,7 +304,7 @@ public class UtenteService {
 	public Utente updateUtentePassword(String codicePersona, String newPassword) {
 		try {
 			String cryptedPassword = passwordEncoder.encode(newPassword);
-			Integer edits = applicationDao.updateUserPassword(codicePersona, cryptedPassword);
+			Integer edits = applicationDao.updateUserPassword(codicePersona, "{bcrypt}"+cryptedPassword);
 			if (edits != null && edits == 1) {
 				return readUtente(codicePersona);
 			} else {

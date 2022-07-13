@@ -31,7 +31,7 @@ public class PasswordToken extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "username", unique = true)
+	@Column(name = "username", unique=false)
 	private String username;
 
 	@Column(name = "token", unique = true)
@@ -39,6 +39,9 @@ public class PasswordToken extends BaseEntity {
 
 	@Column(name = "data_scadenza")
 	private Date dataScadenza;
+	
+	@Column(name = "codice_recupero")
+	private String codiceRecupero;
 
 //	@Column(name = "token_status")
 //	@Enumerated(EnumType.STRING)

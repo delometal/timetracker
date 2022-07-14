@@ -157,6 +157,20 @@ public class UtenteService {
 			throw new UtenteException(ex.getMessage());
 		}
 	}
+	
+	public Utente updatePasswordWithOld(String username, String oldPassword, String newPAassword) {
+		try {
+			Utente utente = utenteRepository.findByUsername(username).orElseThrow();
+			String[] array = utente.getPassword().split("}");
+			if(!passwordEncoder.matches(oldPassword, array[1])) {
+				throw new UtenteException("quella inserita non è la vecchia password");
+			} else {
+				return updateUtentePassword(utente.getCodicePersona(), newPAassword);
+			}
+		} catch (Exception ex) {
+			throw new UtenteException(ex.getMessage());
+		}
+	}
 
 	/**
 	 * lettura utente

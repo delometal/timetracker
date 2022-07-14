@@ -9,13 +9,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.ResponseDto;
-import com.perigea.tracker.commons.dto.UserCredentialDto;
 import com.perigea.tracker.commons.dto.UtenteDto;
 import com.perigea.tracker.commons.enums.AnagraficaType;
 import com.perigea.tracker.commons.enums.ResponseType;
@@ -26,7 +24,7 @@ import com.perigea.tracker.timesheet.service.UtenteService;
 
 @RestController
 @RequestMapping("/utente")
-@CrossOrigin(allowedHeaders = "*", origins = "*")
+@CrossOrigin(allowedHeaders = "*", origins = "*", originPatterns = "*")
 public class UtenteController {
 
 	@Autowired
@@ -67,11 +65,19 @@ public class UtenteController {
 	}
 
 	@PutMapping(value = "/update-user-password/{codiceControllo}")
-	public ResponseEntity<ResponseDto<UtenteDto>> updateUtentePassword(
+	public ResponseEntity<ResponseDto<UtenteDto>> updateUtentePasswordWithCode(
 			@PathVariable(name = "codiceControllo") String codiceControllo, @RequestParam String username,
 			@RequestParam String password) {
 		Utente utente = utenteService.updatePasswordWithCode(codiceControllo, username, password);
 
+		UtenteDto dto = dtoEntityMapper.entityToDto(utente);
+		return ResponseEntity.ok(ResponseDto.<UtenteDto>builder().data(dto).build());
+	}
+	
+	@PutMapping(value = "/update-user-password-with-old")
+	public ResponseEntity<ResponseDto<UtenteDto>> updateUtentePasswordWithOld(
+			@RequestParam String username, @RequestParam String oldPassword, @RequestParam String newPassword) {
+		Utente utente = utenteService.updatePasswordWithOld(username, oldPassword, newPassword);
 		UtenteDto dto = dtoEntityMapper.entityToDto(utente);
 		return ResponseEntity.ok(ResponseDto.<UtenteDto>builder().data(dto).build());
 	}

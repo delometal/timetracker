@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perigea.tracker.commons.dto.ResponseDto;
@@ -66,10 +67,11 @@ public class UtenteController {
 	}
 
 	@PutMapping(value = "/update-user-password/{codiceControllo}")
-	public ResponseEntity<ResponseDto<UtenteDto>> updateUtentePassword(@RequestBody UserCredentialDto credentialDto,
-			@PathVariable(name = "codiceControllo") String codiceControllo) {
-		Utente utente = utenteService.updatePasswordWithCode(codiceControllo, credentialDto.getUsername(),
-				credentialDto.getPassword());
+	public ResponseEntity<ResponseDto<UtenteDto>> updateUtentePassword(
+			@PathVariable(name = "codiceControllo") String codiceControllo, @RequestParam String username,
+			@RequestParam String password) {
+		Utente utente = utenteService.updatePasswordWithCode(codiceControllo, username, password);
+
 		UtenteDto dto = dtoEntityMapper.entityToDto(utente);
 		return ResponseEntity.ok(ResponseDto.<UtenteDto>builder().data(dto).build());
 	}

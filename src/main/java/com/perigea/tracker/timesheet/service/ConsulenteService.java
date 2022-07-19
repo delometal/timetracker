@@ -134,8 +134,8 @@ public class ConsulenteService extends UtenteService {
 		consulente.setDataCessazione(dataCessazione);
 		consulente.getEconomics().setArchived(true);
 		consulente.getUtente().setUsername(consulente.getUtente().getUsername()+ Utils.SET_ARCHIVED + consulente.getTipo());
-		consulente.getUtente().setStato(StatoUtenteType.C);
 		super.updateUtente(consulente.getUtente());
+		super.updateUtenteStatus(consulente.getCodicePersona(), StatoUtenteType.C);
 		createStorico(consulente.getEconomics());
 		consulenteRepository.save(consulente);
 		

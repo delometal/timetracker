@@ -37,6 +37,18 @@ public class GruppoContattoService {
 			throw new GruppoException(ex.getMessage());
 		}
 	}
+	
+	/**
+	 * lettura di tutti i gruppi
+	 * @return
+	 */
+	public List<Gruppo> readAllGruppi() {
+		try {
+			return gruppoRepository.findAll();
+		}catch (Exception ex) {
+			throw new GruppoException(ex.getMessage());
+		}
+	}
 
 	/**
 	 * Lettura gruppo

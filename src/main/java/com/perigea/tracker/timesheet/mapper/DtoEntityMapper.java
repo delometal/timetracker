@@ -30,7 +30,7 @@ public interface DtoEntityMapper {
 	List<Utente> dtoToEntityUtenteList(List<UtenteDto> dto);
 	List<UtenteDto> entityToDtoUtenteList(List<Utente> entity);
 	
-	
+	ProfileImageDto entityToDto(ProfileImage entity);
 
 	
 	/** PERSONALE - DIPENDENTI & CONSULENTI **/
@@ -139,6 +139,8 @@ public interface DtoEntityMapper {
 	/** GRUPPI E CONTATTI **/
 	Gruppo dtoToEntity(GruppoContattoDto gruppo);
 	GruppoContattoDto entityToDto(Gruppo gruppo);
+	
+	List<GruppoContattoDto> entityToGruppoDtoList(List<Gruppo> entities);
 
 	ContactDto entityToContactDto(Utente entity);
 	List<ContactDto> entityToContactDtoList(List<Utente> entity);

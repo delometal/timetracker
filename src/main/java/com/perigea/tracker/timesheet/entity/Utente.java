@@ -141,6 +141,10 @@ public class Utente extends BaseEntity {
 	@OneToOne(mappedBy = "utente", cascade = CascadeType.ALL, optional = true)
 	private CurriculumVitae cv;
 	
+	@NotFound(action = NotFoundAction.IGNORE)
+	@OneToOne(mappedBy = "utente", cascade = CascadeType.ALL, optional = true)
+	private ProfileImage image;
+	
 	@ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
         name = "utente_ruolo", 

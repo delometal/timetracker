@@ -17,43 +17,58 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.perigea.tracker.commons.dto.ProfileImageDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
-import com.perigea.tracker.timesheet.entity.CurriculumVitae;
+import com.perigea.tracker.timesheet.entity.ProfileImage;
+import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
 import com.perigea.tracker.timesheet.service.FileService;
 
 @RestController
-@RequestMapping("/curriculum")
+@RequestMapping("/profile-image")
 @CrossOrigin(allowedHeaders = "*", origins = "*", originPatterns = "*", exposedHeaders = "*")
-public class CurriculumController {
-
+public class ProfileImageController {
+	
 	@Autowired
 	private FileService fileService;
-
+	
+	@Autowired
+	private DtoEntityMapper mapper;
+	
 	@PostMapping("/{codicePersona}")
-	public ResponseEntity<ResponseDto<String>> uploadCurriculum(@PathVariable(name = "codicePersona") String codicePersona, @RequestParam("file") MultipartFile file) {
+	public ResponseEntity<ResponseDto<String>> uploadImmagineProfilo(
+			@PathVariable(name = "codicePersona") String codicePersona, @RequestParam("file") MultipartFile file) {
 		try {
-			fileService.uploadCurriculum(codicePersona, file);
+			fileService.uploadProfileImage(codicePersona, file);
 			ResponseDto<String> genericResponse = ResponseDto.<String>builder()
 					.data("Uploaded the file successfully: " + file.getOriginalFilename()).build();
 			return ResponseEntity.ok(genericResponse);
 		} catch (Exception e) {
-			ResponseDto<String> genericResponse = ResponseDto.<String>builder()
-					.data(e.getMessage()).code(HttpStatus.BAD_REQUEST.value()).build();
+			ResponseDto<String> genericResponse = ResponseDto.<String>builder().data(e.getMessage())
+					.code(HttpStatus.BAD_REQUEST.value()).build();
 			return ResponseEntity.badRequest().body(genericResponse);
 		}
 	}
 	
-
 	@ResponseBody
 	@GetMapping(value="/archivio/{codicePersona}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public ResponseEntity<?> downloadCurriculum(@PathVariable String codicePersona) {
-		CurriculumVitae data = fileService.getCurriculum(codicePersona);
-		Resource resource = new ByteArrayResource(data.getCv());
+	public ResponseEntity<?> downloadImmagineProfilo(@PathVariable String codicePersona) {
+		ProfileImage data = fileService.getProfileImage(codicePersona);
+		Resource resource = new ByteArrayResource(data.getImage());
 		String filename = data.getFilename();
 		return ResponseEntity.ok()
 		        .contentType(MediaType.APPLICATION_OCTET_STREAM)
 		        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ filename + "\"")
 		        .body(resource);
+	}
+	
+	
+	
+	@GetMapping(value = "/read/{codicePersona}")
+	public ResponseEntity<ResponseDto<ProfileImageDto>> readProfileImage(@PathVariable String codicePersona) {
+		ProfileImage image = fileService.getProfileImage(codicePersona);
+		ProfileImageDto imageDto = mapper.entityToDto(image);
+		ResponseDto<ProfileImageDto> genericResponse = ResponseDto.<ProfileImageDto>builder().data(imageDto).build();
+		return ResponseEntity.ok(genericResponse);
 	}
 	
 	

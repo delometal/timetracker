@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -23,8 +22,10 @@ import com.perigea.tracker.commons.exception.FileUploadException;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
 import com.perigea.tracker.timesheet.entity.CurriculumVitae;
+import com.perigea.tracker.timesheet.entity.ProfileImage;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.repository.CurriculumVitaeRepository;
+import com.perigea.tracker.timesheet.repository.ProfileImageRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
 
 @Service
@@ -42,6 +43,9 @@ public class FileService {
 	
 	@Autowired
 	private CurriculumVitaeRepository curriculumVitaeRepository;
+	
+	@Autowired 
+	private ProfileImageRepository profileImageRepository;
 	
 	@PostConstruct
 	public void init() {
@@ -70,7 +74,7 @@ public class FileService {
 	public void uploadCurriculum(String codicePersona, MultipartFile file) {
 		try {
 			Utente utente = utenteRepository.findById(codicePersona).orElseThrow();
-			String filepath = extractCurriculumFilename(codicePersona, utente);
+			String filepath = extractFilename(codicePersona, utente);
 			
 			if(applicationProperties.isCurriculumDiskPersistence()) {
 				Path archivio = loadArchivioFolder();
@@ -86,7 +90,7 @@ public class FileService {
 			}
 			
 			byte[] fileData = IOUtils.toByteArray(file.getInputStream());
-			Optional<CurriculumVitae> cvOpt = curriculumVitaeRepository.findByCodicePersona(codicePersona);
+//			Optional<CurriculumVitae> cvOpt = curriculumVitaeRepository.findByCodicePersona(codicePersona);
 //			if(cvOpt.isPresent()) {
 //				curriculumVitaeRepository.delete(cvOpt.get());
 //			}
@@ -103,13 +107,37 @@ public class FileService {
 		}
 	}
 	
+	
+	/**
+	 * upload di un'immagine del profilo
+	 * @param codicePersona
+	 * @param file
+	 */
+	public void uploadProfileImage(String codicePersona, MultipartFile file) {
+		try {
+			Utente utente = utenteRepository.findById(codicePersona).orElseThrow();
+			String filepath = extractFilename(codicePersona, utente);
+			byte[] fileData = IOUtils.toByteArray(file.getInputStream());
+			
+			ProfileImage image = new ProfileImage();
+			image.setUtente(utente);
+			image.setCodicePersona(codicePersona);
+			image.setImage(fileData);
+			image.setFilename(file.getOriginalFilename());
+			utente.setImage(image);;
+			utenteRepository.save(utente);
+		} catch (Exception e) {
+			throw new FileUploadException("Could not store the file. Error: " + e.getMessage());
+		}
+	}
+	
 	/**
 	 * estrazione del nome del file
 	 * @param codicePersona
 	 * @param utente
 	 * @return
 	 */
-	private String extractCurriculumFilename(String codicePersona, Utente utente) {
+	private String extractFilename(String codicePersona, Utente utente) {
 		String filepath = utente.getCognome() + "-" + utente.getNome() + "-" + codicePersona;
 		return Utils.removeAllSpaces(filepath).trim();
 	}
@@ -122,6 +150,19 @@ public class FileService {
 	public CurriculumVitae getCurriculum(String codicePersona) {
 		try {
 			return utenteRepository.getById(codicePersona).getCv();
+		} catch (Exception e) {
+			throw new FileDownloadException("Error: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * lettrua di un'immagine del profilo
+	 * @param codicePersona
+	 * @return
+	 */
+	public ProfileImage getProfileImage(String codicePersona) {
+		try {
+			return utenteRepository.getById(codicePersona).getImage();
 		} catch (Exception e) {
 			throw new FileDownloadException("Error: " + e.getMessage());
 		}

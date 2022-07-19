@@ -150,6 +150,16 @@ public class ConsulenteController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
+	@PutMapping(value = "/cessazione/{codicePersona}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
+	public ResponseEntity<ResponseDto<ConsulenteDto>> cessazioneUtente(@PathVariable("codicePersona") String codicePersona) {
+		Consulente consulente = consulenteService.readAnagraficaConsulente(codicePersona);
+		consulente = consulenteService.cessazioneConsulente(consulente, LocalDate.now());
+		ConsulenteDto consulenteDto = dtoEntityMapper.entityToDto(consulente);
+		ResponseDto<ConsulenteDto> genericResponse = ResponseDto.<ConsulenteDto>builder().data(consulenteDto).build();
+		return ResponseEntity.ok(genericResponse);
+	}
+	
 	@PutMapping(value = "/update-roles/{codicePersona}")
 	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
 	public ResponseEntity<ResponseDto<UtenteDto>> editRoleUser(@PathVariable(name = "codicePersona") String codicePersona, @RequestBody List<RuoloDto> ruoliDto) {
@@ -160,7 +170,8 @@ public class ConsulenteController {
 		UtenteDto utenteResponseDto = dtoEntityMapper.entityToDto(utente);
 		ResponseDto<UtenteDto> genericResponse = ResponseDto.<UtenteDto>builder().data(utenteResponseDto).build();
 		return ResponseEntity.ok(genericResponse);
-	}
+	}	
+	
 	
 	@PostMapping(value = "/create-economics")
 	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")

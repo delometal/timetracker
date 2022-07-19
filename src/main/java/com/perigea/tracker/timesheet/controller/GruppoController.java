@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,8 @@ import com.perigea.tracker.commons.dto.ContactDto;
 import com.perigea.tracker.commons.dto.GruppoContattoDto;
 import com.perigea.tracker.commons.dto.MeetingEventDto;
 import com.perigea.tracker.commons.dto.ResponseDto;
+import com.perigea.tracker.commons.enums.CalendarEventType;
+import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.entity.Gruppo;
 import com.perigea.tracker.timesheet.entity.Utente;
 import com.perigea.tracker.timesheet.mapper.DtoEntityMapper;
@@ -30,9 +33,8 @@ import com.perigea.tracker.timesheet.service.UtenteService;
 
 @RestController
 @RequestMapping("/gruppi")
+@CrossOrigin(allowedHeaders = "*", origins = "*")
 public class GruppoController {
-
-	// TODO ricerca per filtri (nome/username/...) 
 
 	
 	@Autowired
@@ -67,6 +69,7 @@ public class GruppoController {
 		ResponseDto<GruppoContattoDto> genericResponse = ResponseDto.<GruppoContattoDto>builder().data(gruppoContattoDto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
+	
 
 	@GetMapping(value = "/read/{id}")
 	public ResponseEntity<ResponseDto<GruppoContattoDto>> readGruppo(@PathVariable(name="id") Long id) {
@@ -75,17 +78,24 @@ public class GruppoController {
 		ResponseDto<GruppoContattoDto> genericResponse = ResponseDto.<GruppoContattoDto>builder().data(dto).build();
 		return ResponseEntity.ok(genericResponse);
 	}
+	
+	@GetMapping(value = "/read-all")
+	public ResponseEntity<ResponseDto<List<GruppoContattoDto>>> readAllGruppi() {
+		List<Gruppo> gruppi = gruppoContattoService.readAllGruppi();
+		List<GruppoContattoDto> gruppiDto = dtoEntityMapper.entityToGruppoDtoList(gruppi);
+		ResponseDto<List<GruppoContattoDto>> genericResponse = ResponseDto.<List<GruppoContattoDto>>builder().data(gruppiDto).build();
+		return ResponseEntity.ok(genericResponse);
+	}
 
 	@PutMapping(value = "/update")
 	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
-	public ResponseEntity<ResponseDto<GruppoContattoDto>> updateGruppo(@RequestBody GruppoContattoDto gruppoContattoDto) {
-		gruppoContattoService.deleteGruppo(gruppoContattoDto.getId());
+	public ResponseEntity<ResponseDto<GruppoContattoDto>> updateGruppo(@RequestBody GruppoContattoDto gruppoContattoDto) {		
 		Gruppo gruppo = dtoEntityMapper.dtoToEntity(gruppoContattoDto);
 		List<Utente> contatti= gruppoContattoDto.getContatti().stream()
 				.map(c -> utenteService.loadUtente(c.getCodicePersona()))
 				.collect(Collectors.toList());
 		gruppo.setContatti(contatti);
-		gruppo = gruppoContattoService.createGruppo(gruppo);
+		gruppo = gruppoContattoService.updateGruppo(gruppo);
 		gruppoContattoDto.setId(gruppo.getId());
 		ResponseDto<GruppoContattoDto> genericResponse = ResponseDto.<GruppoContattoDto>builder().data(gruppoContattoDto).build();
 		return ResponseEntity.ok(genericResponse);
@@ -101,18 +111,21 @@ public class GruppoController {
 		return ResponseEntity.ok(genericResponse);
 	}
 	
-	@PostMapping(value = "/create-meeting-by-group")
+	@PostMapping(value = "/create-meeting-by-group/{groupId}/{codicePersona}")
 	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
-	public ResponseEntity<ResponseDto<MeetingEventDto>> createMeeting(Long groupId, MeetingEventDto event) {
+	public ResponseEntity<ResponseDto<MeetingEventDto>> createMeeting(@PathVariable(name = "groupId") Long groupId,
+			@PathVariable(name = "codicePersona") String codicePersona, @RequestBody MeetingEventDto event) {
+		ContactDto creator = contactDetailsService.readUserContactDetails(codicePersona);
 		List<ContactDto> contatti = contactDetailsService.readAllContactDetails(groupId);
 		event.setParticipants(contatti);
-		
+		event.setEventCreator(creator);
+		event.setType(CalendarEventType.RIUNIONE);
+		event.setId(Utils.uuid());
+
 		restClient.sendNotifica(event, CREATE_MEETING_ENDPOINT);
 
-		ResponseDto<MeetingEventDto> genericDto = ResponseDto.<MeetingEventDto>builder()
-				.data(event)
-				.timestamp(LocalDateTime.now())
-				.build();
+		ResponseDto<MeetingEventDto> genericDto = ResponseDto.<MeetingEventDto>builder().data(event)
+				.timestamp(LocalDateTime.now()).build();
 		return ResponseEntity.ok(genericDto);
 	}
 	

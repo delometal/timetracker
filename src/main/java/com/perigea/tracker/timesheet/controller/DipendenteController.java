@@ -136,6 +136,16 @@ public class DipendenteController {
 				.build();
 		return ResponseEntity.ok(genericResponse);
 	}
+	
+	@PutMapping(value = "/cessazione/{codicePersona}")
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")
+	public ResponseEntity<ResponseDto<DipendenteDto>> cessazioneUtente(@PathVariable("codicePersona") String codicePersona) {
+		Dipendente dipendente = dipendenteService.readAnagraficaDipendente(codicePersona);
+		dipendente = dipendenteService.cessazioneDipendente(dipendente, LocalDate.now());
+		DipendenteDto dipendenteDto = dtoEntityMapper.entityToDto(dipendente);
+		ResponseDto<DipendenteDto> genericResponse = ResponseDto.<DipendenteDto>builder().data(dipendenteDto).build();
+		return ResponseEntity.ok(genericResponse);
+	}
 
 	@PutMapping(value = "/update-status/{codicePersona}/{status}")
 	@PreAuthorize("hasAnyAuthority('ROLE_MANAGEMENT', 'ROLE_ADMIN', 'ROLE_AMMINISTRAZIONE', 'ROLE_HR')")

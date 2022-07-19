@@ -204,8 +204,8 @@ public class DipendenteService extends UtenteService {
 		dipendente.setDataCessazione(dataCessazione);
 		dipendente.getEconomics().setArchived(true);
 		dipendente.getUtente().setUsername(dipendente.getUtente().getUsername() + Utils.SET_ARCHIVED + dipendente.getTipo());
-		dipendente.getUtente().setStato(StatoUtenteType.C);
 		super.updateUtente(dipendente.getUtente());
+		super.updateUtenteStatus(dipendente.getCodicePersona(), StatoUtenteType.C);
 		createStorico(dipendente.getEconomics());
 		dipendenteRepository.save(dipendente);
 		

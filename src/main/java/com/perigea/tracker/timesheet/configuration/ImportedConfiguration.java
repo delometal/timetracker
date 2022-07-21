@@ -14,4 +14,6 @@ public class ImportedConfiguration {
 	public PasswordEncoder encoder() {
 		return new BCryptPasswordEncoder();
 	}
+	
+	
 }

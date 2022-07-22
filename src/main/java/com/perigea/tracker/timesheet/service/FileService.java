@@ -21,10 +21,16 @@ import com.perigea.tracker.commons.exception.FileDownloadException;
 import com.perigea.tracker.commons.exception.FileUploadException;
 import com.perigea.tracker.commons.utils.Utils;
 import com.perigea.tracker.timesheet.configuration.ApplicationProperties;
+import com.perigea.tracker.timesheet.entity.Azienda;
+import com.perigea.tracker.timesheet.entity.Cliente;
 import com.perigea.tracker.timesheet.entity.CurriculumVitae;
+import com.perigea.tracker.timesheet.entity.Fornitore;
+import com.perigea.tracker.timesheet.entity.LogoAzienda;
 import com.perigea.tracker.timesheet.entity.ProfileImage;
 import com.perigea.tracker.timesheet.entity.Utente;
+import com.perigea.tracker.timesheet.repository.ClienteRepository;
 import com.perigea.tracker.timesheet.repository.CurriculumVitaeRepository;
+import com.perigea.tracker.timesheet.repository.FornitoreRepository;
 import com.perigea.tracker.timesheet.repository.ProfileImageRepository;
 import com.perigea.tracker.timesheet.repository.UtenteRepository;
 
@@ -41,6 +47,12 @@ public class FileService {
 	@Autowired
 	private UtenteRepository utenteRepository;
 	
+	@Autowired
+	private ClienteRepository clienteRepository;
+	
+	@Autowired
+	private FornitoreRepository fornitoreRepository;
+		
 	@Autowired
 	private CurriculumVitaeRepository curriculumVitaeRepository;
 	
@@ -107,6 +119,45 @@ public class FileService {
 		}
 	}
 	
+	public void uploadLogoFornitore(String codiceAzienda, MultipartFile file) {
+		try {
+			Fornitore fornitore = fornitoreRepository.findById(codiceAzienda).orElseThrow();
+			LogoAzienda logo = setLogoAzienda(fornitore, file);
+			fornitore.setLogo(logo);
+			fornitoreRepository.save(fornitore);
+		} catch (Exception e) {
+			throw new FileUploadException("Could not store the file. Error: " + e.getMessage());
+		}
+	}
+	
+	public void uploadLogoCliente(String codiceAzienda, MultipartFile file) {
+		try {
+			Cliente cliente = clienteRepository.findByCodiceAzienda(codiceAzienda).orElseThrow();
+			LogoAzienda logo = setLogoAzienda(cliente, file);
+			cliente.setLogo(logo);
+			clienteRepository.save(cliente);
+		} catch (Exception e) {
+			throw new FileUploadException("Could not store the file. Error: " + e.getMessage());
+		}
+	}
+	
+	private LogoAzienda setLogoAzienda(Azienda azienda, MultipartFile file) {
+		try {
+			String filepath = extracFilename(azienda);
+			byte[] fileData = IOUtils.toByteArray(file.getInputStream());
+			
+			LogoAzienda logo = new LogoAzienda();
+			logo.setAzienda(azienda);
+			logo.setCodiceAzienda(azienda.getCodiceAzienda());
+			logo.setLogo(fileData);
+			logo.setFilename(file.getOriginalFilename());
+			
+			return logo;
+		} catch (Exception e) {
+			throw new FileUploadException("Could not store the file. Error: " + e.getMessage());
+		}
+	}
+	
 	
 	/**
 	 * upload di un'immagine del profilo
@@ -142,6 +193,11 @@ public class FileService {
 		return Utils.removeAllSpaces(filepath).trim();
 	}
 	
+	private String extracFilename(Azienda azienda) {
+		String filepath = azienda.getRagioneSociale() + "-" + azienda.getCodiceAzienda();
+		return Utils.removeAllSpaces(filepath).trim();
+	}
+	
 	/**
 	 * lettura di un curriculum
 	 * @param codicePersona
@@ -150,6 +206,22 @@ public class FileService {
 	public CurriculumVitae getCurriculum(String codicePersona) {
 		try {
 			return utenteRepository.getById(codicePersona).getCv();
+		} catch (Exception e) {
+			throw new FileDownloadException("Error: " + e.getMessage());
+		}
+	}
+	
+	public LogoAzienda getLogoCliente(String codiceAzienda) {
+		try {
+			return clienteRepository.getById(codiceAzienda).getLogo();
+		} catch (Exception e) {
+			throw new FileDownloadException("Error: " + e.getMessage());
+		}
+	}
+	
+	public LogoAzienda getLogoFornitore(String codiceAzienda) {
+		try {
+			return fornitoreRepository.getById(codiceAzienda).getLogo();
 		} catch (Exception e) {
 			throw new FileDownloadException("Error: " + e.getMessage());
 		}

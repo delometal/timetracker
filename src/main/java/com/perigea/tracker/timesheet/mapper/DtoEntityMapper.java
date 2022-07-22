@@ -55,6 +55,8 @@ public interface DtoEntityMapper {
 	FornitoreDto entityToDto(Fornitore entity);
 	List<Fornitore> dtoToEntityFornitoreList(List<FornitoreDto> dto);
 	List<FornitoreDto> entityToDtoFornitoreList(List<Fornitore> entity);
+	
+	LogoAziendaDto entityToDto(LogoAzienda entity);
 
 	
 	/** NOTE SPESE **/

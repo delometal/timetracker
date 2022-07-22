@@ -3,6 +3,7 @@ package com.perigea.tracker.timesheet.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -13,7 +14,11 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.perigea.tracker.commons.enums.AziendaType;
 import com.perigea.tracker.commons.enums.PagamentoType;
@@ -84,6 +89,10 @@ public class Azienda extends BaseEntity {
 	
 	@OneToMany(mappedBy = "azienda")
 	private List<Utente> contatti = new ArrayList<>();
+	
+	@NotFound(action = NotFoundAction.IGNORE)
+	@OneToOne(mappedBy = "azienda", cascade = CascadeType.ALL, optional = true)
+	private LogoAzienda logo;
 	
 	public void addContatto(Utente contatto) {
 		this.contatti.add(contatto);

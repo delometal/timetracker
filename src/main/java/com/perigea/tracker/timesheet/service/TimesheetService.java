@@ -252,6 +252,34 @@ public class TimesheetService {
 			throw new TimesheetException(ex.getMessage());
 		}
 	}
+	
+	
+	/**
+	 * metodo per la lettura di tutti i timesheet in un mese
+	 * @param anno
+	 * @param mese
+	 * @return
+	 */
+	public List<Timesheet> getAllTimesheetByMeseAndAnno(Integer anno, Integer mese) {
+		try {
+			return timesheetRepository.findAll(timesheetsBySpecification(anno, mese));
+		} catch (Exception ex) {
+			if (ex instanceof NoSuchElementException) {
+				throw new EntityNotFoundException(ex.getMessage());
+			}
+			throw new TimesheetException(ex.getMessage());
+		}
+	}
+	
+	private Specification<Timesheet> timesheetsBySpecification(final Integer anno, final Integer mese) {
+		List<Condition> conditions = new ArrayList<>();
+		conditions.add(Condition.builder().field("id.anno").value(anno).valueType(Integer.class).operator(Operator.eq)
+				.build());
+		conditions.add(Condition.builder().field("id.mese").value(mese).valueType(Integer.class).operator(Operator.eq).build());
+		return timesheetFilter.buildSpecification(conditions, false);
+	}
+
+	
 
 	/**
 	 * ricerca di un singolo dato di un timesheet

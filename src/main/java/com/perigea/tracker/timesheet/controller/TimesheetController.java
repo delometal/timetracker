@@ -83,6 +83,15 @@ public class TimesheetController {
 		return ResponseEntity.ok(genericDto);
 	}
 	
+	@GetMapping(value = "/read-all-by-mese-anno/{anno}/{mese}")
+	public ResponseEntity<ResponseDto<List<TimesheetResponseDto>>> readAllTimesheet(@PathVariable Integer anno, @PathVariable Integer mese) {
+		List<Timesheet> timesheets = timesheetService.getAllTimesheetByMeseAndAnno(anno, mese);
+		List<TimesheetResponseDto> dto = dtoEntityMapper.entityToDto(timesheets);
+		ResponseDto<List<TimesheetResponseDto>> genericDto = ResponseDto.<List<TimesheetResponseDto>>builder().data(dto)
+				.build();
+		return ResponseEntity.ok(genericDto);
+	}
+	
 	
 	@GetMapping(value = "/read-all-by-responsabile/{anno}/{mese}/{codiceResponsabile}")
 	public ResponseEntity<ResponseDto<List<TimesheetResponseDto>>> readAllTimesheet(@PathVariable(value = "anno") Integer anno,
